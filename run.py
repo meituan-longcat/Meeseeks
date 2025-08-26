@@ -5,7 +5,7 @@ from source.model.demo_api_model import DemoApiModel
 
 if __name__ == "__main__":
     # Data to be evaluated
-    data_path = "***Your path to dataset .json file***"
+    data_path = "Meeseeks_quickstart_data.json"
     # Target Model. Implement your own model class and create an instance here. See README quickstart.
     target_model = DemoApiModel(ip="1")
     # Extraction Model. Implement your own model class and create an instance here. See README quickstart.

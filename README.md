@@ -1,5 +1,5 @@
 # Meeseeks
-
+This is a beta version of Meeseeks, most of the previous open-source material is based on beta data. Heading to https://github.com/ADoublLEN/Meeseeks for the official release. 
 
 ## 📌Introduction
 
@@ -8,8 +8,6 @@ Meeseeks is an instruction-following benchmark based on business data. It featur
 🔔 Instruction-Following refers to evaluating whether a model adheres to the requirements specified in the user prompt, focusing solely on compliance with given instructions rather than the factual accuracy of the response.
 
 ## Quick Start
-
-First you need to download the dataset from huggingface, and paste it in `data` folder.
 
 To run the project, you need to implement 3 different models by yourself:
 - target model 
