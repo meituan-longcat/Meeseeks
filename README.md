@@ -1,14 +1,20 @@
-# 👑 Meeseeks Benchmark
-![Logo](logo.jpg)
-β Previous Beta Version: https://github.com/ADoublLEN/Meeseeks-beta
-Our multilingual version of Meeseeks is about to release very soon!
+<div align="center">
 
-Thanks to contributors behind the scenes
-Developers: 
-Yanxin Zhuo (zoeyanxin@163.com)
-Ruicheng Liao (liaoruicheng@foxmail.com)
-Dataset contributor:
-Jinrong Ma (mailto:mjr18916@163.com)
+# 👑 Meeseeks Benchmark
+
+<img src="logo.jpg" alt="Meeseeks Logo" width="500"/>
+
+</div>
+
+---
+
+## 🚀 Latest News
+
+> 🌍 **Exciting Update**: Our multilingual version of Meeseeks is about to release!
+
+## 📋 Previous Versions
+
+- 🔗 **Beta Version**: [Meeseeks-beta](https://github.com/ADoublLEN/Meeseeks-beta)
 
 ## 📖 Introduction
 **Meeseeks** is an **instruction-following benchmark** designed to evaluate how well models can adhere to user instructions in a **multi-turn scenario**.  
@@ -128,3 +134,11 @@ evaluation_results_english/
 
 
 Each directory contains structured logs, extracted outputs, and scoring results for further analysis.
+
+
+## 🙏 Contributors behind the scenes
+*Special thanks to all non-tech-domain contributors behind the scenes*
+
+**Data Developer:** Yanxin Zhuo, Ruicheng Liao | **Dataset:** Jinrong Ma  
+📧 [zoeyanxin@163.com](mailto:zoeyanxin@163.com) • [liaoruicheng@foxmail.com](mailto:liaoruicheng@foxmail.com) • [mjr18916@163.com](mailto:mjr18916@163.com)
+
