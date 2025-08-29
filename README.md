@@ -1,6 +1,14 @@
 # 👑 Meeseeks Benchmark
 ![Logo](logo.jpg)
 β Previous Beta Version: https://github.com/ADoublLEN/Meeseeks-beta
+Our multilingual version of Meeseeks is about to release very soon!
+
+Thanks to contributors behind the scenes
+Developers: 
+Yanxin Zhuo (zoeyanxin@163.com)
+Ruicheng Liao (liaoruicheng@foxmail.com)
+Dataset contributor:
+Jinrong Ma (mailto:mjr18916@163.com)
 
 ## 📖 Introduction
 **Meeseeks** is an **instruction-following benchmark** designed to evaluate how well models can adhere to user instructions in a **multi-turn scenario**.  
