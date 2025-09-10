@@ -8,7 +8,7 @@ def set_qwen_url(url):
     global _qwen_url
     _qwen_url = url
 
-def call_model(prompt):
+def call_model(prompts):
     """调用Qwen模型API"""
     if _qwen_url is None:
         raise ValueError("Qwen URL not set. Please call set_qwen_url() first.")

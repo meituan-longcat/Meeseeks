@@ -8,7 +8,7 @@ def set_qwen_coder_url(url):
     global _qwen_coder_url
     _qwen_coder_url = url
 
-def call_coder_model(prompt):
+def call_coder_model(prompts):
     """调用Qwen Coder模型API"""
     if _qwen_coder_url is None:
         raise ValueError("Qwen Coder URL not set. Please call set_qwen_coder_url() first.")
