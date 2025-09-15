@@ -137,8 +137,5 @@ Each directory contains structured logs, extracted outputs, and scoring results 
 
 
 ## 🙏 Contributors behind the scenes
-*Special thanks to all non-tech-domain contributors behind the scenes*
-
-**Team Workforce Allocation**: Zhe Tang | **Data Developer:** Yanxin Zhuo, Ruicheng Liao | **Dataset Quality Inspection:** Jinrong Ma  
-📧 [zhetang0718@gmail.com](mailto:zhetang0718@gmail.com) • [zoeyanxin@163.com](mailto:zoeyanxin@163.com) • [liaoruicheng@foxmail.com](mailto:liaoruicheng@foxmail.com) • [mjr18916@163.com](mailto:mjr18916@163.com)
+Temporarily removed for ICLR submitting
 
