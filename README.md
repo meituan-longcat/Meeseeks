@@ -10,11 +10,11 @@
 
 ## 🚀 Latest News
 
-> 🌍 **Exciting Update**: Our multilingual version of Meeseeks is about to release!
+Temporarily removed for ICLR submitting
 
 ## 📋 Previous Versions
 
-- 🔗 **Beta Version**: [Meeseeks-beta](https://github.com/ADoublLEN/Meeseeks-beta)
+Temporarily removed for ICLR submitting
 
 ## 📖 Introduction
 **Meeseeks** is an **instruction-following benchmark** designed to evaluate how well models can adhere to user instructions in a **multi-turn scenario**.  
