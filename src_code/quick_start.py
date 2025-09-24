@@ -114,7 +114,7 @@ def test_all_apis(qwen_url, qwen_coder_url, tested_model_url):
 # 默认配置 - 基于原始evaluate.py
 BATCH_SIZE = 500
 ROUNDS = 2
-FILE_PATH = "/Users/jiamingwang/Documents/指令遵循/tuanbench2/tuanbanch/ComplexBench-qwen/新版合成数据模板/数据/DATA-SPECIAL2中文版.json"
+FILE_PATH = ""
 
 # API URLs - 基于原始evaluate.py
 QWEN_URL = "http://10.164.51.197:8080"

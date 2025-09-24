@@ -147,7 +147,7 @@ DEFAULT_CONFIG = {
     'tested_model_url': 'http://10.164.51.197:8080',  # 默认使用相同的模型
     'batch_size': 500,
     'rounds': 2,
-    'data_path': '/Users/jiamingwang/Documents/指令遵循/tuanbench2/tuanbanch/ComplexBench-qwen/新版合成数据模板/数据/DATA-SPECIAL2中文版.json',
+    'data_path': '',
     'output_dir': 'evaluation_results'
 }
 
