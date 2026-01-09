@@ -26,7 +26,7 @@ except ImportError:
         json_repair_AVAILABLE = False
 
 
-# BATCH_SIZE = 5  # 移除硬编码的batch_size，改为从参数传入
+BATCH_SIZE = 1
 
 def load_data(file_path):
     with open(file_path, 'r', encoding='utf-8')  as file:
@@ -253,3 +253,16 @@ def json_from_string(text: str) -> List[Any]:
         return matches
 
     raise Exception("Failed to parse JSON from string")
+
+
+if __name__ == "__main__":
+    # rule = "stroke_count_total:24"
+    # match = re.search(r'stroke_count_total:(.+)', rule)
+    # if match:
+    #     structure = match.group(1).strip()
+    #     print(structure)
+    # else:
+    #     print(0, "❌ 规则格式错误，应为 'word_structure:ABAC'") 
+    # return word_structure(model_response, structure)
+    rule = "count_mixed_chinese_english_words:[1,280]"
+    print(txt_to_json_og(rule))

@@ -1,0 +1,1062 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage expérimenté et un analyste d'articles professionnel. Je vais vous fournir un article qui recommande des destinations de voyage appropriées. Votre tâche est d'analyser cet article et d'extraire des informations par dimension de nom d'attraction.\n\n1. poiName: Extrayez les noms des attractions mentionnées dans l'article. Les attractions doivent être des positions géographiques au niveau de l'emplacement, absolument pas des villes ou des provinces. Par exemple : jardins botaniques, parcs, villes anciennes, zones panoramiques, musées, temples et autres attractions spécifiques (comme le Jardin botanique de Taiyuan, le parc Jingshan, la ville d'eau de Gubei).\n\nExigences de sortie:\n1. Retournez les informations extraites au format JSON\n2. Chaque attraction comme objet séparé, contenant le champ poiName\n3. Tous les objets d'attraction forment un tableau\n4. Ne retournez aucun caractère autre que le format JSON\nVous devez identifier le type de chaque attraction (comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.) et retourner le champ poiType en json.\nVous devez identifier si chaque attraction convient aux jeux parent-enfant (retournez \"Oui\" si approprié, sinon \"Non\") et retourner le champ isParentChildFriendly en json.\nVous devez identifier si chaque attraction a une vue nocturne (retournez \"Oui\" si elle a une vue nocturne, sinon \"Non\") et retourner le champ hasNightView en json.\nExemple de format de sortie:\n[\n  {\"poiName\": \"valeur d'exemple\", \"poiType\": \"type d'exemple\", \"isParentChildFriendly\": \"Oui/Non\", \"hasNightView\": \"Oui/Non\"}\n]\n\nContenu de l'article:Recommandations de tours autour de Paris:\n1. Jardin des Plantes est le plus grand jardin botanique du nord de la France, adapté aux tours familiaux\n2. Parc des Buttes-Chaumont offre une vue panoramique sur la Tour Eiffel\n3. La vue nocturne de Montmartre est époustouflante, recommandons de séjourner dans la zone panoramique",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "isParentChildFriendly",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nom de l'attraction, doit être une position géographique spécifique au niveau de l'emplacement",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Type d'attraction, comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.",
+                        "能力项": "JSON"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle convient aux parent-enfant",
+                        "能力项": "特定格式"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle a une vue nocturne",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cela correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage expérimenté et un analyste d'articles professionnel. Je vais vous fournir un article qui recommande des destinations de voyage appropriées. Votre tâche est d'analyser cet article et d'extraire des informations par dimension de nom d'attraction.\n\n1. poiName: Extrayez les noms des attractions mentionnées dans l'article. Les attractions doivent être des positions géographiques au niveau de l'emplacement, absolument pas des villes ou des provinces. Par exemple : jardins botaniques, parcs, villes anciennes, zones panoramiques, musées, temples et autres attractions spécifiques (comme le Jardin botanique de Taiyuan, le parc Jingshan, la ville d'eau de Gubei).\n\nExigences de sortie:\n1. Retournez les informations extraites au format JSON\n2. Chaque attraction comme objet séparé, contenant le champ poiName\n3. Tous les objets d'attraction forment un tableau\n4. Ne retournez aucun caractère autre que le format JSON\nVous devez identifier le type de chaque attraction (comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.) et retourner le champ poiType en json.\nVous devez identifier si chaque attraction a une vue nocturne (retournez \"Oui\" si elle a une vue nocturne, sinon \"Non\") et retourner le champ hasNightView en json.\nExemple de format de sortie:\n[\n  {\"poiName\": \"valeur d'exemple\", \"poiType\": \"type d'exemple\", \"hasNightView\": \"Oui/Non\"}\n]\n\nContenu de l'article:Promenade urbaine à Lyon:\n1. Parc de la Tête d'Or convient aux sorties familiales, le spectacle nocturne des fontaines ne doit pas être manqué\n2. Le spectacle lumineux des Traboules a des vues nocturnes charmantes\n3. Musée des Beaux-Arts vous permet de découvrir la culture française",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nom de l'attraction, doit être une position géographique spécifique au niveau de l'emplacement",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Type d'attraction, comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle a une vue nocturne",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cela correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage expérimenté et un analyste d'articles professionnel. Je vais vous fournir un article qui recommande des destinations de voyage appropriées. Votre tâche est d'analyser cet article et d'extraire des informations par dimension de nom d'attraction.\n\n1. poiName: Extrayez les noms des attractions mentionnées dans l'article. Les attractions doivent être des positions géographiques au niveau de l'emplacement, absolument pas des villes ou des provinces. Par exemple : jardins botaniques, parcs, villes anciennes, zones panoramiques, musées, temples et autres attractions spécifiques (comme le Jardin botanique de Taiyuan, le parc Jingshan, la ville d'eau de Gubei).\n\nExigences de sortie:\n1. Retournez les informations extraites au format JSON\n2. Chaque attraction comme objet séparé, contenant le champ poiName\n3. Tous les objets d'attraction forment un tableau\n4. Ne retournez aucun caractère autre que le format JSON\nVous devez identifier le type de chaque attraction (comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.) et retourner le champ poiType en json.\nVous devez identifier si chaque attraction convient aux jeux parent-enfant (retournez \"Oui\" si approprié, sinon \"Non\") et retourner le champ isParentChildFriendly en json.\nExemple de format de sortie:\n[\n  {\"poiName\": \"valeur d'exemple\", \"poiType\": \"type d'exemple\", \"isParentChildFriendly\": \"Oui/Non\"}\n]\n\nContenu de l'article:Tour familial à Marseille:\n1. Parc Borély convient aux familles parent-enfant\n2. Calanques est un bon endroit pour la randonnée\n3. Vieux-Port a une architecture provençale et des cafés",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "isParentChildFriendly"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nom de l'attraction, doit être une position géographique spécifique au niveau de l'emplacement",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Type d'attraction, comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.",
+                        "能力项": "JSON"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle convient aux parent-enfant",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cela correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage expérimenté et un analyste d'articles professionnel. Je vais vous fournir un article qui recommande des destinations de voyage appropriées. Votre tâche est d'analyser cet article et d'extraire des informations par dimension de nom d'attraction.\n\n1. poiName: Extrayez les noms des attractions mentionnées dans l'article. Les attractions doivent être des positions géographiques au niveau de l'emplacement, absolument pas des villes ou des provinces. Par exemple : jardins botaniques, parcs, villes anciennes, zones panoramiques, musées, temples et autres attractions spécifiques (comme le Jardin botanique de Taiyuan, le parc Jingshan, la ville d'eau de Gubei).\n\nExigences de sortie:\n1. Retournez les informations extraites au format JSON\n2. Chaque attraction comme objet séparé, contenant le champ poiName\n3. Tous les objets d'attraction forment un tableau\n4. Ne retournez aucun caractère autre que le format JSON\nVous devez identifier le type de chaque attraction (comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.) et retourner le champ poiType en json.\nVous devez identifier si chaque attraction a des spectacles culturels (retournez \"Oui\" si elle en a, sinon \"Non\") et retourner le champ hasCulturalShow en json.\nVous devez identifier si chaque attraction a une vue nocturne (retournez \"Oui\" si elle a une vue nocturne, sinon \"Non\") et retourner le champ hasNightView en json.\nExemple de format de sortie:\n[\n  {\"poiName\": \"valeur d'exemple\", \"poiType\": \"type d'exemple\", \"hasCulturalShow\": \"Oui/Non\", \"hasNightView\": \"Oui/Non\"}\n]\n\nContenu de l'article:Tour culturel à Avignon:\n1. Palais des Papes a des spectacles de culture médiévale\n2. Pont d'Avignon montre la culture provençale\n3. Centre historique convient aux tours nocturnes et à la dégustation de spécialités",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasCulturalShow",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nom de l'attraction, doit être une position géographique spécifique au niveau de l'emplacement",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Type d'attraction, comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.",
+                        "能力项": "JSON"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle a des spectacles culturels",
+                        "能力项": "特定格式"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle a une vue nocturne",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cela correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage expérimenté et un analyste d'articles professionnel. Je vais vous fournir un article qui recommande des destinations de voyage appropriées. Votre tâche est d'analyser cet article et d'extraire des informations par dimension de nom d'attraction.\n\n1. poiName: Extrayez les noms des attractions mentionnées dans l'article. Les attractions doivent être des positions géographiques au niveau de l'emplacement, absolument pas des villes ou des provinces. Par exemple : jardins botaniques, parcs, villes anciennes, zones panoramiques, musées, temples et autres attractions spécifiques (comme le Jardin botanique de Taiyuan, le parc Jingshan, la ville d'eau de Gubei).\n\nExigences de sortie:\n1. Retournez les informations extraites au format JSON\n2. Chaque attraction comme objet séparé, contenant le champ poiName\n3. Tous les objets d'attraction forment un tableau\n4. Ne retournez aucun caractère autre que le format JSON\nVous devez identifier le type de chaque attraction (comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.) et retourner le champ poiType en json.\nVous devez identifier si chaque attraction a une vue nocturne (retournez \"Oui\" si elle a une vue nocturne, sinon \"Non\") et retourner le champ hasNightView en json.\nExemple de format de sortie:\n[\n  {\"poiName\": \"valeur d'exemple\", \"poiType\": \"type d'exemple\", \"hasNightView\": \"Oui/Non\"}\n]\n\nContenu de l'article:Exploration historique de Versailles:\n1. Place d'Armes du Château a des spectacles lumineux nocturnes\n2. Musée des Carrosses est mondialement célèbre\n3. Quartier Saint-Louis est un lieu de check-in gastronomique",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nom de l'attraction, doit être une position géographique spécifique au niveau de l'emplacement",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Type d'attraction, comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle a une vue nocturne",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cela correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage expérimenté et un analyste d'articles professionnel. Je vais vous fournir un article qui recommande des destinations de voyage appropriées. Votre tâche est d'analyser cet article et d'extraire des informations par dimension de nom d'attraction.\n\n1. poiName: Extrayez les noms des attractions mentionnées dans l'article. Les attractions doivent être des positions géographiques au niveau de l'emplacement, absolument pas des villes ou des provinces. Par exemple : jardins botaniques, parcs, villes anciennes, zones panoramiques, musées, temples et autres attractions spécifiques (comme le Jardin botanique de Taiyuan, le parc Jingshan, la ville d'eau de Gubei).\n\nExigences de sortie:\n1. Retournez les informations extraites au format JSON\n2. Chaque attraction comme objet séparé, contenant le champ poiName\n3. Tous les objets d'attraction forment un tableau\n4. Ne retournez aucun caractère autre que le format JSON\nVous devez identifier le type de chaque attraction (comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.) et retourner le champ poiType en json.\nVous devez identifier si chaque attraction a une vue nocturne (retournez \"Oui\" si elle a une vue nocturne, sinon \"Non\") et retourner le champ hasNightView en json.\nVous devez identifier si chaque attraction est une attraction extérieure (Oui/Non) et retourner le champ isOutdoor en json.\nExemple de format de sortie:\n[\n  {\"poiName\": \"valeur d'exemple\", \"poiType\": \"type d'exemple\", \"hasNightView\": \"Oui/Non\", \"isOutdoor\": \"Oui/Non\"}\n]\n\nContenu de l'article:Paysages de lacs et montagnes d'Annecy:\n1. Lac d'Annecy a de belles vues nocturnes, le spectacle lumineux du château est charmant\n2. Basilique de la Visitation est une célèbre église catholique\n3. Semnoz convient au cyclisme en plein air",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView",
+                    "isOutdoor"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nom de l'attraction, doit être une position géographique spécifique au niveau de l'emplacement",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Type d'attraction, comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle a une vue nocturne",
+                        "能力项": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si c'est une attraction extérieure",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cela correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage expérimenté et un analyste d'articles professionnel. Je vais vous fournir un article qui recommande des destinations de voyage appropriées. Votre tâche est d'analyser cet article et d'extraire des informations par dimension de nom d'attraction.\n\n1. poiName: Extrayez les noms des attractions mentionnées dans l'article. Les attractions doivent être des positions géographiques au niveau de l'emplacement, absolument pas des villes ou des provinces. Par exemple : jardins botaniques, parcs, villes anciennes, zones panoramiques, musées, temples et autres attractions spécifiques (comme le Jardin botanique de Taiyuan, le parc Jingshan, la ville d'eau de Gubei).\n\nExigences de sortie:\n1. Retournez les informations extraites au format JSON\n2. Chaque attraction comme objet séparé, contenant le champ poiName\n3. Tous les objets d'attraction forment un tableau\n4. Ne retournez aucun caractère autre que le format JSON\nVous devez identifier le type de chaque attraction (comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.) et retourner le champ poiType en json.\nVous devez identifier si chaque attraction a une vue nocturne (retournez \"Oui\" si elle a une vue nocturne, sinon \"Non\") et retourner le champ hasNightView en json.\nVous devez identifier si chaque attraction a des spectacles culturels (retournez \"Oui\" si elle en a, sinon \"Non\") et retourner le champ hasCulturalShow en json.\nExemple de format de sortie:\n[\n  {\"poiName\": \"valeur d'exemple\", \"poiType\": \"type d'exemple\", \"hasNightView\": \"Oui/Non\", \"hasCulturalShow\": \"Oui/Non\"}\n]\n\nContenu de l'article:Expérience de tour nocturne à Nice:\n1. La vue nocturne de la Promenade des Anglais attire de nombreux touristes\n2. Parc de la Colline du Château a une plateforme d'observation\n3. Vieux Nice a de riches spectacles folkloriques",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView",
+                    "hasCulturalShow"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nom de l'attraction, doit être une position géographique spécifique au niveau de l'emplacement",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Type d'attraction, comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle a une vue nocturne",
+                        "能力项": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle a des spectacles culturels",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cela correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage expérimenté et un analyste d'articles professionnel. Je vais vous fournir un article qui recommande des destinations de voyage appropriées. Votre tâche est d'analyser cet article et d'extraire des informations par dimension de nom d'attraction.\n\n1. poiName: Extrayez les noms des attractions mentionnées dans l'article. Les attractions doivent être des positions géographiques au niveau de l'emplacement, absolument pas des villes ou des provinces. Par exemple : jardins botaniques, parcs, villes anciennes, zones panoramiques, musées, temples et autres attractions spécifiques (comme le Jardin botanique de Taiyuan, le parc Jingshan, la ville d'eau de Gubei).\n\nExigences de sortie:\n1. Retournez les informations extraites au format JSON\n2. Chaque attraction comme objet séparé, contenant le champ poiName\n3. Tous les objets d'attraction forment un tableau\n4. Ne retournez aucun caractère autre que le format JSON\nVous devez identifier le type de chaque attraction (comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.) et retourner le champ poiType en json.\nVous devez identifier si chaque attraction a une vue nocturne (retournez \"Oui\" si elle a une vue nocturne, sinon \"Non\") et retourner le champ hasNightView en json.\nExemple de format de sortie:\n[\n  {\"poiName\": \"valeur d'exemple\", \"poiType\": \"type d'exemple\", \"hasNightView\": \"Oui/Non\"}\n]\n\nContenu de l'article:Tour des jardins de Strasbourg:\n1. Parc de l'Orangerie est un représentant des jardins alsaciens\n2. Cathédrale Notre-Dame est célèbre pour son architecture gothique\n3. Petite France a des vues nocturnes romantiques",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nom de l'attraction, doit être une position géographique spécifique au niveau de l'emplacement",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Type d'attraction, comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle a une vue nocturne",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cela correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage expérimenté et un analyste d'articles professionnel. Je vais vous fournir un article qui recommande des destinations de voyage appropriées. Votre tâche est d'analyser cet article et d'extraire des informations par dimension de nom d'attraction.\n\n1. poiName: Extrayez les noms des attractions mentionnées dans l'article. Les attractions doivent être des positions géographiques au niveau de l'emplacement, absolument pas des villes ou des provinces. Par exemple : jardins botaniques, parcs, villes anciennes, zones panoramiques, musées, temples et autres attractions spécifiques (comme le Jardin botanique de Taiyuan, le parc Jingshan, la ville d'eau de Gubei).\n\nExigences de sortie:\n1. Retournez les informations extraites au format JSON\n2. Chaque attraction comme objet séparé, contenant le champ poiName\n3. Tous les objets d'attraction forment un tableau\n4. Ne retournez aucun caractère autre que le format JSON\nVous devez identifier le type de chaque attraction (comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.) et retourner le champ poiType en json.\nVous devez identifier si chaque attraction est une attraction extérieure (Oui/Non) et retourner le champ isOutdoor en json.\nVous devez identifier si chaque attraction a une vue nocturne (retournez \"Oui\" si elle a une vue nocturne, sinon \"Non\") et retourner le champ hasNightView en json.\nExemple de format de sortie:\n[\n  {\"poiName\": \"valeur d'exemple\", \"poiType\": \"type d'exemple\", \"isOutdoor\": \"Oui/Non\", \"hasNightView\": \"Oui/Non\"}\n]\n\nContenu de l'article:Tour paysager de Bordeaux:\n1. Place de la Bourse est un monument de Bordeaux\n2. Croisière sur la Garonne convient à l'extérieur\n3. Saint-Émilion a des marchés nocturnes et des bars",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "isOutdoor",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nom de l'attraction, doit être une position géographique spécifique au niveau de l'emplacement",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Type d'attraction, comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.",
+                        "能力项": "JSON"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si c'est une attraction extérieure",
+                        "能力项": "特定格式"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle a une vue nocturne",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cela correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage expérimenté et un analyste d'articles professionnel. Je vais vous fournir un article qui recommande des destinations de voyage appropriées. Votre tâche est d'analyser cet article et d'extraire des informations par dimension de nom d'attraction.\n\n1. poiName: Extrayez les noms des attractions mentionnées dans l'article. Les attractions doivent être des positions géographiques au niveau de l'emplacement, absolument pas des villes ou des provinces. Par exemple : jardins botaniques, parcs, villes anciennes, zones panoramiques, musées, temples et autres attractions spécifiques (comme le Jardin botanique de Taiyuan, le parc Jingshan, la ville d'eau de Gubei).\n\nExigences de sortie:\n1. Retournez les informations extraites au format JSON\n2. Chaque attraction comme objet séparé, contenant le champ poiName\n3. Tous les objets d'attraction forment un tableau\n4. Ne retournez aucun caractère autre que le format JSON\nVous devez identifier le type de chaque attraction (comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.) et retourner le champ poiType en json.\nVous devez identifier si chaque attraction a des spectacles culturels (retournez \"Oui\" si elle en a, sinon \"Non\") et retourner le champ hasCulturalShow en json.\nExemple de format de sortie:\n[\n  {\"poiName\": \"valeur d'exemple\", \"poiType\": \"type d'exemple\", \"hasCulturalShow\": \"Oui/Non\"}\n]\n\nContenu de l'article:Loisirs culturels à Toulouse:\n1. Théâtre du Capitole a des spectacles d'opéra\n2. Basilique Saint-Sernin a un encens florissant\n3. Quartier des Carmes a de nombreux magasins littéraires",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasCulturalShow"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nom de l'attraction, doit être une position géographique spécifique au niveau de l'emplacement",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Type d'attraction, comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.",
+                        "能力项": "JSON"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle a des spectacles culturels",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cela correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage expérimenté et un analyste d'articles professionnel. Je vais vous fournir un article qui recommande des destinations de voyage appropriées. Votre tâche est d'analyser cet article et d'extraire des informations par dimension de nom d'attraction.\n\n1. poiName: Extrayez les noms des attractions mentionnées dans l'article. Les attractions doivent être des positions géographiques au niveau de l'emplacement, absolument pas des villes ou des provinces. Par exemple : jardins botaniques, parcs, villes anciennes, zones panoramiques, musées, temples et autres attractions spécifiques (comme le Jardin botanique de Taiyuan, le parc Jingshan, la ville d'eau de Gubei).\n\nExigences de sortie:\n1. Retournez les informations extraites au format JSON\n2. Chaque attraction comme objet séparé, contenant le champ poiName\n3. Tous les objets d'attraction forment un tableau\n4. Ne retournez aucun caractère autre que le format JSON\nVous devez identifier le type de chaque attraction (comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.) et retourner le champ poiType en json.\nVous devez identifier si chaque attraction a une vue nocturne (retournez \"Oui\" si elle a une vue nocturne, sinon \"Non\") et retourner le champ hasNightView en json.\nVous devez identifier si chaque attraction a des sources chaudes (retournez \"Oui\" si elle a des sources chaudes, sinon \"Non\") et retourner le champ hasHotSpring en json.\nExemple de format de sortie:\n[\n  {\"poiName\": \"valeur d'exemple\", \"poiType\": \"type d'exemple\", \"hasNightView\": \"Oui/Non\", \"hasHotSpring\": \"Oui/Non\"}\n]\n\nContenu de l'article:Style côtier de Biarritz:\n1. Place Clemenceau a des vues nocturnes charmantes\n2. Côte des Basques convient au cyclisme\n3. Thermes Salins a des sources chaudes naturelles",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView",
+                    "hasHotSpring"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nom de l'attraction, doit être une position géographique spécifique au niveau de l'emplacement",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Type d'attraction, comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle a une vue nocturne",
+                        "能力项": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle a des sources chaudes",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cela correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage expérimenté et un analyste d'articles professionnel. Je vais vous fournir un article qui recommande des destinations de voyage appropriées. Votre tâche est d'analyser cet article et d'extraire des informations par dimension de nom d'attraction.\n\n1. poiName: Extrayez les noms des attractions mentionnées dans l'article. Les attractions doivent être des positions géographiques au niveau de l'emplacement, absolument pas des villes ou des provinces. Par exemple : jardins botaniques, parcs, villes anciennes, zones panoramiques, musées, temples et autres attractions spécifiques (comme le Jardin botanique de Taiyuan, le parc Jingshan, la ville d'eau de Gubei).\n\nExigences de sortie:\n1. Retournez les informations extraites au format JSON\n2. Chaque attraction comme objet séparé, contenant le champ poiName\n3. Tous les objets d'attraction forment un tableau\n4. Ne retournez aucun caractère autre que le format JSON\nVous devez identifier le type de chaque attraction (comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.) et retourner le champ poiType en json.\nVous devez identifier si chaque attraction a une vue nocturne (retournez \"Oui\" si elle a une vue nocturne, sinon \"Non\") et retourner le champ hasNightView en json.\nExemple de format de sortie:\n[\n  {\"poiName\": \"valeur d'exemple\", \"poiType\": \"type d'exemple\", \"hasNightView\": \"Oui/Non\"}\n]\n\nContenu de l'article:Check-in culturel à Reims:\n1. Tour nocturne de la Cathédrale Notre-Dame est romantique\n2. Palais du Tau est solennel\n3. Quartier Erlon a le style de la Belle Époque",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nom de l'attraction, doit être une position géographique spécifique au niveau de l'emplacement",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Type d'attraction, comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle a une vue nocturne",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cela correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage expérimenté et un analyste d'articles professionnel. Je vais vous fournir un article qui recommande des destinations de voyage appropriées. Votre tâche est d'analyser cet article et d'extraire des informations par dimension de nom d'attraction.\n\n1. poiName: Extrayez les noms des attractions mentionnées dans l'article. Les attractions doivent être des positions géographiques au niveau de l'emplacement, absolument pas des villes ou des provinces. Par exemple : jardins botaniques, parcs, villes anciennes, zones panoramiques, musées, temples et autres attractions spécifiques (comme le Jardin botanique de Taiyuan, le parc Jingshan, la ville d'eau de Gubei).\n\nExigences de sortie:\n1. Retournez les informations extraites au format JSON\n2. Chaque attraction comme objet séparé, contenant le champ poiName\n3. Tous les objets d'attraction forment un tableau\n4. Ne retournez aucun caractère autre que le format JSON\nVous devez identifier le type de chaque attraction (comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.) et retourner le champ poiType en json.\nVous devez identifier si chaque attraction a une vue nocturne (retournez \"Oui\" si elle a une vue nocturne, sinon \"Non\") et retourner le champ hasNightView en json.\nVous devez identifier si chaque attraction a des spectacles culturels (retournez \"Oui\" si elle en a, sinon \"Non\") et retourner le champ hasCulturalShow en json.\nExemple de format de sortie:\n[\n  {\"poiName\": \"valeur d'exemple\", \"poiType\": \"type d'exemple\", \"hasNightView\": \"Oui/Non\", \"hasCulturalShow\": \"Oui/Non\"}\n]\n\nContenu de l'article:Style européen de Lille:\n1. Vieux Lille a des églises et des cafés\n2. Grand Place a de l'artisanat traditionnel\n3. Croisière sur la Deûle a des vues nocturnes brillantes",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView",
+                    "hasCulturalShow"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nom de l'attraction, doit être une position géographique spécifique au niveau de l'emplacement",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Type d'attraction, comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle a une vue nocturne",
+                        "能力项": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle a des spectacles culturels",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cela correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage expérimenté et un analyste d'articles professionnel. Je vais vous fournir un article qui recommande des destinations de voyage appropriées. Votre tâche est d'analyser cet article et d'extraire des informations par dimension de nom d'attraction.\n\n1. poiName: Extrayez les noms des attractions mentionnées dans l'article. Les attractions doivent être des positions géographiques au niveau de l'emplacement, absolument pas des villes ou des provinces. Par exemple : jardins botaniques, parcs, villes anciennes, zones panoramiques, musées, temples et autres attractions spécifiques (comme le Jardin botanique de Taiyuan, le parc Jingshan, la ville d'eau de Gubei).\n\nExigences de sortie:\n1. Retournez les informations extraites au format JSON\n2. Chaque attraction comme objet séparé, contenant le champ poiName\n3. Tous les objets d'attraction forment un tableau\n4. Ne retournez aucun caractère autre que le format JSON\nVous devez identifier le type de chaque attraction (comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.) et retourner le champ poiType en json.\nVous devez identifier si chaque attraction a une vue nocturne (retournez \"Oui\" si elle a une vue nocturne, sinon \"Non\") et retourner le champ hasNightView en json.\nVous devez identifier si chaque attraction est une attraction extérieure (Oui/Non) et retourner le champ isOutdoor en json.\nExemple de format de sortie:\n[\n  {\"poiName\": \"valeur d'exemple\", \"poiType\": \"type d'exemple\", \"hasNightView\": \"Oui/Non\", \"isOutdoor\": \"Oui/Non\"}\n]\n\nContenu de l'article:Monde alpin de Chamonix:\n1. Aiguille du Midi a un éclairage nocturne brillant\n2. Église Saint-Michel a une architecture magnifique\n3. Vallée Blanche peut faire du ski en hiver",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView",
+                    "isOutdoor"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nom de l'attraction, doit être une position géographique spécifique au niveau de l'emplacement",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Type d'attraction, comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle a une vue nocturne",
+                        "能力项": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si c'est une attraction extérieure",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cela correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage expérimenté et un analyste d'articles professionnel. Je vais vous fournir un article qui recommande des destinations de voyage appropriées. Votre tâche est d'analyser cet article et d'extraire des informations par dimension de nom d'attraction.\n\n1. poiName: Extrayez les noms des attractions mentionnées dans l'article. Les attractions doivent être des positions géographiques au niveau de l'emplacement, absolument pas des villes ou des provinces. Par exemple : jardins botaniques, parcs, villes anciennes, zones panoramiques, musées, temples et autres attractions spécifiques (comme le Jardin botanique de Taiyuan, le parc Jingshan, la ville d'eau de Gubei).\n\nExigences de sortie:\n1. Retournez les informations extraites au format JSON\n2. Chaque attraction comme objet séparé, contenant le champ poiName\n3. Tous les objets d'attraction forment un tableau\n4. Ne retournez aucun caractère autre que le format JSON\nVous devez identifier le type de chaque attraction (comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.) et retourner le champ poiType en json.\nVous devez identifier si chaque attraction a une vue nocturne (retournez \"Oui\" si elle a une vue nocturne, sinon \"Non\") et retourner le champ hasNightView en json.\nExemple de format de sortie:\n[\n  {\"poiName\": \"valeur d'exemple\", \"poiType\": \"type d'exemple\", \"hasNightView\": \"Oui/Non\"}\n]\n\nContenu de l'article:Mer de fleurs printanières de Grasse:\n1. Jardins du MIP les cerisiers sont en pleine floraison\n2. Gorges du Verdon a des paysages uniques\n3. Plateau de Valensole convient à l'observation des oiseaux",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nom de l'attraction, doit être une position géographique spécifique au niveau de l'emplacement",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Type d'attraction, comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle a une vue nocturne",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cela correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage expérimenté et un analyste d'articles professionnel. Je vais vous fournir un article qui recommande des destinations de voyage appropriées. Votre tâche est d'analyser cet article et d'extraire des informations par dimension de nom d'attraction.\n\n1. poiName: Extrayez les noms des attractions mentionnées dans l'article. Les attractions doivent être des positions géographiques au niveau de l'emplacement, absolument pas des villes ou des provinces. Par exemple : jardins botaniques, parcs, villes anciennes, zones panoramiques, musées, temples et autres attractions spécifiques (comme le Jardin botanique de Taiyuan, le parc Jingshan, la ville d'eau de Gubei).\n\nExigences de sortie:\n1. Retournez les informations extraites au format JSON\n2. Chaque attraction comme objet séparé, contenant le champ poiName\n3. Tous les objets d'attraction forment un tableau\n4. Ne retournez aucun caractère autre que le format JSON\nVous devez identifier le type de chaque attraction (comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.) et retourner le champ poiType en json.\nVous devez identifier si chaque attraction a des spectacles culturels (retournez \"Oui\" si elle en a, sinon \"Non\") et retourner le champ hasCulturalShow en json.\nVous devez identifier si chaque attraction convient aux jeux parent-enfant (retournez \"Oui\" si approprié, sinon \"Non\") et retourner le champ isParentChildFriendly en json.\nExemple de format de sortie:\n[\n  {\"poiName\": \"valeur d'exemple\", \"poiType\": \"type d'exemple\", \"hasCulturalShow\": \"Oui/Non\", \"isParentChildFriendly\": \"Oui/Non\"}\n]\n\nContenu de l'article:Loisirs urbains de Cannes:\n1. Parc de la Croix des Gardes a des spectacles nocturnes\n2. Plage de la Croisette convient aux parent-enfant\n3. Palais des Festivals a des spectacles lumineux mondiaux",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasCulturalShow",
+                    "isParentChildFriendly"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nom de l'attraction, doit être une position géographique spécifique au niveau de l'emplacement",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Type d'attraction, comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.",
+                        "能力项": "JSON"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle a des spectacles culturels",
+                        "能力项": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle convient aux parent-enfant",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cela correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage expérimenté et un analyste d'articles professionnel. Je vais vous fournir un article qui recommande des destinations de voyage appropriées. Votre tâche est d'analyser cet article et d'extraire des informations par dimension de nom d'attraction.\n\n1. poiName: Extrayez les noms des attractions mentionnées dans l'article. Les attractions doivent être des positions géographiques au niveau de l'emplacement, absolument pas des villes ou des provinces. Par exemple : jardins botaniques, parcs, villes anciennes, zones panoramiques, musées, temples et autres attractions spécifiques (comme le Jardin botanique de Taiyuan, le parc Jingshan, la ville d'eau de Gubei).\n\nExigences de sortie:\n1. Retournez les informations extraites au format JSON\n2. Chaque attraction comme objet séparé, contenant le champ poiName\n3. Tous les objets d'attraction forment un tableau\n4. Ne retournez aucun caractère autre que le format JSON\nVous devez identifier le type de chaque attraction (comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.) et retourner le champ poiType en json.\nVous devez identifier si chaque attraction a une vue nocturne (retournez \"Oui\" si elle a une vue nocturne, sinon \"Non\") et retourner le champ hasNightView en json.\nVous devez identifier si chaque attraction est une attraction extérieure (Oui/Non) et retourner le champ isOutdoor en json.\nExemple de format de sortie:\n[\n  {\"poiName\": \"valeur d'exemple\", \"poiType\": \"type d'exemple\", \"hasNightView\": \"Oui/Non\", \"isOutdoor\": \"Oui/Non\"}\n]\n\nContenu de l'article:Route de la jeunesse littéraire de Montpellier:\n1. Place de la Comédie peut observer des feux d'artifice\n2. Pic Saint-Loup convient à la randonnée\n3. Écusson a des collations spécialisées",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView",
+                    "isOutdoor"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nom de l'attraction, doit être une position géographique spécifique au niveau de l'emplacement",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Type d'attraction, comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle a une vue nocturne",
+                        "能力项": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si c'est une attraction extérieure",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cela correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage expérimenté et un analyste d'articles professionnel. Je vais vous fournir un article qui recommande des destinations de voyage appropriées. Votre tâche est d'analyser cet article et d'extraire des informations par dimension de nom d'attraction.\n\n1. poiName: Extrayez les noms des attractions mentionnées dans l'article. Les attractions doivent être des positions géographiques au niveau de l'emplacement, absolument pas des villes ou des provinces. Par exemple : jardins botaniques, parcs, villes anciennes, zones panoramiques, musées, temples et autres attractions spécifiques (comme le Jardin botanique de Taiyuan, le parc Jingshan, la ville d'eau de Gubei).\n\nExigences de sortie:\n1. Retournez les informations extraites au format JSON\n2. Chaque attraction comme objet séparé, contenant le champ poiName\n3. Tous les objets d'attraction forment un tableau\n4. Ne retournez aucun caractère autre que le format JSON\nVous devez identifier le type de chaque attraction (comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.) et retourner le champ poiType en json.\nVous devez identifier si chaque attraction a une vue nocturne (retournez \"Oui\" si elle a une vue nocturne, sinon \"Non\") et retourner le champ hasNightView en json.\nExemple de format de sortie:\n[\n  {\"poiName\": \"valeur d'exemple\", \"poiType\": \"type d'exemple\", \"hasNightView\": \"Oui/Non\"}\n]\n\nContenu de l'article:Tour des sources de Vichy:\n1. Parc des Sources a des expositions de lotus\n2. Source des Célestins est le symbole de la ville thermale\n3. Bellerive-sur-Allier convient à l'escalade et à la vue d'ensemble",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nom de l'attraction, doit être une position géographique spécifique au niveau de l'emplacement",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Type d'attraction, comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle a une vue nocturne",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cela correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage expérimenté et un analyste d'articles professionnel. Je vais vous fournir un article qui recommande des destinations de voyage appropriées. Votre tâche est d'analyser cet article et d'extraire des informations par dimension de nom d'attraction.\n\n1. poiName: Extrayez les noms des attractions mentionnées dans l'article. Les attractions doivent être des positions géographiques au niveau de l'emplacement, absolument pas des villes ou des provinces. Par exemple : jardins botaniques, parcs, villes anciennes, zones panoramiques, musées, temples et autres attractions spécifiques (comme le Jardin botanique de Taiyuan, le parc Jingshan, la ville d'eau de Gubei).\n\nExigences de sortie:\n1. Retournez les informations extraites au format JSON\n2. Chaque attraction comme objet séparé, contenant le champ poiName\n3. Tous les objets d'attraction forment un tableau\n4. Ne retournez aucun caractère autre que le format JSON\nVous devez identifier le type de chaque attraction (comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.) et retourner le champ poiType en json.\nVous devez identifier si chaque attraction convient aux jeux parent-enfant (retournez \"Oui\" si approprié, sinon \"Non\") et retourner le champ isParentChildFriendly en json.\nExemple de format de sortie:\n[\n  {\"poiName\": \"valeur d'exemple\", \"poiType\": \"type d'exemple\", \"isParentChildFriendly\": \"Oui/Non\"}\n]\n\nContenu de l'article:Tour de week-end à Dijon:\n1. Palais des Ducs a des expositions culturelles\n2. Marché nocturne des Halles est animé\n3. Jardin Darcy convient aux activités parent-enfant",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "isParentChildFriendly"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nom de l'attraction, doit être une position géographique spécifique au niveau de l'emplacement",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Type d'attraction, comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.",
+                        "能力项": "JSON"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle convient aux parent-enfant",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cela correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage expérimenté et un analyste d'articles professionnel. Je vais vous fournir un article qui recommande des destinations de voyage appropriées. Votre tâche est d'analyser cet article et d'extraire des informations par dimension de nom d'attraction.\n\n1. poiName: Extrayez les noms des attractions mentionnées dans l'article. Les attractions doivent être des positions géographiques au niveau de l'emplacement, absolument pas des villes ou des provinces. Par exemple : jardins botaniques, parcs, villes anciennes, zones panoramiques, musées, temples et autres attractions spécifiques (comme le Jardin botanique de Taiyuan, le parc Jingshan, la ville d'eau de Gubei).\n\nExigences de sortie:\n1. Retournez les informations extraites au format JSON\n2. Chaque attraction comme objet séparé, contenant le champ poiName\n3. Tous les objets d'attraction forment un tableau\n4. Ne retournez aucun caractère autre que le format JSON\nVous devez identifier le type de chaque attraction (comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.) et retourner le champ poiType en json.\nVous devez identifier si chaque attraction a une vue nocturne (retournez \"Oui\" si elle a une vue nocturne, sinon \"Non\") et retourner le champ hasNightView en json.\nExemple de format de sortie:\n[\n  {\"poiName\": \"valeur d'exemple\", \"poiType\": \"type d'exemple\", \"hasNightView\": \"Oui/Non\"}\n]\n\nContenu de l'article:Tour historique de Carcassonne:\n1. Cité de Carcassonne a des sculptures exquises\n2. Basilique Saint-Nazaire est la plus ancienne église de France\n3. Jardin du Calvaire a des vues nocturnes",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nom de l'attraction, doit être une position géographique spécifique au niveau de l'emplacement",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Type d'attraction, comme parc, ville ancienne, musée, temple, parc à thème, zone panoramique, etc.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Oui",
+                            "Non"
+                        ],
+                        "description": "Si elle a une vue nocturne",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cela correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    }
+]

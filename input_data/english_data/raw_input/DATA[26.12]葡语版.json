@@ -1,0 +1,1092 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Assuma que você é um farmacêutico profissional. Por favor, decomponha \"Acetato de vitamina A, β-caroteno, Vitamina D3, acetato de vitamina E, nitrato de tiamina, riboflavina, cloridrato de piridoxina, ácido ascórbico, cianocobalamina, biotina, ácido fólico, nicotinamida, pantotenato de cálcio, carbonato de cálcio, óxido de magnésio, fumarato ferroso, sulfato de cobre, sulfato de zinco, sulfato de manganês, picolinato de cromo, celulose microcristalina, amido carboximetil sódico, carboximetilcelulose sódica, dióxido de silício, ácido esteárico, estearato de magnésio, pó de revestimento.\" em formato JSON de acordo com a seguinte estrutura.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Identificador de peso por porção\": \"XX\",\n        \"Nome do componente\": \"XX\",\n        \"Número do conteúdo efetivo\": \"XX\",\n        \"Unidade do conteúdo efetivo\": \"SS\"\n     }\n   ]\n}\nRequisitos:\n1. type igual a 2 como valor fixo. Deve existir.\n2. O intervalo de valores da Unidade do conteúdo efetivo é g、mg、µg、ml、l、µl、U、UI、colher、colher de chá、%、c㎡、cm、mm、kcal、UFC、LSU、comprimido、grão、comprimido、bastão、pacote、saco、peça、unidade、gota、spray、frasco、adesivo、inalação、folha、rolo、tubo、pastilha、caixa、caixinha、pressão、unidade、unidade internacional. Para todas as outras unidades, substitua \"XX\" por \"\"\n3. O mesmo componente funcional e dados estruturados de conteúdo devem ser armazenados como um objeto de dados. Retorne o resultado estritamente de acordo com o formato de dados JSON de exemplo. Se os dados tiverem múltiplos grupos, eles precisam ser concatenados em um formato de array JSON. Apenas dados JSON são necessários, nenhum dado extra deve ser produzido.\n4. Remova modificadores relevantes da eficácia\n5. \"XX\" é o resultado decomposto. Se nenhum resultado existir, \"XX\" precisa ser substituído por \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Identificador de tipo estruturado",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Detalhes estruturados dos componentes",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Identificador de peso por porção": {
+                                "type": "string",
+                                "description": "Identificador de peso por porção",
+                                "能力项": "主题约束"
+                            },
+                            "Nome do componente": {
+                                "type": "string",
+                                "description": "Nome do componente",
+                                "能力项": "主题约束"
+                            },
+                            "Número do conteúdo efetivo": {
+                                "type": "string",
+                                "description": "Parte numérica do conteúdo efetivo",
+                                "能力项": "主题约束"
+                            },
+                            "Unidade do conteúdo efetivo": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "UI",
+                                    "colher",
+                                    "colher de chá",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "UFC",
+                                    "LSU",
+                                    "comprimido",
+                                    "grão",
+                                    "comprimido",
+                                    "bastão",
+                                    "pacote",
+                                    "saco",
+                                    "peça",
+                                    "unidade",
+                                    "gota",
+                                    "spray",
+                                    "frasco",
+                                    "adesivo",
+                                    "inalação",
+                                    "folha",
+                                    "rolo",
+                                    "tubo",
+                                    "pastilha",
+                                    "caixa",
+                                    "caixinha",
+                                    "pressão",
+                                    "unidade",
+                                    "unidade internacional",
+                                    ""
+                                ],
+                                "description": "Parte da unidade do conteúdo efetivo",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Identificador de peso por porção",
+                            "Nome do componente",
+                            "Número do conteúdo efetivo",
+                            "Unidade do conteúdo efetivo"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Atende ao schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Assuma que você é um farmacêutico profissional. Por favor, decomponha \"Glicose (conteúdo por sachê: 10g), cloreto de sódio (9mg), cloreto de potássio (0,5g), ácido cítrico (0,2g), sabor limão, corante amarelo comestível, sacarose.\" em formato JSON de acordo com a seguinte estrutura.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Identificador de peso por porção\": \"XX\",\n        \"Nome do componente\": \"XX\",\n        \"Número do conteúdo efetivo\": \"XX\",\n        \"Unidade do conteúdo efetivo\": \"SS\"\n     }\n   ]\n}\nRequisitos:\n1. type igual a 2 como valor fixo. Deve existir.\n2. O intervalo de valores da Unidade do conteúdo efetivo é g、mg、µg、ml、l、µl、U、UI、colher、colher de chá、%、c㎡、cm、mm、kcal、UFC、LSU、comprimido、grão、comprimido、bastão、pacote、saco、peça、unidade、gota、spray、frasco、adesivo、inalação、folha、rolo、tubo、pastilha、caixa、caixinha、pressão、unidade、unidade internacional. Para todas as outras unidades, substitua \"XX\" por \"\"\n3. O mesmo componente funcional e dados estruturados de conteúdo devem ser armazenados como um objeto de dados. Retorne o resultado estritamente de acordo com o formato de dados JSON de exemplo. Se os dados tiverem múltiplos grupos, eles precisam ser concatenados em um formato de array JSON. Apenas dados JSON são necessários, nenhum dado extra deve ser produzido.\n4. Remova modificadores relevantes da eficácia\n5. \"XX\" é o resultado decomposto. Se nenhum resultado existir, \"XX\" precisa ser substituído por \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Identificador de tipo estruturado",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Detalhes estruturados dos componentes",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Identificador de peso por porção": {
+                                "type": "string",
+                                "description": "Identificador de peso por porção",
+                                "能力项": "主题约束"
+                            },
+                            "Nome do componente": {
+                                "type": "string",
+                                "description": "Nome do componente",
+                                "能力项": "主题约束"
+                            },
+                            "Número do conteúdo efetivo": {
+                                "type": "string",
+                                "description": "Parte numérica do conteúdo efetivo",
+                                "能力项": "主题约束"
+                            },
+                            "Unidade do conteúdo efetivo": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "UI",
+                                    "colher",
+                                    "colher de chá",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "UFC",
+                                    "LSU",
+                                    "comprimido",
+                                    "grão",
+                                    "comprimido",
+                                    "bastão",
+                                    "pacote",
+                                    "saco",
+                                    "peça",
+                                    "unidade",
+                                    "gota",
+                                    "spray",
+                                    "frasco",
+                                    "adesivo",
+                                    "inalação",
+                                    "folha",
+                                    "rolo",
+                                    "tubo",
+                                    "pastilha",
+                                    "caixa",
+                                    "caixinha",
+                                    "pressão",
+                                    "unidade",
+                                    "unidade internacional",
+                                    ""
+                                ],
+                                "description": "Parte da unidade do conteúdo efetivo",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Identificador de peso por porção",
+                            "Nome do componente",
+                            "Número do conteúdo efetivo",
+                            "Unidade do conteúdo efetivo"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Atende ao schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Assuma que você é um farmacêutico profissional. Por favor, decomponha \"Cefixima (50mg/comprimido), lactose, amido, amido carboximetil sódico, estearato de magnésio.\" em formato JSON de acordo com a seguinte estrutura.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Identificador de peso por porção\": \"XX\",\n        \"Nome do componente\": \"XX\",\n        \"Número do conteúdo efetivo\": \"XX\",\n        \"Unidade do conteúdo efetivo\": \"SS\"\n     }\n   ]\n}\nRequisitos:\n1. type igual a 2 como valor fixo. Deve existir.\n2. O intervalo de valores da Unidade do conteúdo efetivo é g、mg、µg、ml、l、µl、U、UI、colher、colher de chá、%、c㎡、cm、mm、kcal、UFC、LSU、comprimido、grão、comprimido、bastão、pacote、saco、peça、unidade、gota、spray、frasco、adesivo、inalação、folha、rolo、tubo、pastilha、caixa、caixinha、pressão、unidade、unidade internacional. Para todas as outras unidades, substitua \"XX\" por \"\"\n3. O mesmo componente funcional e dados estruturados de conteúdo devem ser armazenados como um objeto de dados. Retorne o resultado estritamente de acordo com o formato de dados JSON de exemplo. Se os dados tiverem múltiplos grupos, eles precisam ser concatenados em um formato de array JSON. Apenas dados JSON são necessários, nenhum dado extra deve ser produzido.\n4. Remova modificadores relevantes da eficácia\n5. \"XX\" é o resultado decomposto. Se nenhum resultado existir, \"XX\" precisa ser substituído por \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Identificador de tipo estruturado",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Detalhes estruturados dos componentes",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Identificador de peso por porção": {
+                                "type": "string",
+                                "description": "Identificador de peso por porção",
+                                "能力项": "主题约束"
+                            },
+                            "Nome do componente": {
+                                "type": "string",
+                                "description": "Nome do componente",
+                                "能力项": "主题约束"
+                            },
+                            "Número do conteúdo efetivo": {
+                                "type": "string",
+                                "description": "Parte numérica do conteúdo efetivo",
+                                "能力项": "主题约束"
+                            },
+                            "Unidade do conteúdo efetivo": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "UI",
+                                    "colher",
+                                    "colher de chá",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "UFC",
+                                    "LSU",
+                                    "comprimido",
+                                    "grão",
+                                    "comprimido",
+                                    "bastão",
+                                    "pacote",
+                                    "saco",
+                                    "peça",
+                                    "unidade",
+                                    "gota",
+                                    "spray",
+                                    "frasco",
+                                    "adesivo",
+                                    "inalação",
+                                    "folha",
+                                    "rolo",
+                                    "tubo",
+                                    "pastilha",
+                                    "caixa",
+                                    "caixinha",
+                                    "pressão",
+                                    "unidade",
+                                    "unidade internacional",
+                                    ""
+                                ],
+                                "description": "Parte da unidade do conteúdo efetivo",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Identificador de peso por porção",
+                            "Nome do componente",
+                            "Número do conteúdo efetivo",
+                            "Unidade do conteúdo efetivo"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Atende ao schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Assuma que você é um farmacêutico profissional. Por favor, decomponha \"Amoxicilina (0,25g/cápsula), clavulanato de potássio (0,0625g/cápsula), celulose microcristalina, croscarmelose sódica, dióxido de silício, hidroxipropilmetilcelulose, polietilenoglicol 6000.\" em formato JSON de acordo com a seguinte estrutura.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Identificador de peso por porção\": \"XX\",\n        \"Nome do componente\": \"XX\",\n        \"Número do conteúdo efetivo\": \"XX\",\n        \"Unidade do conteúdo efetivo\": \"SS\"\n     }\n   ]\n}\nRequisitos:\n1. type igual a 2 como valor fixo. Deve existir.\n2. O intervalo de valores da Unidade do conteúdo efetivo é g、mg、µg、ml、l、µl、U、UI、colher、colher de chá、%、c㎡、cm、mm、kcal、UFC、LSU、comprimido、grão、comprimido、bastão、pacote、saco、peça、unidade、gota、spray、frasco、adesivo、inalação、folha、rolo、tubo、pastilha、caixa、caixinha、pressão、unidade、unidade internacional. Para todas as outras unidades, substitua \"XX\" por \"\"\n3. O mesmo componente funcional e dados estruturados de conteúdo devem ser armazenados como um objeto de dados. Retorne o resultado estritamente de acordo com o formato de dados JSON de exemplo. Se os dados tiverem múltiplos grupos, eles precisam ser concatenados em um formato de array JSON. Apenas dados JSON são necessários, nenhum dado extra deve ser produzido.\n4. Remova modificadores relevantes da eficácia\n5. \"XX\" é o resultado decomposto. Se nenhum resultado existir, \"XX\" precisa ser substituído por \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Identificador de tipo estruturado",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Detalhes estruturados dos componentes",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Identificador de peso por porção": {
+                                "type": "string",
+                                "description": "Identificador de peso por porção",
+                                "能力项": "主题约束"
+                            },
+                            "Nome do componente": {
+                                "type": "string",
+                                "description": "Nome do componente",
+                                "能力项": "主题约束"
+                            },
+                            "Número do conteúdo efetivo": {
+                                "type": "string",
+                                "description": "Parte numérica do conteúdo efetivo",
+                                "能力项": "主题约束"
+                            },
+                            "Unidade do conteúdo efetivo": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "UI",
+                                    "colher",
+                                    "colher de chá",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "UFC",
+                                    "LSU",
+                                    "comprimido",
+                                    "grão",
+                                    "comprimido",
+                                    "bastão",
+                                    "pacote",
+                                    "saco",
+                                    "peça",
+                                    "unidade",
+                                    "gota",
+                                    "spray",
+                                    "frasco",
+                                    "adesivo",
+                                    "inalação",
+                                    "folha",
+                                    "rolo",
+                                    "tubo",
+                                    "pastilha",
+                                    "caixa",
+                                    "caixinha",
+                                    "pressão",
+                                    "unidade",
+                                    "unidade internacional",
+                                    ""
+                                ],
+                                "description": "Parte da unidade do conteúdo efetivo",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Identificador de peso por porção",
+                            "Nome do componente",
+                            "Número do conteúdo efetivo",
+                            "Unidade do conteúdo efetivo"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Atende ao schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Assuma que você é um farmacêutico profissional. Por favor, decomponha \"Vitamina C (100mg), Vitamina E (10mg), glicose (5g), ácido cítrico, sabor, corante.\" em formato JSON de acordo com a seguinte estrutura.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Identificador de peso por porção\": \"XX\",\n        \"Nome do componente\": \"XX\",\n        \"Número do conteúdo efetivo\": \"XX\",\n        \"Unidade do conteúdo efetivo\": \"SS\"\n     }\n   ]\n}\nRequisitos:\n1. type igual a 2 como valor fixo. Deve existir.\n2. O intervalo de valores da Unidade do conteúdo efetivo é g、mg、µg、ml、l、µl、U、UI、colher、colher de chá、%、c㎡、cm、mm、kcal、UFC、LSU、comprimido、grão、comprimido、bastão、pacote、saco、peça、unidade、gota、spray、frasco、adesivo、inalação、folha、rolo、tubo、pastilha、caixa、caixinha、pressão、unidade、unidade internacional. Para todas as outras unidades, substitua \"XX\" por \"\"\n3. O mesmo componente funcional e dados estruturados de conteúdo devem ser armazenados como um objeto de dados. Retorne o resultado estritamente de acordo com o formato de dados JSON de exemplo. Se os dados tiverem múltiplos grupos, eles precisam ser concatenados em um formato de array JSON. Apenas dados JSON são necessários, nenhum dado extra deve ser produzido.\n4. Remova modificadores relevantes da eficácia\n5. \"XX\" é o resultado decomposto. Se nenhum resultado existir, \"XX\" precisa ser substituído por \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Identificador de tipo estruturado",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Detalhes estruturados dos componentes",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Identificador de peso por porção": {
+                                "type": "string",
+                                "description": "Identificador de peso por porção",
+                                "能力项": "主题约束"
+                            },
+                            "Nome do componente": {
+                                "type": "string",
+                                "description": "Nome do componente",
+                                "能力项": "主题约束"
+                            },
+                            "Número do conteúdo efetivo": {
+                                "type": "string",
+                                "description": "Parte numérica do conteúdo efetivo",
+                                "能力项": "主题约束"
+                            },
+                            "Unidade do conteúdo efetivo": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "UI",
+                                    "colher",
+                                    "colher de chá",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "UFC",
+                                    "LSU",
+                                    "comprimido",
+                                    "grão",
+                                    "comprimido",
+                                    "bastão",
+                                    "pacote",
+                                    "saco",
+                                    "peça",
+                                    "unidade",
+                                    "gota",
+                                    "spray",
+                                    "frasco",
+                                    "adesivo",
+                                    "inalação",
+                                    "folha",
+                                    "rolo",
+                                    "tubo",
+                                    "pastilha",
+                                    "caixa",
+                                    "caixinha",
+                                    "pressão",
+                                    "unidade",
+                                    "unidade internacional",
+                                    ""
+                                ],
+                                "description": "Parte da unidade do conteúdo efetivo",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Identificador de peso por porção",
+                            "Nome do componente",
+                            "Número do conteúdo efetivo",
+                            "Unidade do conteúdo efetivo"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Atende ao schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Assuma que você é um farmacêutico profissional. Por favor, decomponha \"Loratadina (10mg/comprimido), lactose, amido, amido carboximetil sódico, estearato de magnésio.\" em formato JSON de acordo com a seguinte estrutura.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Identificador de peso por porção\": \"XX\",\n        \"Nome do componente\": \"XX\",\n        \"Número do conteúdo efetivo\": \"XX\",\n        \"Unidade do conteúdo efetivo\": \"SS\"\n     }\n   ]\n}\nRequisitos:\n1. type igual a 2 como valor fixo. Deve existir.\n2. O intervalo de valores da Unidade do conteúdo efetivo é g、mg、µg、ml、l、µl、U、UI、colher、colher de chá、%、c㎡、cm、mm、kcal、UFC、LSU、comprimido、grão、comprimido、bastão、pacote、saco、peça、unidade、gota、spray、frasco、adesivo、inalação、folha、rolo、tubo、pastilha、caixa、caixinha、pressão、unidade、unidade internacional. Para todas as outras unidades, substitua \"XX\" por \"\"\n3. O mesmo componente funcional e dados estruturados de conteúdo devem ser armazenados como um objeto de dados. Retorne o resultado estritamente de acordo com o formato de dados JSON de exemplo. Se os dados tiverem múltiplos grupos, eles precisam ser concatenados em um formato de array JSON. Apenas dados JSON são necessários, nenhum dado extra deve ser produzido.\n4. Remova modificadores relevantes da eficácia\n5. \"XX\" é o resultado decomposto. Se nenhum resultado existir, \"XX\" precisa ser substituído por \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Identificador de tipo estruturado",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Detalhes estruturados dos componentes",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Identificador de peso por porção": {
+                                "type": "string",
+                                "description": "Identificador de peso por porção",
+                                "能力项": "主题约束"
+                            },
+                            "Nome do componente": {
+                                "type": "string",
+                                "description": "Nome do componente",
+                                "能力项": "主题约束"
+                            },
+                            "Número do conteúdo efetivo": {
+                                "type": "string",
+                                "description": "Parte numérica do conteúdo efetivo",
+                                "能力项": "主题约束"
+                            },
+                            "Unidade do conteúdo efetivo": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "UI",
+                                    "colher",
+                                    "colher de chá",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "UFC",
+                                    "LSU",
+                                    "comprimido",
+                                    "grão",
+                                    "comprimido",
+                                    "bastão",
+                                    "pacote",
+                                    "saco",
+                                    "peça",
+                                    "unidade",
+                                    "gota",
+                                    "spray",
+                                    "frasco",
+                                    "adesivo",
+                                    "inalação",
+                                    "folha",
+                                    "rolo",
+                                    "tubo",
+                                    "pastilha",
+                                    "caixa",
+                                    "caixinha",
+                                    "pressão",
+                                    "unidade",
+                                    "unidade internacional",
+                                    ""
+                                ],
+                                "description": "Parte da unidade do conteúdo efetivo",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Identificador de peso por porção",
+                            "Nome do componente",
+                            "Número do conteúdo efetivo",
+                            "Unidade do conteúdo efetivo"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Atende ao schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Assuma que você é um farmacêutico profissional. Por favor, decomponha \"Bactérias do ácido lático (1 bilhão UFC/sachê), glicose, maltodextrina, ácido cítrico, sabor.\" em formato JSON de acordo com a seguinte estrutura.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Identificador de peso por porção\": \"XX\",\n        \"Nome do componente\": \"XX\",\n        \"Número do conteúdo efetivo\": \"XX\",\n        \"Unidade do conteúdo efetivo\": \"SS\"\n     }\n   ]\n}\nRequisitos:\n1. type igual a 2 como valor fixo. Deve existir.\n2. O intervalo de valores da Unidade do conteúdo efetivo é g、mg、µg、ml、l、µl、U、UI、colher、colher de chá、%、c㎡、cm、mm、kcal、UFC、LSU、comprimido、grão、comprimido、bastão、pacote、saco、peça、unidade、gota、spray、frasco、adesivo、inalação、folha、rolo、tubo、pastilha、caixa、caixinha、pressão、unidade、unidade internacional. Para todas as outras unidades, substitua \"XX\" por \"\"\n3. O mesmo componente funcional e dados estruturados de conteúdo devem ser armazenados como um objeto de dados. Retorne o resultado estritamente de acordo com o formato de dados JSON de exemplo. Se os dados tiverem múltiplos grupos, eles precisam ser concatenados em um formato de array JSON. Apenas dados JSON são necessários, nenhum dado extra deve ser produzido.\n4. Remova modificadores relevantes da eficácia\n5. \"XX\" é o resultado decomposto. Se nenhum resultado existir, \"XX\" precisa ser substituído por \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Identificador de tipo estruturado",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Detalhes estruturados dos componentes",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Identificador de peso por porção": {
+                                "type": "string",
+                                "description": "Identificador de peso por porção",
+                                "能力项": "主题约束"
+                            },
+                            "Nome do componente": {
+                                "type": "string",
+                                "description": "Nome do componente",
+                                "能力项": "主题约束"
+                            },
+                            "Número do conteúdo efetivo": {
+                                "type": "string",
+                                "description": "Parte numérica do conteúdo efetivo",
+                                "能力项": "主题约束"
+                            },
+                            "Unidade do conteúdo efetivo": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "UI",
+                                    "colher",
+                                    "colher de chá",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "UFC",
+                                    "LSU",
+                                    "comprimido",
+                                    "grão",
+                                    "comprimido",
+                                    "bastão",
+                                    "pacote",
+                                    "saco",
+                                    "peça",
+                                    "unidade",
+                                    "gota",
+                                    "spray",
+                                    "frasco",
+                                    "adesivo",
+                                    "inalação",
+                                    "folha",
+                                    "rolo",
+                                    "tubo",
+                                    "pastilha",
+                                    "caixa",
+                                    "caixinha",
+                                    "pressão",
+                                    "unidade",
+                                    "unidade internacional",
+                                    ""
+                                ],
+                                "description": "Parte da unidade do conteúdo efetivo",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Identificador de peso por porção",
+                            "Nome do componente",
+                            "Número do conteúdo efetivo",
+                            "Unidade do conteúdo efetivo"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Atende ao schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Assuma que você é um farmacêutico profissional. Por favor, decomponha \"Complexo de vitamina B (Vitamina B1, B2, B6, B12, nicotinamida, ácido fólico, pantotenato de cálcio), lactose, amido.\" em formato JSON de acordo com a seguinte estrutura.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Identificador de peso por porção\": \"XX\",\n        \"Nome do componente\": \"XX\",\n        \"Número do conteúdo efetivo\": \"XX\",\n        \"Unidade do conteúdo efetivo\": \"SS\"\n     }\n   ]\n}\nRequisitos:\n1. type igual a 2 como valor fixo. Deve existir.\n2. O intervalo de valores da Unidade do conteúdo efetivo é g、mg、µg、ml、l、µl、U、UI、colher、colher de chá、%、c㎡、cm、mm、kcal、UFC、LSU、comprimido、grão、comprimido、bastão、pacote、saco、peça、unidade、gota、spray、frasco、adesivo、inalação、folha、rolo、tubo、pastilha、caixa、caixinha、pressão、unidade、unidade internacional. Para todas as outras unidades, substitua \"XX\" por \"\"\n3. O mesmo componente funcional e dados estruturados de conteúdo devem ser armazenados como um objeto de dados. Retorne o resultado estritamente de acordo com o formato de dados JSON de exemplo. Se os dados tiverem múltiplos grupos, eles precisam ser concatenados em um formato de array JSON. Apenas dados JSON são necessários, nenhum dado extra deve ser produzido.\n4. Remova modificadores relevantes da eficácia\n5. \"XX\" é o resultado decomposto. Se nenhum resultado existir, \"XX\" precisa ser substituído por \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Identificador de tipo estruturado",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Detalhes estruturados dos componentes",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Identificador de peso por porção": {
+                                "type": "string",
+                                "description": "Identificador de peso por porção",
+                                "能力项": "主题约束"
+                            },
+                            "Nome do componente": {
+                                "type": "string",
+                                "description": "Nome do componente",
+                                "能力项": "主题约束"
+                            },
+                            "Número do conteúdo efetivo": {
+                                "type": "string",
+                                "description": "Parte numérica do conteúdo efetivo",
+                                "能力项": "主题约束"
+                            },
+                            "Unidade do conteúdo efetivo": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "UI",
+                                    "colher",
+                                    "colher de chá",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "UFC",
+                                    "LSU",
+                                    "comprimido",
+                                    "grão",
+                                    "comprimido",
+                                    "bastão",
+                                    "pacote",
+                                    "saco",
+                                    "peça",
+                                    "unidade",
+                                    "gota",
+                                    "spray",
+                                    "frasco",
+                                    "adesivo",
+                                    "inalação",
+                                    "folha",
+                                    "rolo",
+                                    "tubo",
+                                    "pastilha",
+                                    "caixa",
+                                    "caixinha",
+                                    "pressão",
+                                    "unidade",
+                                    "unidade internacional",
+                                    ""
+                                ],
+                                "description": "Parte da unidade do conteúdo efetivo",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Identificador de peso por porção",
+                            "Nome do componente",
+                            "Número do conteúdo efetivo",
+                            "Unidade do conteúdo efetivo"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Atende ao schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Assuma que você é um farmacêutico profissional. Por favor, decomponha \"Carbonato de cálcio (500mg/comprimido), Vitamina D3 (200UI/comprimido), lactose, amido, estearato de magnésio.\" em formato JSON de acordo com a seguinte estrutura.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Identificador de peso por porção\": \"XX\",\n        \"Nome do componente\": \"XX\",\n        \"Número do conteúdo efetivo\": \"XX\",\n        \"Unidade do conteúdo efetivo\": \"SS\"\n     }\n   ]\n}\nRequisitos:\n1. type igual a 2 como valor fixo. Deve existir.\n2. O intervalo de valores da Unidade do conteúdo efetivo é g、mg、µg、ml、l、µl、U、UI、colher、colher de chá、%、c㎡、cm、mm、kcal、UFC、LSU、comprimido、grão、comprimido、bastão、pacote、saco、peça、unidade、gota、spray、frasco、adesivo、inalação、folha、rolo、tubo、pastilha、caixa、caixinha、pressão、unidade、unidade internacional. Para todas as outras unidades, substitua \"XX\" por \"\"\n3. O mesmo componente funcional e dados estruturados de conteúdo devem ser armazenados como um objeto de dados. Retorne o resultado estritamente de acordo com o formato de dados JSON de exemplo. Se os dados tiverem múltiplos grupos, eles precisam ser concatenados em um formato de array JSON. Apenas dados JSON são necessários, nenhum dado extra deve ser produzido.\n4. Remova modificadores relevantes da eficácia\n5. \"XX\" é o resultado decomposto. Se nenhum resultado existir, \"XX\" precisa ser substituído por \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Identificador de tipo estruturado",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Detalhes estruturados dos componentes",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Identificador de peso por porção": {
+                                "type": "string",
+                                "description": "Identificador de peso por porção",
+                                "能力项": "主题约束"
+                            },
+                            "Nome do componente": {
+                                "type": "string",
+                                "description": "Nome do componente",
+                                "能力项": "主题约束"
+                            },
+                            "Número do conteúdo efetivo": {
+                                "type": "string",
+                                "description": "Parte numérica do conteúdo efetivo",
+                                "能力项": "主题约束"
+                            },
+                            "Unidade do conteúdo efetivo": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "UI",
+                                    "colher",
+                                    "colher de chá",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "UFC",
+                                    "LSU",
+                                    "comprimido",
+                                    "grão",
+                                    "comprimido",
+                                    "bastão",
+                                    "pacote",
+                                    "saco",
+                                    "peça",
+                                    "unidade",
+                                    "gota",
+                                    "spray",
+                                    "frasco",
+                                    "adesivo",
+                                    "inalação",
+                                    "folha",
+                                    "rolo",
+                                    "tubo",
+                                    "pastilha",
+                                    "caixa",
+                                    "caixinha",
+                                    "pressão",
+                                    "unidade",
+                                    "unidade internacional",
+                                    ""
+                                ],
+                                "description": "Parte da unidade do conteúdo efetivo",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Identificador de peso por porção",
+                            "Nome do componente",
+                            "Número do conteúdo efetivo",
+                            "Unidade do conteúdo efetivo"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Atende ao schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Assuma que você é um farmacêutico profissional. Por favor, decomponha \"Gluconato de zinco (10mg), lactose, amido, sabor, corante.\" em formato JSON de acordo com a seguinte estrutura.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Identificador de peso por porção\": \"XX\",\n        \"Nome do componente\": \"XX\",\n        \"Número do conteúdo efetivo\": \"XX\",\n        \"Unidade do conteúdo efetivo\": \"SS\"\n     }\n   ]\n}\nRequisitos:\n1. type igual a 2 como valor fixo. Deve existir.\n2. O intervalo de valores da Unidade do conteúdo efetivo é g、mg、µg、ml、l、µl、U、UI、colher、colher de chá、%、c㎡、cm、mm、kcal、UFC、LSU、comprimido、grão、comprimido、bastão、pacote、saco、peça、unidade、gota、spray、frasco、adesivo、inalação、folha、rolo、tubo、pastilha、caixa、caixinha、pressão、unidade、unidade internacional. Para todas as outras unidades, substitua \"XX\" por \"\"\n3. O mesmo componente funcional e dados estruturados de conteúdo devem ser armazenados como um objeto de dados. Retorne o resultado estritamente de acordo com o formato de dados JSON de exemplo. Se os dados tiverem múltiplos grupos, eles precisam ser concatenados em um formato de array JSON. Apenas dados JSON são necessários, nenhum dado extra deve ser produzido.\n4. Remova modificadores relevantes da eficácia\n5. \"XX\" é o resultado decomposto. Se nenhum resultado existir, \"XX\" precisa ser substituído por \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Identificador de tipo estruturado",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Detalhes estruturados dos componentes",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Identificador de peso por porção": {
+                                "type": "string",
+                                "description": "Identificador de peso por porção",
+                                "能力项": "主题约束"
+                            },
+                            "Nome do componente": {
+                                "type": "string",
+                                "description": "Nome do componente",
+                                "能力项": "主题约束"
+                            },
+                            "Número do conteúdo efetivo": {
+                                "type": "string",
+                                "description": "Parte numérica do conteúdo efetivo",
+                                "能力项": "主题约束"
+                            },
+                            "Unidade do conteúdo efetivo": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "UI",
+                                    "colher",
+                                    "colher de chá",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "UFC",
+                                    "LSU",
+                                    "comprimido",
+                                    "grão",
+                                    "comprimido",
+                                    "bastão",
+                                    "pacote",
+                                    "saco",
+                                    "peça",
+                                    "unidade",
+                                    "gota",
+                                    "spray",
+                                    "frasco",
+                                    "adesivo",
+                                    "inalação",
+                                    "folha",
+                                    "rolo",
+                                    "tubo",
+                                    "pastilha",
+                                    "caixa",
+                                    "caixinha",
+                                    "pressão",
+                                    "unidade",
+                                    "unidade internacional",
+                                    ""
+                                ],
+                                "description": "Parte da unidade do conteúdo efetivo",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Identificador de peso por porção",
+                            "Nome do componente",
+                            "Número do conteúdo efetivo",
+                            "Unidade do conteúdo efetivo"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Atende ao schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    }
+]

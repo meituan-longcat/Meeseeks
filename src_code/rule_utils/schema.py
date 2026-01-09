@@ -2,8 +2,29 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import jsonschema
-from utils import str_to_lists, json_from_string
+from ..utils import str_to_lists, json_from_string
 
+try:
+    import jsonschema
+    jsonschema_AVAILABLE = True
+except ImportError:
+    jsonschema_AVAILABLE = False
+    print("jsonschema库未安装，正在自动安装...")
+    try:
+        import subprocess
+        import sys
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "jsonschema", "-i", "https://pypi.tuna.tsinghua.edu.cn/simple"])
+        print("jsonschema库安装成功，正在导入...")
+        import jsonschema
+        jsonschema_AVAILABLE = True
+        print("✅ jsonschema库已成功导入")
+    except Exception as e:
+        print(f"❌ 自动安装失败: {e}")
+        print("请手动运行: pip install jsonschema")
+        jsonschema_AVAILABLE = False
+
+
+import jsonschema
 
 def model_schema(item, key, model_response):
     if key == "json_schema":
@@ -16,6 +37,7 @@ def json_schema(item, model_response):
     schema = item["json_schema"]
     try:
         data = json_from_string(model_response)
+        print("data: ", data)
         # 根据顶层schema决定如何处理数据
         if schema.get("type") == "array":
             # 如果schema顶层是数组，data应该直接是数组
@@ -35,46 +57,57 @@ def json_schema(item, model_response):
         point_id = -1
         
         def extract_validation_points(schema, path="", parent_data=None):
-            """Recursively extract all validation points"""
+            """递归提取所有需要验证的点"""
             points = []
             
             if schema.get("type") == "object":
-                # Handle object type
+                # 处理对象类型
                 properties = schema.get("properties", {})
                 required_fields = schema.get("required", [])
                 
-                # 处理所有字段（必需和非必需）
-                all_fields = set(required_fields)
-                if path.endswith("[*]"):  # 在数组项中，所有字段都需要验证
-                    all_fields.update(properties.keys())
-
-                for field_name in all_fields:
+                for field_name in required_fields:
                     field_path = f"{path}.{field_name}" if path else field_name
                     field_schema = properties.get(field_name, {})
                     ability = field_schema.get("能力项", "JSON")
                     
-                    # Add validation point for current field
-                    # Add JSON tag to ability
+                    # 添加当前字段的验证点
+                    # 在能力项中添加JSON标签
                     final_ability = f"{ability}、JSON" if ability != "JSON" else "JSON"
                     points.append({
                         "path": field_path,
                         "field_name": field_name,
                         "schema": field_schema,
                         "ability": final_ability,
-                        "is_required": field_name in required_fields
+                        "is_required": True
                     })
                     
-                    # Recursively handle nested structures
+                    # 递归处理嵌套结构
                     if field_schema.get("type") == "object":
                         nested_points = extract_validation_points(field_schema, field_path)
                         points.extend(nested_points)
                     elif field_schema.get("type") == "array" and "items" in field_schema:
-                        # Handle nested objects in arrays
+                        # 处理数组中的嵌套对象
                         items_schema = field_schema["items"]
                         if items_schema.get("type") == "object":
                             nested_points = extract_validation_points(items_schema, f"{field_path}[*]")
                             points.extend(nested_points)
                 
+                # 处理非必需字段，但在数组items中的所有字段都需要验证
+                if path.endswith("[*]"):  # 这是数组项的schema
+                    for field_name, field_schema in properties.items():
+                        if field_name not in required_fields:
+                            field_path = f"{path}.{field_name}" if path else field_name
+                            ability = field_schema.get("能力项", "JSON")
+                            final_ability = f"{ability}、JSON" if ability != "JSON" else "JSON"
+                            
+                            points.append({
+                                "path": field_path,
+                                "field_name": field_name,
+                                "schema": field_schema,
+                                "ability": final_ability,
+                                "is_required": False  # 标记为非必需
+                            })
+            
             elif schema.get("type") == "array" and "items" in schema:
                 # 处理数组类型
                 items_schema = schema["items"]
@@ -132,9 +165,9 @@ def json_schema(item, model_response):
                     array_data, array_exists = get_nested_value(data_item, array_path)
                     if not array_exists:
                         return {
-                        "question": f"Does {path} meet requirements",
-                        "eval_result": 0,
-                        "eval_explanation": f"❌ {path} - Array path does not exist",
+                            "question": f"{path}是否符合要求",
+                            "eval_result": 0,
+                            "eval_explanation": f"❌ {path} - 数组路径不存在",
                             "能力项": ability
                         }
                 else:
@@ -143,24 +176,24 @@ def json_schema(item, model_response):
                 
                 if not isinstance(array_data, list):
                     return {
-                        "question": f"Does {path} meet requirements",
+                        "question": f"{path}是否符合要求",
                         "eval_result": 0,
-                        "eval_explanation": f"❌ {path} - Expected array type, actual type is {type(array_data).__name__}",
+                        "eval_explanation": f"❌ {path} - 期望数组类型，实际为{type(array_data).__name__}",
                         "能力项": ability
                     }
                 
-                # Count field occurrences in array
+                # 统计字段在数组中的出现情况
                 found_count = 0
                 valid_count = 0
                 error_messages = []
                 
                 for i, item in enumerate(array_data):
                     if field_path:
-                        # Check nested fields
+                        # 检查嵌套字段
                         nested_value, field_exists = get_nested_value(item, field_path)
-                        if field_exists:  # Field exists (even if value is None)
+                        if field_exists:  # 字段存在（即使值为None）
                             found_count += 1
-                            # Validate field value
+                            # 验证字段值
                             try:
                                 temp_schema = {
                                     "type": "object",
@@ -170,61 +203,61 @@ def json_schema(item, model_response):
                                 jsonschema.validate({field_name: nested_value}, temp_schema)
                                 valid_count += 1
                             except jsonschema.exceptions.ValidationError as e:
-                                error_messages.append(f"Item {i+1} {field_path} does not meet rules: {e.message}")
+                                error_messages.append(f"项{i+1}的{field_path}不符合规则: {e.message}")
                     else:
-                        # Validate array item itself
+                        # 验证数组项本身
                         try:
                             jsonschema.validate(item, field_schema)
                             found_count += 1
                             valid_count += 1
                         except jsonschema.exceptions.ValidationError as e:
                             found_count += 1
-                            error_messages.append(f"Item {i+1} does not meet rules: {e.message}")
+                            error_messages.append(f"项{i+1}不符合规则: {e.message}")
                 
-                # Determine validation result
+                # 判断验证结果
                 if is_required and found_count == 0:
                     return {
-                        "question": f"Does {path} meet requirements",
+                        "question": f"{path}是否符合要求",
                         "eval_result": 0,
-                        "eval_explanation": f"❌ {path} - Required field not found in array",
+                        "eval_explanation": f"❌ {path} - 必需字段在数组中未找到",
                         "能力项": ability
                     }
                 elif found_count > 0:
                     if valid_count == found_count:
                         return {
-                            "question": f"Does {path} meet requirements",
+                            "question": f"{path}是否符合要求",
                             "eval_result": 1,
-                            "eval_explanation": f"✅ {path} - Found {found_count} valid values in {len(array_data)} array items",
+                            "eval_explanation": f"✅ {path} - 在{len(array_data)}个数组项中找到{found_count}个有效值",
                             "能力项": ability
                         }
                     else:
                         return {
-                            "question": f"Does {path} meet requirements",
+                            "question": f"{path}是否符合要求",
                             "eval_result": 0,
-                            "eval_explanation": f"❌ {path} - {len(error_messages)} invalid out of {found_count} values: " + "; ".join(error_messages),
+                            "eval_explanation": f"❌ {path} - 在{found_count}个值中有{len(error_messages)}个无效: " + "; ".join(error_messages),
                             "能力项": ability
                         }
                 else:
-                    # Non-required field and not found
+                    # 非必需字段且未找到
                     return {
-                        "question": f"Does {path} meet requirements",
+                        "question": f"{path}是否符合要求",
                         "eval_result": 1,
-                        "eval_explanation": f"✅ {path} - Optional field not used",
+                        "eval_explanation": f"✅ {path} - 可选字段未使用",
                         "能力项": ability
                     }
             else:
-                # Handle regular field path
+                # 处理普通字段路径
                 field_value, field_exists = get_nested_value(data_item, path)
                 
                 if not field_exists and is_required:
                     return {
-                        "question": f"Does {path} meet requirements",
+                        "question": f"{path}是否符合要求",
                         "eval_result": 0,
-                        "eval_explanation": f"❌ {path} - Required field missing",
+                        "eval_explanation": f"❌ {path} - 必需字段缺失",
                         "能力项": ability
                     }
                 elif field_exists:
-                    # Validate field value (even if None)
+                    # 验证字段值（即使是None也要验证）
                     try:
                         temp_schema = {
                             "type": "object",
@@ -233,34 +266,34 @@ def json_schema(item, model_response):
                         }
                         jsonschema.validate({field_name: field_value}, temp_schema)
                         return {
-                            "question": f"Does {path} meet requirements",
+                            "question": f"{path}是否符合要求",
                             "eval_result": 1,
-                            "eval_explanation": f"✅ {path} - Meets rules",
+                            "eval_explanation": f"✅ {path} - 符合规则",
                             "能力项": ability
                         }
                     except jsonschema.exceptions.ValidationError as e:
                         return {
-                            "question": f"Does {path} meet requirements",
+                            "question": f"{path}是否符合要求",
                             "eval_result": 0,
-                            "eval_explanation": f"❌ {path} - Does not meet rules: {e.message}",
+                            "eval_explanation": f"❌ {path} - 不符合规则: {e.message}",
                             "能力项": ability
                         }
                 else:
-                    # Field does not exist
+                    # 字段不存在
                     return {
-                        "question": f"Does {path} meet requirements",
+                        "question": f"{path}是否符合要求",
                         "eval_result": 1,
-                        "eval_explanation": f"✅ {path} - Optional field",
+                        "eval_explanation": f"✅ {path} - 可选字段",
                         "能力项": ability
                     }
 
 
-        # Extract all validation points
+        # 提取所有验证点
         validation_points = extract_validation_points(schema)
         
-        # Validate each data item
+        # 对每个数据项进行验证
         if schema.get("type") == "array":
-            # Top level is array, validate entire array
+            # 顶层是数组，验证整个数组
             for validation_point in validation_points:
                 result = validate_field(data, validation_point)
                 result["point_id"] = point_id
@@ -268,7 +301,7 @@ def json_schema(item, model_response):
                 results.append(result)
                 point_id -= 1
         else:
-            # Top level is object, validate each object in array individually
+            # 顶层是对象，逐个验证数组中的每个对象
             for index, item_data in enumerate(data):
                 for validation_point in validation_points:
                     result = validate_field(item_data, validation_point)
@@ -281,12 +314,12 @@ def json_schema(item, model_response):
         return results
     
     except Exception as e:
-        # Exception handling: create failure results for all validation points
+        # 异常处理：创建所有验证点的失败结果
         results = []
         point_id = 0
         
         def extract_all_fields(schema, path=""):
-            """Extract all fields for exception cases"""
+            """提取所有字段用于异常情况"""
             fields = []
             if schema.get("type") == "object":
                 properties = schema.get("properties", {})
@@ -299,7 +332,7 @@ def json_schema(item, model_response):
                     final_ability = f"{ability}、JSON" if ability != "JSON" else "JSON"
                     fields.append((field_path, final_ability))
                     
-                    # Recursively handle nesting
+                    # 递归处理嵌套
                     if field_schema.get("type") == "object":
                         nested_fields = extract_all_fields(field_schema, field_path)
                         fields.extend(nested_fields)
@@ -309,7 +342,7 @@ def json_schema(item, model_response):
                             nested_fields = extract_all_fields(items_schema, f"{field_path}[*]")
                             fields.extend(nested_fields)
                 
-                # Add non-required fields in array items
+                # 添加数组项中的非必需字段
                 if path.endswith("[*]"):
                     for field_name, field_schema in properties.items():
                         if field_name not in required_fields:
@@ -325,10 +358,10 @@ def json_schema(item, model_response):
         for field_path, ability in all_fields:
             results.append({
                 "point_id": point_id,
-                "question": f"Does {field_path} meet requirements",
+                "question": f"{field_path}是否符合要求",
                 "dep": [],
                 "eval_result": 0,
-                "eval_explanation": f"❌ {field_path} - JSON parsing failed: {str(e)}",
+                "eval_explanation": f"❌ {field_path} - JSON解析失败: {str(e)}",
                 "能力项": ability
             })
             point_id += 1 
@@ -395,10 +428,35 @@ if __name__ == '__main__':
         },
         "sub_questions": [
             {
-                "question": "是否满足json_schema",
-                "rule": "schema:json_schema",
+                "question": "[*].poiName是否符合要求",
+                "eval_result": 1,
+                "eval_explanation": "✅ [*].poiName - 在6个数组项中找到6个有效值",
                 "能力项": "JSON",
                 "point_id": -1,
+                "dep": []
+            },
+            {
+                "question": "[*].poiType是否符合要求",
+                "eval_result": 1,
+                "eval_explanation": "✅ [*].poiType - 在6个数组项中找到6个有效值",
+                "能力项": "JSON",
+                "point_id": -2,
+                "dep": []
+            },
+            {
+                "question": "[*].isParentChildFriendly是否符合要求",
+                "eval_result": 1,
+                "eval_explanation": "✅ [*].isParentChildFriendly - 在6个数组项中找到6个有效值",
+                "能力项": "特定格式、JSON",
+                "point_id": -3,
+                "dep": []
+            },
+            {
+                "question": "[*].hasNightView是否符合要求",
+                "eval_result": 1,
+                "eval_explanation": "✅ [*].hasNightView - 在6个数组项中找到6个有效值",
+                "能力项": "特定格式、JSON",
+                "point_id": -4,
                 "dep": []
             }
         ],

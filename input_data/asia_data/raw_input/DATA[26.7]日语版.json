@@ -1,0 +1,982 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "あなたは専門薬剤師であると仮定してください。以下の薬物適用対象者の説明について構造化分解を行い、以下のJSON構造に厳密に従って返してください：\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nルール：\n1. typeは3に等しく、固定値であり、必須です。\n2. 性別の値範囲は男性、女性、無制限で、他の性別は表示できません。男性と女性の両方が表示される場合は、無制限に設定します。\n3. 年齢範囲の値範囲は：≥、≤、>、<、=です。\n4. 年齢単位の値範囲は：年、月、日です。\n5. 特殊対象者のテキストは最大1000文字です。\n6. 同じ効能成分と内容の構造化データは1つのデータオブジェクトとして保存されます。\n7. 効能から関連する修飾語を削除します。\n8. 結果が存在しない場合、「XX」は空文字列「」に置き換える必要があります。\n9. JSONデータのみを出力し、他の内容は出力しません。\n薬物適用対象者の説明：\nセンチュリーユース マルチBビタミン錠：17歳未満の人および妊婦、授乳婦。天蚕ビタミンCチュアブル錠：17歳未満の人、妊婦、授乳婦。ウェイトリ カルシウムプラスビタミンDソフトカプセル：17歳未満の人、妊婦",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "構造化タイプ識別子、3に固定",
+                    "能力項": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "構造化分解結果",
+                    "能力項": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "男性",
+                                    "女性",
+                                    "無制限",
+                                    ""
+                                ],
+                                "description": "性別、男性、女性、無制限または空",
+                                "能力項": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "年齢範囲記号",
+                                "能力項": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "年齢数値（アラビア数字）",
+                                "能力項": "範囲、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "年",
+                                    "月",
+                                    "日",
+                                    ""
+                                ],
+                                "description": "年齢単位",
+                                "能力項": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "特殊対象者の説明、1000文字以内",
+                                "maxLength": 1000,
+                                "能力項": "範囲"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは専門薬剤師であると仮定してください。以下の薬物適用対象者の説明について構造化分解を行い、以下のJSON構造に厳密に従って返してください：\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nルール：\n1. typeは3に等しく、固定値であり、必須です。\n2. 性別の値範囲は男性、女性、無制限で、他の性別は表示できません。男性と女性の両方が表示される場合は、無制限に設定します。\n3. 年齢範囲の値範囲は：≥、≤、>、<、=です。\n4. 年齢単位の値範囲は：年、月、日です。\n5. 特殊対象者のテキストは最大1000文字です。\n6. 同じ効能成分と内容の構造化データは1つのデータオブジェクトとして保存されます。\n7. 効能から関連する修飾語を削除します。\n8. 結果が存在しない場合、「XX」は空文字列「」に置き換える必要があります。\n9. JSONデータのみを出力し、他の内容は出力しません。\n薬物適用対象者の説明：\n金思爾康マルチビタミン錠：18歳以上の成人、妊婦、授乳婦。優卡丹小児パラセタモール・クロルフェニラミン顆粒：12歳未満の小児、妊婦禁忌。ビタミンD2リン酸水素カルシウム錠：妊婦、授乳婦、高齢者。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "構造化タイプ識別子、3に固定",
+                    "能力項": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "構造化分解結果",
+                    "能力項": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "男性",
+                                    "女性",
+                                    "無制限",
+                                    ""
+                                ],
+                                "description": "性別、男性、女性、無制限または空",
+                                "能力項": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "年齢範囲記号",
+                                "能力項": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "年齢数値（アラビア数字）",
+                                "能力項": "範囲、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "年",
+                                    "月",
+                                    "日",
+                                    ""
+                                ],
+                                "description": "年齢単位",
+                                "能力項": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "特殊対象者の説明、1000文字以内",
+                                "maxLength": 1000,
+                                "能力項": "範囲"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは専門薬剤師であると仮定してください。以下の薬物適用対象者の説明について構造化分解を行い、以下のJSON構造に厳密に従って返してください：\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nルール：\n1. typeは3に等しく、固定値であり、必須です。\n2. 性別の値範囲は男性、女性、無制限で、他の性別は表示できません。男性と女性の両方が表示される場合は、無制限に設定します。\n3. 年齢範囲の値範囲は：≥、≤、>、<、=です。\n4. 年齢単位の値範囲は：年、月、日です。\n5. 特殊対象者のテキストは最大1000文字です。\n6. 同じ効能成分と内容の構造化データは1つのデータオブジェクトとして保存されます。\n7. 効能から関連する修飾語を削除します。\n8. 結果が存在しない場合、「XX」は空文字列「」に置き換える必要があります。\n9. JSONデータのみを出力し、他の内容は出力しません。\n薬物適用対象者の説明：\n清開霊経口液：性別無制限、3歳以上の小児、成人、高齢者。感冒解熱顆粒：12歳以上の青少年と成人、妊婦は慎重使用。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "構造化タイプ識別子、3に固定",
+                    "能力項": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "構造化分解結果",
+                    "能力項": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "男性",
+                                    "女性",
+                                    "無制限",
+                                    ""
+                                ],
+                                "description": "性別、男性、女性、無制限または空",
+                                "能力項": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "年齢範囲記号",
+                                "能力項": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "年齢数値（アラビア数字）",
+                                "能力項": "範囲、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "年",
+                                    "月",
+                                    "日",
+                                    ""
+                                ],
+                                "description": "年齢単位",
+                                "能力項": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "特殊対象者の説明、1000文字以内",
+                                "maxLength": 1000,
+                                "能力項": "範囲"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは専門薬剤師であると仮定してください。以下の薬物適用対象者の説明について構造化分解を行い、以下のJSON構造に厳密に従って返してください：\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nルール：\n1. typeは3に等しく、固定値であり、必須です。\n2. 性別の値範囲は男性、女性、無制限で、他の性別は表示できません。男性と女性の両方が表示される場合は、無制限に設定します。\n3. 年齢範囲の値範囲は：≥、≤、>、<、=です。\n4. 年齢単位の値範囲は：年、月、日です。\n5. 特殊対象者のテキストは最大1000文字です。\n6. 同じ効能成分と内容の構造化データは1つのデータオブジェクトとして保存されます。\n7. 効能から関連する修飾語を削除します。\n8. 結果が存在しない場合、「XX」は空文字列「」に置き換える必要があります。\n9. JSONデータのみを出力し、他の内容は出力しません。\n薬物適用対象者の説明：\nグルコン酸亜鉛経口液：1歳以上の小児、妊婦、授乳婦、高齢者。複合甘草錠：18歳以上の成人、妊婦禁忌。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "構造化タイプ識別子、3に固定",
+                    "能力項": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "構造化分解結果",
+                    "能力項": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "男性",
+                                    "女性",
+                                    "無制限",
+                                    ""
+                                ],
+                                "description": "性別、男性、女性、無制限または空",
+                                "能力項": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "年齢範囲記号",
+                                "能力項": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "年齢数値（アラビア数字）",
+                                "能力項": "範囲、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "年",
+                                    "月",
+                                    "日",
+                                    ""
+                                ],
+                                "description": "年齢単位",
+                                "能力項": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "特殊対象者の説明、1000文字以内",
+                                "maxLength": 1000,
+                                "能力項": "範囲"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは専門薬剤師であると仮定してください。以下の薬物適用対象者の説明について構造化分解を行い、以下のJSON構造に厳密に従って返してください：\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nルール：\n1. typeは3に等しく、固定値であり、必須です。\n2. 性別の値範囲は男性、女性、無制限で、他の性別は表示できません。男性と女性の両方が表示される場合は、無制限に設定します。\n3. 年齢範囲の値範囲は：≥、≤、>、<、=です。\n4. 年齢単位の値範囲は：年、月、日です。\n5. 特殊対象者のテキストは最大1000文字です。\n6. 同じ効能成分と内容の構造化データは1つのデータオブジェクトとして保存されます。\n7. 効能から関連する修飾語を削除します。\n8. 結果が存在しない場合、「XX」は空文字列「」に置き換える必要があります。\n9. JSONデータのみを出力し、他の内容は出力しません。\n薬物適用対象者の説明：\nベタリング マルチビタミンミネラルチュアブル錠：男女無制限、15歳以上の青少年と成人。カルトレートD錠：50歳以上の人、妊婦、授乳婦。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "構造化タイプ識別子、3に固定",
+                    "能力項": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "構造化分解結果",
+                    "能力項": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "男性",
+                                    "女性",
+                                    "無制限",
+                                    ""
+                                ],
+                                "description": "性別、男性、女性、無制限または空",
+                                "能力項": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "年齢範囲記号",
+                                "能力項": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "年齢数値（アラビア数字）",
+                                "能力項": "範囲、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "年",
+                                    "月",
+                                    "日",
+                                    ""
+                                ],
+                                "description": "年齢単位",
+                                "能力項": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "特殊対象者の説明、1000文字以内",
+                                "maxLength": 1000,
+                                "能力項": "範囲"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは専門薬剤師であると仮定してください。以下の薬物適用対象者の説明について構造化分解を行い、以下のJSON構造に厳密に従って返してください：\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nルール：\n1. typeは3に等しく、固定値であり、必須です。\n2. 性別の値範囲は男性、女性、無制限で、他の性別は表示できません。男性と女性の両方が表示される場合は、無制限に設定します。\n3. 年齢範囲の値範囲は：≥、≤、>、<、=です。\n4. 年齢単位の値範囲は：年、月、日です。\n5. 特殊対象者のテキストは最大1000文字です。\n6. 同じ効能成分と内容の構造化データは1つのデータオブジェクトとして保存されます。\n7. 効能から関連する修飾語を削除します。\n8. 結果が存在しない場合、「XX」は空文字列「」に置き換える必要があります。\n9. JSONデータのみを出力し、他の内容は出力しません。\n薬物適用対象者の説明：\n大印マルチエレメント錠：18歳以上の成人、妊婦、授乳婦。伊可新ビタミンADドロップ：1歳未満の乳児、1-3歳の幼児。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "構造化タイプ識別子、3に固定",
+                    "能力項": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "構造化分解結果",
+                    "能力項": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "男性",
+                                    "女性",
+                                    "無制限",
+                                    ""
+                                ],
+                                "description": "性別、男性、女性、無制限または空",
+                                "能力項": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "年齢範囲記号",
+                                "能力項": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "年齢数値（アラビア数字）",
+                                "能力項": "範囲、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "年",
+                                    "月",
+                                    "日",
+                                    ""
+                                ],
+                                "description": "年齢単位",
+                                "能力項": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "特殊対象者の説明、1000文字以内",
+                                "maxLength": 1000,
+                                "能力項": "範囲"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは専門薬剤師であると仮定してください。以下の薬物適用対象者の説明について構造化分解を行い、以下のJSON構造に厳密に従って返してください：\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nルール：\n1. typeは3に等しく、固定値であり、必須です。\n2. 性別の値範囲は男性、女性、無制限で、他の性別は表示できません。男性と女性の両方が表示される場合は、無制限に設定します。\n3. 年齢範囲の値範囲は：≥、≤、>、<、=です。\n4. 年齢単位の値範囲は：年、月、日です。\n5. 特殊対象者のテキストは最大1000文字です。\n6. 同じ効能成分と内容の構造化データは1つのデータオブジェクトとして保存されます。\n7. 効能から関連する修飾語を削除します。\n8. 結果が存在しない場合、「XX」は空文字列「」に置き換える必要があります。\n9. JSONデータのみを出力し、他の内容は出力しません。\n薬物適用対象者の説明：\n小児パラセタモール・アマンタジン顆粒：6歳未満の小児、妊婦禁忌。睡眠薬：18歳以上の成人、妊婦と授乳婦は慎重使用。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "構造化タイプ識別子、3に固定",
+                    "能力項": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "構造化分解結果",
+                    "能力項": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "男性",
+                                    "女性",
+                                    "無制限",
+                                    ""
+                                ],
+                                "description": "性別、男性、女性、無制限または空",
+                                "能力項": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "年齢範囲記号",
+                                "能力項": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "年齢数値（アラビア数字）",
+                                "能力項": "範囲、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "年",
+                                    "月",
+                                    "日",
+                                    ""
+                                ],
+                                "description": "年齢単位",
+                                "能力項": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "特殊対象者の説明、1000文字以内",
+                                "maxLength": 1000,
+                                "能力項": "範囲"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは専門薬剤師であると仮定してください。以下の薬物適用対象者の説明について構造化分解を行い、以下のJSON構造に厳密に従って返してください：\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nルール：\n1. typeは3に等しく、固定値であり、必須です。\n2. 性別の値範囲は男性、女性、無制限で、他の性別は表示できません。男性と女性の両方が表示される場合は、無制限に設定します。\n3. 年齢範囲の値範囲は：≥、≤、>、<、=です。\n4. 年齢単位の値範囲は：年、月、日です。\n5. 特殊対象者のテキストは最大1000文字です。\n6. 同じ効能成分と内容の構造化データは1つのデータオブジェクトとして保存されます。\n7. 効能から関連する修飾語を削除します。\n8. 結果が存在しない場合、「XX」は空文字列「」に置き換える必要があります。\n9. JSONデータのみを出力し、他の内容は出力しません。\n薬物適用対象者の説明：\n小児咳止めシロップ：性別無制限、2歳以上の小児、妊婦は慎重使用。複合ビタミンB錠：18歳以上の成人、妊婦、授乳婦。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "構造化タイプ識別子、3に固定",
+                    "能力項": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "構造化分解結果",
+                    "能力項": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "男性",
+                                    "女性",
+                                    "無制限",
+                                    ""
+                                ],
+                                "description": "性別、男性、女性、無制限または空",
+                                "能力項": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "年齢範囲記号",
+                                "能力項": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "年齢数値（アラビア数字）",
+                                "能力項": "範囲、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "年",
+                                    "月",
+                                    "日",
+                                    ""
+                                ],
+                                "description": "年齢単位",
+                                "能力項": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "特殊対象者の説明、1000文字以内",
+                                "maxLength": 1000,
+                                "能力項": "範囲"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは専門薬剤師であると仮定してください。以下の薬物適用対象者の説明について構造化分解を行い、以下のJSON構造に厳密に従って返してください：\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nルール：\n1. typeは3に等しく、固定値であり、必須です。\n2. 性別の値範囲は男性、女性、無制限で、他の性別は表示できません。男性と女性の両方が表示される場合は、無制限に設定します。\n3. 年齢範囲の値範囲は：≥、≤、>、<、=です。\n4. 年齢単位の値範囲は：年、月、日です。\n5. 特殊対象者のテキストは最大1000文字です。\n6. 同じ効能成分と内容の構造化データは1つのデータオブジェクトとして保存されます。\n7. 効能から関連する修飾語を削除します。\n8. 結果が存在しない場合、「XX」は空文字列「」に置き換える必要があります。\n9. JSONデータのみを出力し、他の内容は出力しません。\n薬物適用対象者の説明：\n胃消化錠：性別無制限、5歳以上の小児と成人。ビタミンEソフトカプセル：18歳以上の女性、妊婦、授乳婦。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "構造化タイプ識別子、3に固定",
+                    "能力項": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "構造化分解結果",
+                    "能力項": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "男性",
+                                    "女性",
+                                    "無制限",
+                                    ""
+                                ],
+                                "description": "性別、男性、女性、無制限または空",
+                                "能力項": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "年齢範囲記号",
+                                "能力項": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "年齢数値（アラビア数字）",
+                                "能力項": "範囲、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "年",
+                                    "月",
+                                    "日",
+                                    ""
+                                ],
+                                "description": "年齢単位",
+                                "能力項": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "特殊対象者の説明、1000文字以内",
+                                "maxLength": 1000,
+                                "能力項": "範囲"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは専門薬剤師であると仮定してください。以下の薬物適用対象者の説明について構造化分解を行い、以下のJSON構造に厳密に従って返してください：\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nルール：\n1. typeは3に等しく、固定値であり、必須です。\n2. 性別の値範囲は男性、女性、無制限で、他の性別は表示できません。男性と女性の両方が表示される場合は、無制限に設定します。\n3. 年齢範囲の値範囲は：≥、≤、>、<、=です。\n4. 年齢単位の値範囲は：年、月、日です。\n5. 特殊対象者のテキストは最大1000文字です。\n6. 同じ効能成分と内容の構造化データは1つのデータオブジェクトとして保存されます。\n7. 効能から関連する修飾語を削除します。\n8. 結果が存在しない場合、「XX」は空文字列「」に置き換える必要があります。\n9. JSONデータのみを出力し、他の内容は出力しません。\n薬物適用対象者の説明：\nビタミンDドロップ：新生児、乳幼児、妊婦、授乳婦。複合板藍根顆粒：性別無制限、3歳以上の小児と成人、妊婦は慎重使用。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "構造化タイプ識別子、3に固定",
+                    "能力項": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "構造化分解結果",
+                    "能力項": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "男性",
+                                    "女性",
+                                    "無制限",
+                                    ""
+                                ],
+                                "description": "性別、男性、女性、無制限または空",
+                                "能力項": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "年齢範囲記号",
+                                "能力項": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "年齢数値（アラビア数字）",
+                                "能力項": "範囲、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "年",
+                                    "月",
+                                    "日",
+                                    ""
+                                ],
+                                "description": "年齢単位",
+                                "能力項": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "特殊対象者の説明、1000文字以内",
+                                "maxLength": 1000,
+                                "能力項": "範囲"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力項": "JSON"
+            }
+        ]
+    }
+]

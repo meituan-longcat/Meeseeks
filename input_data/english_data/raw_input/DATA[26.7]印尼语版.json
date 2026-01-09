@@ -1,0 +1,982 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Asumsikan Anda adalah seorang apoteker profesional. Silakan lakukan dekomposisi terstruktur dari deskripsi populasi obat yang berlaku berikut, kembalikan secara ketat sesuai dengan struktur JSON berikut:\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nAturan:\n1. type sama dengan 3 adalah nilai tetap dan harus ada.\n2. Rentang nilai jenis kelamin adalah pria, wanita, tidak terbatas, tidak ada jenis kelamin lain yang dapat muncul; jika pria dan wanita muncul, atur sebagai tidak terbatas.\n3. Rentang nilai rentang usia adalah: ≥, ≤, >, <, =.\n4. Rentang nilai satuan usia adalah: tahun, bulan, hari.\n5. Teks populasi khusus memiliki maksimal 1000 karakter.\n6. Komponen efikasi yang sama dan data terstruktur konten disimpan sebagai satu objek data.\n7. Hapus pengubah terkait dari efikasi.\n8. Jika tidak ada hasil, \"XX\" perlu diganti dengan string kosong \"\".\n9. Hanya keluarkan data JSON, jangan keluarkan konten lain.\nDeskripsi populasi obat yang berlaku:\nTablet Century Youth Multi-B Vitamin: Orang di bawah 17 tahun dan wanita hamil, ibu menyusui. Tablet kunyah Tiancan Vitamin C: Orang di bawah 17 tahun, wanita hamil, ibu menyusui. Kapsul lunak Weitoli Kalsium Plus Vitamin D: Orang di bawah 17 tahun, wanita hamil",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "Pengenal jenis terstruktur, tetap sebagai 3",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Hasil dekomposisi terstruktur",
+                    "能力项": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "pria",
+                                    "wanita",
+                                    "tidak terbatas",
+                                    ""
+                                ],
+                                "description": "Jenis kelamin, pria, wanita, tidak terbatas atau kosong",
+                                "能力项": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "Simbol rentang usia",
+                                "能力项": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "Angka usia (angka Arab)",
+                                "能力项": "范围、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "tahun",
+                                    "bulan",
+                                    "hari",
+                                    ""
+                                ],
+                                "description": "Satuan usia",
+                                "能力项": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "Deskripsi populasi khusus, dalam 1000 karakter",
+                                "maxLength": 1000,
+                                "能力项": "范围"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Asumsikan Anda adalah seorang apoteker profesional. Silakan lakukan dekomposisi terstruktur dari deskripsi populasi obat yang berlaku berikut, kembalikan secara ketat sesuai dengan struktur JSON berikut:\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nAturan:\n1. type sama dengan 3 adalah nilai tetap dan harus ada.\n2. Rentang nilai jenis kelamin adalah pria, wanita, tidak terbatas, tidak ada jenis kelamin lain yang dapat muncul; jika pria dan wanita muncul, atur sebagai tidak terbatas.\n3. Rentang nilai rentang usia adalah: ≥, ≤, >, <, =.\n4. Rentang nilai satuan usia adalah: tahun, bulan, hari.\n5. Teks populasi khusus memiliki maksimal 1000 karakter.\n6. Komponen efikasi yang sama dan data terstruktur konten disimpan sebagai satu objek data.\n7. Hapus pengubah terkait dari efikasi.\n8. Jika tidak ada hasil, \"XX\" perlu diganti dengan string kosong \"\".\n9. Hanya keluarkan data JSON, jangan keluarkan konten lain.\nDeskripsi populasi obat yang berlaku:\nTablet Jinsierkan Multivitamin: Dewasa 18 tahun ke atas, wanita hamil, ibu menyusui. Granul Youkadan Parasetamol dan Klorfenamin Pediatrik: Anak di bawah 12 tahun, kontraindikasi untuk wanita hamil. Tablet Vitamin D2 Kalsium Hidrogen Fosfat: Wanita hamil, ibu menyusui, lansia.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "Pengenal jenis terstruktur, tetap sebagai 3",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Hasil dekomposisi terstruktur",
+                    "能力项": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "pria",
+                                    "wanita",
+                                    "tidak terbatas",
+                                    ""
+                                ],
+                                "description": "Jenis kelamin, pria, wanita, tidak terbatas atau kosong",
+                                "能力项": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "Simbol rentang usia",
+                                "能力项": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "Angka usia (angka Arab)",
+                                "能力项": "范围、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "tahun",
+                                    "bulan",
+                                    "hari",
+                                    ""
+                                ],
+                                "description": "Satuan usia",
+                                "能力项": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "Deskripsi populasi khusus, dalam 1000 karakter",
+                                "maxLength": 1000,
+                                "能力项": "范围"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Asumsikan Anda adalah seorang apoteker profesional. Silakan lakukan dekomposisi terstruktur dari deskripsi populasi obat yang berlaku berikut, kembalikan secara ketat sesuai dengan struktur JSON berikut:\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nAturan:\n1. type sama dengan 3 adalah nilai tetap dan harus ada.\n2. Rentang nilai jenis kelamin adalah pria, wanita, tidak terbatas, tidak ada jenis kelamin lain yang dapat muncul; jika pria dan wanita muncul, atur sebagai tidak terbatas.\n3. Rentang nilai rentang usia adalah: ≥, ≤, >, <, =.\n4. Rentang nilai satuan usia adalah: tahun, bulan, hari.\n5. Teks populasi khusus memiliki maksimal 1000 karakter.\n6. Komponen efikasi yang sama dan data terstruktur konten disimpan sebagai satu objek data.\n7. Hapus pengubah terkait dari efikasi.\n8. Jika tidak ada hasil, \"XX\" perlu diganti dengan string kosong \"\".\n9. Hanya keluarkan data JSON, jangan keluarkan konten lain.\nDeskripsi populasi obat yang berlaku:\nLarutan oral Qingkailing: Jenis kelamin tidak terbatas, anak di atas 3 tahun, dewasa, lansia. Granul pereda flu: Remaja dan dewasa di atas 12 tahun, gunakan dengan hati-hati pada wanita hamil.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "Pengenal jenis terstruktur, tetap sebagai 3",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Hasil dekomposisi terstruktur",
+                    "能力项": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "pria",
+                                    "wanita",
+                                    "tidak terbatas",
+                                    ""
+                                ],
+                                "description": "Jenis kelamin, pria, wanita, tidak terbatas atau kosong",
+                                "能力项": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "Simbol rentang usia",
+                                "能力项": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "Angka usia (angka Arab)",
+                                "能力项": "范围、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "tahun",
+                                    "bulan",
+                                    "hari",
+                                    ""
+                                ],
+                                "description": "Satuan usia",
+                                "能力项": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "Deskripsi populasi khusus, dalam 1000 karakter",
+                                "maxLength": 1000,
+                                "能力项": "范围"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Asumsikan Anda adalah seorang apoteker profesional. Silakan lakukan dekomposisi terstruktur dari deskripsi populasi obat yang berlaku berikut, kembalikan secara ketat sesuai dengan struktur JSON berikut:\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nAturan:\n1. type sama dengan 3 adalah nilai tetap dan harus ada.\n2. Rentang nilai jenis kelamin adalah pria, wanita, tidak terbatas, tidak ada jenis kelamin lain yang dapat muncul; jika pria dan wanita muncul, atur sebagai tidak terbatas.\n3. Rentang nilai rentang usia adalah: ≥, ≤, >, <, =.\n4. Rentang nilai satuan usia adalah: tahun, bulan, hari.\n5. Teks populasi khusus memiliki maksimal 1000 karakter.\n6. Komponen efikasi yang sama dan data terstruktur konten disimpan sebagai satu objek data.\n7. Hapus pengubah terkait dari efikasi.\n8. Jika tidak ada hasil, \"XX\" perlu diganti dengan string kosong \"\".\n9. Hanya keluarkan data JSON, jangan keluarkan konten lain.\nDeskripsi populasi obat yang berlaku:\nLarutan oral Seng Glukonat: Anak di atas 1 tahun, wanita hamil, ibu menyusui, lansia. Tablet Licorice majemuk: Dewasa di atas 18 tahun, kontraindikasi untuk wanita hamil.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "Pengenal jenis terstruktur, tetap sebagai 3",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Hasil dekomposisi terstruktur",
+                    "能力项": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "pria",
+                                    "wanita",
+                                    "tidak terbatas",
+                                    ""
+                                ],
+                                "description": "Jenis kelamin, pria, wanita, tidak terbatas atau kosong",
+                                "能力项": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "Simbol rentang usia",
+                                "能力项": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "Angka usia (angka Arab)",
+                                "能力项": "范围、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "tahun",
+                                    "bulan",
+                                    "hari",
+                                    ""
+                                ],
+                                "description": "Satuan usia",
+                                "能力项": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "Deskripsi populasi khusus, dalam 1000 karakter",
+                                "maxLength": 1000,
+                                "能力项": "范围"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Asumsikan Anda adalah seorang apoteker profesional. Silakan lakukan dekomposisi terstruktur dari deskripsi populasi obat yang berlaku berikut, kembalikan secara ketat sesuai dengan struktur JSON berikut:\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nAturan:\n1. type sama dengan 3 adalah nilai tetap dan harus ada.\n2. Rentang nilai jenis kelamin adalah pria, wanita, tidak terbatas, tidak ada jenis kelamin lain yang dapat muncul; jika pria dan wanita muncul, atur sebagai tidak terbatas.\n3. Rentang nilai rentang usia adalah: ≥, ≤, >, <, =.\n4. Rentang nilai satuan usia adalah: tahun, bulan, hari.\n5. Teks populasi khusus memiliki maksimal 1000 karakter.\n6. Komponen efikasi yang sama dan data terstruktur konten disimpan sebagai satu objek data.\n7. Hapus pengubah terkait dari efikasi.\n8. Jika tidak ada hasil, \"XX\" perlu diganti dengan string kosong \"\".\n9. Hanya keluarkan data JSON, jangan keluarkan konten lain.\nDeskripsi populasi obat yang berlaku:\nTablet kunyah Bettering Multi-vitamin Mineral: Pria dan wanita tidak terbatas, remaja dan dewasa di atas 15 tahun. Tablet Caltrate D: Orang di atas 50 tahun, wanita hamil, ibu menyusui.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "Pengenal jenis terstruktur, tetap sebagai 3",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Hasil dekomposisi terstruktur",
+                    "能力项": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "pria",
+                                    "wanita",
+                                    "tidak terbatas",
+                                    ""
+                                ],
+                                "description": "Jenis kelamin, pria, wanita, tidak terbatas atau kosong",
+                                "能力项": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "Simbol rentang usia",
+                                "能力项": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "Angka usia (angka Arab)",
+                                "能力项": "范围、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "tahun",
+                                    "bulan",
+                                    "hari",
+                                    ""
+                                ],
+                                "description": "Satuan usia",
+                                "能力项": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "Deskripsi populasi khusus, dalam 1000 karakter",
+                                "maxLength": 1000,
+                                "能力项": "范围"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Asumsikan Anda adalah seorang apoteker profesional. Silakan lakukan dekomposisi terstruktur dari deskripsi populasi obat yang berlaku berikut, kembalikan secara ketat sesuai dengan struktur JSON berikut:\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nAturan:\n1. type sama dengan 3 adalah nilai tetap dan harus ada.\n2. Rentang nilai jenis kelamin adalah pria, wanita, tidak terbatas, tidak ada jenis kelamin lain yang dapat muncul; jika pria dan wanita muncul, atur sebagai tidak terbatas.\n3. Rentang nilai rentang usia adalah: ≥, ≤, >, <, =.\n4. Rentang nilai satuan usia adalah: tahun, bulan, hari.\n5. Teks populasi khusus memiliki maksimal 1000 karakter.\n6. Komponen efikasi yang sama dan data terstruktur konten disimpan sebagai satu objek data.\n7. Hapus pengubah terkait dari efikasi.\n8. Jika tidak ada hasil, \"XX\" perlu diganti dengan string kosong \"\".\n9. Hanya keluarkan data JSON, jangan keluarkan konten lain.\nDeskripsi populasi obat yang berlaku:\nTablet Daiyin Multi-elemen: Dewasa 18 tahun ke atas, wanita hamil, ibu menyusui. Tetes Yikexin Vitamin AD: Bayi di bawah 1 tahun, balita 1-3 tahun.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "Pengenal jenis terstruktur, tetap sebagai 3",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Hasil dekomposisi terstruktur",
+                    "能力项": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "pria",
+                                    "wanita",
+                                    "tidak terbatas",
+                                    ""
+                                ],
+                                "description": "Jenis kelamin, pria, wanita, tidak terbatas atau kosong",
+                                "能力项": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "Simbol rentang usia",
+                                "能力项": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "Angka usia (angka Arab)",
+                                "能力项": "范围、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "tahun",
+                                    "bulan",
+                                    "hari",
+                                    ""
+                                ],
+                                "description": "Satuan usia",
+                                "能力项": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "Deskripsi populasi khusus, dalam 1000 karakter",
+                                "maxLength": 1000,
+                                "能力项": "范围"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Asumsikan Anda adalah seorang apoteker profesional. Silakan lakukan dekomposisi terstruktur dari deskripsi populasi obat yang berlaku berikut, kembalikan secara ketat sesuai dengan struktur JSON berikut:\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nAturan:\n1. type sama dengan 3 adalah nilai tetap dan harus ada.\n2. Rentang nilai jenis kelamin adalah pria, wanita, tidak terbatas, tidak ada jenis kelamin lain yang dapat muncul; jika pria dan wanita muncul, atur sebagai tidak terbatas.\n3. Rentang nilai rentang usia adalah: ≥, ≤, >, <, =.\n4. Rentang nilai satuan usia adalah: tahun, bulan, hari.\n5. Teks populasi khusus memiliki maksimal 1000 karakter.\n6. Komponen efikasi yang sama dan data terstruktur konten disimpan sebagai satu objek data.\n7. Hapus pengubah terkait dari efikasi.\n8. Jika tidak ada hasil, \"XX\" perlu diganti dengan string kosong \"\".\n9. Hanya keluarkan data JSON, jangan keluarkan konten lain.\nDeskripsi populasi obat yang berlaku:\nGranul Parasetamol dan Amantadin Pediatrik: Anak di bawah 6 tahun, kontraindikasi untuk wanita hamil. Pil tidur: Dewasa di atas 18 tahun, gunakan dengan hati-hati pada wanita hamil dan ibu menyusui.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "Pengenal jenis terstruktur, tetap sebagai 3",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Hasil dekomposisi terstruktur",
+                    "能力项": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "pria",
+                                    "wanita",
+                                    "tidak terbatas",
+                                    ""
+                                ],
+                                "description": "Jenis kelamin, pria, wanita, tidak terbatas atau kosong",
+                                "能力项": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "Simbol rentang usia",
+                                "能力项": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "Angka usia (angka Arab)",
+                                "能力项": "范围、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "tahun",
+                                    "bulan",
+                                    "hari",
+                                    ""
+                                ],
+                                "description": "Satuan usia",
+                                "能力项": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "Deskripsi populasi khusus, dalam 1000 karakter",
+                                "maxLength": 1000,
+                                "能力项": "范围"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Asumsikan Anda adalah seorang apoteker profesional. Silakan lakukan dekomposisi terstruktur dari deskripsi populasi obat yang berlaku berikut, kembalikan secara ketat sesuai dengan struktur JSON berikut:\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nAturan:\n1. type sama dengan 3 adalah nilai tetap dan harus ada.\n2. Rentang nilai jenis kelamin adalah pria, wanita, tidak terbatas, tidak ada jenis kelamin lain yang dapat muncul; jika pria dan wanita muncul, atur sebagai tidak terbatas.\n3. Rentang nilai rentang usia adalah: ≥, ≤, >, <, =.\n4. Rentang nilai satuan usia adalah: tahun, bulan, hari.\n5. Teks populasi khusus memiliki maksimal 1000 karakter.\n6. Komponen efikasi yang sama dan data terstruktur konten disimpan sebagai satu objek data.\n7. Hapus pengubah terkait dari efikasi.\n8. Jika tidak ada hasil, \"XX\" perlu diganti dengan string kosong \"\".\n9. Hanya keluarkan data JSON, jangan keluarkan konten lain.\nDeskripsi populasi obat yang berlaku:\nSirup batuk pediatrik: Jenis kelamin tidak terbatas, anak di atas 2 tahun, gunakan dengan hati-hati pada wanita hamil. Tablet Vitamin B majemuk: Dewasa di atas 18 tahun, wanita hamil, ibu menyusui.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "Pengenal jenis terstruktur, tetap sebagai 3",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Hasil dekomposisi terstruktur",
+                    "能力项": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "pria",
+                                    "wanita",
+                                    "tidak terbatas",
+                                    ""
+                                ],
+                                "description": "Jenis kelamin, pria, wanita, tidak terbatas atau kosong",
+                                "能力项": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "Simbol rentang usia",
+                                "能力项": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "Angka usia (angka Arab)",
+                                "能力项": "范围、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "tahun",
+                                    "bulan",
+                                    "hari",
+                                    ""
+                                ],
+                                "description": "Satuan usia",
+                                "能力项": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "Deskripsi populasi khusus, dalam 1000 karakter",
+                                "maxLength": 1000,
+                                "能力项": "范围"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Asumsikan Anda adalah seorang apoteker profesional. Silakan lakukan dekomposisi terstruktur dari deskripsi populasi obat yang berlaku berikut, kembalikan secara ketat sesuai dengan struktur JSON berikut:\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nAturan:\n1. type sama dengan 3 adalah nilai tetap dan harus ada.\n2. Rentang nilai jenis kelamin adalah pria, wanita, tidak terbatas, tidak ada jenis kelamin lain yang dapat muncul; jika pria dan wanita muncul, atur sebagai tidak terbatas.\n3. Rentang nilai rentang usia adalah: ≥, ≤, >, <, =.\n4. Rentang nilai satuan usia adalah: tahun, bulan, hari.\n5. Teks populasi khusus memiliki maksimal 1000 karakter.\n6. Komponen efikasi yang sama dan data terstruktur konten disimpan sebagai satu objek data.\n7. Hapus pengubah terkait dari efikasi.\n8. Jika tidak ada hasil, \"XX\" perlu diganti dengan string kosong \"\".\n9. Hanya keluarkan data JSON, jangan keluarkan konten lain.\nDeskripsi populasi obat yang berlaku:\nTablet pencernaan lambung: Jenis kelamin tidak terbatas, anak di atas 5 tahun dan dewasa. Kapsul lunak Vitamin E: Wanita di atas 18 tahun, wanita hamil, ibu menyusui.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "Pengenal jenis terstruktur, tetap sebagai 3",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Hasil dekomposisi terstruktur",
+                    "能力项": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "pria",
+                                    "wanita",
+                                    "tidak terbatas",
+                                    ""
+                                ],
+                                "description": "Jenis kelamin, pria, wanita, tidak terbatas atau kosong",
+                                "能力项": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "Simbol rentang usia",
+                                "能力项": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "Angka usia (angka Arab)",
+                                "能力项": "范围、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "tahun",
+                                    "bulan",
+                                    "hari",
+                                    ""
+                                ],
+                                "description": "Satuan usia",
+                                "能力项": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "Deskripsi populasi khusus, dalam 1000 karakter",
+                                "maxLength": 1000,
+                                "能力项": "范围"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Asumsikan Anda adalah seorang apoteker profesional. Silakan lakukan dekomposisi terstruktur dari deskripsi populasi obat yang berlaku berikut, kembalikan secara ketat sesuai dengan struktur JSON berikut:\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nAturan:\n1. type sama dengan 3 adalah nilai tetap dan harus ada.\n2. Rentang nilai jenis kelamin adalah pria, wanita, tidak terbatas, tidak ada jenis kelamin lain yang dapat muncul; jika pria dan wanita muncul, atur sebagai tidak terbatas.\n3. Rentang nilai rentang usia adalah: ≥, ≤, >, <, =.\n4. Rentang nilai satuan usia adalah: tahun, bulan, hari.\n5. Teks populasi khusus memiliki maksimal 1000 karakter.\n6. Komponen efikasi yang sama dan data terstruktur konten disimpan sebagai satu objek data.\n7. Hapus pengubah terkait dari efikasi.\n8. Jika tidak ada hasil, \"XX\" perlu diganti dengan string kosong \"\".\n9. Hanya keluarkan data JSON, jangan keluarkan konten lain.\nDeskripsi populasi obat yang berlaku:\nTetes Vitamin D: Bayi baru lahir, bayi dan balita, wanita hamil, ibu menyusui. Granul Banlangen majemuk: Jenis kelamin tidak terbatas, anak di atas 3 tahun dan dewasa, gunakan dengan hati-hati pada wanita hamil.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "Pengenal jenis terstruktur, tetap sebagai 3",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Hasil dekomposisi terstruktur",
+                    "能力项": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "pria",
+                                    "wanita",
+                                    "tidak terbatas",
+                                    ""
+                                ],
+                                "description": "Jenis kelamin, pria, wanita, tidak terbatas atau kosong",
+                                "能力项": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "Simbol rentang usia",
+                                "能力项": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "Angka usia (angka Arab)",
+                                "能力项": "范围、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "tahun",
+                                    "bulan",
+                                    "hari",
+                                    ""
+                                ],
+                                "description": "Satuan usia",
+                                "能力项": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "Deskripsi populasi khusus, dalam 1000 karakter",
+                                "maxLength": 1000,
+                                "能力项": "范围"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力项": "JSON"
+            }
+        ]
+    }
+]

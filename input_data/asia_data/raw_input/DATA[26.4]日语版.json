@@ -1,0 +1,1342 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "あなたはプロの旅行スポット記事アナリストです。記事内容と記事タイプを提供しますので、記事タイプに応じて異なる識別戦略を実行してください。抽出した遊び方情報のみを返し、その他の冗長な情報は返さないでください。\n記事タイプ: 自動識別\n以下のルールに従って情報を抽出してください：\n1. playName: 遊び方名称、記事で言及されている具体的な遊び方やアクティビティ名を指します。\n2. briefDesc: 一文説明、遊び方のハイライトと特徴をまとめる必要があり、営業時間、実用情報、否定的な説明を除き、68-100文字（スペース、数字を含む）。\n3. location: 遊び方の地理的位置、景勝地や会場内の具体的な参照点やランドマークを指し、都市や省は不可。\n4. startDate/endDate: 遊び方の時間範囲、日付形式はxxxx-xx-xx、識別できない場合は空文字列を返す。\n5. detailDesc: 詳細な遊び方紹介、315-400文字（スペース、数字を含む）が必要、遊び方のハイライトと特徴を説明し、第三者視点の言葉を除く。\n6. price: チケット価格情報、返却形式[\"\",\"\"]、識別できない場合は空リストを返す。\n7. issueTime: 遊び方がコンサート、音楽祭、ライブハウス、漫才などのタイプに属する場合、チケット発売時間を識別する必要があり、日付形式はxxxx-xx-xx、ない場合は空文字列を返す。\n8. hasNightView: 夜間アクティビティかどうか（はい/いいえ）。\n9. isParentChildFriendly: 親子に適しているかどうか（はい/いいえ）。\n10. isOutdoor: 屋外の遊び方かどうか（はい/いいえ）。\n11. hasCulturalShow: 文化パフォーマンスが含まれているかどうか（はい/いいえ）。\n12. hasHotSpring: 温泉プロジェクトがあるかどうか（はい/いいえ）。\n出力要件：\n1. JSON形式で抽出した情報を返す\n2. 各遊び方を一つのオブジェクトとし、すべてのフィールドを含む\n3. すべての遊び方オブジェクトで配列を形成\n4. JSON形式以外の文字は返さない\n出力形式例：\n[\n  {\"playName\":\"遊び方名称\",\"briefDesc\":\"一文説明\",\"location\":\"地理的位置\",\"startDate\":\"開始時間\",\"endDate\":\"終了時間\",\"detailDesc\":\"詳細な遊び方紹介\",\"price\":[],\"issueTime\":\"チケット発売時間\",\"hasNightView\":\"はい/いいえ\",\"isParentChildFriendly\":\"はい/いいえ\",\"isOutdoor\":\"はい/いいえ\",\"hasCulturalShow\":\"はい/いいえ\",\"hasHotSpring\":\"はい/いいえ\"}\n]\n記事内容:三里屯機電学院のクリスマスナイトマーケットが開催中！Wood Eats Talk冬市場、夜のデザートパレード、インディーズ音楽レーベルパフォーマンス、90時間ノンストップ音楽体験、クリスマス雰囲気と食べ物が集結。親子交流エリアやマーケットワークショップもあります。",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "遊び方名称",
+                        "能力項": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "一文説明",
+                        "能力項": "範囲、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "遊び方の地理的位置",
+                        "能力項": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "開始時間"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "終了時間"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "詳細な遊び方紹介",
+                        "能力項": "範囲、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "チケット価格情報",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力項": "主題約束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "チケット発売時間"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜間アクティビティかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "親子に適しているかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "屋外の遊び方かどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "文化パフォーマンスが含まれているかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "温泉プロジェクトがあるかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマに適合するかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたはプロの旅行スポット記事アナリストです。記事内容と記事タイプを提供しますので、記事タイプに応じて異なる識別戦略を実行してください。抽出した遊び方情報のみを返し、その他の冗長な情報は返さないでください。\n記事タイプ: 自動識別\n以下のルールに従って情報を抽出してください：\n1. playName: 遊び方名称、記事で言及されている具体的な遊び方やアクティビティ名を指します。\n2. briefDesc: 一文説明、遊び方のハイライトと特徴をまとめる必要があり、営業時間、実用情報、否定的な説明を除き、68-100文字（スペース、数字を含む）。\n3. location: 遊び方の地理的位置、景勝地や会場内の具体的な参照点やランドマークを指し、都市や省は不可。\n4. startDate/endDate: 遊び方の時間範囲、日付形式はxxxx-xx-xx、識別できない場合は空文字列を返す。\n5. detailDesc: 詳細な遊び方紹介、315-400文字（スペース、数字を含む）が必要、遊び方のハイライトと特徴を説明し、第三者視点の言葉を除く。\n6. price: チケット価格情報、返却形式[\"\",\"\"]、識別できない場合は空リストを返す。\n7. issueTime: 遊び方がコンサート、音楽祭、ライブハウス、漫才などのタイプに属する場合、チケット発売時間を識別する必要があり、日付形式はxxxx-xx-xx、ない場合は空文字列を返す。\n8. hasNightView: 夜間アクティビティかどうか（はい/いいえ）。\n9. isParentChildFriendly: 親子に適しているかどうか（はい/いいえ）。\n10. isOutdoor: 屋外の遊び方かどうか（はい/いいえ）。\n11. hasCulturalShow: 文化パフォーマンスが含まれているかどうか（はい/いいえ）。\n12. hasHotSpring: 温泉プロジェクトがあるかどうか（はい/いいえ）。\n出力要件：\n1. JSON形式で抽出した情報を返す\n2. 各遊び方を一つのオブジェクトとし、すべてのフィールドを含む\n3. すべての遊び方オブジェクトで配列を形成\n4. JSON形式以外の文字は返さない\n出力形式例：\n[\n  {\"playName\":\"遊び方名称\",\"briefDesc\":\"一文説明\",\"location\":\"地理的位置\",\"startDate\":\"開始時間\",\"endDate\":\"終了時間\",\"detailDesc\":\"詳細な遊び方紹介\",\"price\":[],\"issueTime\":\"チケット発売時間\",\"hasNightView\":\"はい/いいえ\",\"isParentChildFriendly\":\"はい/いいえ\",\"isOutdoor\":\"はい/いいえ\",\"hasCulturalShow\":\"はい/いいえ\",\"hasHotSpring\":\"はい/いいえ\"}\n]\n記事内容:ハッピーバレーのクリスマスライトショーが開催、夜には大規模なパレードパフォーマンスとクリスマステーママーケットがあり、親子、カップル、友人が楽しめ、屋外の夜景は忘れられません。",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "遊び方名称",
+                        "能力項": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "一文説明",
+                        "能力項": "範囲、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "遊び方の地理的位置",
+                        "能力項": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "開始時間"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "終了時間"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "詳細な遊び方紹介",
+                        "能力項": "範囲、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "チケット価格情報",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力項": "主題約束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "チケット発売時間"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜間アクティビティかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "親子に適しているかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "屋外の遊び方かどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "文化パフォーマンスが含まれているかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "温泉プロジェクトがあるかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマに適合するかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたはプロの旅行スポット記事アナリストです。記事内容と記事タイプを提供しますので、記事タイプに応じて異なる識別戦略を実行してください。抽出した遊び方情報のみを返し、その他の冗長な情報は返さないでください。\n記事タイプ: 自動識別\n以下のルールに従って情報を抽出してください：\n1. playName: 遊び方名称、記事で言及されている具体的な遊び方やアクティビティ名を指します。\n2. briefDesc: 一文説明、遊び方のハイライトと特徴をまとめる必要があり、営業時間、実用情報、否定的な説明を除き、68-100文字（スペース、数字を含む）。\n3. location: 遊び方の地理的位置、景勝地や会場内の具体的な参照点やランドマークを指し、都市や省は不可。\n4. startDate/endDate: 遊び方の時間範囲、日付形式はxxxx-xx-xx、識別できない場合は空文字列を返す。\n5. detailDesc: 詳細な遊び方紹介、315-400文字（スペース、数字を含む）が必要、遊び方のハイライトと特徴を説明し、第三者視点の言葉を除く。\n6. price: チケット価格情報、返却形式[\"\",\"\"]、識別できない場合は空リストを返す。\n7. issueTime: 遊び方がコンサート、音楽祭、ライブハウス、漫才などのタイプに属する場合、チケット発売時間を識別する必要があり、日付形式はxxxx-xx-xx、ない場合は空文字列を返す。\n8. hasNightView: 夜間アクティビティかどうか（はい/いいえ）。\n9. isParentChildFriendly: 親子に適しているかどうか（はい/いいえ）。\n10. isOutdoor: 屋外の遊び方かどうか（はい/いいえ）。\n11. hasCulturalShow: 文化パフォーマンスが含まれているかどうか（はい/いいえ）。\n12. hasHotSpring: 温泉プロジェクトがあるかどうか（はい/いいえ）。\n出力要件：\n1. JSON形式で抽出した情報を返す\n2. 各遊び方を一つのオブジェクトとし、すべてのフィールドを含む\n3. すべての遊び方オブジェクトで配列を形成\n4. JSON形式以外の文字は返さない\n出力形式例：\n[\n  {\"playName\":\"遊び方名称\",\"briefDesc\":\"一文説明\",\"location\":\"地理的位置\",\"startDate\":\"開始時間\",\"endDate\":\"終了時間\",\"detailDesc\":\"詳細な遊び方紹介\",\"price\":[],\"issueTime\":\"チケット発売時間\",\"hasNightView\":\"はい/いいえ\",\"isParentChildFriendly\":\"はい/いいえ\",\"isOutdoor\":\"はい/いいえ\",\"hasCulturalShow\":\"はい/いいえ\",\"hasHotSpring\":\"はい/いいえ\"}\n]\n記事内容:紫禁城氷雪祭が開幕、氷彫展示、雪滑り台、氷上自転車など豊富な遊び方があなたを待っています。夜のライトショーはロマンチックで夢のよう。家族全員が楽しめます。",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "遊び方名称",
+                        "能力項": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "一文説明",
+                        "能力項": "範囲、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "遊び方の地理的位置",
+                        "能力項": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "開始時間"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "終了時間"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "詳細な遊び方紹介",
+                        "能力項": "範囲、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "チケット価格情報",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力項": "主題約束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "チケット発売時間"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜間アクティビティかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "親子に適しているかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "屋外の遊び方かどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "文化パフォーマンスが含まれているかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "温泉プロジェクトがあるかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマに適合するかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたはプロの旅行スポット記事アナリストです。記事内容と記事タイプを提供しますので、記事タイプに応じて異なる識別戦略を実行してください。抽出した遊び方情報のみを返し、その他の冗長な情報は返さないでください。\n記事タイプ: 自動識別\n以下のルールに従って情報を抽出してください：\n1. playName: 遊び方名称、記事で言及されている具体的な遊び方やアクティビティ名を指します。\n2. briefDesc: 一文説明、遊び方のハイライトと特徴をまとめる必要があり、営業時間、実用情報、否定的な説明を除き、68-100文字（スペース、数字を含む）。\n3. location: 遊び方の地理的位置、景勝地や会場内の具体的な参照点やランドマークを指し、都市や省は不可。\n4. startDate/endDate: 遊び方の時間範囲、日付形式はxxxx-xx-xx、識別できない場合は空文字列を返す。\n5. detailDesc: 詳細な遊び方紹介、315-400文字（スペース、数字を含む）が必要、遊び方のハイライトと特徴を説明し、第三者視点の言葉を除く。\n6. price: チケット価格情報、返却形式[\"\",\"\"]、識別できない場合は空リストを返す。\n7. issueTime: 遊び方がコンサート、音楽祭、ライブハウス、漫才などのタイプに属する場合、チケット発売時間を識別する必要があり、日付形式はxxxx-xx-xx、ない場合は空文字列を返す。\n8. hasNightView: 夜間アクティビティかどうか（はい/いいえ）。\n9. isParentChildFriendly: 親子に適しているかどうか（はい/いいえ）。\n10. isOutdoor: 屋外の遊び方かどうか（はい/いいえ）。\n11. hasCulturalShow: 文化パフォーマンスが含まれているかどうか（はい/いいえ）。\n12. hasHotSpring: 温泉プロジェクトがあるかどうか（はい/いいえ）。\n出力要件：\n1. JSON形式で抽出した情報を返す\n2. 各遊び方を一つのオブジェクトとし、すべてのフィールドを含む\n3. すべての遊び方オブジェクトで配列を形成\n4. JSON形式以外の文字は返さない\n出力形式例：\n[\n  {\"playName\":\"遊び方名称\",\"briefDesc\":\"一文説明\",\"location\":\"地理的位置\",\"startDate\":\"開始時間\",\"endDate\":\"終了時間\",\"detailDesc\":\"詳細な遊び方紹介\",\"price\":[],\"issueTime\":\"チケット発売時間\",\"hasNightView\":\"はい/いいえ\",\"isParentChildFriendly\":\"はい/いいえ\",\"isOutdoor\":\"はい/いいえ\",\"hasCulturalShow\":\"はい/いいえ\",\"hasHotSpring\":\"はい/いいえ\"}\n]\n記事内容:ユニバーサルスタジオ年越し花火ショー、最高の観覧ポイントはハリウッドブルバード、花火とテーマ建物が同じフレームに、雰囲気抜群、カップルのデートや親子体験に適しています。",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "遊び方名称",
+                        "能力項": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "一文説明",
+                        "能力項": "範囲、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "遊び方の地理的位置",
+                        "能力項": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "開始時間"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "終了時間"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "詳細な遊び方紹介",
+                        "能力項": "範囲、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "チケット価格情報",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力項": "主題約束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "チケット発売時間"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜間アクティビティかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "親子に適しているかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "屋外の遊び方かどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "文化パフォーマンスが含まれているかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "温泉プロジェクトがあるかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマに適合するかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたはプロの旅行スポット記事アナリストです。記事内容と記事タイプを提供しますので、記事タイプに応じて異なる識別戦略を実行してください。抽出した遊び方情報のみを返し、その他の冗長な情報は返さないでください。\n記事タイプ: 自動識別\n以下のルールに従って情報を抽出してください：\n1. playName: 遊び方名称、記事で言及されている具体的な遊び方やアクティビティ名を指します。\n2. briefDesc: 一文説明、遊び方のハイライトと特徴をまとめる必要があり、営業時間、実用情報、否定的な説明を除き、68-100文字（スペース、数字を含む）。\n3. location: 遊び方の地理的位置、景勝地や会場内の具体的な参照点やランドマークを指し、都市や省は不可。\n4. startDate/endDate: 遊び方の時間範囲、日付形式はxxxx-xx-xx、識別できない場合は空文字列を返す。\n5. detailDesc: 詳細な遊び方紹介、315-400文字（スペース、数字を含む）が必要、遊び方のハイライトと特徴を説明し、第三者視点の言葉を除く。\n6. price: チケット価格情報、返却形式[\"\",\"\"]、識別できない場合は空リストを返す。\n7. issueTime: 遊び方がコンサート、音楽祭、ライブハウス、漫才などのタイプに属する場合、チケット発売時間を識別する必要があり、日付形式はxxxx-xx-xx、ない場合は空文字列を返す。\n8. hasNightView: 夜間アクティビティかどうか（はい/いいえ）。\n9. isParentChildFriendly: 親子に適しているかどうか（はい/いいえ）。\n10. isOutdoor: 屋外の遊び方かどうか（はい/いいえ）。\n11. hasCulturalShow: 文化パフォーマンスが含まれているかどうか（はい/いいえ）。\n12. hasHotSpring: 温泉プロジェクトがあるかどうか（はい/いいえ）。\n出力要件：\n1. JSON形式で抽出した情報を返す\n2. 各遊び方を一つのオブジェクトとし、すべてのフィールドを含む\n3. すべての遊び方オブジェクトで配列を形成\n4. JSON形式以外の文字は返さない\n出力形式例：\n[\n  {\"playName\":\"遊び方名称\",\"briefDesc\":\"一文説明\",\"location\":\"地理的位置\",\"startDate\":\"開始時間\",\"endDate\":\"終了時間\",\"detailDesc\":\"詳細な遊び方紹介\",\"price\":[],\"issueTime\":\"チケット発売時間\",\"hasNightView\":\"はい/いいえ\",\"isParentChildFriendly\":\"はい/いいえ\",\"isOutdoor\":\"はい/いいえ\",\"hasCulturalShow\":\"はい/いいえ\",\"hasHotSpring\":\"はい/いいえ\"}\n]\n記事内容:西湖端午節ドラゴンボート祭が端午節に開始、ドラゴンボートレース、民俗パフォーマンス、端午節料理がすべて揃い、岸辺での観覧体験は素晴らしく、夜には光と水のショーがあります。",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "遊び方名称",
+                        "能力項": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "一文説明",
+                        "能力項": "範囲、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "遊び方の地理的位置",
+                        "能力項": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "開始時間"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "終了時間"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "詳細な遊び方紹介",
+                        "能力項": "範囲、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "チケット価格情報",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力項": "主題約束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "チケット発売時間"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜間アクティビティかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "親子に適しているかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "屋外の遊び方かどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "文化パフォーマンスが含まれているかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "温泉プロジェクトがあるかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマに適合するかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたはプロの旅行スポット記事アナリストです。記事内容と記事タイプを提供しますので、記事タイプに応じて異なる識別戦略を実行してください。抽出した遊び方情報のみを返し、その他の冗長な情報は返さないでください。\n記事タイプ: 自動識別\n以下のルールに従って情報を抽出してください：\n1. playName: 遊び方名称、記事で言及されている具体的な遊び方やアクティビティ名を指します。\n2. briefDesc: 一文説明、遊び方のハイライトと特徴をまとめる必要があり、営業時間、実用情報、否定的な説明を除き、68-100文字（スペース、数字を含む）。\n3. location: 遊び方の地理的位置、景勝地や会場内の具体的な参照点やランドマークを指し、都市や省は不可。\n4. startDate/endDate: 遊び方の時間範囲、日付形式はxxxx-xx-xx、識別できない場合は空文字列を返す。\n5. detailDesc: 詳細な遊び方紹介、315-400文字（スペース、数字を含む）が必要、遊び方のハイライトと特徴を説明し、第三者視点の言葉を除く。\n6. price: チケット価格情報、返却形式[\"\",\"\"]、識別できない場合は空リストを返す。\n7. issueTime: 遊び方がコンサート、音楽祭、ライブハウス、漫才などのタイプに属する場合、チケット発売時間を識別する必要があり、日付形式はxxxx-xx-xx、ない場合は空文字列を返す。\n8. hasNightView: 夜間アクティビティかどうか（はい/いいえ）。\n9. isParentChildFriendly: 親子に適しているかどうか（はい/いいえ）。\n10. isOutdoor: 屋外の遊び方かどうか（はい/いいえ）。\n11. hasCulturalShow: 文化パフォーマンスが含まれているかどうか（はい/いいえ）。\n12. hasHotSpring: 温泉プロジェクトがあるかどうか（はい/いいえ）。\n出力要件：\n1. JSON形式で抽出した情報を返す\n2. 各遊び方を一つのオブジェクトとし、すべてのフィールドを含む\n3. すべての遊び方オブジェクトで配列を形成\n4. JSON形式以外の文字は返さない\n出力形式例：\n[\n  {\"playName\":\"遊び方名称\",\"briefDesc\":\"一文説明\",\"location\":\"地理的位置\",\"startDate\":\"開始時間\",\"endDate\":\"終了時間\",\"detailDesc\":\"詳細な遊び方紹介\",\"price\":[],\"issueTime\":\"チケット発売時間\",\"hasNightView\":\"はい/いいえ\",\"isParentChildFriendly\":\"はい/いいえ\",\"isOutdoor\":\"はい/いいえ\",\"hasCulturalShow\":\"はい/いいえ\",\"hasHotSpring\":\"はい/いいえ\"}\n]\n記事内容:長隆ウォーターパークが夏の夜に開園。ウォーターパーティーと光・電子音楽ショーで会場全体が興奮。夜のツアー体験はユニークで親子や若者に適しています。",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "遊び方名称",
+                        "能力項": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "一文説明",
+                        "能力項": "範囲、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "遊び方の地理的位置",
+                        "能力項": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "開始時間"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "終了時間"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "詳細な遊び方紹介",
+                        "能力項": "範囲、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "チケット価格情報",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力項": "主題約束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "チケット発売時間"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜間アクティビティかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "親子に適しているかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "屋外の遊び方かどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "文化パフォーマンスが含まれているかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "温泉プロジェクトがあるかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマに適合するかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたはプロの旅行スポット記事アナリストです。記事内容と記事タイプを提供しますので、記事タイプに応じて異なる識別戦略を実行してください。抽出した遊び方情報のみを返し、その他の冗長な情報は返さないでください。\n記事タイプ: 自動識別\n以下のルールに従って情報を抽出してください：\n1. playName: 遊び方名称、記事で言及されている具体的な遊び方やアクティビティ名を指します。\n2. briefDesc: 一文説明、遊び方のハイライトと特徴をまとめる必要があり、営業時間、実用情報、否定的な説明を除き、68-100文字（スペース、数字を含む）。\n3. location: 遊び方の地理的位置、景勝地や会場内の具体的な参照点やランドマークを指し、都市や省は不可。\n4. startDate/endDate: 遊び方の時間範囲、日付形式はxxxx-xx-xx、識別できない場合は空文字列を返す。\n5. detailDesc: 詳細な遊び方紹介、315-400文字（スペース、数字を含む）が必要、遊び方のハイライトと特徴を説明し、第三者視点の言葉を除く。\n6. price: チケット価格情報、返却形式[\"\",\"\"]、識別できない場合は空リストを返す。\n7. issueTime: 遊び方がコンサート、音楽祭、ライブハウス、漫才などのタイプに属する場合、チケット発売時間を識別する必要があり、日付形式はxxxx-xx-xx、ない場合は空文字列を返す。\n8. hasNightView: 夜間アクティビティかどうか（はい/いいえ）。\n9. isParentChildFriendly: 親子に適しているかどうか（はい/いいえ）。\n10. isOutdoor: 屋外の遊び方かどうか（はい/いいえ）。\n11. hasCulturalShow: 文化パフォーマンスが含まれているかどうか（はい/いいえ）。\n12. hasHotSpring: 温泉プロジェクトがあるかどうか（はい/いいえ）。\n出力要件：\n1. JSON形式で抽出した情報を返す\n2. 各遊び方を一つのオブジェクトとし、すべてのフィールドを含む\n3. すべての遊び方オブジェクトで配列を形成\n4. JSON形式以外の文字は返さない\n出力形式例：\n[\n  {\"playName\":\"遊び方名称\",\"briefDesc\":\"一文説明\",\"location\":\"地理的位置\",\"startDate\":\"開始時間\",\"endDate\":\"終了時間\",\"detailDesc\":\"詳細な遊び方紹介\",\"price\":[],\"issueTime\":\"チケット発売時間\",\"hasNightView\":\"はい/いいえ\",\"isParentChildFriendly\":\"はい/いいえ\",\"isOutdoor\":\"はい/いいえ\",\"hasCulturalShow\":\"はい/いいえ\",\"hasHotSpring\":\"はい/いいえ\"}\n]\n記事内容:上海ディズニーランドクリスマスパレード、ミッキーファミリー全員が登場、クリスマスツリー点灯式は温かくロマンチック。夜の花火ショーとライトショーが互いを引き立てます。",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "遊び方名称",
+                        "能力項": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "一文説明",
+                        "能力項": "範囲、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "遊び方の地理的位置",
+                        "能力項": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "開始時間"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "終了時間"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "詳細な遊び方紹介",
+                        "能力項": "範囲、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "チケット価格情報",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力項": "主題約束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "チケット発売時間"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜間アクティビティかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "親子に適しているかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "屋外の遊び方かどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "文化パフォーマンスが含まれているかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "温泉プロジェクトがあるかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマに適合するかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたはプロの旅行スポット記事アナリストです。記事内容と記事タイプを提供しますので、記事タイプに応じて異なる識別戦略を実行してください。抽出した遊び方情報のみを返し、その他の冗長な情報は返さないでください。\n記事タイプ: 自動識別\n以下のルールに従って情報を抽出してください：\n1. playName: 遊び方名称、記事で言及されている具体的な遊び方やアクティビティ名を指します。\n2. briefDesc: 一文説明、遊び方のハイライトと特徴をまとめる必要があり、営業時間、実用情報、否定的な説明を除き、68-100文字（スペース、数字を含む）。\n3. location: 遊び方の地理的位置、景勝地や会場内の具体的な参照点やランドマークを指し、都市や省は不可。\n4. startDate/endDate: 遊び方の時間範囲、日付形式はxxxx-xx-xx、識別できない場合は空文字列を返す。\n5. detailDesc: 詳細な遊び方紹介、315-400文字（スペース、数字を含む）が必要、遊び方のハイライトと特徴を説明し、第三者視点の言葉を除く。\n6. price: チケット価格情報、返却形式[\"\",\"\"]、識別できない場合は空リストを返す。\n7. issueTime: 遊び方がコンサート、音楽祭、ライブハウス、漫才などのタイプに属する場合、チケット発売時間を識別する必要があり、日付形式はxxxx-xx-xx、ない場合は空文字列を返す。\n8. hasNightView: 夜間アクティビティかどうか（はい/いいえ）。\n9. isParentChildFriendly: 親子に適しているかどうか（はい/いいえ）。\n10. isOutdoor: 屋外の遊び方かどうか（はい/いいえ）。\n11. hasCulturalShow: 文化パフォーマンスが含まれているかどうか（はい/いいえ）。\n12. hasHotSpring: 温泉プロジェクトがあるかどうか（はい/いいえ）。\n出力要件：\n1. JSON形式で抽出した情報を返す\n2. 各遊び方を一つのオブジェクトとし、すべてのフィールドを含む\n3. すべての遊び方オブジェクトで配列を形成\n4. JSON形式以外の文字は返さない\n出力形式例：\n[\n  {\"playName\":\"遊び方名称\",\"briefDesc\":\"一文説明\",\"location\":\"地理的位置\",\"startDate\":\"開始時間\",\"endDate\":\"終了時間\",\"detailDesc\":\"詳細な遊び方紹介\",\"price\":[],\"issueTime\":\"チケット発売時間\",\"hasNightView\":\"はい/いいえ\",\"isParentChildFriendly\":\"はい/いいえ\",\"isOutdoor\":\"はい/いいえ\",\"hasCulturalShow\":\"はい/いいえ\",\"hasHotSpring\":\"はい/いいえ\"}\n]\n記事内容:重慶洪崖洞ナイトマーケット音楽祭、インディーズバンドが交代でパフォーマンス、川沿いの夜景と音楽が完璧に融合、親子、カップルが夜のチェックインに適しています。",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "遊び方名称",
+                        "能力項": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "一文説明",
+                        "能力項": "範囲、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "遊び方の地理的位置",
+                        "能力項": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "開始時間"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "終了時間"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "詳細な遊び方紹介",
+                        "能力項": "範囲、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "チケット価格情報",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力項": "主題約束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "チケット発売時間"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜間アクティビティかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "親子に適しているかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "屋外の遊び方かどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "文化パフォーマンスが含まれているかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "温泉プロジェクトがあるかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマに適合するかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたはプロの旅行スポット記事アナリストです。記事内容と記事タイプを提供しますので、記事タイプに応じて異なる識別戦略を実行してください。抽出した遊び方情報のみを返し、その他の冗長な情報は返さないでください。\n記事タイプ: 自動識別\n以下のルールに従って情報を抽出してください：\n1. playName: 遊び方名称、記事で言及されている具体的な遊び方やアクティビティ名を指します。\n2. briefDesc: 一文説明、遊び方のハイライトと特徴をまとめる必要があり、営業時間、実用情報、否定的な説明を除き、68-100文字（スペース、数字を含む）。\n3. location: 遊び方の地理的位置、景勝地や会場内の具体的な参照点やランドマークを指し、都市や省は不可。\n4. startDate/endDate: 遊び方の時間範囲、日付形式はxxxx-xx-xx、識別できない場合は空文字列を返す。\n5. detailDesc: 詳細な遊び方紹介、315-400文字（スペース、数字を含む）が必要、遊び方のハイライトと特徴を説明し、第三者視点の言葉を除く。\n6. price: チケット価格情報、返却形式[\"\",\"\"]、識別できない場合は空リストを返す。\n7. issueTime: 遊び方がコンサート、音楽祭、ライブハウス、漫才などのタイプに属する場合、チケット発売時間を識別する必要があり、日付形式はxxxx-xx-xx、ない場合は空文字列を返す。\n8. hasNightView: 夜間アクティビティかどうか（はい/いいえ）。\n9. isParentChildFriendly: 親子に適しているかどうか（はい/いいえ）。\n10. isOutdoor: 屋外の遊び方かどうか（はい/いいえ）。\n11. hasCulturalShow: 文化パフォーマンスが含まれているかどうか（はい/いいえ）。\n12. hasHotSpring: 温泉プロジェクトがあるかどうか（はい/いいえ）。\n出力要件：\n1. JSON形式で抽出した情報を返す\n2. 各遊び方を一つのオブジェクトとし、すべてのフィールドを含む\n3. すべての遊び方オブジェクトで配列を形成\n4. JSON形式以外の文字は返さない\n出力形式例：\n[\n  {\"playName\":\"遊び方名称\",\"briefDesc\":\"一文説明\",\"location\":\"地理的位置\",\"startDate\":\"開始時間\",\"endDate\":\"終了時間\",\"detailDesc\":\"詳細な遊び方紹介\",\"price\":[],\"issueTime\":\"チケット発売時間\",\"hasNightView\":\"はい/いいえ\",\"isParentChildFriendly\":\"はい/いいえ\",\"isOutdoor\":\"はい/いいえ\",\"hasCulturalShow\":\"はい/いいえ\",\"hasHotSpring\":\"はい/いいえ\"}\n]\n記事内容:大理古城新年廟会、白族舞踊、民俗市場、花火ショーが古城の夜空を照らし、温泉体験と夜市料理が豊富多彩。",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "遊び方名称",
+                        "能力項": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "一文説明",
+                        "能力項": "範囲、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "遊び方の地理的位置",
+                        "能力項": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "開始時間"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "終了時間"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "詳細な遊び方紹介",
+                        "能力項": "範囲、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "チケット価格情報",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力項": "主題約束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "チケット発売時間"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜間アクティビティかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "親子に適しているかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "屋外の遊び方かどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "文化パフォーマンスが含まれているかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "温泉プロジェクトがあるかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマに適合するかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたはプロの旅行スポット記事アナリストです。記事内容と記事タイプを提供しますので、記事タイプに応じて異なる識別戦略を実行してください。抽出した遊び方情報のみを返し、その他の冗長な情報は返さないでください。\n記事タイプ: 自動識別\n以下のルールに従って情報を抽出してください：\n1. playName: 遊び方名称、記事で言及されている具体的な遊び方やアクティビティ名を指します。\n2. briefDesc: 一文説明、遊び方のハイライトと特徴をまとめる必要があり、営業時間、実用情報、否定的な説明を除き、68-100文字（スペース、数字を含む）。\n3. location: 遊び方の地理的位置、景勝地や会場内の具体的な参照点やランドマークを指し、都市や省は不可。\n4. startDate/endDate: 遊び方の時間範囲、日付形式はxxxx-xx-xx、識別できない場合は空文字列を返す。\n5. detailDesc: 詳細な遊び方紹介、315-400文字（スペース、数字を含む）が必要、遊び方のハイライトと特徴を説明し、第三者視点の言葉を除く。\n6. price: チケット価格情報、返却形式[\"\",\"\"]、識別できない場合は空リストを返す。\n7. issueTime: 遊び方がコンサート、音楽祭、ライブハウス、漫才などのタイプに属する場合、チケット発売時間を識別する必要があり、日付形式はxxxx-xx-xx、ない場合は空文字列を返す。\n8. hasNightView: 夜間アクティビティかどうか（はい/いいえ）。\n9. isParentChildFriendly: 親子に適しているかどうか（はい/いいえ）。\n10. isOutdoor: 屋外の遊び方かどうか（はい/いいえ）。\n11. hasCulturalShow: 文化パフォーマンスが含まれているかどうか（はい/いいえ）。\n12. hasHotSpring: 温泉プロジェクトがあるかどうか（はい/いいえ）。\n出力要件：\n1. JSON形式で抽出した情報を返す\n2. 各遊び方を一つのオブジェクトとし、すべてのフィールドを含む\n3. すべての遊び方オブジェクトで配列を形成\n4. JSON形式以外の文字は返さない\n出力形式例：\n[\n  {\"playName\":\"遊び方名称\",\"briefDesc\":\"一文説明\",\"location\":\"地理的位置\",\"startDate\":\"開始時間\",\"endDate\":\"終了時間\",\"detailDesc\":\"詳細な遊び方紹介\",\"price\":[],\"issueTime\":\"チケット発売時間\",\"hasNightView\":\"はい/いいえ\",\"isParentChildFriendly\":\"はい/いいえ\",\"isOutdoor\":\"はい/いいえ\",\"hasCulturalShow\":\"はい/いいえ\",\"hasHotSpring\":\"はい/いいえ\"}\n]\n記事内容:成都パンダ基地親子科学ツアー、パンダ解説、手作り体験、豊富多彩なテーマ記念品、園内には小さな夜のライトショーがあります。",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "遊び方名称",
+                        "能力項": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "一文説明",
+                        "能力項": "範囲、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "遊び方の地理的位置",
+                        "能力項": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "開始時間"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "終了時間"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "詳細な遊び方紹介",
+                        "能力項": "範囲、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "チケット価格情報",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力項": "主題約束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "チケット発売時間"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜間アクティビティかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "親子に適しているかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "屋外の遊び方かどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "文化パフォーマンスが含まれているかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "温泉プロジェクトがあるかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマに適合するかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    }
+]

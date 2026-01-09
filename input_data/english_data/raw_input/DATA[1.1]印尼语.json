@@ -1,0 +1,974 @@
+[
+    {
+        "category": "general_multi",
+        "question": "Halo, LLM. Anggaplah Anda adalah seorang blogger Instagram yang dikontrak untuk berbagi kehidupan Anda. Namun, karena kurangnya inspirasi baru-baru ini, traffic Anda minggu ini telah turun secara signifikan. Sekarang, Anda sangat membutuhkan untuk mendapatkan traffic yang besar. Anda baru-baru ini pergi ke Gunung Fuji dan ingin menerbitkan artikel populer yang terkait dengannya. Karena bos Anda tidak mempercayai Anda, mereka mengharuskan Anda untuk menyediakan 4 salinan draft sebelum rilis resmi dan telah memberikan Anda contoh konten. Kontennya adalah: [Baru-baru ini, saya beruntung dapat memulai perjalanan luar biasa ke simbol Jepang - Gunung Fuji. Gunung Fuji menarik tak terhitung pengunjung dengan bentuk kerucut yang sempurna dan keindahan alam yang menakjubkan. Selama perjalanan ini, tidak hanya saya terpesona oleh pemandangan megah Gunung Fuji dari kejauhan, tetapi budaya yang kaya dan pemandangan alam di sekitarnya juga memikat hati saya. Sepanjang jalan, saya mengunjungi Lima Danau Fuji dan mengagumi pemandangan danau dan gunung yang menyenangkan. Selain itu, saya merasakan masakan lokal dan mata air panas, merasakan pesona unik budaya Jepang. Perjalanan ini meninggalkan kesan yang mendalam bagi saya, membuat saya lebih bersemangat untuk petualangan berikutnya.] Bos memiliki persyaratan berikut: Pertama, jumlah kata draft Anda harus dalam 0.5 kali dari jumlah kata tema (dengan rentang fluktuasi 10%). Jumlah kata mengacu pada jumlah kata dalam bahasa Indonesia.. Kedua, pastikan draft menghindari \"atau\", \"lalu\", \"tapi\", \"dan\", \"pada\" tetapi menyertakan \"besok\", \"tidak\", \"sekarang\", \"sini\", \"sana\", \"selalu\". Untuk memastikan keterbacaan yang kuat, format output sebagai berikut: 1. Draft 1\n2. Draft 2\n3. Draft 3\n4. Draft 4\n5. Draft 5\n",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【富士山】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了4条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[4,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "字数是否是原文的0.5倍左右",
+                "corresponding_part": "文案",
+                "rule": "indonesian_each_length:[45.9,56.1]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围、倍数",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"atau\", \"lalu\", \"tapi\", \"dan\", \"pada\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"atau\", \"lalu\", \"tapi\", \"dan\", \"pada\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"besok\", \"tidak\", \"sekarang\", \"sini\", \"sana\", \"selalu\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"besok\", \"tidak\", \"sekarang\", \"sini\", \"sana\", \"selalu\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Halo, LLM. Anggaplah Anda adalah seorang blogger Instagram yang dikontrak untuk berbagi kehidupan Anda. Namun, karena kurangnya inspirasi baru-baru ini, traffic Anda minggu ini telah turun secara signifikan. Sekarang, Anda sangat membutuhkan untuk mendapatkan traffic yang besar. Anda baru-baru ini pergi ke Gunung Fuji dan ingin menerbitkan artikel populer yang terkait dengannya. Karena bos Anda tidak mempercayai Anda, mereka mengharuskan Anda untuk menyediakan 4 salinan draft sebelum rilis resmi dan telah memberikan Anda contoh konten. Kontennya adalah: [Baru-baru ini, saya beruntung dapat memulai perjalanan luar biasa ke simbol Jepang - Gunung Fuji. Gunung Fuji menarik tak terhitung pengunjung dengan bentuk kerucut yang sempurna dan keindahan alam yang menakjubkan. Selama perjalanan ini, tidak hanya saya terpesona oleh pemandangan megah Gunung Fuji dari kejauhan, tetapi budaya yang kaya dan pemandangan alam di sekitarnya juga memikat hati saya. Sepanjang jalan, saya mengunjungi Lima Danau Fuji dan mengagumi pemandangan danau dan gunung yang menyenangkan. Selain itu, saya merasakan masakan lokal dan mata air panas, merasakan pesona unik budaya Jepang. Perjalanan ini meninggalkan kesan yang mendalam bagi saya, membuat saya lebih bersemangat untuk petualangan berikutnya.] Bos memiliki persyaratan berikut: Pertama, jumlah kata draft Anda harus dalam 1.2 kali dari jumlah kata tema (dengan rentang fluktuasi 10%). Jumlah kata mengacu pada jumlah kata dalam bahasa Indonesia.. Kedua, pastikan draft menghindari \"atau\", \"lalu\", \"tapi\", \"dan\", \"pada\" tetapi menyertakan \"besok\", \"tidak\", \"sekarang\", \"sini\", \"sana\", \"selalu\". Untuk memastikan keterbacaan yang kuat, format output sebagai berikut: 1. Draft 1\n2. Draft 2\n3. Draft 3\n4. Draft 4\n5. Draft 5\n",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【富士山】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了4条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[4,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "字数是否是原文的1.2倍左右",
+                "corresponding_part": "文案",
+                "rule": "indonesian_each_length:[110.2,134.6]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围、倍数",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"atau\", \"lalu\", \"tapi\", \"dan\", \"pada\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"atau\", \"lalu\", \"tapi\", \"dan\", \"pada\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"besok\", \"tidak\", \"sekarang\", \"sini\", \"sana\", \"selalu\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"besok\", \"tidak\", \"sekarang\", \"sini\", \"sana\", \"selalu\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Halo, LLM. Anggaplah Anda adalah seorang blogger Instagram yang dikontrak untuk berbagi kehidupan Anda. Namun, karena kurangnya inspirasi baru-baru ini, traffic Anda minggu ini telah turun secara signifikan. Sekarang, Anda sangat membutuhkan untuk mendapatkan traffic yang besar. Anda baru-baru ini pergi ke Gunung Fuji dan ingin menerbitkan artikel populer yang terkait dengannya. Karena bos Anda tidak mempercayai Anda, mereka mengharuskan Anda untuk menyediakan 4 salinan draft sebelum rilis resmi dan telah memberikan Anda contoh konten. Kontennya adalah: [Baru-baru ini, saya beruntung dapat memulai perjalanan luar biasa ke simbol Jepang - Gunung Fuji. Gunung Fuji menarik tak terhitung pengunjung dengan bentuk kerucut yang sempurna dan keindahan alam yang menakjubkan. Selama perjalanan ini, tidak hanya saya terpesona oleh pemandangan megah Gunung Fuji dari kejauhan, tetapi budaya yang kaya dan pemandangan alam di sekitarnya juga memikat hati saya. Sepanjang jalan, saya mengunjungi Lima Danau Fuji dan mengagumi pemandangan danau dan gunung yang menyenangkan. Selain itu, saya merasakan masakan lokal dan mata air panas, merasakan pesona unik budaya Jepang. Perjalanan ini meninggalkan kesan yang mendalam bagi saya, membuat saya lebih bersemangat untuk petualangan berikutnya.] Bos memiliki persyaratan berikut: Pertama, jumlah kata draft Anda harus dalam 0.5 kali dari jumlah kata tema (dengan rentang fluktuasi 10%). Jumlah kata mengacu pada jumlah kata dalam bahasa Indonesia.. Kedua, pastikan draft menghindari \"pada\", \"tanpa\", \"lalu\", \"dan\", \"atau\" tetapi menyertakan \"sekarang\", \"sini\", \"kemarin\", \"sana\", \"tidak\", \"besok\". Untuk memastikan keterbacaan yang kuat, format output sebagai berikut: 1. Draft 1\n2. Draft 2\n3. Draft 3\n4. Draft 4\n5. Draft 5\n",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【富士山】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了4条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[4,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "字数是否是原文的0.5倍左右",
+                "corresponding_part": "文案",
+                "rule": "indonesian_each_length:[45.9,56.1]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围、倍数",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"pada\", \"tanpa\", \"lalu\", \"dan\", \"atau\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"pada\", \"tanpa\", \"lalu\", \"dan\", \"atau\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"sekarang\", \"sini\", \"kemarin\", \"sana\", \"tidak\", \"besok\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"sekarang\", \"sini\", \"kemarin\", \"sana\", \"tidak\", \"besok\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Halo, LLM. Anggaplah Anda adalah seorang blogger Instagram yang dikontrak untuk berbagi kehidupan Anda. Namun, karena kurangnya inspirasi baru-baru ini, traffic Anda minggu ini telah turun secara signifikan. Sekarang, Anda sangat membutuhkan untuk mendapatkan traffic yang besar. Anda baru-baru ini pergi ke Gunung Fuji dan ingin menerbitkan artikel populer yang terkait dengannya. Karena bos Anda tidak mempercayai Anda, mereka mengharuskan Anda untuk menyediakan 4 salinan draft sebelum rilis resmi dan telah memberikan Anda contoh konten. Kontennya adalah: [Baru-baru ini, saya beruntung dapat memulai perjalanan luar biasa ke simbol Jepang - Gunung Fuji. Gunung Fuji menarik tak terhitung pengunjung dengan bentuk kerucut yang sempurna dan keindahan alam yang menakjubkan. Selama perjalanan ini, tidak hanya saya terpesona oleh pemandangan megah Gunung Fuji dari kejauhan, tetapi budaya yang kaya dan pemandangan alam di sekitarnya juga memikat hati saya. Sepanjang jalan, saya mengunjungi Lima Danau Fuji dan mengagumi pemandangan danau dan gunung yang menyenangkan. Selain itu, saya merasakan masakan lokal dan mata air panas, merasakan pesona unik budaya Jepang. Perjalanan ini meninggalkan kesan yang mendalam bagi saya, membuat saya lebih bersemangat untuk petualangan berikutnya.] Bos memiliki persyaratan berikut: Pertama, jumlah kata draft Anda harus dalam 1.2 kali dari jumlah kata tema (dengan rentang fluktuasi 10%). Jumlah kata mengacu pada jumlah kata dalam bahasa Indonesia.. Kedua, pastikan draft menghindari \"pada\", \"tanpa\", \"lalu\", \"dan\", \"atau\" tetapi menyertakan \"sekarang\", \"sini\", \"kemarin\", \"sana\", \"tidak\", \"besok\". Untuk memastikan keterbacaan yang kuat, format output sebagai berikut: 1. Draft 1\n2. Draft 2\n3. Draft 3\n4. Draft 4\n5. Draft 5\n",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【富士山】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了4条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[4,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "字数是否是原文的1.2倍左右",
+                "corresponding_part": "文案",
+                "rule": "indonesian_each_length:[110.2,134.6]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围、倍数",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"pada\", \"tanpa\", \"lalu\", \"dan\", \"atau\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"pada\", \"tanpa\", \"lalu\", \"dan\", \"atau\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"sekarang\", \"sini\", \"kemarin\", \"sana\", \"tidak\", \"besok\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"sekarang\", \"sini\", \"kemarin\", \"sana\", \"tidak\", \"besok\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Halo, LLM. Anggaplah Anda adalah seorang blogger Instagram yang dikontrak untuk berbagi kehidupan Anda. Namun, karena kurangnya inspirasi baru-baru ini, traffic Anda minggu ini telah turun secara signifikan. Sekarang, Anda sangat membutuhkan untuk mendapatkan traffic yang besar. Anda baru-baru ini pergi ke Gunung Fuji dan ingin menerbitkan artikel populer yang terkait dengannya. Karena bos Anda tidak mempercayai Anda, mereka mengharuskan Anda untuk menyediakan 7 salinan draft sebelum rilis resmi dan telah memberikan Anda contoh konten. Kontennya adalah: [Baru-baru ini, saya beruntung dapat memulai perjalanan luar biasa ke simbol Jepang - Gunung Fuji. Gunung Fuji menarik tak terhitung pengunjung dengan bentuk kerucut yang sempurna dan keindahan alam yang menakjubkan. Selama perjalanan ini, tidak hanya saya terpesona oleh pemandangan megah Gunung Fuji dari kejauhan, tetapi budaya yang kaya dan pemandangan alam di sekitarnya juga memikat hati saya. Sepanjang jalan, saya mengunjungi Lima Danau Fuji dan mengagumi pemandangan danau dan gunung yang menyenangkan. Selain itu, saya merasakan masakan lokal dan mata air panas, merasakan pesona unik budaya Jepang. Perjalanan ini meninggalkan kesan yang mendalam bagi saya, membuat saya lebih bersemangat untuk petualangan berikutnya.] Bos memiliki persyaratan berikut: Pertama, jumlah kata draft Anda harus dalam 0.5 kali dari jumlah kata tema (dengan rentang fluktuasi 10%). Jumlah kata mengacu pada jumlah kata dalam bahasa Indonesia.. Kedua, pastikan draft menghindari \"atau\", \"lalu\", \"tapi\", \"dan\", \"pada\" tetapi menyertakan \"besok\", \"tidak\", \"sekarang\", \"sini\", \"sana\", \"selalu\". Untuk memastikan keterbacaan yang kuat, format output sebagai berikut: 1. Draft 1\n2. Draft 2\n3. Draft 3\n4. Draft 4\n5. Draft 5\n",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【富士山】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了7条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[7,7]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "字数是否是原文的0.5倍左右",
+                "corresponding_part": "文案",
+                "rule": "indonesian_each_length:[45.9,56.1]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围、倍数",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"atau\", \"lalu\", \"tapi\", \"dan\", \"pada\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"atau\", \"lalu\", \"tapi\", \"dan\", \"pada\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"besok\", \"tidak\", \"sekarang\", \"sini\", \"sana\", \"selalu\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"besok\", \"tidak\", \"sekarang\", \"sini\", \"sana\", \"selalu\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Halo, LLM. Anggaplah Anda adalah seorang blogger Instagram yang dikontrak untuk berbagi kehidupan Anda. Namun, karena kurangnya inspirasi baru-baru ini, traffic Anda minggu ini telah turun secara signifikan. Sekarang, Anda sangat membutuhkan untuk mendapatkan traffic yang besar. Anda baru-baru ini pergi ke Gunung Fuji dan ingin menerbitkan artikel populer yang terkait dengannya. Karena bos Anda tidak mempercayai Anda, mereka mengharuskan Anda untuk menyediakan 7 salinan draft sebelum rilis resmi dan telah memberikan Anda contoh konten. Kontennya adalah: [Baru-baru ini, saya beruntung dapat memulai perjalanan luar biasa ke simbol Jepang - Gunung Fuji. Gunung Fuji menarik tak terhitung pengunjung dengan bentuk kerucut yang sempurna dan keindahan alam yang menakjubkan. Selama perjalanan ini, tidak hanya saya terpesona oleh pemandangan megah Gunung Fuji dari kejauhan, tetapi budaya yang kaya dan pemandangan alam di sekitarnya juga memikat hati saya. Sepanjang jalan, saya mengunjungi Lima Danau Fuji dan mengagumi pemandangan danau dan gunung yang menyenangkan. Selain itu, saya merasakan masakan lokal dan mata air panas, merasakan pesona unik budaya Jepang. Perjalanan ini meninggalkan kesan yang mendalam bagi saya, membuat saya lebih bersemangat untuk petualangan berikutnya.] Bos memiliki persyaratan berikut: Pertama, jumlah kata draft Anda harus dalam 1.2 kali dari jumlah kata tema (dengan rentang fluktuasi 10%). Jumlah kata mengacu pada jumlah kata dalam bahasa Indonesia.. Kedua, pastikan draft menghindari \"atau\", \"lalu\", \"tapi\", \"dan\", \"pada\" tetapi menyertakan \"besok\", \"tidak\", \"sekarang\", \"sini\", \"sana\", \"selalu\". Untuk memastikan keterbacaan yang kuat, format output sebagai berikut: 1. Draft 1\n2. Draft 2\n3. Draft 3\n4. Draft 4\n5. Draft 5\n",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【富士山】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了7条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[7,7]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "字数是否是原文的1.2倍左右",
+                "corresponding_part": "文案",
+                "rule": "indonesian_each_length:[110.2,134.6]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围、倍数",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"atau\", \"lalu\", \"tapi\", \"dan\", \"pada\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"atau\", \"lalu\", \"tapi\", \"dan\", \"pada\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"besok\", \"tidak\", \"sekarang\", \"sini\", \"sana\", \"selalu\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"besok\", \"tidak\", \"sekarang\", \"sini\", \"sana\", \"selalu\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Halo, LLM. Anggaplah Anda adalah seorang blogger Instagram yang dikontrak untuk berbagi kehidupan Anda. Namun, karena kurangnya inspirasi baru-baru ini, traffic Anda minggu ini telah turun secara signifikan. Sekarang, Anda sangat membutuhkan untuk mendapatkan traffic yang besar. Anda baru-baru ini pergi ke Gunung Fuji dan ingin menerbitkan artikel populer yang terkait dengannya. Karena bos Anda tidak mempercayai Anda, mereka mengharuskan Anda untuk menyediakan 7 salinan draft sebelum rilis resmi dan telah memberikan Anda contoh konten. Kontennya adalah: [Baru-baru ini, saya beruntung dapat memulai perjalanan luar biasa ke simbol Jepang - Gunung Fuji. Gunung Fuji menarik tak terhitung pengunjung dengan bentuk kerucut yang sempurna dan keindahan alam yang menakjubkan. Selama perjalanan ini, tidak hanya saya terpesona oleh pemandangan megah Gunung Fuji dari kejauhan, tetapi budaya yang kaya dan pemandangan alam di sekitarnya juga memikat hati saya. Sepanjang jalan, saya mengunjungi Lima Danau Fuji dan mengagumi pemandangan danau dan gunung yang menyenangkan. Selain itu, saya merasakan masakan lokal dan mata air panas, merasakan pesona unik budaya Jepang. Perjalanan ini meninggalkan kesan yang mendalam bagi saya, membuat saya lebih bersemangat untuk petualangan berikutnya.] Bos memiliki persyaratan berikut: Pertama, jumlah kata draft Anda harus dalam 0.5 kali dari jumlah kata tema (dengan rentang fluktuasi 10%). Jumlah kata mengacu pada jumlah kata dalam bahasa Indonesia.. Kedua, pastikan draft menghindari \"pada\", \"tanpa\", \"lalu\", \"dan\", \"atau\" tetapi menyertakan \"sekarang\", \"sini\", \"kemarin\", \"sana\", \"tidak\", \"besok\". Untuk memastikan keterbacaan yang kuat, format output sebagai berikut: 1. Draft 1\n2. Draft 2\n3. Draft 3\n4. Draft 4\n5. Draft 5\n",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【富士山】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了7条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[7,7]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "字数是否是原文的0.5倍左右",
+                "corresponding_part": "文案",
+                "rule": "indonesian_each_length:[45.9,56.1]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围、倍数",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"pada\", \"tanpa\", \"lalu\", \"dan\", \"atau\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"pada\", \"tanpa\", \"lalu\", \"dan\", \"atau\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"sekarang\", \"sini\", \"kemarin\", \"sana\", \"tidak\", \"besok\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"sekarang\", \"sini\", \"kemarin\", \"sana\", \"tidak\", \"besok\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Halo, LLM. Anggaplah Anda adalah seorang blogger Instagram yang dikontrak untuk berbagi kehidupan Anda. Namun, karena kurangnya inspirasi baru-baru ini, traffic Anda minggu ini telah turun secara signifikan. Sekarang, Anda sangat membutuhkan untuk mendapatkan traffic yang besar. Anda baru-baru ini pergi ke Gunung Fuji dan ingin menerbitkan artikel populer yang terkait dengannya. Karena bos Anda tidak mempercayai Anda, mereka mengharuskan Anda untuk menyediakan 7 salinan draft sebelum rilis resmi dan telah memberikan Anda contoh konten. Kontennya adalah: [Baru-baru ini, saya beruntung dapat memulai perjalanan luar biasa ke simbol Jepang - Gunung Fuji. Gunung Fuji menarik tak terhitung pengunjung dengan bentuk kerucut yang sempurna dan keindahan alam yang menakjubkan. Selama perjalanan ini, tidak hanya saya terpesona oleh pemandangan megah Gunung Fuji dari kejauhan, tetapi budaya yang kaya dan pemandangan alam di sekitarnya juga memikat hati saya. Sepanjang jalan, saya mengunjungi Lima Danau Fuji dan mengagumi pemandangan danau dan gunung yang menyenangkan. Selain itu, saya merasakan masakan lokal dan mata air panas, merasakan pesona unik budaya Jepang. Perjalanan ini meninggalkan kesan yang mendalam bagi saya, membuat saya lebih bersemangat untuk petualangan berikutnya.] Bos memiliki persyaratan berikut: Pertama, jumlah kata draft Anda harus dalam 1.2 kali dari jumlah kata tema (dengan rentang fluktuasi 10%). Jumlah kata mengacu pada jumlah kata dalam bahasa Indonesia.. Kedua, pastikan draft menghindari \"pada\", \"tanpa\", \"lalu\", \"dan\", \"atau\" tetapi menyertakan \"sekarang\", \"sini\", \"kemarin\", \"sana\", \"tidak\", \"besok\". Untuk memastikan keterbacaan yang kuat, format output sebagai berikut: 1. Draft 1\n2. Draft 2\n3. Draft 3\n4. Draft 4\n5. Draft 5\n",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【富士山】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了7条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[7,7]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "字数是否是原文的1.2倍左右",
+                "corresponding_part": "文案",
+                "rule": "indonesian_each_length:[110.2,134.6]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围、倍数",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"pada\", \"tanpa\", \"lalu\", \"dan\", \"atau\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"pada\", \"tanpa\", \"lalu\", \"dan\", \"atau\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"sekarang\", \"sini\", \"kemarin\", \"sana\", \"tidak\", \"besok\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"sekarang\", \"sini\", \"kemarin\", \"sana\", \"tidak\", \"besok\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Halo, LLM. Anggaplah Anda adalah seorang blogger Instagram yang dikontrak untuk berbagi kehidupan Anda. Namun, karena kurangnya inspirasi baru-baru ini, traffic Anda minggu ini telah turun secara signifikan. Sekarang, Anda sangat membutuhkan untuk mendapatkan traffic yang besar. Anda baru-baru ini pergi ke Gunung Fuji dan ingin menerbitkan artikel populer yang terkait dengannya. Karena bos Anda tidak mempercayai Anda, mereka mengharuskan Anda untuk menyediakan 15 salinan draft sebelum rilis resmi dan telah memberikan Anda contoh konten. Kontennya adalah: [Baru-baru ini, saya beruntung dapat memulai perjalanan luar biasa ke simbol Jepang - Gunung Fuji. Gunung Fuji menarik tak terhitung pengunjung dengan bentuk kerucut yang sempurna dan keindahan alam yang menakjubkan. Selama perjalanan ini, tidak hanya saya terpesona oleh pemandangan megah Gunung Fuji dari kejauhan, tetapi budaya yang kaya dan pemandangan alam di sekitarnya juga memikat hati saya. Sepanjang jalan, saya mengunjungi Lima Danau Fuji dan mengagumi pemandangan danau dan gunung yang menyenangkan. Selain itu, saya merasakan masakan lokal dan mata air panas, merasakan pesona unik budaya Jepang. Perjalanan ini meninggalkan kesan yang mendalam bagi saya, membuat saya lebih bersemangat untuk petualangan berikutnya.] Bos memiliki persyaratan berikut: Pertama, jumlah kata draft Anda harus dalam 0.5 kali dari jumlah kata tema (dengan rentang fluktuasi 10%). Jumlah kata mengacu pada jumlah kata dalam bahasa Indonesia.. Kedua, pastikan draft menghindari \"atau\", \"lalu\", \"tapi\", \"dan\", \"pada\" tetapi menyertakan \"besok\", \"tidak\", \"sekarang\", \"sini\", \"sana\", \"selalu\". Untuk memastikan keterbacaan yang kuat, format output sebagai berikut: 1. Draft 1\n2. Draft 2\n3. Draft 3\n4. Draft 4\n5. Draft 5\n",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【富士山】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了15条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[15,15]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "字数是否是原文的0.5倍左右",
+                "corresponding_part": "文案",
+                "rule": "indonesian_each_length:[45.9,56.1]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围、倍数",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"atau\", \"lalu\", \"tapi\", \"dan\", \"pada\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"atau\", \"lalu\", \"tapi\", \"dan\", \"pada\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"besok\", \"tidak\", \"sekarang\", \"sini\", \"sana\", \"selalu\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"besok\", \"tidak\", \"sekarang\", \"sini\", \"sana\", \"selalu\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Halo, LLM. Anggaplah Anda adalah seorang blogger Instagram yang dikontrak untuk berbagi kehidupan Anda. Namun, karena kurangnya inspirasi baru-baru ini, traffic Anda minggu ini telah turun secara signifikan. Sekarang, Anda sangat membutuhkan untuk mendapatkan traffic yang besar. Anda baru-baru ini pergi ke Gunung Fuji dan ingin menerbitkan artikel populer yang terkait dengannya. Karena bos Anda tidak mempercayai Anda, mereka mengharuskan Anda untuk menyediakan 15 salinan draft sebelum rilis resmi dan telah memberikan Anda contoh konten. Kontennya adalah: [Baru-baru ini, saya beruntung dapat memulai perjalanan luar biasa ke simbol Jepang - Gunung Fuji. Gunung Fuji menarik tak terhitung pengunjung dengan bentuk kerucut yang sempurna dan keindahan alam yang menakjubkan. Selama perjalanan ini, tidak hanya saya terpesona oleh pemandangan megah Gunung Fuji dari kejauhan, tetapi budaya yang kaya dan pemandangan alam di sekitarnya juga memikat hati saya. Sepanjang jalan, saya mengunjungi Lima Danau Fuji dan mengagumi pemandangan danau dan gunung yang menyenangkan. Selain itu, saya merasakan masakan lokal dan mata air panas, merasakan pesona unik budaya Jepang. Perjalanan ini meninggalkan kesan yang mendalam bagi saya, membuat saya lebih bersemangat untuk petualangan berikutnya.] Bos memiliki persyaratan berikut: Pertama, jumlah kata draft Anda harus dalam 1.2 kali dari jumlah kata tema (dengan rentang fluktuasi 10%). Jumlah kata mengacu pada jumlah kata dalam bahasa Indonesia.. Kedua, pastikan draft menghindari \"atau\", \"lalu\", \"tapi\", \"dan\", \"pada\" tetapi menyertakan \"besok\", \"tidak\", \"sekarang\", \"sini\", \"sana\", \"selalu\". Untuk memastikan keterbacaan yang kuat, format output sebagai berikut: 1. Draft 1\n2. Draft 2\n3. Draft 3\n4. Draft 4\n5. Draft 5\n",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【富士山】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了15条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[15,15]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "字数是否是原文的1.2倍左右",
+                "corresponding_part": "文案",
+                "rule": "indonesian_each_length:[110.2,134.6]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围、倍数",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"atau\", \"lalu\", \"tapi\", \"dan\", \"pada\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"atau\", \"lalu\", \"tapi\", \"dan\", \"pada\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"besok\", \"tidak\", \"sekarang\", \"sini\", \"sana\", \"selalu\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"besok\", \"tidak\", \"sekarang\", \"sini\", \"sana\", \"selalu\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Halo, LLM. Anggaplah Anda adalah seorang blogger Instagram yang dikontrak untuk berbagi kehidupan Anda. Namun, karena kurangnya inspirasi baru-baru ini, traffic Anda minggu ini telah turun secara signifikan. Sekarang, Anda sangat membutuhkan untuk mendapatkan traffic yang besar. Anda baru-baru ini pergi ke Gunung Fuji dan ingin menerbitkan artikel populer yang terkait dengannya. Karena bos Anda tidak mempercayai Anda, mereka mengharuskan Anda untuk menyediakan 15 salinan draft sebelum rilis resmi dan telah memberikan Anda contoh konten. Kontennya adalah: [Baru-baru ini, saya beruntung dapat memulai perjalanan luar biasa ke simbol Jepang - Gunung Fuji. Gunung Fuji menarik tak terhitung pengunjung dengan bentuk kerucut yang sempurna dan keindahan alam yang menakjubkan. Selama perjalanan ini, tidak hanya saya terpesona oleh pemandangan megah Gunung Fuji dari kejauhan, tetapi budaya yang kaya dan pemandangan alam di sekitarnya juga memikat hati saya. Sepanjang jalan, saya mengunjungi Lima Danau Fuji dan mengagumi pemandangan danau dan gunung yang menyenangkan. Selain itu, saya merasakan masakan lokal dan mata air panas, merasakan pesona unik budaya Jepang. Perjalanan ini meninggalkan kesan yang mendalam bagi saya, membuat saya lebih bersemangat untuk petualangan berikutnya.] Bos memiliki persyaratan berikut: Pertama, jumlah kata draft Anda harus dalam 0.5 kali dari jumlah kata tema (dengan rentang fluktuasi 10%). Jumlah kata mengacu pada jumlah kata dalam bahasa Indonesia.. Kedua, pastikan draft menghindari \"pada\", \"tanpa\", \"lalu\", \"dan\", \"atau\" tetapi menyertakan \"sekarang\", \"sini\", \"kemarin\", \"sana\", \"tidak\", \"besok\". Untuk memastikan keterbacaan yang kuat, format output sebagai berikut: 1. Draft 1\n2. Draft 2\n3. Draft 3\n4. Draft 4\n5. Draft 5\n",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【富士山】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了15条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[15,15]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "字数是否是原文的0.5倍左右",
+                "corresponding_part": "文案",
+                "rule": "indonesian_each_length:[45.9,56.1]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围、倍数",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"pada\", \"tanpa\", \"lalu\", \"dan\", \"atau\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"pada\", \"tanpa\", \"lalu\", \"dan\", \"atau\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"sekarang\", \"sini\", \"kemarin\", \"sana\", \"tidak\", \"besok\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"sekarang\", \"sini\", \"kemarin\", \"sana\", \"tidak\", \"besok\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Halo, LLM. Anggaplah Anda adalah seorang blogger Instagram yang dikontrak untuk berbagi kehidupan Anda. Namun, karena kurangnya inspirasi baru-baru ini, traffic Anda minggu ini telah turun secara signifikan. Sekarang, Anda sangat membutuhkan untuk mendapatkan traffic yang besar. Anda baru-baru ini pergi ke Gunung Fuji dan ingin menerbitkan artikel populer yang terkait dengannya. Karena bos Anda tidak mempercayai Anda, mereka mengharuskan Anda untuk menyediakan 15 salinan draft sebelum rilis resmi dan telah memberikan Anda contoh konten. Kontennya adalah: [Baru-baru ini, saya beruntung dapat memulai perjalanan luar biasa ke simbol Jepang - Gunung Fuji. Gunung Fuji menarik tak terhitung pengunjung dengan bentuk kerucut yang sempurna dan keindahan alam yang menakjubkan. Selama perjalanan ini, tidak hanya saya terpesona oleh pemandangan megah Gunung Fuji dari kejauhan, tetapi budaya yang kaya dan pemandangan alam di sekitarnya juga memikat hati saya. Sepanjang jalan, saya mengunjungi Lima Danau Fuji dan mengagumi pemandangan danau dan gunung yang menyenangkan. Selain itu, saya merasakan masakan lokal dan mata air panas, merasakan pesona unik budaya Jepang. Perjalanan ini meninggalkan kesan yang mendalam bagi saya, membuat saya lebih bersemangat untuk petualangan berikutnya.] Bos memiliki persyaratan berikut: Pertama, jumlah kata draft Anda harus dalam 1.2 kali dari jumlah kata tema (dengan rentang fluktuasi 10%). Jumlah kata mengacu pada jumlah kata dalam bahasa Indonesia.. Kedua, pastikan draft menghindari \"pada\", \"tanpa\", \"lalu\", \"dan\", \"atau\" tetapi menyertakan \"sekarang\", \"sini\", \"kemarin\", \"sana\", \"tidak\", \"besok\". Untuk memastikan keterbacaan yang kuat, format output sebagai berikut: 1. Draft 1\n2. Draft 2\n3. Draft 3\n4. Draft 4\n5. Draft 5\n",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【富士山】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了15条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[15,15]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "字数是否是原文的1.2倍左右",
+                "corresponding_part": "文案",
+                "rule": "indonesian_each_length:[110.2,134.6]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围、倍数",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"pada\", \"tanpa\", \"lalu\", \"dan\", \"atau\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"pada\", \"tanpa\", \"lalu\", \"dan\", \"atau\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"sekarang\", \"sini\", \"kemarin\", \"sana\", \"tidak\", \"besok\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"sekarang\", \"sini\", \"kemarin\", \"sana\", \"tidak\", \"besok\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    }
+]

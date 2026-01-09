@@ -1,0 +1,702 @@
+[
+    {
+        "category": "general_multi",
+        "question": "Finden Sie die ersten 1 männlich Berufsbezeichner in folgendem Text und ersetzen Sie diese durch die entsprechenden weiblich Berufsbezeichner(Achten Sie darauf, den richtigen Artikel zu verwenden. Bei der Ausgabe der Antwort fügen Sie bitte vor den ersetzten Berufsbezeichnungen [ersetzte Berufsbezeichnung1], [ersetzte Berufsbezeichnung2], ... , [ersetzte Berufsbezeichnung1] hinzu.): „In diesem Training gibt es Schüler aus allen Berufsbereichen. Schüler 1 ist ein Lehrer und unterrichtet Mathematik an einer Sekundarschule. Schüler 2 ist ein Arzt und arbeitet regelmäßig im städtischen Krankenhaus. Schüler 3 ist eine Köchin und betreibt ein sehr beliebtes Restaurant. Schüler 4 ist ein Ingenieur und verantwortlich für die technische Forschung und Entwicklung. Schüler 5 ist eine Bäuerin und führt ihre eigene biologische Farm. Schüler 6 ist eine Architektin und hat mehrere bekannte Gebäude entworfen. Schüler 7 ist ein Professor und lehrt seit vielen Jahren Physik an einer Universität. Schüler 8 ist eine Friseurin und betreibt einen kleinen Friseursalon in der Stadt. Schüler 9 ist ein Anwalt und spezialisiert auf Handelsrecht. Schüler 10 ist ein Musiker und ein Pianist. Schüler 11 ist eine Künstlerin und widmet sich der modernen Kunst. Schüler 12 ist eine Schneiderin und spezialisiert auf maßgeschneiderte Haute Couture. Schüler 13 ist ein Journalist und hat mehrfach internationale Nachrichten berichtet. Schüler 14 ist eine Polizistin und zuständig für die öffentliche Sicherheit in der Stadt. Schüler 15 ist ein Politiker und engagiert sich für soziale Reformen. Schüler 16 ist eine Wissenschaftlerin und forscht im Bereich der biomedizinischen Forschung. Alle diese Menschen haben ihren Beitrag zur gesellschaftlichen Entwicklung geleistet!“",
+        "corresponding_parts": {
+            "原职业名称": "你找出的题目规定的前1个的männlich职业名称，不用提取ein、eine等冠词，只提取需要的职业名称。",
+            "替换后的职业名称": "你对上述原职业名称进行替换后的名称，不用提取ein、eine等冠词，只提取需要的职业名称。注意它不能原来就是weiblich，必须经过替换得到。也不能漏提取，你转换的名称必须提取出来。替换后的职业名称和原职业名称是一一对应的。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否找出了前1个männlich职业名称？",
+                "corresponding_part": "原职业名称",
+                "rule": "item_count:[1,1]",
+                "dep": [],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "原职业名称是否不重复？",
+                "corresponding_part": "原职业名称",
+                "rule": "repeat_each",
+                "dep": [],
+                "能力项": "重复",
+                "被依赖": true
+            },
+            {
+                "point_id": 2,
+                "question": "原职业名称是否符合在文中出现的顺序？",
+                "corresponding_part": "原职业名称",
+                "rule": "order_profession1_check",
+                "dep": [
+                    0,
+                    1
+                ],
+                "能力项": "顺序",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "是否替换为了1个weiblich职业名称？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "item_count:[1,1]",
+                "dep": [],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 4,
+                "question": "替换后的职业名称是否不重复？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "repeat_each",
+                "dep": [],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "替换后的职业名称是否符合在文中出现的顺序？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "order_profession2_check",
+                "dep": [
+                    3,
+                    4
+                ],
+                "能力项": "职业名称性别转换",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Finden Sie die ersten 1 weiblich Berufsbezeichner in folgendem Text und ersetzen Sie diese durch die entsprechenden männlich Berufsbezeichner(Achten Sie darauf, den richtigen Artikel zu verwenden. Bei der Ausgabe der Antwort fügen Sie bitte vor den ersetzten Berufsbezeichnungen [ersetzte Berufsbezeichnung1], [ersetzte Berufsbezeichnung2], ... , [ersetzte Berufsbezeichnung1] hinzu.): „In diesem Training gibt es Schüler aus allen Berufsbereichen. Schüler 1 ist ein Lehrer und unterrichtet Mathematik an einer Sekundarschule. Schüler 2 ist ein Arzt und arbeitet regelmäßig im städtischen Krankenhaus. Schüler 3 ist eine Köchin und betreibt ein sehr beliebtes Restaurant. Schüler 4 ist ein Ingenieur und verantwortlich für die technische Forschung und Entwicklung. Schüler 5 ist eine Bäuerin und führt ihre eigene biologische Farm. Schüler 6 ist eine Architektin und hat mehrere bekannte Gebäude entworfen. Schüler 7 ist ein Professor und lehrt seit vielen Jahren Physik an einer Universität. Schüler 8 ist eine Friseurin und betreibt einen kleinen Friseursalon in der Stadt. Schüler 9 ist ein Anwalt und spezialisiert auf Handelsrecht. Schüler 10 ist ein Musiker und ein Pianist. Schüler 11 ist eine Künstlerin und widmet sich der modernen Kunst. Schüler 12 ist eine Schneiderin und spezialisiert auf maßgeschneiderte Haute Couture. Schüler 13 ist ein Journalist und hat mehrfach internationale Nachrichten berichtet. Schüler 14 ist eine Polizistin und zuständig für die öffentliche Sicherheit in der Stadt. Schüler 15 ist ein Politiker und engagiert sich für soziale Reformen. Schüler 16 ist eine Wissenschaftlerin und forscht im Bereich der biomedizinischen Forschung. Alle diese Menschen haben ihren Beitrag zur gesellschaftlichen Entwicklung geleistet!“",
+        "corresponding_parts": {
+            "原职业名称": "你找出的题目规定的前1个的weiblich职业名称，不用提取ein、eine等冠词，只提取需要的职业名称。",
+            "替换后的职业名称": "你对上述原职业名称进行替换后的名称，不用提取ein、eine等冠词，只提取需要的职业名称。注意它不能原来就是männlich，必须经过替换得到。也不能漏提取，你转换的名称必须提取出来。替换后的职业名称和原职业名称是一一对应的。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否找出了前1个weiblich职业名称？",
+                "corresponding_part": "原职业名称",
+                "rule": "item_count:[1,1]",
+                "dep": [],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "原职业名称是否不重复？",
+                "corresponding_part": "原职业名称",
+                "rule": "repeat_each",
+                "dep": [],
+                "能力项": "重复",
+                "被依赖": true
+            },
+            {
+                "point_id": 2,
+                "question": "原职业名称是否符合在文中出现的顺序？",
+                "corresponding_part": "原职业名称",
+                "rule": "order_profession1_check",
+                "dep": [
+                    0,
+                    1
+                ],
+                "能力项": "顺序",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "是否替换为了1个männlich职业名称？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "item_count:[1,1]",
+                "dep": [],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 4,
+                "question": "替换后的职业名称是否不重复？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "repeat_each",
+                "dep": [],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "替换后的职业名称是否符合在文中出现的顺序？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "order_profession2_check",
+                "dep": [
+                    3,
+                    4
+                ],
+                "能力项": "职业名称性别转换",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Finden Sie die ersten 2 männlich Berufsbezeichner in folgendem Text und ersetzen Sie diese durch die entsprechenden weiblich Berufsbezeichner(Achten Sie darauf, den richtigen Artikel zu verwenden. Bei der Ausgabe der Antwort fügen Sie bitte vor den ersetzten Berufsbezeichnungen [ersetzte Berufsbezeichnung1], [ersetzte Berufsbezeichnung2], ... , [ersetzte Berufsbezeichnung2] hinzu.): „In diesem Training gibt es Schüler aus allen Berufsbereichen. Schüler 1 ist ein Lehrer und unterrichtet Mathematik an einer Sekundarschule. Schüler 2 ist ein Arzt und arbeitet regelmäßig im städtischen Krankenhaus. Schüler 3 ist eine Köchin und betreibt ein sehr beliebtes Restaurant. Schüler 4 ist ein Ingenieur und verantwortlich für die technische Forschung und Entwicklung. Schüler 5 ist eine Bäuerin und führt ihre eigene biologische Farm. Schüler 6 ist eine Architektin und hat mehrere bekannte Gebäude entworfen. Schüler 7 ist ein Professor und lehrt seit vielen Jahren Physik an einer Universität. Schüler 8 ist eine Friseurin und betreibt einen kleinen Friseursalon in der Stadt. Schüler 9 ist ein Anwalt und spezialisiert auf Handelsrecht. Schüler 10 ist ein Musiker und ein Pianist. Schüler 11 ist eine Künstlerin und widmet sich der modernen Kunst. Schüler 12 ist eine Schneiderin und spezialisiert auf maßgeschneiderte Haute Couture. Schüler 13 ist ein Journalist und hat mehrfach internationale Nachrichten berichtet. Schüler 14 ist eine Polizistin und zuständig für die öffentliche Sicherheit in der Stadt. Schüler 15 ist ein Politiker und engagiert sich für soziale Reformen. Schüler 16 ist eine Wissenschaftlerin und forscht im Bereich der biomedizinischen Forschung. Alle diese Menschen haben ihren Beitrag zur gesellschaftlichen Entwicklung geleistet!“",
+        "corresponding_parts": {
+            "原职业名称": "你找出的题目规定的前2个的männlich职业名称，不用提取ein、eine等冠词，只提取需要的职业名称。",
+            "替换后的职业名称": "你对上述原职业名称进行替换后的名称，不用提取ein、eine等冠词，只提取需要的职业名称。注意它不能原来就是weiblich，必须经过替换得到。也不能漏提取，你转换的名称必须提取出来。替换后的职业名称和原职业名称是一一对应的。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否找出了前2个männlich职业名称？",
+                "corresponding_part": "原职业名称",
+                "rule": "item_count:[2,2]",
+                "dep": [],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "原职业名称是否不重复？",
+                "corresponding_part": "原职业名称",
+                "rule": "repeat_each",
+                "dep": [],
+                "能力项": "重复",
+                "被依赖": true
+            },
+            {
+                "point_id": 2,
+                "question": "原职业名称是否符合在文中出现的顺序？",
+                "corresponding_part": "原职业名称",
+                "rule": "order_profession1_check",
+                "dep": [
+                    0,
+                    1
+                ],
+                "能力项": "顺序",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "是否替换为了2个weiblich职业名称？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "item_count:[2,2]",
+                "dep": [],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 4,
+                "question": "替换后的职业名称是否不重复？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "repeat_each",
+                "dep": [],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "替换后的职业名称是否符合在文中出现的顺序？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "order_profession2_check",
+                "dep": [
+                    3,
+                    4
+                ],
+                "能力项": "职业名称性别转换",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Finden Sie die ersten 2 weiblich Berufsbezeichner in folgendem Text und ersetzen Sie diese durch die entsprechenden männlich Berufsbezeichner(Achten Sie darauf, den richtigen Artikel zu verwenden. Bei der Ausgabe der Antwort fügen Sie bitte vor den ersetzten Berufsbezeichnungen [ersetzte Berufsbezeichnung1], [ersetzte Berufsbezeichnung2], ... , [ersetzte Berufsbezeichnung2] hinzu.): „In diesem Training gibt es Schüler aus allen Berufsbereichen. Schüler 1 ist ein Lehrer und unterrichtet Mathematik an einer Sekundarschule. Schüler 2 ist ein Arzt und arbeitet regelmäßig im städtischen Krankenhaus. Schüler 3 ist eine Köchin und betreibt ein sehr beliebtes Restaurant. Schüler 4 ist ein Ingenieur und verantwortlich für die technische Forschung und Entwicklung. Schüler 5 ist eine Bäuerin und führt ihre eigene biologische Farm. Schüler 6 ist eine Architektin und hat mehrere bekannte Gebäude entworfen. Schüler 7 ist ein Professor und lehrt seit vielen Jahren Physik an einer Universität. Schüler 8 ist eine Friseurin und betreibt einen kleinen Friseursalon in der Stadt. Schüler 9 ist ein Anwalt und spezialisiert auf Handelsrecht. Schüler 10 ist ein Musiker und ein Pianist. Schüler 11 ist eine Künstlerin und widmet sich der modernen Kunst. Schüler 12 ist eine Schneiderin und spezialisiert auf maßgeschneiderte Haute Couture. Schüler 13 ist ein Journalist und hat mehrfach internationale Nachrichten berichtet. Schüler 14 ist eine Polizistin und zuständig für die öffentliche Sicherheit in der Stadt. Schüler 15 ist ein Politiker und engagiert sich für soziale Reformen. Schüler 16 ist eine Wissenschaftlerin und forscht im Bereich der biomedizinischen Forschung. Alle diese Menschen haben ihren Beitrag zur gesellschaftlichen Entwicklung geleistet!“",
+        "corresponding_parts": {
+            "原职业名称": "你找出的题目规定的前2个的weiblich职业名称，不用提取ein、eine等冠词，只提取需要的职业名称。",
+            "替换后的职业名称": "你对上述原职业名称进行替换后的名称，不用提取ein、eine等冠词，只提取需要的职业名称。注意它不能原来就是männlich，必须经过替换得到。也不能漏提取，你转换的名称必须提取出来。替换后的职业名称和原职业名称是一一对应的。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否找出了前2个weiblich职业名称？",
+                "corresponding_part": "原职业名称",
+                "rule": "item_count:[2,2]",
+                "dep": [],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "原职业名称是否不重复？",
+                "corresponding_part": "原职业名称",
+                "rule": "repeat_each",
+                "dep": [],
+                "能力项": "重复",
+                "被依赖": true
+            },
+            {
+                "point_id": 2,
+                "question": "原职业名称是否符合在文中出现的顺序？",
+                "corresponding_part": "原职业名称",
+                "rule": "order_profession1_check",
+                "dep": [
+                    0,
+                    1
+                ],
+                "能力项": "顺序",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "是否替换为了2个männlich职业名称？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "item_count:[2,2]",
+                "dep": [],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 4,
+                "question": "替换后的职业名称是否不重复？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "repeat_each",
+                "dep": [],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "替换后的职业名称是否符合在文中出现的顺序？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "order_profession2_check",
+                "dep": [
+                    3,
+                    4
+                ],
+                "能力项": "职业名称性别转换",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Finden Sie die ersten 3 männlich Berufsbezeichner in folgendem Text und ersetzen Sie diese durch die entsprechenden weiblich Berufsbezeichner(Achten Sie darauf, den richtigen Artikel zu verwenden. Bei der Ausgabe der Antwort fügen Sie bitte vor den ersetzten Berufsbezeichnungen [ersetzte Berufsbezeichnung1], [ersetzte Berufsbezeichnung2], ... , [ersetzte Berufsbezeichnung3] hinzu.): „In diesem Training gibt es Schüler aus allen Berufsbereichen. Schüler 1 ist ein Lehrer und unterrichtet Mathematik an einer Sekundarschule. Schüler 2 ist ein Arzt und arbeitet regelmäßig im städtischen Krankenhaus. Schüler 3 ist eine Köchin und betreibt ein sehr beliebtes Restaurant. Schüler 4 ist ein Ingenieur und verantwortlich für die technische Forschung und Entwicklung. Schüler 5 ist eine Bäuerin und führt ihre eigene biologische Farm. Schüler 6 ist eine Architektin und hat mehrere bekannte Gebäude entworfen. Schüler 7 ist ein Professor und lehrt seit vielen Jahren Physik an einer Universität. Schüler 8 ist eine Friseurin und betreibt einen kleinen Friseursalon in der Stadt. Schüler 9 ist ein Anwalt und spezialisiert auf Handelsrecht. Schüler 10 ist ein Musiker und ein Pianist. Schüler 11 ist eine Künstlerin und widmet sich der modernen Kunst. Schüler 12 ist eine Schneiderin und spezialisiert auf maßgeschneiderte Haute Couture. Schüler 13 ist ein Journalist und hat mehrfach internationale Nachrichten berichtet. Schüler 14 ist eine Polizistin und zuständig für die öffentliche Sicherheit in der Stadt. Schüler 15 ist ein Politiker und engagiert sich für soziale Reformen. Schüler 16 ist eine Wissenschaftlerin und forscht im Bereich der biomedizinischen Forschung. Alle diese Menschen haben ihren Beitrag zur gesellschaftlichen Entwicklung geleistet!“",
+        "corresponding_parts": {
+            "原职业名称": "你找出的题目规定的前3个的männlich职业名称，不用提取ein、eine等冠词，只提取需要的职业名称。",
+            "替换后的职业名称": "你对上述原职业名称进行替换后的名称，不用提取ein、eine等冠词，只提取需要的职业名称。注意它不能原来就是weiblich，必须经过替换得到。也不能漏提取，你转换的名称必须提取出来。替换后的职业名称和原职业名称是一一对应的。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否找出了前3个männlich职业名称？",
+                "corresponding_part": "原职业名称",
+                "rule": "item_count:[3,3]",
+                "dep": [],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "原职业名称是否不重复？",
+                "corresponding_part": "原职业名称",
+                "rule": "repeat_each",
+                "dep": [],
+                "能力项": "重复",
+                "被依赖": true
+            },
+            {
+                "point_id": 2,
+                "question": "原职业名称是否符合在文中出现的顺序？",
+                "corresponding_part": "原职业名称",
+                "rule": "order_profession1_check",
+                "dep": [
+                    0,
+                    1
+                ],
+                "能力项": "顺序",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "是否替换为了3个weiblich职业名称？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "item_count:[3,3]",
+                "dep": [],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 4,
+                "question": "替换后的职业名称是否不重复？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "repeat_each",
+                "dep": [],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "替换后的职业名称是否符合在文中出现的顺序？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "order_profession2_check",
+                "dep": [
+                    3,
+                    4
+                ],
+                "能力项": "职业名称性别转换",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Finden Sie die ersten 3 weiblich Berufsbezeichner in folgendem Text und ersetzen Sie diese durch die entsprechenden männlich Berufsbezeichner(Achten Sie darauf, den richtigen Artikel zu verwenden. Bei der Ausgabe der Antwort fügen Sie bitte vor den ersetzten Berufsbezeichnungen [ersetzte Berufsbezeichnung1], [ersetzte Berufsbezeichnung2], ... , [ersetzte Berufsbezeichnung3] hinzu.): „In diesem Training gibt es Schüler aus allen Berufsbereichen. Schüler 1 ist ein Lehrer und unterrichtet Mathematik an einer Sekundarschule. Schüler 2 ist ein Arzt und arbeitet regelmäßig im städtischen Krankenhaus. Schüler 3 ist eine Köchin und betreibt ein sehr beliebtes Restaurant. Schüler 4 ist ein Ingenieur und verantwortlich für die technische Forschung und Entwicklung. Schüler 5 ist eine Bäuerin und führt ihre eigene biologische Farm. Schüler 6 ist eine Architektin und hat mehrere bekannte Gebäude entworfen. Schüler 7 ist ein Professor und lehrt seit vielen Jahren Physik an einer Universität. Schüler 8 ist eine Friseurin und betreibt einen kleinen Friseursalon in der Stadt. Schüler 9 ist ein Anwalt und spezialisiert auf Handelsrecht. Schüler 10 ist ein Musiker und ein Pianist. Schüler 11 ist eine Künstlerin und widmet sich der modernen Kunst. Schüler 12 ist eine Schneiderin und spezialisiert auf maßgeschneiderte Haute Couture. Schüler 13 ist ein Journalist und hat mehrfach internationale Nachrichten berichtet. Schüler 14 ist eine Polizistin und zuständig für die öffentliche Sicherheit in der Stadt. Schüler 15 ist ein Politiker und engagiert sich für soziale Reformen. Schüler 16 ist eine Wissenschaftlerin und forscht im Bereich der biomedizinischen Forschung. Alle diese Menschen haben ihren Beitrag zur gesellschaftlichen Entwicklung geleistet!“",
+        "corresponding_parts": {
+            "原职业名称": "你找出的题目规定的前3个的weiblich职业名称，不用提取ein、eine等冠词，只提取需要的职业名称。",
+            "替换后的职业名称": "你对上述原职业名称进行替换后的名称，不用提取ein、eine等冠词，只提取需要的职业名称。注意它不能原来就是männlich，必须经过替换得到。也不能漏提取，你转换的名称必须提取出来。替换后的职业名称和原职业名称是一一对应的。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否找出了前3个weiblich职业名称？",
+                "corresponding_part": "原职业名称",
+                "rule": "item_count:[3,3]",
+                "dep": [],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "原职业名称是否不重复？",
+                "corresponding_part": "原职业名称",
+                "rule": "repeat_each",
+                "dep": [],
+                "能力项": "重复",
+                "被依赖": true
+            },
+            {
+                "point_id": 2,
+                "question": "原职业名称是否符合在文中出现的顺序？",
+                "corresponding_part": "原职业名称",
+                "rule": "order_profession1_check",
+                "dep": [
+                    0,
+                    1
+                ],
+                "能力项": "顺序",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "是否替换为了3个männlich职业名称？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "item_count:[3,3]",
+                "dep": [],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 4,
+                "question": "替换后的职业名称是否不重复？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "repeat_each",
+                "dep": [],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "替换后的职业名称是否符合在文中出现的顺序？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "order_profession2_check",
+                "dep": [
+                    3,
+                    4
+                ],
+                "能力项": "职业名称性别转换",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Finden Sie die ersten 4 männlich Berufsbezeichner in folgendem Text und ersetzen Sie diese durch die entsprechenden weiblich Berufsbezeichner(Achten Sie darauf, den richtigen Artikel zu verwenden. Bei der Ausgabe der Antwort fügen Sie bitte vor den ersetzten Berufsbezeichnungen [ersetzte Berufsbezeichnung1], [ersetzte Berufsbezeichnung2], ... , [ersetzte Berufsbezeichnung4] hinzu.): „In diesem Training gibt es Schüler aus allen Berufsbereichen. Schüler 1 ist ein Lehrer und unterrichtet Mathematik an einer Sekundarschule. Schüler 2 ist ein Arzt und arbeitet regelmäßig im städtischen Krankenhaus. Schüler 3 ist eine Köchin und betreibt ein sehr beliebtes Restaurant. Schüler 4 ist ein Ingenieur und verantwortlich für die technische Forschung und Entwicklung. Schüler 5 ist eine Bäuerin und führt ihre eigene biologische Farm. Schüler 6 ist eine Architektin und hat mehrere bekannte Gebäude entworfen. Schüler 7 ist ein Professor und lehrt seit vielen Jahren Physik an einer Universität. Schüler 8 ist eine Friseurin und betreibt einen kleinen Friseursalon in der Stadt. Schüler 9 ist ein Anwalt und spezialisiert auf Handelsrecht. Schüler 10 ist ein Musiker und ein Pianist. Schüler 11 ist eine Künstlerin und widmet sich der modernen Kunst. Schüler 12 ist eine Schneiderin und spezialisiert auf maßgeschneiderte Haute Couture. Schüler 13 ist ein Journalist und hat mehrfach internationale Nachrichten berichtet. Schüler 14 ist eine Polizistin und zuständig für die öffentliche Sicherheit in der Stadt. Schüler 15 ist ein Politiker und engagiert sich für soziale Reformen. Schüler 16 ist eine Wissenschaftlerin und forscht im Bereich der biomedizinischen Forschung. Alle diese Menschen haben ihren Beitrag zur gesellschaftlichen Entwicklung geleistet!“",
+        "corresponding_parts": {
+            "原职业名称": "你找出的题目规定的前4个的männlich职业名称，不用提取ein、eine等冠词，只提取需要的职业名称。",
+            "替换后的职业名称": "你对上述原职业名称进行替换后的名称，不用提取ein、eine等冠词，只提取需要的职业名称。注意它不能原来就是weiblich，必须经过替换得到。也不能漏提取，你转换的名称必须提取出来。替换后的职业名称和原职业名称是一一对应的。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否找出了前4个männlich职业名称？",
+                "corresponding_part": "原职业名称",
+                "rule": "item_count:[4,4]",
+                "dep": [],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "原职业名称是否不重复？",
+                "corresponding_part": "原职业名称",
+                "rule": "repeat_each",
+                "dep": [],
+                "能力项": "重复",
+                "被依赖": true
+            },
+            {
+                "point_id": 2,
+                "question": "原职业名称是否符合在文中出现的顺序？",
+                "corresponding_part": "原职业名称",
+                "rule": "order_profession1_check",
+                "dep": [
+                    0,
+                    1
+                ],
+                "能力项": "顺序",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "是否替换为了4个weiblich职业名称？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "item_count:[4,4]",
+                "dep": [],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 4,
+                "question": "替换后的职业名称是否不重复？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "repeat_each",
+                "dep": [],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "替换后的职业名称是否符合在文中出现的顺序？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "order_profession2_check",
+                "dep": [
+                    3,
+                    4
+                ],
+                "能力项": "职业名称性别转换",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Finden Sie die ersten 4 weiblich Berufsbezeichner in folgendem Text und ersetzen Sie diese durch die entsprechenden männlich Berufsbezeichner(Achten Sie darauf, den richtigen Artikel zu verwenden. Bei der Ausgabe der Antwort fügen Sie bitte vor den ersetzten Berufsbezeichnungen [ersetzte Berufsbezeichnung1], [ersetzte Berufsbezeichnung2], ... , [ersetzte Berufsbezeichnung4] hinzu.): „In diesem Training gibt es Schüler aus allen Berufsbereichen. Schüler 1 ist ein Lehrer und unterrichtet Mathematik an einer Sekundarschule. Schüler 2 ist ein Arzt und arbeitet regelmäßig im städtischen Krankenhaus. Schüler 3 ist eine Köchin und betreibt ein sehr beliebtes Restaurant. Schüler 4 ist ein Ingenieur und verantwortlich für die technische Forschung und Entwicklung. Schüler 5 ist eine Bäuerin und führt ihre eigene biologische Farm. Schüler 6 ist eine Architektin und hat mehrere bekannte Gebäude entworfen. Schüler 7 ist ein Professor und lehrt seit vielen Jahren Physik an einer Universität. Schüler 8 ist eine Friseurin und betreibt einen kleinen Friseursalon in der Stadt. Schüler 9 ist ein Anwalt und spezialisiert auf Handelsrecht. Schüler 10 ist ein Musiker und ein Pianist. Schüler 11 ist eine Künstlerin und widmet sich der modernen Kunst. Schüler 12 ist eine Schneiderin und spezialisiert auf maßgeschneiderte Haute Couture. Schüler 13 ist ein Journalist und hat mehrfach internationale Nachrichten berichtet. Schüler 14 ist eine Polizistin und zuständig für die öffentliche Sicherheit in der Stadt. Schüler 15 ist ein Politiker und engagiert sich für soziale Reformen. Schüler 16 ist eine Wissenschaftlerin und forscht im Bereich der biomedizinischen Forschung. Alle diese Menschen haben ihren Beitrag zur gesellschaftlichen Entwicklung geleistet!“",
+        "corresponding_parts": {
+            "原职业名称": "你找出的题目规定的前4个的weiblich职业名称，不用提取ein、eine等冠词，只提取需要的职业名称。",
+            "替换后的职业名称": "你对上述原职业名称进行替换后的名称，不用提取ein、eine等冠词，只提取需要的职业名称。注意它不能原来就是männlich，必须经过替换得到。也不能漏提取，你转换的名称必须提取出来。替换后的职业名称和原职业名称是一一对应的。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否找出了前4个weiblich职业名称？",
+                "corresponding_part": "原职业名称",
+                "rule": "item_count:[4,4]",
+                "dep": [],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "原职业名称是否不重复？",
+                "corresponding_part": "原职业名称",
+                "rule": "repeat_each",
+                "dep": [],
+                "能力项": "重复",
+                "被依赖": true
+            },
+            {
+                "point_id": 2,
+                "question": "原职业名称是否符合在文中出现的顺序？",
+                "corresponding_part": "原职业名称",
+                "rule": "order_profession1_check",
+                "dep": [
+                    0,
+                    1
+                ],
+                "能力项": "顺序",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "是否替换为了4个männlich职业名称？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "item_count:[4,4]",
+                "dep": [],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 4,
+                "question": "替换后的职业名称是否不重复？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "repeat_each",
+                "dep": [],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "替换后的职业名称是否符合在文中出现的顺序？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "order_profession2_check",
+                "dep": [
+                    3,
+                    4
+                ],
+                "能力项": "职业名称性别转换",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Finden Sie die ersten 5 männlich Berufsbezeichner in folgendem Text und ersetzen Sie diese durch die entsprechenden weiblich Berufsbezeichner(Achten Sie darauf, den richtigen Artikel zu verwenden. Bei der Ausgabe der Antwort fügen Sie bitte vor den ersetzten Berufsbezeichnungen [ersetzte Berufsbezeichnung1], [ersetzte Berufsbezeichnung2], ... , [ersetzte Berufsbezeichnung5] hinzu.): „In diesem Training gibt es Schüler aus allen Berufsbereichen. Schüler 1 ist ein Lehrer und unterrichtet Mathematik an einer Sekundarschule. Schüler 2 ist ein Arzt und arbeitet regelmäßig im städtischen Krankenhaus. Schüler 3 ist eine Köchin und betreibt ein sehr beliebtes Restaurant. Schüler 4 ist ein Ingenieur und verantwortlich für die technische Forschung und Entwicklung. Schüler 5 ist eine Bäuerin und führt ihre eigene biologische Farm. Schüler 6 ist eine Architektin und hat mehrere bekannte Gebäude entworfen. Schüler 7 ist ein Professor und lehrt seit vielen Jahren Physik an einer Universität. Schüler 8 ist eine Friseurin und betreibt einen kleinen Friseursalon in der Stadt. Schüler 9 ist ein Anwalt und spezialisiert auf Handelsrecht. Schüler 10 ist ein Musiker und ein Pianist. Schüler 11 ist eine Künstlerin und widmet sich der modernen Kunst. Schüler 12 ist eine Schneiderin und spezialisiert auf maßgeschneiderte Haute Couture. Schüler 13 ist ein Journalist und hat mehrfach internationale Nachrichten berichtet. Schüler 14 ist eine Polizistin und zuständig für die öffentliche Sicherheit in der Stadt. Schüler 15 ist ein Politiker und engagiert sich für soziale Reformen. Schüler 16 ist eine Wissenschaftlerin und forscht im Bereich der biomedizinischen Forschung. Alle diese Menschen haben ihren Beitrag zur gesellschaftlichen Entwicklung geleistet!“",
+        "corresponding_parts": {
+            "原职业名称": "你找出的题目规定的前5个的männlich职业名称，不用提取ein、eine等冠词，只提取需要的职业名称。",
+            "替换后的职业名称": "你对上述原职业名称进行替换后的名称，不用提取ein、eine等冠词，只提取需要的职业名称。注意它不能原来就是weiblich，必须经过替换得到。也不能漏提取，你转换的名称必须提取出来。替换后的职业名称和原职业名称是一一对应的。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否找出了前5个männlich职业名称？",
+                "corresponding_part": "原职业名称",
+                "rule": "item_count:[5,5]",
+                "dep": [],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "原职业名称是否不重复？",
+                "corresponding_part": "原职业名称",
+                "rule": "repeat_each",
+                "dep": [],
+                "能力项": "重复",
+                "被依赖": true
+            },
+            {
+                "point_id": 2,
+                "question": "原职业名称是否符合在文中出现的顺序？",
+                "corresponding_part": "原职业名称",
+                "rule": "order_profession1_check",
+                "dep": [
+                    0,
+                    1
+                ],
+                "能力项": "顺序",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "是否替换为了5个weiblich职业名称？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "item_count:[5,5]",
+                "dep": [],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 4,
+                "question": "替换后的职业名称是否不重复？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "repeat_each",
+                "dep": [],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "替换后的职业名称是否符合在文中出现的顺序？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "order_profession2_check",
+                "dep": [
+                    3,
+                    4
+                ],
+                "能力项": "职业名称性别转换",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Finden Sie die ersten 5 weiblich Berufsbezeichner in folgendem Text und ersetzen Sie diese durch die entsprechenden männlich Berufsbezeichner(Achten Sie darauf, den richtigen Artikel zu verwenden. Bei der Ausgabe der Antwort fügen Sie bitte vor den ersetzten Berufsbezeichnungen [ersetzte Berufsbezeichnung1], [ersetzte Berufsbezeichnung2], ... , [ersetzte Berufsbezeichnung5] hinzu.): „In diesem Training gibt es Schüler aus allen Berufsbereichen. Schüler 1 ist ein Lehrer und unterrichtet Mathematik an einer Sekundarschule. Schüler 2 ist ein Arzt und arbeitet regelmäßig im städtischen Krankenhaus. Schüler 3 ist eine Köchin und betreibt ein sehr beliebtes Restaurant. Schüler 4 ist ein Ingenieur und verantwortlich für die technische Forschung und Entwicklung. Schüler 5 ist eine Bäuerin und führt ihre eigene biologische Farm. Schüler 6 ist eine Architektin und hat mehrere bekannte Gebäude entworfen. Schüler 7 ist ein Professor und lehrt seit vielen Jahren Physik an einer Universität. Schüler 8 ist eine Friseurin und betreibt einen kleinen Friseursalon in der Stadt. Schüler 9 ist ein Anwalt und spezialisiert auf Handelsrecht. Schüler 10 ist ein Musiker und ein Pianist. Schüler 11 ist eine Künstlerin und widmet sich der modernen Kunst. Schüler 12 ist eine Schneiderin und spezialisiert auf maßgeschneiderte Haute Couture. Schüler 13 ist ein Journalist und hat mehrfach internationale Nachrichten berichtet. Schüler 14 ist eine Polizistin und zuständig für die öffentliche Sicherheit in der Stadt. Schüler 15 ist ein Politiker und engagiert sich für soziale Reformen. Schüler 16 ist eine Wissenschaftlerin und forscht im Bereich der biomedizinischen Forschung. Alle diese Menschen haben ihren Beitrag zur gesellschaftlichen Entwicklung geleistet!“",
+        "corresponding_parts": {
+            "原职业名称": "你找出的题目规定的前5个的weiblich职业名称，不用提取ein、eine等冠词，只提取需要的职业名称。",
+            "替换后的职业名称": "你对上述原职业名称进行替换后的名称，不用提取ein、eine等冠词，只提取需要的职业名称。注意它不能原来就是männlich，必须经过替换得到。也不能漏提取，你转换的名称必须提取出来。替换后的职业名称和原职业名称是一一对应的。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否找出了前5个weiblich职业名称？",
+                "corresponding_part": "原职业名称",
+                "rule": "item_count:[5,5]",
+                "dep": [],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "原职业名称是否不重复？",
+                "corresponding_part": "原职业名称",
+                "rule": "repeat_each",
+                "dep": [],
+                "能力项": "重复",
+                "被依赖": true
+            },
+            {
+                "point_id": 2,
+                "question": "原职业名称是否符合在文中出现的顺序？",
+                "corresponding_part": "原职业名称",
+                "rule": "order_profession1_check",
+                "dep": [
+                    0,
+                    1
+                ],
+                "能力项": "顺序",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "是否替换为了5个männlich职业名称？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "item_count:[5,5]",
+                "dep": [],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 4,
+                "question": "替换后的职业名称是否不重复？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "repeat_each",
+                "dep": [],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "替换后的职业名称是否符合在文中出现的顺序？",
+                "corresponding_part": "替换后的职业名称",
+                "rule": "order_profession2_check",
+                "dep": [
+                    3,
+                    4
+                ],
+                "能力项": "职业名称性别转换",
+                "被依赖": false
+            }
+        ]
+    }
+]

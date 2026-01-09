@@ -1,0 +1,2931 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "[[[Важное событие] Международный фестиваль мультипликации и анимации Китая 2024 пройдет в Международном выставочном центре Байма Ху в Ханчжоу с 29 мая по 2 июня. В течение периода будет проведено более 100 тематических мероприятий, будут приглашены многие всемирно известные мультипликаторы и режиссеры анимации для автографов на месте. Некоторые мероприятия требуют предварительного бронирования билетов. Ожидается привлечение сотен тысяч туристов, бронирование отелей в окрестностях напряженное.]\nВы аналитик информации, который должен выполнить извлечение структурированной информации о событиях на основе содержания горячих новостей и сегодняшней даты.\nВам необходимо определить ключевую информацию о событии, включая название события, тип, масштаб, важность, область, город, подробное местоположение, время и т.д.\nТипы событий включают: концерты, социальные горячие темы, мероприятия в достопримечательностях, выставки, региональные экзамены, спортивные события, представления, форумы, фестивали, семинары, ярмарки вакансий, роудшоу, благотворительные мероприятия, коммерческие акции и т.д. Если не можете классифицировать, пожалуйста, верните [Другие типы]. \nМасштаб события делится на: 1-крупные события, 2-средние события, 3-малые события.\nВажность события делится на: 1-наиболее важные, 2-относительно важные, 3-обычные.\nПожалуйста, строго проверьте соответствие области и города. Если не можете определить, пожалуйста, верните 'None'.\nПравила определения времени: Если время прошло и не влияет на будущие услуги, верните [Expired]; если все еще влияет, верните [Current]; если есть конкретный временной диапазон, пожалуйста, верните в формате yyyyMMdd или yyyyMMdd-yyyyMMdd, иначе верните [None].\nПожалуйста, определите, будете ли вы бронировать отель для этого события как турист, robotIntention возвращает True/False, и объясните причину.\nВам необходимо извлечь информацию о том, требуется ли предварительное бронирование билетов (ticketReservation:yes/no), и вернуть поле ticketReservation в json.\nВам необходимо извлечь информацию об организаторе (organizer), и вернуть поле organizer в json.\nПожалуйста, верните строго в следующем формате JSON:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\",\"organizer\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "название события",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "тип события",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "масштаб события",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "важность события",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "область/край",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "город",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "конкретное место",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "время события",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "обоснование времени",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "причина/обоснование",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "является ли туристом",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "обоснование намерения",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требуется ли предварительное бронирование билетов",
+                    "能力项": "特定格式"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "организатор",
+                    "能力项": "主题约束"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ticketReservation",
+                "organizer"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "соответствует ли схеме",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation",
+            "organizer": "#JSONSCHEMA#:organizer"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[[[Ночной тур] Летний ночной тур по Хуаншань 2024 будет открыт с 1 июля по 31 августа. Туристы могут подниматься в горы ночью и смотреть световое шоу. Будут добавлены ночные транспортные услуги. Некоторые ночные туристические маршруты требуют предварительного бронирования. Организатор - Комитет управления живописным районом Хуаншань.]\nВы аналитик информации, который должен выполнить извлечение структурированной информации о событиях на основе содержания горячих новостей и сегодняшней даты.\nВам необходимо определить ключевую информацию о событии, включая название события, тип, масштаб, важность, область, город, подробное местоположение, время и т.д.\nТипы событий включают: концерты, социальные горячие темы, мероприятия в достопримечательностях, выставки, региональные экзамены, спортивные события, представления, форумы, фестивали, семинары, ярмарки вакансий, роудшоу, благотворительные мероприятия, коммерческие акции и т.д. Если не можете классифицировать, пожалуйста, верните [Другие типы]. \nМасштаб события делится на: 1-крупные события, 2-средние события, 3-малые события.\nВажность события делится на: 1-наиболее важные, 2-относительно важные, 3-обычные.\nПожалуйста, строго проверьте соответствие области и города. Если не можете определить, пожалуйста, верните 'None'.\nПравила определения времени: Если время прошло и не влияет на будущие услуги, верните [Expired]; если все еще влияет, верните [Current]; если есть конкретный временной диапазон, пожалуйста, верните в формате yyyyMMdd или yyyyMMdd-yyyyMMdd, иначе верните [None].\nПожалуйста, определите, будете ли вы бронировать отель для этого события как турист, robotIntention возвращает True/False, и объясните причину.\nВам необходимо извлечь информацию о том, требуется ли предварительное бронирование билетов (ticketReservation:yes/no), и вернуть поле ticketReservation в json.\nВам необходимо извлечь информацию об организаторе (organizer), и вернуть поле organizer в json.\nВам необходимо извлечь информацию о наличии ночного транспорта (nightTransport:yes/no), и вернуть поле nightTransport в json.\nПожалуйста, верните строго в следующем формате JSON:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\",\"organizer\": \"(Format:string)\",\"nightTransport\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "название события",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "тип события",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "масштаб события",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "важность события",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "область/край",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "город",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "конкретное место",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "время события",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "обоснование времени",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "причина/обоснование",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "является ли туристом",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "обоснование намерения",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требуется ли предварительное бронирование билетов",
+                    "能力项": "特定格式"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "организатор",
+                    "能力项": "主题约束"
+                },
+                "nightTransport": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "есть ли ночной транспорт",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ticketReservation",
+                "organizer",
+                "nightTransport"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "соответствует ли схеме",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation",
+            "organizer": "#JSONSCHEMA#:organizer",
+            "nightTransport": "#JSONSCHEMA#:nightTransport"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[[[Спортивные новости] Национальный чемпионат по легкой атлетике среди студентов 2024 пройдет в Олимпийском спортивном центре Сианя. Некоторые события требуют бронирования по реальному имени. Организатор - Ассоциация студенческого спорта.]\nВы аналитик информации, который должен выполнить извлечение структурированной информации о событиях на основе содержания горячих новостей и сегодняшней даты.\nВам необходимо определить ключевую информацию о событии, включая название события, тип, масштаб, важность, область, город, подробное местоположение, время и т.д.\nТипы событий включают: концерты, социальные горячие темы, мероприятия в достопримечательностях, выставки, региональные экзамены, спортивные события, представления, форумы, фестивали, семинары, ярмарки вакансий, роудшоу, благотворительные мероприятия, коммерческие акции и т.д. Если не можете классифицировать, пожалуйста, верните [Другие типы]. \nМасштаб события делится на: 1-крупные события, 2-средние события, 3-малые события.\nВажность события делится на: 1-наиболее важные, 2-относительно важные, 3-обычные.\nПожалуйста, строго проверьте соответствие области и города. Если не можете определить, пожалуйста, верните 'None'.\nПравила определения времени: Если время прошло и не влияет на будущие услуги, верните [Expired]; если все еще влияет, верните [Current]; если есть конкретный временной диапазон, пожалуйста, верните в формате yyyyMMdd или yyyyMMdd-yyyyMMdd, иначе верните [None].\nПожалуйста, определите, будете ли вы бронировать отель для этого события как турист, robotIntention возвращает True/False, и объясните причину.\nВам необходимо извлечь информацию о том, требуется ли предварительное бронирование билетов (ticketReservation:yes/no), и вернуть поле ticketReservation в json.\nВам необходимо извлечь информацию об организаторе (organizer), и вернуть поле organizer в json.\nПожалуйста, верните строго в следующем формате JSON:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\",\"organizer\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "название события",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "тип события",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "масштаб события",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "важность события",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "область/край",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "город",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "конкретное место",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "время события",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "обоснование времени",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "причина/обоснование",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "является ли туристом",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "обоснование намерения",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требуется ли предварительное бронирование билетов",
+                    "能力项": "特定格式"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "организатор",
+                    "能力项": "主题约束"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ticketReservation",
+                "organizer"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "соответствует ли схеме",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation",
+            "organizer": "#JSONSCHEMA#:organizer"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Информация о представлении】Концерт тура Mayday 2024 в Пекине пройдет на Национальном стадионе 20 июля. VIP-зона требует предварительного бронирования, будут приглашены таинственные гости.]\nВы аналитик информации, который должен выполнить извлечение структурированной информации о событиях на основе содержания горячих новостей и сегодняшней даты.\nВам необходимо определить ключевую информацию о событии, включая название события, тип, масштаб, важность, область, город, подробное местоположение, время и т.д.\nТипы событий включают: концерты, социальные горячие темы, мероприятия в достопримечательностях, выставки, региональные экзамены, спортивные события, представления, форумы, фестивали, семинары, ярмарки вакансий, роудшоу, благотворительные мероприятия, коммерческие акции и т.д. Если не можете классифицировать, пожалуйста, верните [Другие типы]. \nМасштаб события делится на: 1-крупные события, 2-средние события, 3-малые события.\nВажность события делится на: 1-наиболее важные, 2-относительно важные, 3-обычные.\nПожалуйста, строго проверьте соответствие области и города. Если не можете определить, пожалуйста, верните 'None'.\nПравила определения времени: Если время прошло и не влияет на будущие услуги, верните [Expired]; если все еще влияет, верните [Current]; если есть конкретный временной диапазон, пожалуйста, верните в формате yyyyMMdd или yyyyMMdd-yyyyMMdd, иначе верните [None].\nПожалуйста, определите, будете ли вы бронировать отель для этого события как турист, robotIntention возвращает True/False, и объясните причину.\nВам необходимо извлечь информацию о том, требует ли VIP-зона бронирования (vipArea:yes/no), и вернуть поле vipArea в json.\nВам необходимо извлечь информацию о специальном госте (specialGuest), и вернуть поле specialGuest в json.\nВам необходимо извлечь информацию о том, требуется ли предварительное бронирование билетов (ticketReservation:yes/no), и вернуть поле ticketReservation в json.\nПожалуйста, верните строго в следующем формате JSON:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"specialGuest\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "название события",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "тип события",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "масштаб события",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "важность события",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "область/край",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "город",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "конкретное место",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "время события",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "обоснование времени",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "причина/обоснование",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "является ли туристом",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "обоснование намерения",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требует ли VIP-зона бронирования",
+                    "能力项": "特定格式"
+                },
+                "specialGuest": {
+                    "type": "string",
+                    "description": "информация о специальном госте",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требуется ли предварительное бронирование билетов",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "vipArea",
+                "specialGuest",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "соответствует ли схеме",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "specialGuest": "#JSONSCHEMA#:specialGuest",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Новости выставки】Международный автосалон Шэньчжэня 2024 пройдет в Выставочном центре Шэньчжэня с 20 по 25 июня. Организатор - Автомобильная ассоциация Шэньчжэня. Некоторые выставочные зоны требуют бронирования.]\nВы аналитик информации, который должен выполнить извлечение структурированной информации о событиях на основе содержания горячих новостей и сегодняшней даты.\nВам необходимо определить ключевую информацию о событии, включая название события, тип, масштаб, важность, область, город, подробное местоположение, время и т.д.\nТипы событий включают: концерты, социальные горячие темы, мероприятия в достопримечательностях, выставки, региональные экзамены, спортивные события, представления, форумы, фестивали, семинары, ярмарки вакансий, роудшоу, благотворительные мероприятия, коммерческие акции и т.д. Если не можете классифицировать, пожалуйста, верните [Другие типы]. \nМасштаб события делится на: 1-крупные события, 2-средние события, 3-малые события.\nВажность события делится на: 1-наиболее важные, 2-относительно важные, 3-обычные.\nПожалуйста, строго проверьте соответствие области и города. Если не можете определить, пожалуйста, верните 'None'.\nПравила определения времени: Если время прошло и не влияет на будущие услуги, верните [Expired]; если все еще влияет, верните [Current]; если есть конкретный временной диапазон, пожалуйста, верните в формате yyyyMMdd или yyyyMMdd-yyyyMMdd, иначе верните [None].\nПожалуйста, определите, будете ли вы бронировать отель для этого события как турист, robotIntention возвращает True/False, и объясните причину.\nВам необходимо извлечь информацию об организаторе (organizer), и вернуть поле organizer в json.\nВам необходимо извлечь информацию о том, требует ли VIP-зона бронирования (vipArea:yes/no), и вернуть поле vipArea в json.\nВам необходимо извлечь платформу прямой трансляции (broadcastPlatform), и вернуть поле broadcastPlatform в json.\nПожалуйста, верните строго в следующем формате JSON:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"organizer\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"broadcastPlatform\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "название события",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "тип события",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "масштаб события",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "важность события",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "область/край",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "город",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "конкретное место",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "время события",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "обоснование времени",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "причина/обоснование",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "является ли туристом",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "обоснование намерения",
+                    "能力项": "主题约束"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "организатор",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требует ли VIP-зона бронирования",
+                    "能力项": "特定格式"
+                },
+                "broadcastPlatform": {
+                    "type": "string",
+                    "description": "платформа прямой трансляции",
+                    "能力项": "主题约束"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "organizer",
+                "vipArea",
+                "broadcastPlatform"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "соответствует ли схеме",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "organizer": "#JSONSCHEMA#:organizer",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "broadcastPlatform": "#JSONSCHEMA#:broadcastPlatform"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Гастрономический фестиваль】Международный гастрономический фестиваль Чэнду 2024 пройдет в Новом выставочном центре с 1 по 7 октября. Некоторые выставочные зоны будут ограничены по потоку, ночные гастрономические шоу требуют бронирования.]\nВы аналитик информации, который должен выполнить извлечение структурированной информации о событиях на основе содержания горячих новостей и сегодняшней даты.\nВам необходимо определить ключевую информацию о событии, включая название события, тип, масштаб, важность, область, город, подробное местоположение, время и т.д.\nТипы событий включают: концерты, социальные горячие темы, мероприятия в достопримечательностях, выставки, региональные экзамены, спортивные события, представления, форумы, фестивали, семинары, ярмарки вакансий, роудшоу, благотворительные мероприятия, коммерческие акции и т.д. Если не можете классифицировать, пожалуйста, верните [Другие типы]. \nМасштаб события делится на: 1-крупные события, 2-средние события, 3-малые события.\nВажность события делится на: 1-наиболее важные, 2-относительно важные, 3-обычные.\nПожалуйста, строго проверьте соответствие области и города. Если не можете определить, пожалуйста, верните 'None'.\nПравила определения времени: Если время прошло и не влияет на будущие услуги, верните [Expired]; если все еще влияет, верните [Current]; если есть конкретный временной диапазон, пожалуйста, верните в формате yyyyMMdd или yyyyMMdd-yyyyMMdd, иначе верните [None].\nПожалуйста, определите, будете ли вы бронировать отель для этого события как турист, robotIntention возвращает True/False, и объясните причину.\nВам необходимо извлечь информацию о том, является ли это ночным гастрономическим шоу (foodFestival:yes/no), и вернуть поле foodFestival в json.\nВам необходимо извлечь информацию о том, ограничен ли вход (entryLimit:yes/no), и вернуть поле entryLimit в json.\nВам необходимо извлечь информацию о том, требуется ли предварительное бронирование билетов (ticketReservation:yes/no), и вернуть поле ticketReservation в json.\nПожалуйста, верните строго в следующем формате JSON:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"foodFestival\": \"(Format:string)\",\"entryLimit\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "название события",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "тип события",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "масштаб события",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "важность события",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "область/край",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "город",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "конкретное место",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "время события",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "обоснование времени",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "причина/обоснование",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "является ли туристом",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "обоснование намерения",
+                    "能力项": "主题约束"
+                },
+                "foodFestival": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "является ли ночным гастрономическим шоу",
+                    "能力项": "特定格式"
+                },
+                "entryLimit": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "ограничен ли вход",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требуется ли предварительное бронирование билетов",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "foodFestival",
+                "entryLimit",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "соответствует ли схеме",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "foodFestival": "#JSONSCHEMA#:foodFestival",
+            "entryLimit": "#JSONSCHEMA#:entryLimit",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Социальная озабоченность】Национальный вступительный экзамен в колледж 2024 пройдет с 7 по 9 июня, некоторые экзаменационные пункты будут применять бронирование входа по реальному имени.]\nВы аналитик информации, который должен выполнить извлечение структурированной информации о событиях на основе содержания горячих новостей и сегодняшней даты.\nВам необходимо определить ключевую информацию о событии, включая название события, тип, масштаб, важность, область, город, подробное местоположение, время и т.д.\nТипы событий включают: концерты, социальные горячие темы, мероприятия в достопримечательностях, выставки, региональные экзамены, спортивные события, представления, форумы, фестивали, семинары, ярмарки вакансий, роудшоу, благотворительные мероприятия, коммерческие акции и т.д. Если не можете классифицировать, пожалуйста, верните [Другие типы]. \nМасштаб события делится на: 1-крупные события, 2-средние события, 3-малые события.\nВажность события делится на: 1-наиболее важные, 2-относительно важные, 3-обычные.\nПожалуйста, строго проверьте соответствие области и города. Если не можете определить, пожалуйста, верните 'None'.\nПравила определения времени: Если время прошло и не влияет на будущие услуги, верните [Expired]; если все еще влияет, верните [Current]; если есть конкретный временной диапазон, пожалуйста, верните в формате yyyyMMdd или yyyyMMdd-yyyyMMdd, иначе верните [None].\nПожалуйста, определите, будете ли вы бронировать отель для этого события как турист, robotIntention возвращает True/False, и объясните причину.\nВам необходимо извлечь информацию о том, требуется ли предварительное бронирование билетов (ticketReservation:yes/no), и вернуть поле ticketReservation в json.\nПожалуйста, верните строго в следующем формате JSON:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "название события",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "тип события",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "масштаб события",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "важность события",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "область/край",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "город",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "конкретное место",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "время события",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "обоснование времени",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "причина/обоснование",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "является ли туристом",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "обоснование намерения",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требуется ли предварительное бронирование билетов",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "соответствует ли схеме",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Спортивные события】Шанхайский международный марафон 2024 пройдет 17 ноября. Событие будет транслироваться в прямом эфире на нескольких платформах полностью. VIP-пакеты участия требуют бронирования.]\nВы аналитик информации, который должен выполнить извлечение структурированной информации о событиях на основе содержания горячих новостей и сегодняшней даты.\nВам необходимо определить ключевую информацию о событии, включая название события, тип, масштаб, важность, область, город, подробное местоположение, время и т.д.\nТипы событий включают: концерты, социальные горячие темы, мероприятия в достопримечательностях, выставки, региональные экзамены, спортивные события, представления, форумы, фестивали, семинары, ярмарки вакансий, роудшоу, благотворительные мероприятия, коммерческие акции и т.д. Если не можете классифицировать, пожалуйста, верните [Другие типы]. \nМасштаб события делится на: 1-крупные события, 2-средние события, 3-малые события.\nВажность события делится на: 1-наиболее важные, 2-относительно важные, 3-обычные.\nПожалуйста, строго проверьте соответствие области и города. Если не можете определить, пожалуйста, верните 'None'.\nПравила определения времени: Если время прошло и не влияет на будущие услуги, верните [Expired]; если все еще влияет, верните [Current]; если есть конкретный временной диапазон, пожалуйста, верните в формате yyyyMMdd или yyyyMMdd-yyyyMMdd, иначе верните [None].\nПожалуйста, определите, будете ли вы бронировать отель для этого события как турист, robotIntention возвращает True/False, и объясните причину.\nВам необходимо извлечь информацию о том, требует ли VIP-зона бронирования (vipArea:yes/no), и вернуть поле vipArea в json.\nВам необходимо извлечь платформу прямой трансляции (broadcastPlatform), и вернуть поле broadcastPlatform в json.\nВам необходимо извлечь информацию о том, требуется ли предварительное бронирование билетов (ticketReservation:yes/no), и вернуть поле ticketReservation в json.\nПожалуйста, верните строго в следующем формате JSON:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"broadcastPlatform\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "название события",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "тип события",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "масштаб события",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "важность события",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "область/край",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "город",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "конкретное место",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "время события",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "обоснование времени",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "причина/обоснование",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "является ли туристом",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "обоснование намерения",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требует ли VIP-зона бронирования",
+                    "能力项": "特定格式"
+                },
+                "broadcastPlatform": {
+                    "type": "string",
+                    "description": "платформа прямой трансляции",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требуется ли предварительное бронирование билетов",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "vipArea",
+                "broadcastPlatform",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "соответствует ли схеме",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "broadcastPlatform": "#JSONSCHEMA#:broadcastPlatform",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Выставка анимации】Международная выставка анимации и игр Гуанчжоу 2024 пройдет с 15 по 19 августа. VIP-билеты нужно бронировать по реальному имени. Некоторые автографы гостей требуют регистрации.]\nВы аналитик информации, который должен выполнить извлечение структурированной информации о событиях на основе содержания горячих новостей и сегодняшней даты.\nВам необходимо определить ключевую информацию о событии, включая название события, тип, масштаб, важность, область, город, подробное местоположение, время и т.д.\nТипы событий включают: концерты, социальные горячие темы, мероприятия в достопримечательностях, выставки, региональные экзамены, спортивные события, представления, форумы, фестивали, семинары, ярмарки вакансий, роудшоу, благотворительные мероприятия, коммерческие акции и т.д. Если не можете классифицировать, пожалуйста, верните [Другие типы]. \nМасштаб события делится на: 1-крупные события, 2-средние события, 3-малые события.\nВажность события делится на: 1-наиболее важные, 2-относительно важные, 3-обычные.\nПожалуйста, строго проверьте соответствие области и города. Если не можете определить, пожалуйста, верните 'None'.\nПравила определения времени: Если время прошло и не влияет на будущие услуги, верните [Expired]; если все еще влияет, верните [Current]; если есть конкретный временной диапазон, пожалуйста, верните в формате yyyyMMdd или yyyyMMdd-yyyyMMdd, иначе верните [None].\nПожалуйста, определите, будете ли вы бронировать отель для этого события как турист, robotIntention возвращает True/False, и объясните причину.\nВам необходимо извлечь информацию о том, требует ли VIP-зона бронирования (vipArea:yes/no), и вернуть поле vipArea в json.\nВам необходимо извлечь информацию о специальном госте (specialGuest), и вернуть поле specialGuest в json.\nВам необходимо извлечь информацию о том, требуется ли предварительное бронирование билетов (ticketReservation:yes/no), и вернуть поле ticketReservation в json.\nПожалуйста, верните строго в следующем формате JSON:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"specialGuest\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "название события",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "тип события",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "масштаб события",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "важность события",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "область/край",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "город",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "конкретное место",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "время события",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "обоснование времени",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "причина/обоснование",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "является ли туристом",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "обоснование намерения",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требует ли VIP-зона бронирования",
+                    "能力项": "特定格式"
+                },
+                "specialGuest": {
+                    "type": "string",
+                    "description": "информация о специальном госте",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требуется ли предварительное бронирование билетов",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "vipArea",
+                "specialGuest",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "соответствует ли схеме",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "specialGuest": "#JSONSCHEMA#:specialGuest",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Предварительный просмотр представления】Сольный концерт Ланг Ланга на фортепиано 2024 пройдет в Шанхайском центре восточного искусства 28 сентября. VIP-зона требует предварительного бронирования. Событие будет транслироваться в прямом эфире на нескольких платформах.]\nВы аналитик информации, который должен выполнить извлечение структурированной информации о событиях на основе содержания горячих новостей и сегодняшней даты.\nВам необходимо определить ключевую информацию о событии, включая название события, тип, масштаб, важность, область, город, подробное местоположение, время и т.д.\nТипы событий включают: концерты, социальные горячие темы, мероприятия в достопримечательностях, выставки, региональные экзамены, спортивные события, представления, форумы, фестивали, семинары, ярмарки вакансий, роудшоу, благотворительные мероприятия, коммерческие акции и т.д. Если не можете классифицировать, пожалуйста, верните [Другие типы]. \nМасштаб события делится на: 1-крупные события, 2-средние события, 3-малые события.\nВажность события делится на: 1-наиболее важные, 2-относительно важные, 3-обычные.\nПожалуйста, строго проверьте соответствие области и города. Если не можете определить, пожалуйста, верните 'None'.\nПравила определения времени: Если время прошло и не влияет на будущие услуги, верните [Expired]; если все еще влияет, верните [Current]; если есть конкретный временной диапазон, пожалуйста, верните в формате yyyyMMdd или yyyyMMdd-yyyyMMdd, иначе верните [None].\nПожалуйста, определите, будете ли вы бронировать отель для этого события как турист, robotIntention возвращает True/False, и объясните причину.\nВам необходимо извлечь информацию о том, требует ли VIP-зона бронирования (vipArea:yes/no), и вернуть поле vipArea в json.\nВам необходимо извлечь платформу прямой трансляции (broadcastPlatform), и вернуть поле broadcastPlatform в json.\nВам необходимо извлечь информацию о том, требуется ли предварительное бронирование билетов (ticketReservation:yes/no), и вернуть поле ticketReservation в json.\nПожалуйста, верните строго в следующем формате JSON:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"broadcastPlatform\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "название события",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "тип события",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "масштаб события",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "важность события",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "область/край",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "город",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "конкретное место",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "время события",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "обоснование времени",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "причина/обоснование",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "является ли туристом",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "обоснование намерения",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требует ли VIP-зона бронирования",
+                    "能力项": "特定格式"
+                },
+                "broadcastPlatform": {
+                    "type": "string",
+                    "description": "платформа прямой трансляции",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требуется ли предварительное бронирование билетов",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "vipArea",
+                "broadcastPlatform",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "соответствует ли схеме",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "broadcastPlatform": "#JSONSCHEMA#:broadcastPlatform",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Форум-саммит】Форум передовых технологий ИИ Китая 2024 пройдет в Научно-технологическом парке Шэньчжэня с 5 по 7 июля. Форум будет переводиться полностью. Подфорумы требуют бронирования. Организатор - Китайское общество искусственного интеллекта.]\nВы аналитик информации, который должен выполнить извлечение структурированной информации о событиях на основе содержания горячих новостей и сегодняшней даты.\nВам необходимо определить ключевую информацию о событии, включая название события, тип, масштаб, важность, область, город, подробное местоположение, время и т.д.\nТипы событий включают: концерты, социальные горячие темы, мероприятия в достопримечательностях, выставки, региональные экзамены, спортивные события, представления, форумы, фестивали, семинары, ярмарки вакансий, роудшоу, благотворительные мероприятия, коммерческие акции и т.д. Если не можете классифицировать, пожалуйста, верните [Другие типы]. \nМасштаб события делится на: 1-крупные события, 2-средние события, 3-малые события.\nВажность события делится на: 1-наиболее важные, 2-относительно важные, 3-обычные.\nПожалуйста, строго проверьте соответствие области и города. Если не можете определить, пожалуйста, верните 'None'.\nПравила определения времени: Если время прошло и не влияет на будущие услуги, верните [Expired]; если все еще влияет, верните [Current]; если есть конкретный временной диапазон, пожалуйста, верните в формате yyyyMMdd или yyyyMMdd-yyyyMMdd, иначе верните [None].\nПожалуйста, определите, будете ли вы бронировать отель для этого события как турист, robotIntention возвращает True/False, и объясните причину.\nВам необходимо извлечь информацию об организаторе (organizer), и вернуть поле organizer в json.\nВам необходимо извлечь информацию о том, предоставляется ли синхронный перевод (liveTranslation:yes/no), и вернуть поле liveTranslation в json.\nВам необходимо извлечь информацию о том, требуется ли предварительное бронирование билетов (ticketReservation:yes/no), и вернуть поле ticketReservation в json.\nПожалуйста, верните строго в следующем формате JSON:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"organizer\": \"(Format:string)\",\"liveTranslation\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "название события",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "тип события",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "масштаб события",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "важность события",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "область/край",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "город",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "конкретное место",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "время события",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "обоснование времени",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "причина/обоснование",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "является ли туристом",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "обоснование намерения",
+                    "能力项": "主题约束"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "организатор",
+                    "能力项": "主题约束"
+                },
+                "liveTranslation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "предоставляется ли синхронный перевод",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требуется ли предварительное бронирование билетов",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "organizer",
+                "liveTranslation",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "соответствует ли схеме",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "organizer": "#JSONSCHEMA#:organizer",
+            "liveTranslation": "#JSONSCHEMA#:liveTranslation",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Детские мероприятия】Детский карнавал Пекина 2024 пройдет в парке Чаоян с 1 по 3 июня. Будет зона детского взаимодействия. Дети могут входить бесплатно. Некоторые проекты требуют бронирования. Парковка в парке бесплатная.]\nВы аналитик информации, который должен выполнить извлечение структурированной информации о событиях на основе содержания горячих новостей и сегодняшней даты.\nВам необходимо определить ключевую информацию о событии, включая название события, тип, масштаб, важность, область, город, подробное местоположение, время и т.д.\nТипы событий включают: концерты, социальные горячие темы, мероприятия в достопримечательностях, выставки, региональные экзамены, спортивные события, представления, форумы, фестивали, семинары, ярмарки вакансий, роудшоу, благотворительные мероприятия, коммерческие акции и т.д. Если не можете классифицировать, пожалуйста, верните [Другие типы]. \nМасштаб события делится на: 1-крупные события, 2-средние события, 3-малые события.\nВажность события делится на: 1-наиболее важные, 2-относительно важные, 3-обычные.\nПожалуйста, строго проверьте соответствие области и города. Если не можете определить, пожалуйста, верните 'None'.\nПравила определения времени: Если время прошло и не влияет на будущие услуги, верните [Expired]; если все еще влияет, верните [Current]; если есть конкретный временной диапазон, пожалуйста, верните в формате yyyyMMdd или yyyyMMdd-yyyyMMdd, иначе верните [None].\nПожалуйста, определите, будете ли вы бронировать отель для этого события как турист, robotIntention возвращает True/False, и объясните причину.\nВам необходимо извлечь информацию о том, подходит ли мероприятие для детей (childFriendly:yes/no), и вернуть поле childFriendly в json.\nВам необходимо извлечь информацию о том, предоставляется ли бесплатная парковка (parkingAvailable:yes/no), и вернуть поле parkingAvailable в json.\nВам необходимо извлечь информацию о том, требуется ли предварительное бронирование билетов (ticketReservation:yes/no), и вернуть поле ticketReservation в json.\nПожалуйста, верните строго в следующем формате JSON:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"childFriendly\": \"(Format:string)\",\"parkingAvailable\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "название события",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "тип события",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "масштаб события",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "важность события",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "область/край",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "город",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "конкретное место",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "время события",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "обоснование времени",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "причина/обоснование",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "является ли туристом",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "обоснование намерения",
+                    "能力项": "主题约束"
+                },
+                "childFriendly": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "подходит ли для детей",
+                    "能力项": "特定格式"
+                },
+                "parkingAvailable": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "предоставляется ли бесплатная парковка",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требуется ли предварительное бронирование билетов",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "childFriendly",
+                "parkingAvailable",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "соответствует ли схеме",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "childFriendly": "#JSONSCHEMA#:childFriendly",
+            "parkingAvailable": "#JSONSCHEMA#:parkingAvailable",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Благотворительные мероприятия】Национальное благотворительное роудшоу по защите окружающей среды 2024 будет гастролировать по десяти городам с 20 мая по 10 июня. Будет зона экологического опыта. В некоторых городах будут зеленые награды.]\nВы аналитик информации, который должен выполнить извлечение структурированной информации о событиях на основе содержания горячих новостей и сегодняшней даты.\nВам необходимо определить ключевую информацию о событии, включая название события, тип, масштаб, важность, область, город, подробное местоположение, время и т.д.\nТипы событий включают: концерты, социальные горячие темы, мероприятия в достопримечательностях, выставки, региональные экзамены, спортивные события, представления, форумы, фестивали, семинары, ярмарки вакансий, роудшоу, благотворительные мероприятия, коммерческие акции и т.д. Если не можете классифицировать, пожалуйста, верните [Другие типы]. \nМасштаб события делится на: 1-крупные события, 2-средние события, 3-малые события.\nВажность события делится на: 1-наиболее важные, 2-относительно важные, 3-обычные.\nПожалуйста, строго проверьте соответствие области и города. Если не можете определить, пожалуйста, верните 'None'.\nПравила определения времени: Если время прошло и не влияет на будущие услуги, верните [Expired]; если все еще влияет, верните [Current]; если есть конкретный временной диапазон, пожалуйста, верните в формате yyyyMMdd или yyyyMMdd-yyyyMMdd, иначе верните [None].\nПожалуйста, определите, будете ли вы бронировать отель для этого события как турист, robotIntention возвращает True/False, и объясните причину.\nВам необходимо извлечь информацию о том, есть ли экологический знак (ecoTag:yes/no), и вернуть поле ecoTag в json.\nВам необходимо извлечь информацию о том, ограничен ли вход (entryLimit:yes/no), и вернуть поле entryLimit в json.\nВам необходимо извлечь информацию о том, требуется ли предварительное бронирование билетов (ticketReservation:yes/no), и вернуть поле ticketReservation в json.\nПожалуйста, верните строго в следующем формате JSON:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ecoTag\": \"(Format:string)\",\"entryLimit\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "название события",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "тип события",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "масштаб события",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "важность события",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "область/край",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "город",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "конкретное место",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "время события",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "обоснование времени",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "причина/обоснование",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "является ли туристом",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "обоснование намерения",
+                    "能力项": "主题约束"
+                },
+                "ecoTag": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "есть ли экологический знак",
+                    "能力项": "特定格式"
+                },
+                "entryLimit": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "ограничен ли вход",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требуется ли предварительное бронирование билетов",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ecoTag",
+                "entryLimit",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "соответствует ли схеме",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ecoTag": "#JSONSCHEMA#:ecoTag",
+            "entryLimit": "#JSONSCHEMA#:entryLimit",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Ярмарка вакансий】Международная ярмарка вакансий известных предприятий Шанхая 2024 пройдет 15-16 июля. Некоторые позиции требуют записи на собеседование. Организатор - Шанхайское муниципальное бюро трудовых ресурсов и социального обеспечения. Есть VIP-зона для кандидатов.]\nВы аналитик информации, который должен выполнить извлечение структурированной информации о событиях на основе содержания горячих новостей и сегодняшней даты.\nВам необходимо определить ключевую информацию о событии, включая название события, тип, масштаб, важность, область, город, подробное местоположение, время и т.д.\nТипы событий включают: концерты, социальные горячие темы, мероприятия в достопримечательностях, выставки, региональные экзамены, спортивные события, представления, форумы, фестивали, семинары, ярмарки вакансий, роудшоу, благотворительные мероприятия, коммерческие акции и т.д. Если не можете классифицировать, пожалуйста, верните [Другие типы]. \nМасштаб события делится на: 1-крупные события, 2-средние события, 3-малые события.\nВажность события делится на: 1-наиболее важные, 2-относительно важные, 3-обычные.\nПожалуйста, строго проверьте соответствие области и города. Если не можете определить, пожалуйста, верните 'None'.\nПравила определения времени: Если время прошло и не влияет на будущие услуги, верните [Expired]; если все еще влияет, верните [Current]; если есть конкретный временной диапазон, пожалуйста, верните в формате yyyyMMdd или yyyyMMdd-yyyyMMdd, иначе верните [None].\nПожалуйста, определите, будете ли вы бронировать отель для этого события как турист, robotIntention возвращает True/False, и объясните причину.\nВам необходимо извлечь информацию об организаторе (organizer), и вернуть поле organizer в json.\nВам необходимо извлечь информацию о том, требует ли VIP-зона бронирования (vipArea:yes/no), и вернуть поле vipArea в json.\nВам необходимо извлечь информацию о том, требуется ли предварительное бронирование билетов (ticketReservation:yes/no), и вернуть поле ticketReservation в json.\nПожалуйста, верните строго в следующем формате JSON:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"organizer\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "название события",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "тип события",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "масштаб события",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "важность события",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "область/край",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "город",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "конкретное место",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "время события",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "обоснование времени",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "причина/обоснование",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "является ли туристом",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "обоснование намерения",
+                    "能力项": "主题约束"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "организатор",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требует ли VIP-зона бронирования",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требуется ли предварительное бронирование билетов",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "organizer",
+                "vipArea",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "соответствует ли схеме",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "organizer": "#JSONSCHEMA#:organizer",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Коммерческая акция】Летний торговый фестиваль Гуанчжоу 2024 пройдет с 1 по 15 августа. Зоны только для членов требуют записи. У назначенных торговцев есть скидки.]\nВы аналитик информации, который должен выполнить извлечение структурированной информации о событиях на основе содержания горячих новостей и сегодняшней даты.\nВам необходимо определить ключевую информацию о событии, включая название события, тип, масштаб, важность, область, город, подробное местоположение, время и т.д.\nТипы событий включают: концерты, социальные горячие темы, мероприятия в достопримечательностях, выставки, региональные экзамены, спортивные события, представления, форумы, фестивали, семинары, ярмарки вакансий, роудшоу, благотворительные мероприятия, коммерческие акции и т.д. Если не можете классифицировать, пожалуйста, верните [Другие типы]. \nМасштаб события делится на: 1-крупные события, 2-средние события, 3-малые события.\nВажность события делится на: 1-наиболее важные, 2-относительно важные, 3-обычные.\nПожалуйста, строго проверьте соответствие области и города. Если не можете определить, пожалуйста, верните 'None'.\nПравила определения времени: Если время прошло и не влияет на будущие услуги, верните [Expired]; если все еще влияет, верните [Current]; если есть конкретный временной диапазон, пожалуйста, верните в формате yyyyMMdd или yyyyMMdd-yyyyMMdd, иначе верните [None].\nПожалуйста, определите, будете ли вы бронировать отель для этого события как турист, robotIntention возвращает True/False, и объясните причину.\nВам необходимо извлечь информацию о том, требует ли VIP-зона бронирования (vipArea:yes/no), и вернуть поле vipArea в json.\nВам необходимо извлечь информацию о том, есть ли эксклюзивные скидки (discountInfo:yes/no), и вернуть поле discountInfo в json.\nВам необходимо извлечь информацию о том, требуется ли предварительное бронирование билетов (ticketReservation:yes/no), и вернуть поле ticketReservation в json.\nПожалуйста, верните строго в следующем формате JSON:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"discountInfo\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "название события",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "тип события",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "масштаб события",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "важность события",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "область/край",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "город",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "конкретное место",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "время события",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "обоснование времени",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "причина/обоснование",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "является ли туристом",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "обоснование намерения",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требует ли VIP-зона бронирования",
+                    "能力项": "特定格式"
+                },
+                "discountInfo": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "есть ли эксклюзивные скидки",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требуется ли предварительное бронирование билетов",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "vipArea",
+                "discountInfo",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "соответствует ли схеме",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "discountInfo": "#JSONSCHEMA#:discountInfo",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Праздничное торжество】Фестиваль фонарей древнего города Сиань 2024 пройдет с 5 по 19 февраля. Ночные световые шоу будут проходить каждый день. VIP-трибуны требуют записи. Организатор - Муниципальное бюро культуры и туризма Сианя.]\nВы аналитик информации, который должен выполнить извлечение структурированной информации о событиях на основе содержания горячих новостей и сегодняшней даты.\nВам необходимо определить ключевую информацию о событии, включая название события, тип, масштаб, важность, область, город, подробное местоположение, время и т.д.\nТипы событий включают: концерты, социальные горячие темы, мероприятия в достопримечательностях, выставки, региональные экзамены, спортивные события, представления, форумы, фестивали, семинары, ярмарки вакансий, роудшоу, благотворительные мероприятия, коммерческие акции и т.д. Если не можете классифицировать, пожалуйста, верните [Другие типы]. \nМасштаб события делится на: 1-крупные события, 2-средние события, 3-малые события.\nВажность события делится на: 1-наиболее важные, 2-относительно важные, 3-обычные.\nПожалуйста, строго проверьте соответствие области и города. Если не можете определить, пожалуйста, верните 'None'.\nПравила определения времени: Если время прошло и не влияет на будущие услуги, верните [Expired]; если все еще влияет, верните [Current]; если есть конкретный временной диапазон, пожалуйста, верните в формате yyyyMMdd или yyyyMMdd-yyyyMMdd, иначе верните [None].\nПожалуйста, определите, будете ли вы бронировать отель для этого события как турист, robotIntention возвращает True/False, и объясните причину.\nВам необходимо извлечь информацию об организаторе (organizer), и вернуть поле organizer в json.\nВам необходимо извлечь информацию о том, требует ли VIP-зона бронирования (vipArea:yes/no), и вернуть поле vipArea в json.\nВам необходимо извлечь информацию о том, требуется ли предварительное бронирование билетов (ticketReservation:yes/no), и вернуть поле ticketReservation в json.\nПожалуйста, верните строго в следующем формате JSON:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"organizer\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "название события",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "тип события",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "масштаб события",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "важность события",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "область/край",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "город",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "конкретное место",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "время события",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "обоснование времени",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "причина/обоснование",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "является ли туристом",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "обоснование намерения",
+                    "能力项": "主题约束"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "организатор",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требует ли VIP-зона бронирования",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требуется ли предварительное бронирование билетов",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "organizer",
+                "vipArea",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "соответствует ли схеме",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "organizer": "#JSONSCHEMA#:organizer",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Семинар】Семинар по интернет-безопасности Китая 2024 пройдет в Национальном конференц-центре с 10 по 12 сентября. Будут предоставлены синхронный перевод и онлайн-трансляция. В некоторых подзалах будут эксклюзивные зоны для гостей.]\nВы аналитик информации, который должен выполнить извлечение структурированной информации о событиях на основе содержания горячих новостей и сегодняшней даты.\nВам необходимо определить ключевую информацию о событии, включая название события, тип, масштаб, важность, область, город, подробное местоположение, время и т.д.\nТипы событий включают: концерты, социальные горячие темы, мероприятия в достопримечательностях, выставки, региональные экзамены, спортивные события, представления, форумы, фестивали, семинары, ярмарки вакансий, роудшоу, благотворительные мероприятия, коммерческие акции и т.д. Если не можете классифицировать, пожалуйста, верните [Другие типы]. \nМасштаб события делится на: 1-крупные события, 2-средние события, 3-малые события.\nВажность события делится на: 1-наиболее важные, 2-относительно важные, 3-обычные.\nПожалуйста, строго проверьте соответствие области и города. Если не можете определить, пожалуйста, верните 'None'.\nПравила определения времени: Если время прошло и не влияет на будущие услуги, верните [Expired]; если все еще влияет, верните [Current]; если есть конкретный временной диапазон, пожалуйста, верните в формате yyyyMMdd или yyyyMMdd-yyyyMMdd, иначе верните [None].\nПожалуйста, определите, будете ли вы бронировать отель для этого события как турист, robotIntention возвращает True/False, и объясните причину.\nВам необходимо извлечь информацию о том, предоставляется ли синхронный перевод (liveTranslation:yes/no), и вернуть поле liveTranslation в json.\nВам необходимо извлечь платформу прямой трансляции (broadcastPlatform), и вернуть поле broadcastPlatform в json.\nВам необходимо извлечь информацию о том, требует ли VIP-зона бронирования (vipArea:yes/no), и вернуть поле vipArea в json.\nВам необходимо извлечь информацию о том, требуется ли предварительное бронирование билетов (ticketReservation:yes/no), и вернуть поле ticketReservation в json.\nПожалуйста, верните строго в следующем формате JSON:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"liveTranslation\": \"(Format:string)\",\"broadcastPlatform\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "название события",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "тип события",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "масштаб события",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "важность события",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "область/край",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "город",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "конкретное место",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "время события",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "обоснование времени",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "причина/обоснование",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "является ли туристом",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "обоснование намерения",
+                    "能力项": "主题约束"
+                },
+                "liveTranslation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "предоставляется ли синхронный перевод",
+                    "能力项": "特定格式"
+                },
+                "broadcastPlatform": {
+                    "type": "string",
+                    "description": "платформа прямой трансляции",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требует ли VIP-зона бронирования",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требуется ли предварительное бронирование билетов",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "liveTranslation",
+                "broadcastPlatform",
+                "vipArea",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "соответствует ли схеме",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "liveTranslation": "#JSONSCHEMA#:liveTranslation",
+            "broadcastPlatform": "#JSONSCHEMA#:broadcastPlatform",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Роудшоу-событие】Роудшоу инноваций и предпринимательства Шэньчжэня 2024 пройдет в Фабрике мечты молодежи Цяньхай Шэньчжэнь-Гонконг 18 мая. Проекты требуют регистрации. Организатор - Комиссия по научно-техническим инновациям Шэньчжэня. Событие имеет экологический знак.]\nВы аналитик информации, который должен выполнить извлечение структурированной информации о событиях на основе содержания горячих новостей и сегодняшней даты.\nВам необходимо определить ключевую информацию о событии, включая название события, тип, масштаб, важность, область, город, подробное местоположение, время и т.д.\nТипы событий включают: концерты, социальные горячие темы, мероприятия в достопримечательностях, выставки, региональные экзамены, спортивные события, представления, форумы, фестивали, семинары, ярмарки вакансий, роудшоу, благотворительные мероприятия, коммерческие акции и т.д. Если не можете классифицировать, пожалуйста, верните [Другие типы]. \nМасштаб события делится на: 1-крупные события, 2-средние события, 3-малые события.\nВажность события делится на: 1-наиболее важные, 2-относительно важные, 3-обычные.\nПожалуйста, строго проверьте соответствие области и города. Если не можете определить, пожалуйста, верните 'None'.\nПравила определения времени: Если время прошло и не влияет на будущие услуги, верните [Expired]; если все еще влияет, верните [Current]; если есть конкретный временной диапазон, пожалуйста, верните в формате yyyyMMdd или yyyyMMdd-yyyyMMdd, иначе верните [None].\nПожалуйста, определите, будете ли вы бронировать отель для этого события как турист, robotIntention возвращает True/False, и объясните причину.\nВам необходимо извлечь информацию об организаторе (organizer), и вернуть поле organizer в json.\nВам необходимо извлечь информацию о том, есть ли экологический знак (ecoTag:yes/no), и вернуть поле ecoTag в json.\nВам необходимо извлечь информацию о том, требуется ли предварительное бронирование билетов (ticketReservation:yes/no), и вернуть поле ticketReservation в json.\nПожалуйста, верните строго в следующем формате JSON:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"organizer\": \"(Format:string)\",\"ecoTag\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "название события",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "тип события",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "масштаб события",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "важность события",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "область/край",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "город",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "конкретное место",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "время события",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "обоснование времени",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "причина/обоснование",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "является ли туристом",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "обоснование намерения",
+                    "能力项": "主题约束"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "организатор",
+                    "能力项": "主题约束"
+                },
+                "ecoTag": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "есть ли экологический знак",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требуется ли предварительное бронирование билетов",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "organizer",
+                "ecoTag",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "соответствует ли схеме",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "organizer": "#JSONSCHEMA#:organizer",
+            "ecoTag": "#JSONSCHEMA#:ecoTag",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Университетский фестиваль】Годовщина Нанкинского университета 2024 пройдет 18 июня в кампусе Гулоу. Некоторые мероприятия требуют бронирования, выпускники пользуются скидками.]\nВы аналитик информации, который должен выполнить извлечение структурированной информации о событиях на основе содержания горячих новостей и сегодняшней даты.\nВам необходимо определить ключевую информацию о событии, включая название события, тип, масштаб, важность, область, город, подробное местоположение, время и т.д.\nТипы событий включают: концерты, социальные горячие темы, мероприятия в достопримечательностях, выставки, региональные экзамены, спортивные события, представления, форумы, фестивали, семинары, ярмарки вакансий, роудшоу, благотворительные мероприятия, коммерческие акции и т.д. Если не можете классифицировать, пожалуйста, верните [Другие типы]. \nМасштаб события делится на: 1-крупные события, 2-средние события, 3-малые события.\nВажность события делится на: 1-наиболее важные, 2-относительно важные, 3-обычные.\nПожалуйста, строго проверьте соответствие области и города. Если не можете определить, пожалуйста, верните 'None'.\nПравила определения времени: Если время прошло и не влияет на будущие услуги, верните [Expired]; если все еще влияет, верните [Current]; если есть конкретный временной диапазон, пожалуйста, верните в формате yyyyMMdd или yyyyMMdd-yyyyMMdd, иначе верните [None].\nПожалуйста, определите, будете ли вы бронировать отель для этого события как турист, robotIntention возвращает True/False, и объясните причину.\nВам необходимо извлечь информацию о том, требуется ли предварительное бронирование билетов (ticketReservation:yes/no), и вернуть поле ticketReservation в json.\nВам необходимо извлечь информацию о том, есть ли эксклюзивные скидки (discountInfo:yes/no), и вернуть поле discountInfo в json.\nПожалуйста, верните строго в следующем формате JSON:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\",\"discountInfo\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "название события",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "тип события",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "масштаб события",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "важность события",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "область/край",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "город",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "конкретное место",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "время события",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "обоснование времени",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "причина/обоснование",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "является ли туристом",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "обоснование намерения",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требуется ли предварительное бронирование билетов",
+                    "能力项": "特定格式"
+                },
+                "discountInfo": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "есть ли эксклюзивные скидки",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ticketReservation",
+                "discountInfo"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "соответствует ли схеме",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation",
+            "discountInfo": "#JSONSCHEMA#:discountInfo"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Художественная выставка】Международная выставка современного искусства Ханчжоу 2024 пройдет в Художественном музее Западного озера с 20 по 30 октября. Некоторые выставочные зоны требуют бронирования, VIP-зоны имеют эксклюзивные объяснения.]\nВы аналитик информации, который должен выполнить извлечение структурированной информации о событиях на основе содержания горячих новостей и сегодняшней даты.\nВам необходимо определить ключевую информацию о событии, включая название события, тип, масштаб, важность, область, город, подробное местоположение, время и т.д.\nТипы событий включают: концерты, социальные горячие темы, мероприятия в достопримечательностях, выставки, региональные экзамены, спортивные события, представления, форумы, фестивали, семинары, ярмарки вакансий, роудшоу, благотворительные мероприятия, коммерческие акции и т.д. Если не можете классифицировать, пожалуйста, верните [Другие типы]. \nМасштаб события делится на: 1-крупные события, 2-средние события, 3-малые события.\nВажность события делится на: 1-наиболее важные, 2-относительно важные, 3-обычные.\nПожалуйста, строго проверьте соответствие области и города. Если не можете определить, пожалуйста, верните 'None'.\nПравила определения времени: Если время прошло и не влияет на будущие услуги, верните [Expired]; если все еще влияет, верните [Current]; если есть конкретный временной диапазон, пожалуйста, верните в формате yyyyMMdd или yyyyMMdd-yyyyMMdd, иначе верните [None].\nПожалуйста, определите, будете ли вы бронировать отель для этого события как турист, robotIntention возвращает True/False, и объясните причину.\nВам необходимо извлечь информацию о том, требуется ли предварительное бронирование билетов (ticketReservation:yes/no), и вернуть поле ticketReservation в json.\nВам необходимо извлечь информацию о том, требует ли VIP-зона бронирования (vipArea:yes/no), и вернуть поле vipArea в json.\nПожалуйста, верните строго в следующем формате JSON:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\",\"vipArea\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "название события",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "тип события",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "масштаб события",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "важность события",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "область/край",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "город",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "конкретное место",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "время события",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "обоснование времени",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "причина/обоснование",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "является ли туристом",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "обоснование намерения",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требуется ли предварительное бронирование билетов",
+                    "能力项": "特定格式"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "требует ли VIP-зона бронирования",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ticketReservation",
+                "vipArea"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "соответствует ли схеме",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation",
+            "vipArea": "#JSONSCHEMA#:vipArea"
+        }
+    }
+]

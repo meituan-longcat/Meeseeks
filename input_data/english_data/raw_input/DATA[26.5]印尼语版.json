@@ -1,0 +1,2242 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan. Saya akan memberikan Anda artikel panduan perjalanan yang berisi judul dan konten artikel. Silakan analisis artikel untuk menentukan apakah berisi rute perjalanan (containRoute), berapa banyak rute perjalanan yang dikandungnya (routeCount), apakah berisi proyek sensitif waktu (containTimelinessProject), dan ekstrak informasi detail untuk setiap rute (seperti nama rute, hari, titik perjalanan, apakah berisi proyek sensitif waktu, nama proyek sensitif waktu yang terlibat). Akhirnya, keluarkan hasil dalam format JSON yang ditentukan.\nDefinisi istilah:\nRute perjalanan: Rute perjalanan yang direncanakan dengan beberapa titik perjalanan dalam urutan kronologis, berlangsung sekitar 1-3 hari. Biasanya, beberapa titik perjalanan dalam rute perjalanan terhubung oleh urutan waktu (seperti pergi ke tempat A pukul 11 pagi, pergi ke tempat B pukul 2 siang) atau urutan lokasi (seperti saat ini di tempat A, pemberhentian berikutnya ke tempat B). Perhatikan bahwa jika hanya memperkenalkan beberapa titik perjalanan independen, itu tidak dapat membentuk rute perjalanan.\nApakah berisi rute perjalanan: Jika artikel berisi setidaknya satu rute perjalanan lengkap, kembalikan 1, jika tidak 0.\nJumlah rute perjalanan: Jumlah rute perjalanan lengkap yang terdapat dalam artikel, 0 jika tidak ada.\nApakah berisi proyek sensitif waktu: Proyek sensitif waktu mengacu pada proyek yang diadakan pada waktu tertentu, seperti konser, pameran, pertemuan, pertunjukan komedi stand-up, festival musik dan aktivitas terbatas waktu lainnya. Jika rute perjalanan berisi proyek sensitif waktu apa pun, kembalikan 1, jika tidak 0.\nField routes: Jika rute perjalanan disertakan, informasi terstruktur detail untuk setiap rute harus dikeluarkan, termasuk: routeName (nama rute), days (jumlah hari), routePoints (daftar titik perjalanan), hasTimelinessProject (apakah rute ini berisi proyek sensitif waktu), timelinessProjects (daftar proyek sensitif waktu yang terlibat dalam rute ini, array kosong jika tidak ada, setiap nama proyek 9-150 karakter (termasuk spasi, angka...)).\nPersyaratan format output: Silakan keluarkan hasil analisis secara ketat dalam format JSON berikut, jangan tambahkan penjelasan teks tambahan:{\"containRoute\": 0 atau 1,\"routeCount\": angka(0,1,2...),\"containTimelinessProject\": 0 atau 1, \"routes\": [{\"routeName\": \"nama rute\", \"days\": 1-3, \"routePoints\": [\"titik perjalanan A\", \"titik perjalanan B\"], \"hasTimelinessProject\": 0 atau 1, \"timelinessProjects\": [\"nama proyek sensitif waktu\"]}]}\nKonten artikel:\n【Tur setengah hari】14:00 Berkumpul untuk mengunjungi pabrik berusia seabad (reservasi diperlukan) 15:30 Transfer ke toko kreatif yang berdekatan 16:00 Berpartisipasi dalam kelas kerajinan tangan (harian 16:00-17:00)",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah artikel berisi rute perjalanan, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Jumlah rute perjalanan yang terdapat dalam artikel",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah rute perjalanan berisi proyek sensitif waktu, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detail semua rute perjalanan",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nama rute, tidak boleh kosong",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Jumlah hari untuk rute, rentang nilai 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Daftar titik perjalanan, harus berisi minimal dua titik",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Apakah rute ini berisi proyek sensitif waktu",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyek sensitif waktu yang terlibat dalam rute ini, setiap nama proyek 9-150 karakter",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan. Saya akan memberikan Anda artikel panduan perjalanan yang berisi judul dan konten artikel. Silakan analisis artikel untuk menentukan apakah berisi rute perjalanan (containRoute), berapa banyak rute perjalanan yang dikandungnya (routeCount), apakah berisi proyek sensitif waktu (containTimelinessProject), dan ekstrak informasi detail untuk setiap rute (seperti nama rute, hari, titik perjalanan, apakah berisi proyek sensitif waktu, nama proyek sensitif waktu yang terlibat). Akhirnya, keluarkan hasil dalam format JSON yang ditentukan.\nDefinisi istilah:\nRute perjalanan: Rute perjalanan yang direncanakan dengan beberapa titik perjalanan dalam urutan kronologis, berlangsung sekitar 1-3 hari. Biasanya, beberapa titik perjalanan dalam rute perjalanan terhubung oleh urutan waktu (seperti pergi ke tempat A pukul 11 pagi, pergi ke tempat B pukul 2 siang) atau urutan lokasi (seperti saat ini di tempat A, pemberhentian berikutnya ke tempat B). Perhatikan bahwa jika hanya memperkenalkan beberapa titik perjalanan independen, itu tidak dapat membentuk rute perjalanan.\nApakah berisi rute perjalanan: Jika artikel berisi setidaknya satu rute perjalanan lengkap, kembalikan 1, jika tidak 0.\nJumlah rute perjalanan: Jumlah rute perjalanan lengkap yang terdapat dalam artikel, 0 jika tidak ada.\nApakah berisi proyek sensitif waktu: Proyek sensitif waktu mengacu pada proyek yang diadakan pada waktu tertentu, seperti konser, pameran, pertemuan, pertunjukan komedi stand-up, festival musik dan aktivitas terbatas waktu lainnya. Jika rute perjalanan berisi proyek sensitif waktu apa pun, kembalikan 1, jika tidak 0.\nField routes: Jika rute perjalanan disertakan, informasi terstruktur detail untuk setiap rute harus dikeluarkan, termasuk: routeName (nama rute), days (jumlah hari), routePoints (daftar titik perjalanan), hasTimelinessProject (apakah rute ini berisi proyek sensitif waktu), timelinessProjects (daftar proyek sensitif waktu yang terlibat dalam rute ini, array kosong jika tidak ada, setiap nama proyek 9-150 karakter (termasuk spasi, angka...)).\nPersyaratan format output: Silakan keluarkan hasil analisis secara ketat dalam format JSON berikut, jangan tambahkan penjelasan teks tambahan:{\"containRoute\": 0 atau 1,\"routeCount\": angka(0,1,2...),\"containTimelinessProject\": 0 atau 1, \"routes\": [{\"routeName\": \"nama rute\", \"days\": 1-3, \"routePoints\": [\"titik perjalanan A\", \"titik perjalanan B\"], \"hasTimelinessProject\": 0 atau 1, \"timelinessProjects\": [\"nama proyek sensitif waktu\"]}]}\nKonten artikel:\n【Tur mendalam satu hari】Berkumpul di museum pukul 10 pagi, lalu berjalan ke galeri seni, makan siang di restoran terdekat, berpartisipasi dalam pameran terbatas waktu di sore hari, pertunjukan festival musik di malam hari.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah artikel berisi rute perjalanan, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Jumlah rute perjalanan yang terdapat dalam artikel",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah rute perjalanan berisi proyek sensitif waktu, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detail semua rute perjalanan",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nama rute, tidak boleh kosong",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Jumlah hari untuk rute, rentang nilai 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Daftar titik perjalanan, harus berisi minimal dua titik",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Apakah rute ini berisi proyek sensitif waktu",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyek sensitif waktu yang terlibat dalam rute ini, setiap nama proyek 9-150 karakter",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan. Saya akan memberikan Anda artikel panduan perjalanan yang berisi judul dan konten artikel. Silakan analisis artikel untuk menentukan apakah berisi rute perjalanan (containRoute), berapa banyak rute perjalanan yang dikandungnya (routeCount), apakah berisi proyek sensitif waktu (containTimelinessProject), dan ekstrak informasi detail untuk setiap rute (seperti nama rute, hari, titik perjalanan, apakah berisi proyek sensitif waktu, nama proyek sensitif waktu yang terlibat). Akhirnya, keluarkan hasil dalam format JSON yang ditentukan.\nDefinisi istilah:\nRute perjalanan: Rute perjalanan yang direncanakan dengan beberapa titik perjalanan dalam urutan kronologis, berlangsung sekitar 1-3 hari. Biasanya, beberapa titik perjalanan dalam rute perjalanan terhubung oleh urutan waktu (seperti pergi ke tempat A pukul 11 pagi, pergi ke tempat B pukul 2 siang) atau urutan lokasi (seperti saat ini di tempat A, pemberhentian berikutnya ke tempat B). Perhatikan bahwa jika hanya memperkenalkan beberapa titik perjalanan independen, itu tidak dapat membentuk rute perjalanan.\nApakah berisi rute perjalanan: Jika artikel berisi setidaknya satu rute perjalanan lengkap, kembalikan 1, jika tidak 0.\nJumlah rute perjalanan: Jumlah rute perjalanan lengkap yang terdapat dalam artikel, 0 jika tidak ada.\nApakah berisi proyek sensitif waktu: Proyek sensitif waktu mengacu pada proyek yang diadakan pada waktu tertentu, seperti konser, pameran, pertemuan, pertunjukan komedi stand-up, festival musik dan aktivitas terbatas waktu lainnya. Jika rute perjalanan berisi proyek sensitif waktu apa pun, kembalikan 1, jika tidak 0.\nField routes: Jika rute perjalanan disertakan, informasi terstruktur detail untuk setiap rute harus dikeluarkan, termasuk: routeName (nama rute), days (jumlah hari), routePoints (daftar titik perjalanan), hasTimelinessProject (apakah rute ini berisi proyek sensitif waktu), timelinessProjects (daftar proyek sensitif waktu yang terlibat dalam rute ini, array kosong jika tidak ada, setiap nama proyek 9-150 karakter (termasuk spasi, angka...)).\nPersyaratan format output: Silakan keluarkan hasil analisis secara ketat dalam format JSON berikut, jangan tambahkan penjelasan teks tambahan:{\"containRoute\": 0 atau 1,\"routeCount\": angka(0,1,2...),\"containTimelinessProject\": 0 atau 1, \"routes\": [{\"routeName\": \"nama rute\", \"days\": 1-3, \"routePoints\": [\"titik perjalanan A\", \"titik perjalanan B\"], \"hasTimelinessProject\": 0 atau 1, \"timelinessProjects\": [\"nama proyek sensitif waktu\"]}]}\nKonten artikel:\n【Rekomendasi makanan】Jalan camilan lokal memiliki beberapa merek bersejarah, merekomendasikan warung sarapan, toko kue, warung panggang, tanpa urutan waktu, cocok untuk kunjungan santai.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah artikel berisi rute perjalanan, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Jumlah rute perjalanan yang terdapat dalam artikel",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah rute perjalanan berisi proyek sensitif waktu, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detail semua rute perjalanan",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nama rute, tidak boleh kosong",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Jumlah hari untuk rute, rentang nilai 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Daftar titik perjalanan, harus berisi minimal dua titik",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Apakah rute ini berisi proyek sensitif waktu",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyek sensitif waktu yang terlibat dalam rute ini, setiap nama proyek 9-150 karakter",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan. Saya akan memberikan Anda artikel panduan perjalanan yang berisi judul dan konten artikel. Silakan analisis artikel untuk menentukan apakah berisi rute perjalanan (containRoute), berapa banyak rute perjalanan yang dikandungnya (routeCount), apakah berisi proyek sensitif waktu (containTimelinessProject), dan ekstrak informasi detail untuk setiap rute (seperti nama rute, hari, titik perjalanan, apakah berisi proyek sensitif waktu, nama proyek sensitif waktu yang terlibat). Akhirnya, keluarkan hasil dalam format JSON yang ditentukan.\nDefinisi istilah:\nRute perjalanan: Rute perjalanan yang direncanakan dengan beberapa titik perjalanan dalam urutan kronologis, berlangsung sekitar 1-3 hari. Biasanya, beberapa titik perjalanan dalam rute perjalanan terhubung oleh urutan waktu (seperti pergi ke tempat A pukul 11 pagi, pergi ke tempat B pukul 2 siang) atau urutan lokasi (seperti saat ini di tempat A, pemberhentian berikutnya ke tempat B). Perhatikan bahwa jika hanya memperkenalkan beberapa titik perjalanan independen, itu tidak dapat membentuk rute perjalanan.\nApakah berisi rute perjalanan: Jika artikel berisi setidaknya satu rute perjalanan lengkap, kembalikan 1, jika tidak 0.\nJumlah rute perjalanan: Jumlah rute perjalanan lengkap yang terdapat dalam artikel, 0 jika tidak ada.\nApakah berisi proyek sensitif waktu: Proyek sensitif waktu mengacu pada proyek yang diadakan pada waktu tertentu, seperti konser, pameran, pertemuan, pertunjukan komedi stand-up, festival musik dan aktivitas terbatas waktu lainnya. Jika rute perjalanan berisi proyek sensitif waktu apa pun, kembalikan 1, jika tidak 0.\nField routes: Jika rute perjalanan disertakan, informasi terstruktur detail untuk setiap rute harus dikeluarkan, termasuk: routeName (nama rute), days (jumlah hari), routePoints (daftar titik perjalanan), hasTimelinessProject (apakah rute ini berisi proyek sensitif waktu), timelinessProjects (daftar proyek sensitif waktu yang terlibat dalam rute ini, array kosong jika tidak ada, setiap nama proyek 9-150 karakter (termasuk spasi, angka...)).\nPersyaratan format output: Silakan keluarkan hasil analisis secara ketat dalam format JSON berikut, jangan tambahkan penjelasan teks tambahan:{\"containRoute\": 0 atau 1,\"routeCount\": angka(0,1,2...),\"containTimelinessProject\": 0 atau 1, \"routes\": [{\"routeName\": \"nama rute\", \"days\": 1-3, \"routePoints\": [\"titik perjalanan A\", \"titik perjalanan B\"], \"hasTimelinessProject\": 0 atau 1, \"timelinessProjects\": [\"nama proyek sensitif waktu\"]}]}\nKonten artikel:\n【Rute dua hari】Hari1: Mengunjungi kota tua di pagi hari, mengunjungi museum keramik di sore hari, berpartisipasi dalam pertunjukan cahaya pasar malam di malam hari. Hari2: Mendaki gunung di pagi hari, mata air panas di sore hari.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah artikel berisi rute perjalanan, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Jumlah rute perjalanan yang terdapat dalam artikel",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah rute perjalanan berisi proyek sensitif waktu, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detail semua rute perjalanan",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nama rute, tidak boleh kosong",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Jumlah hari untuk rute, rentang nilai 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Daftar titik perjalanan, harus berisi minimal dua titik",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Apakah rute ini berisi proyek sensitif waktu",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyek sensitif waktu yang terlibat dalam rute ini, setiap nama proyek 9-150 karakter",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan. Saya akan memberikan Anda artikel panduan perjalanan yang berisi judul dan konten artikel. Silakan analisis artikel untuk menentukan apakah berisi rute perjalanan (containRoute), berapa banyak rute perjalanan yang dikandungnya (routeCount), apakah berisi proyek sensitif waktu (containTimelinessProject), dan ekstrak informasi detail untuk setiap rute (seperti nama rute, hari, titik perjalanan, apakah berisi proyek sensitif waktu, nama proyek sensitif waktu yang terlibat). Akhirnya, keluarkan hasil dalam format JSON yang ditentukan.\nDefinisi istilah:\nRute perjalanan: Rute perjalanan yang direncanakan dengan beberapa titik perjalanan dalam urutan kronologis, berlangsung sekitar 1-3 hari. Biasanya, beberapa titik perjalanan dalam rute perjalanan terhubung oleh urutan waktu (seperti pergi ke tempat A pukul 11 pagi, pergi ke tempat B pukul 2 siang) atau urutan lokasi (seperti saat ini di tempat A, pemberhentian berikutnya ke tempat B). Perhatikan bahwa jika hanya memperkenalkan beberapa titik perjalanan independen, itu tidak dapat membentuk rute perjalanan.\nApakah berisi rute perjalanan: Jika artikel berisi setidaknya satu rute perjalanan lengkap, kembalikan 1, jika tidak 0.\nJumlah rute perjalanan: Jumlah rute perjalanan lengkap yang terdapat dalam artikel, 0 jika tidak ada.\nApakah berisi proyek sensitif waktu: Proyek sensitif waktu mengacu pada proyek yang diadakan pada waktu tertentu, seperti konser, pameran, pertemuan, pertunjukan komedi stand-up, festival musik dan aktivitas terbatas waktu lainnya. Jika rute perjalanan berisi proyek sensitif waktu apa pun, kembalikan 1, jika tidak 0.\nField routes: Jika rute perjalanan disertakan, informasi terstruktur detail untuk setiap rute harus dikeluarkan, termasuk: routeName (nama rute), days (jumlah hari), routePoints (daftar titik perjalanan), hasTimelinessProject (apakah rute ini berisi proyek sensitif waktu), timelinessProjects (daftar proyek sensitif waktu yang terlibat dalam rute ini, array kosong jika tidak ada, setiap nama proyek 9-150 karakter (termasuk spasi, angka...)).\nPersyaratan format output: Silakan keluarkan hasil analisis secara ketat dalam format JSON berikut, jangan tambahkan penjelasan teks tambahan:{\"containRoute\": 0 atau 1,\"routeCount\": angka(0,1,2...),\"containTimelinessProject\": 0 atau 1, \"routes\": [{\"routeName\": \"nama rute\", \"days\": 1-3, \"routePoints\": [\"titik perjalanan A\", \"titik perjalanan B\"], \"hasTimelinessProject\": 0 atau 1, \"timelinessProjects\": [\"nama proyek sensitif waktu\"]}]}\nKonten artikel:\n【Tur keluarga akhir pekan】Mengunjungi kebun binatang untuk melihat panda raksasa di pagi hari, pameran robot di museum sains di sore hari, pertunjukan teater anak-anak di malam hari. Mengunjungi kebun raya di pagi hari kedua, pulang di sore hari.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah artikel berisi rute perjalanan, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Jumlah rute perjalanan yang terdapat dalam artikel",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah rute perjalanan berisi proyek sensitif waktu, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detail semua rute perjalanan",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nama rute, tidak boleh kosong",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Jumlah hari untuk rute, rentang nilai 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Daftar titik perjalanan, harus berisi minimal dua titik",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Apakah rute ini berisi proyek sensitif waktu",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyek sensitif waktu yang terlibat dalam rute ini, setiap nama proyek 9-150 karakter",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan. Saya akan memberikan Anda artikel panduan perjalanan yang berisi judul dan konten artikel. Silakan analisis artikel untuk menentukan apakah berisi rute perjalanan (containRoute), berapa banyak rute perjalanan yang dikandungnya (routeCount), apakah berisi proyek sensitif waktu (containTimelinessProject), dan ekstrak informasi detail untuk setiap rute (seperti nama rute, hari, titik perjalanan, apakah berisi proyek sensitif waktu, nama proyek sensitif waktu yang terlibat). Akhirnya, keluarkan hasil dalam format JSON yang ditentukan.\nDefinisi istilah:\nRute perjalanan: Rute perjalanan yang direncanakan dengan beberapa titik perjalanan dalam urutan kronologis, berlangsung sekitar 1-3 hari. Biasanya, beberapa titik perjalanan dalam rute perjalanan terhubung oleh urutan waktu (seperti pergi ke tempat A pukul 11 pagi, pergi ke tempat B pukul 2 siang) atau urutan lokasi (seperti saat ini di tempat A, pemberhentian berikutnya ke tempat B). Perhatikan bahwa jika hanya memperkenalkan beberapa titik perjalanan independen, itu tidak dapat membentuk rute perjalanan.\nApakah berisi rute perjalanan: Jika artikel berisi setidaknya satu rute perjalanan lengkap, kembalikan 1, jika tidak 0.\nJumlah rute perjalanan: Jumlah rute perjalanan lengkap yang terdapat dalam artikel, 0 jika tidak ada.\nApakah berisi proyek sensitif waktu: Proyek sensitif waktu mengacu pada proyek yang diadakan pada waktu tertentu, seperti konser, pameran, pertemuan, pertunjukan komedi stand-up, festival musik dan aktivitas terbatas waktu lainnya. Jika rute perjalanan berisi proyek sensitif waktu apa pun, kembalikan 1, jika tidak 0.\nField routes: Jika rute perjalanan disertakan, informasi terstruktur detail untuk setiap rute harus dikeluarkan, termasuk: routeName (nama rute), days (jumlah hari), routePoints (daftar titik perjalanan), hasTimelinessProject (apakah rute ini berisi proyek sensitif waktu), timelinessProjects (daftar proyek sensitif waktu yang terlibat dalam rute ini, array kosong jika tidak ada, setiap nama proyek 9-150 karakter (termasuk spasi, angka...)).\nPersyaratan format output: Silakan keluarkan hasil analisis secara ketat dalam format JSON berikut, jangan tambahkan penjelasan teks tambahan:{\"containRoute\": 0 atau 1,\"routeCount\": angka(0,1,2...),\"containTimelinessProject\": 0 atau 1, \"routes\": [{\"routeName\": \"nama rute\", \"days\": 1-3, \"routePoints\": [\"titik perjalanan A\", \"titik perjalanan B\"], \"hasTimelinessProject\": 0 atau 1, \"timelinessProjects\": [\"nama proyek sensitif waktu\"]}]}\nKonten artikel:\n【Kunjungan pameran】Galeri seni memiliki pameran baru akhir pekan ini, pertemuan dengan seniman pukul 2 siang Sabtu, pertunjukan komedi stand-up di malam hari, reservasi sebelumnya diperlukan.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah artikel berisi rute perjalanan, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Jumlah rute perjalanan yang terdapat dalam artikel",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah rute perjalanan berisi proyek sensitif waktu, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detail semua rute perjalanan",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nama rute, tidak boleh kosong",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Jumlah hari untuk rute, rentang nilai 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Daftar titik perjalanan, harus berisi minimal dua titik",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Apakah rute ini berisi proyek sensitif waktu",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyek sensitif waktu yang terlibat dalam rute ini, setiap nama proyek 9-150 karakter",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan. Saya akan memberikan Anda artikel panduan perjalanan yang berisi judul dan konten artikel. Silakan analisis artikel untuk menentukan apakah berisi rute perjalanan (containRoute), berapa banyak rute perjalanan yang dikandungnya (routeCount), apakah berisi proyek sensitif waktu (containTimelinessProject), dan ekstrak informasi detail untuk setiap rute (seperti nama rute, hari, titik perjalanan, apakah berisi proyek sensitif waktu, nama proyek sensitif waktu yang terlibat). Akhirnya, keluarkan hasil dalam format JSON yang ditentukan.\nDefinisi istilah:\nRute perjalanan: Rute perjalanan yang direncanakan dengan beberapa titik perjalanan dalam urutan kronologis, berlangsung sekitar 1-3 hari. Biasanya, beberapa titik perjalanan dalam rute perjalanan terhubung oleh urutan waktu (seperti pergi ke tempat A pukul 11 pagi, pergi ke tempat B pukul 2 siang) atau urutan lokasi (seperti saat ini di tempat A, pemberhentian berikutnya ke tempat B). Perhatikan bahwa jika hanya memperkenalkan beberapa titik perjalanan independen, itu tidak dapat membentuk rute perjalanan.\nApakah berisi rute perjalanan: Jika artikel berisi setidaknya satu rute perjalanan lengkap, kembalikan 1, jika tidak 0.\nJumlah rute perjalanan: Jumlah rute perjalanan lengkap yang terdapat dalam artikel, 0 jika tidak ada.\nApakah berisi proyek sensitif waktu: Proyek sensitif waktu mengacu pada proyek yang diadakan pada waktu tertentu, seperti konser, pameran, pertemuan, pertunjukan komedi stand-up, festival musik dan aktivitas terbatas waktu lainnya. Jika rute perjalanan berisi proyek sensitif waktu apa pun, kembalikan 1, jika tidak 0.\nField routes: Jika rute perjalanan disertakan, informasi terstruktur detail untuk setiap rute harus dikeluarkan, termasuk: routeName (nama rute), days (jumlah hari), routePoints (daftar titik perjalanan), hasTimelinessProject (apakah rute ini berisi proyek sensitif waktu), timelinessProjects (daftar proyek sensitif waktu yang terlibat dalam rute ini, array kosong jika tidak ada, setiap nama proyek 9-150 karakter (termasuk spasi, angka...)).\nPersyaratan format output: Silakan keluarkan hasil analisis secara ketat dalam format JSON berikut, jangan tambahkan penjelasan teks tambahan:{\"containRoute\": 0 atau 1,\"routeCount\": angka(0,1,2...),\"containTimelinessProject\": 0 atau 1, \"routes\": [{\"routeName\": \"nama rute\", \"days\": 1-3, \"routePoints\": [\"titik perjalanan A\", \"titik perjalanan B\"], \"hasTimelinessProject\": 0 atau 1, \"timelinessProjects\": [\"nama proyek sensitif waktu\"]}]}\nKonten artikel:\n【Panduan perjalanan mandiri】Atraksi yang direkomendasikan termasuk taman, jalan-jalan kuno, museum, pasar malam, masing-masing dapat dikunjungi secara independen, tanpa rute tetap.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah artikel berisi rute perjalanan, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Jumlah rute perjalanan yang terdapat dalam artikel",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah rute perjalanan berisi proyek sensitif waktu, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detail semua rute perjalanan",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nama rute, tidak boleh kosong",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Jumlah hari untuk rute, rentang nilai 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Daftar titik perjalanan, harus berisi minimal dua titik",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Apakah rute ini berisi proyek sensitif waktu",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyek sensitif waktu yang terlibat dalam rute ini, setiap nama proyek 9-150 karakter",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan. Saya akan memberikan Anda artikel panduan perjalanan yang berisi judul dan konten artikel. Silakan analisis artikel untuk menentukan apakah berisi rute perjalanan (containRoute), berapa banyak rute perjalanan yang dikandungnya (routeCount), apakah berisi proyek sensitif waktu (containTimelinessProject), dan ekstrak informasi detail untuk setiap rute (seperti nama rute, hari, titik perjalanan, apakah berisi proyek sensitif waktu, nama proyek sensitif waktu yang terlibat). Akhirnya, keluarkan hasil dalam format JSON yang ditentukan.\nDefinisi istilah:\nRute perjalanan: Rute perjalanan yang direncanakan dengan beberapa titik perjalanan dalam urutan kronologis, berlangsung sekitar 1-3 hari. Biasanya, beberapa titik perjalanan dalam rute perjalanan terhubung oleh urutan waktu (seperti pergi ke tempat A pukul 11 pagi, pergi ke tempat B pukul 2 siang) atau urutan lokasi (seperti saat ini di tempat A, pemberhentian berikutnya ke tempat B). Perhatikan bahwa jika hanya memperkenalkan beberapa titik perjalanan independen, itu tidak dapat membentuk rute perjalanan.\nApakah berisi rute perjalanan: Jika artikel berisi setidaknya satu rute perjalanan lengkap, kembalikan 1, jika tidak 0.\nJumlah rute perjalanan: Jumlah rute perjalanan lengkap yang terdapat dalam artikel, 0 jika tidak ada.\nApakah berisi proyek sensitif waktu: Proyek sensitif waktu mengacu pada proyek yang diadakan pada waktu tertentu, seperti konser, pameran, pertemuan, pertunjukan komedi stand-up, festival musik dan aktivitas terbatas waktu lainnya. Jika rute perjalanan berisi proyek sensitif waktu apa pun, kembalikan 1, jika tidak 0.\nField routes: Jika rute perjalanan disertakan, informasi terstruktur detail untuk setiap rute harus dikeluarkan, termasuk: routeName (nama rute), days (jumlah hari), routePoints (daftar titik perjalanan), hasTimelinessProject (apakah rute ini berisi proyek sensitif waktu), timelinessProjects (daftar proyek sensitif waktu yang terlibat dalam rute ini, array kosong jika tidak ada, setiap nama proyek 9-150 karakter (termasuk spasi, angka...)).\nPersyaratan format output: Silakan keluarkan hasil analisis secara ketat dalam format JSON berikut, jangan tambahkan penjelasan teks tambahan:{\"containRoute\": 0 atau 1,\"routeCount\": angka(0,1,2...),\"containTimelinessProject\": 0 atau 1, \"routes\": [{\"routeName\": \"nama rute\", \"days\": 1-3, \"routePoints\": [\"titik perjalanan A\", \"titik perjalanan B\"], \"hasTimelinessProject\": 0 atau 1, \"timelinessProjects\": [\"nama proyek sensitif waktu\"]}]}\nKonten artikel:\n【Tur satu hari】Berkumpul di stasiun kereta pukul 8 pagi, tiba di area pemandangan pukul 9 pagi, tur puncak gunung pukul 10 pagi, turun untuk makan siang pukul 12 siang, mengunjungi desa rakyat di sore hari, pulang pukul 4 sore.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah artikel berisi rute perjalanan, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Jumlah rute perjalanan yang terdapat dalam artikel",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah rute perjalanan berisi proyek sensitif waktu, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detail semua rute perjalanan",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nama rute, tidak boleh kosong",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Jumlah hari untuk rute, rentang nilai 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Daftar titik perjalanan, harus berisi minimal dua titik",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Apakah rute ini berisi proyek sensitif waktu",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyek sensitif waktu yang terlibat dalam rute ini, setiap nama proyek 9-150 karakter",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan. Saya akan memberikan Anda artikel panduan perjalanan yang berisi judul dan konten artikel. Silakan analisis artikel untuk menentukan apakah berisi rute perjalanan (containRoute), berapa banyak rute perjalanan yang dikandungnya (routeCount), apakah berisi proyek sensitif waktu (containTimelinessProject), dan ekstrak informasi detail untuk setiap rute (seperti nama rute, hari, titik perjalanan, apakah berisi proyek sensitif waktu, nama proyek sensitif waktu yang terlibat). Akhirnya, keluarkan hasil dalam format JSON yang ditentukan.\nDefinisi istilah:\nRute perjalanan: Rute perjalanan yang direncanakan dengan beberapa titik perjalanan dalam urutan kronologis, berlangsung sekitar 1-3 hari. Biasanya, beberapa titik perjalanan dalam rute perjalanan terhubung oleh urutan waktu (seperti pergi ke tempat A pukul 11 pagi, pergi ke tempat B pukul 2 siang) atau urutan lokasi (seperti saat ini di tempat A, pemberhentian berikutnya ke tempat B). Perhatikan bahwa jika hanya memperkenalkan beberapa titik perjalanan independen, itu tidak dapat membentuk rute perjalanan.\nApakah berisi rute perjalanan: Jika artikel berisi setidaknya satu rute perjalanan lengkap, kembalikan 1, jika tidak 0.\nJumlah rute perjalanan: Jumlah rute perjalanan lengkap yang terdapat dalam artikel, 0 jika tidak ada.\nApakah berisi proyek sensitif waktu: Proyek sensitif waktu mengacu pada proyek yang diadakan pada waktu tertentu, seperti konser, pameran, pertemuan, pertunjukan komedi stand-up, festival musik dan aktivitas terbatas waktu lainnya. Jika rute perjalanan berisi proyek sensitif waktu apa pun, kembalikan 1, jika tidak 0.\nField routes: Jika rute perjalanan disertakan, informasi terstruktur detail untuk setiap rute harus dikeluarkan, termasuk: routeName (nama rute), days (jumlah hari), routePoints (daftar titik perjalanan), hasTimelinessProject (apakah rute ini berisi proyek sensitif waktu), timelinessProjects (daftar proyek sensitif waktu yang terlibat dalam rute ini, array kosong jika tidak ada, setiap nama proyek 9-150 karakter (termasuk spasi, angka...)).\nPersyaratan format output: Silakan keluarkan hasil analisis secara ketat dalam format JSON berikut, jangan tambahkan penjelasan teks tambahan:{\"containRoute\": 0 atau 1,\"routeCount\": angka(0,1,2...),\"containTimelinessProject\": 0 atau 1, \"routes\": [{\"routeName\": \"nama rute\", \"days\": 1-3, \"routePoints\": [\"titik perjalanan A\", \"titik perjalanan B\"], \"hasTimelinessProject\": 0 atau 1, \"timelinessProjects\": [\"nama proyek sensitif waktu\"]}]}\nKonten artikel:\n【Rute tur malam】Berkumpul di tepi sungai pukul 18:00, tur malam dengan perahu pukul 18:30, berjalan ke alun-alun musik setelah turun pukul 20:00 untuk menonton konser terbuka.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah artikel berisi rute perjalanan, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Jumlah rute perjalanan yang terdapat dalam artikel",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah rute perjalanan berisi proyek sensitif waktu, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detail semua rute perjalanan",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nama rute, tidak boleh kosong",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Jumlah hari untuk rute, rentang nilai 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Daftar titik perjalanan, harus berisi minimal dua titik",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Apakah rute ini berisi proyek sensitif waktu",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyek sensitif waktu yang terlibat dalam rute ini, setiap nama proyek 9-150 karakter",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan. Saya akan memberikan Anda artikel panduan perjalanan yang berisi judul dan konten artikel. Silakan analisis artikel untuk menentukan apakah berisi rute perjalanan (containRoute), berapa banyak rute perjalanan yang dikandungnya (routeCount), apakah berisi proyek sensitif waktu (containTimelinessProject), dan ekstrak informasi detail untuk setiap rute (seperti nama rute, hari, titik perjalanan, apakah berisi proyek sensitif waktu, nama proyek sensitif waktu yang terlibat). Akhirnya, keluarkan hasil dalam format JSON yang ditentukan.\nDefinisi istilah:\nRute perjalanan: Rute perjalanan yang direncanakan dengan beberapa titik perjalanan dalam urutan kronologis, berlangsung sekitar 1-3 hari. Biasanya, beberapa titik perjalanan dalam rute perjalanan terhubung oleh urutan waktu (seperti pergi ke tempat A pukul 11 pagi, pergi ke tempat B pukul 2 siang) atau urutan lokasi (seperti saat ini di tempat A, pemberhentian berikutnya ke tempat B). Perhatikan bahwa jika hanya memperkenalkan beberapa titik perjalanan independen, itu tidak dapat membentuk rute perjalanan.\nApakah berisi rute perjalanan: Jika artikel berisi setidaknya satu rute perjalanan lengkap, kembalikan 1, jika tidak 0.\nJumlah rute perjalanan: Jumlah rute perjalanan lengkap yang terdapat dalam artikel, 0 jika tidak ada.\nApakah berisi proyek sensitif waktu: Proyek sensitif waktu mengacu pada proyek yang diadakan pada waktu tertentu, seperti konser, pameran, pertemuan, pertunjukan komedi stand-up, festival musik dan aktivitas terbatas waktu lainnya. Jika rute perjalanan berisi proyek sensitif waktu apa pun, kembalikan 1, jika tidak 0.\nField routes: Jika rute perjalanan disertakan, informasi terstruktur detail untuk setiap rute harus dikeluarkan, termasuk: routeName (nama rute), days (jumlah hari), routePoints (daftar titik perjalanan), hasTimelinessProject (apakah rute ini berisi proyek sensitif waktu), timelinessProjects (daftar proyek sensitif waktu yang terlibat dalam rute ini, array kosong jika tidak ada, setiap nama proyek 9-150 karakter (termasuk spasi, angka...)).\nPersyaratan format output: Silakan keluarkan hasil analisis secara ketat dalam format JSON berikut, jangan tambahkan penjelasan teks tambahan:{\"containRoute\": 0 atau 1,\"routeCount\": angka(0,1,2...),\"containTimelinessProject\": 0 atau 1, \"routes\": [{\"routeName\": \"nama rute\", \"days\": 1-3, \"routePoints\": [\"titik perjalanan A\", \"titik perjalanan B\"], \"hasTimelinessProject\": 0 atau 1, \"timelinessProjects\": [\"nama proyek sensitif waktu\"]}]}\nKonten artikel:\n【Panduan】Merekomendasikan tiga tempat utama: museum, galeri seni, museum sains, masing-masing dengan pameran karakteristik, cocok untuk kunjungan keluarga, tanpa rute spesifik.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah artikel berisi rute perjalanan, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Jumlah rute perjalanan yang terdapat dalam artikel",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah rute perjalanan berisi proyek sensitif waktu, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detail semua rute perjalanan",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nama rute, tidak boleh kosong",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Jumlah hari untuk rute, rentang nilai 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Daftar titik perjalanan, harus berisi minimal dua titik",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Apakah rute ini berisi proyek sensitif waktu",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyek sensitif waktu yang terlibat dalam rute ini, setiap nama proyek 9-150 karakter",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan. Saya akan memberikan Anda artikel panduan perjalanan yang berisi judul dan konten artikel. Silakan analisis artikel untuk menentukan apakah berisi rute perjalanan (containRoute), berapa banyak rute perjalanan yang dikandungnya (routeCount), apakah berisi proyek sensitif waktu (containTimelinessProject), dan ekstrak informasi detail untuk setiap rute (seperti nama rute, hari, titik perjalanan, apakah berisi proyek sensitif waktu, nama proyek sensitif waktu yang terlibat). Akhirnya, keluarkan hasil dalam format JSON yang ditentukan.\nDefinisi istilah:\nRute perjalanan: Rute perjalanan yang direncanakan dengan beberapa titik perjalanan dalam urutan kronologis, berlangsung sekitar 1-3 hari. Biasanya, beberapa titik perjalanan dalam rute perjalanan terhubung oleh urutan waktu (seperti pergi ke tempat A pukul 11 pagi, pergi ke tempat B pukul 2 siang) atau urutan lokasi (seperti saat ini di tempat A, pemberhentian berikutnya ke tempat B). Perhatikan bahwa jika hanya memperkenalkan beberapa titik perjalanan independen, itu tidak dapat membentuk rute perjalanan.\nApakah berisi rute perjalanan: Jika artikel berisi setidaknya satu rute perjalanan lengkap, kembalikan 1, jika tidak 0.\nJumlah rute perjalanan: Jumlah rute perjalanan lengkap yang terdapat dalam artikel, 0 jika tidak ada.\nApakah berisi proyek sensitif waktu: Proyek sensitif waktu mengacu pada proyek yang diadakan pada waktu tertentu, seperti konser, pameran, pertemuan, pertunjukan komedi stand-up, festival musik dan aktivitas terbatas waktu lainnya. Jika rute perjalanan berisi proyek sensitif waktu apa pun, kembalikan 1, jika tidak 0.\nField routes: Jika rute perjalanan disertakan, informasi terstruktur detail untuk setiap rute harus dikeluarkan, termasuk: routeName (nama rute), days (jumlah hari), routePoints (daftar titik perjalanan), hasTimelinessProject (apakah rute ini berisi proyek sensitif waktu), timelinessProjects (daftar proyek sensitif waktu yang terlibat dalam rute ini, array kosong jika tidak ada, setiap nama proyek 9-150 karakter (termasuk spasi, angka...)).\nPersyaratan format output: Silakan keluarkan hasil analisis secara ketat dalam format JSON berikut, jangan tambahkan penjelasan teks tambahan:{\"containRoute\": 0 atau 1,\"routeCount\": angka(0,1,2...),\"containTimelinessProject\": 0 atau 1, \"routes\": [{\"routeName\": \"nama rute\", \"days\": 1-3, \"routePoints\": [\"titik perjalanan A\", \"titik perjalanan B\"], \"hasTimelinessProject\": 0 atau 1, \"timelinessProjects\": [\"nama proyek sensitif waktu\"]}]}\nKonten artikel:\n【Tur self-driving tiga hari】Hari1: Berangkat pagi ke Kota Air Gubei, tur pemandangan kota air setelah makan siang, berpartisipasi dalam pertunjukan cahaya kota air di malam hari. Hari2: Menuju kaki Tembok Besar di pagi hari, mendaki Tembok Besar di sore hari, berkemah di malam hari. Hari3: Mengunjungi Museum Tembok Besar di pagi hari, pulang di sore hari.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah artikel berisi rute perjalanan, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Jumlah rute perjalanan yang terdapat dalam artikel",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah rute perjalanan berisi proyek sensitif waktu, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detail semua rute perjalanan",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nama rute, tidak boleh kosong",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Jumlah hari untuk rute, rentang nilai 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Daftar titik perjalanan, harus berisi minimal dua titik",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Apakah rute ini berisi proyek sensitif waktu",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyek sensitif waktu yang terlibat dalam rute ini, setiap nama proyek 9-150 karakter",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan. Saya akan memberikan Anda artikel panduan perjalanan yang berisi judul dan konten artikel. Silakan analisis artikel untuk menentukan apakah berisi rute perjalanan (containRoute), berapa banyak rute perjalanan yang dikandungnya (routeCount), apakah berisi proyek sensitif waktu (containTimelinessProject), dan ekstrak informasi detail untuk setiap rute (seperti nama rute, hari, titik perjalanan, apakah berisi proyek sensitif waktu, nama proyek sensitif waktu yang terlibat). Akhirnya, keluarkan hasil dalam format JSON yang ditentukan.\nDefinisi istilah:\nRute perjalanan: Rute perjalanan yang direncanakan dengan beberapa titik perjalanan dalam urutan kronologis, berlangsung sekitar 1-3 hari. Biasanya, beberapa titik perjalanan dalam rute perjalanan terhubung oleh urutan waktu (seperti pergi ke tempat A pukul 11 pagi, pergi ke tempat B pukul 2 siang) atau urutan lokasi (seperti saat ini di tempat A, pemberhentian berikutnya ke tempat B). Perhatikan bahwa jika hanya memperkenalkan beberapa titik perjalanan independen, itu tidak dapat membentuk rute perjalanan.\nApakah berisi rute perjalanan: Jika artikel berisi setidaknya satu rute perjalanan lengkap, kembalikan 1, jika tidak 0.\nJumlah rute perjalanan: Jumlah rute perjalanan lengkap yang terdapat dalam artikel, 0 jika tidak ada.\nApakah berisi proyek sensitif waktu: Proyek sensitif waktu mengacu pada proyek yang diadakan pada waktu tertentu, seperti konser, pameran, pertemuan, pertunjukan komedi stand-up, festival musik dan aktivitas terbatas waktu lainnya. Jika rute perjalanan berisi proyek sensitif waktu apa pun, kembalikan 1, jika tidak 0.\nField routes: Jika rute perjalanan disertakan, informasi terstruktur detail untuk setiap rute harus dikeluarkan, termasuk: routeName (nama rute), days (jumlah hari), routePoints (daftar titik perjalanan), hasTimelinessProject (apakah rute ini berisi proyek sensitif waktu), timelinessProjects (daftar proyek sensitif waktu yang terlibat dalam rute ini, array kosong jika tidak ada, setiap nama proyek 9-150 karakter (termasuk spasi, angka...)).\nPersyaratan format output: Silakan keluarkan hasil analisis secara ketat dalam format JSON berikut, jangan tambahkan penjelasan teks tambahan:{\"containRoute\": 0 atau 1,\"routeCount\": angka(0,1,2...),\"containTimelinessProject\": 0 atau 1, \"routes\": [{\"routeName\": \"nama rute\", \"days\": 1-3, \"routePoints\": [\"titik perjalanan A\", \"titik perjalanan B\"], \"hasTimelinessProject\": 0 atau 1, \"timelinessProjects\": [\"nama proyek sensitif waktu\"]}]}\nKonten artikel:\n【Kamp orang tua-anak musim panas】Hari pertama pagi berkumpul, mengunjungi museum sains, pengalaman eksperimen sains di sore hari, pertunjukan komedi stand-up sains di malam hari. Hari kedua pengembangan outdoor sepanjang hari, hari ketiga pagi mengunjungi kebun raya, upacara penutupan di sore hari.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah artikel berisi rute perjalanan, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Jumlah rute perjalanan yang terdapat dalam artikel",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah rute perjalanan berisi proyek sensitif waktu, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detail semua rute perjalanan",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nama rute, tidak boleh kosong",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Jumlah hari untuk rute, rentang nilai 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Daftar titik perjalanan, harus berisi minimal dua titik",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Apakah rute ini berisi proyek sensitif waktu",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyek sensitif waktu yang terlibat dalam rute ini, setiap nama proyek 9-150 karakter",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan. Saya akan memberikan Anda artikel panduan perjalanan yang berisi judul dan konten artikel. Silakan analisis artikel untuk menentukan apakah berisi rute perjalanan (containRoute), berapa banyak rute perjalanan yang dikandungnya (routeCount), apakah berisi proyek sensitif waktu (containTimelinessProject), dan ekstrak informasi detail untuk setiap rute (seperti nama rute, hari, titik perjalanan, apakah berisi proyek sensitif waktu, nama proyek sensitif waktu yang terlibat). Akhirnya, keluarkan hasil dalam format JSON yang ditentukan.\nDefinisi istilah:\nRute perjalanan: Rute perjalanan yang direncanakan dengan beberapa titik perjalanan dalam urutan kronologis, berlangsung sekitar 1-3 hari. Biasanya, beberapa titik perjalanan dalam rute perjalanan terhubung oleh urutan waktu (seperti pergi ke tempat A pukul 11 pagi, pergi ke tempat B pukul 2 siang) atau urutan lokasi (seperti saat ini di tempat A, pemberhentian berikutnya ke tempat B). Perhatikan bahwa jika hanya memperkenalkan beberapa titik perjalanan independen, itu tidak dapat membentuk rute perjalanan.\nApakah berisi rute perjalanan: Jika artikel berisi setidaknya satu rute perjalanan lengkap, kembalikan 1, jika tidak 0.\nJumlah rute perjalanan: Jumlah rute perjalanan lengkap yang terdapat dalam artikel, 0 jika tidak ada.\nApakah berisi proyek sensitif waktu: Proyek sensitif waktu mengacu pada proyek yang diadakan pada waktu tertentu, seperti konser, pameran, pertemuan, pertunjukan komedi stand-up, festival musik dan aktivitas terbatas waktu lainnya. Jika rute perjalanan berisi proyek sensitif waktu apa pun, kembalikan 1, jika tidak 0.\nField routes: Jika rute perjalanan disertakan, informasi terstruktur detail untuk setiap rute harus dikeluarkan, termasuk: routeName (nama rute), days (jumlah hari), routePoints (daftar titik perjalanan), hasTimelinessProject (apakah rute ini berisi proyek sensitif waktu), timelinessProjects (daftar proyek sensitif waktu yang terlibat dalam rute ini, array kosong jika tidak ada, setiap nama proyek 9-150 karakter (termasuk spasi, angka...)).\nPersyaratan format output: Silakan keluarkan hasil analisis secara ketat dalam format JSON berikut, jangan tambahkan penjelasan teks tambahan:{\"containRoute\": 0 atau 1,\"routeCount\": angka(0,1,2...),\"containTimelinessProject\": 0 atau 1, \"routes\": [{\"routeName\": \"nama rute\", \"days\": 1-3, \"routePoints\": [\"titik perjalanan A\", \"titik perjalanan B\"], \"hasTimelinessProject\": 0 atau 1, \"timelinessProjects\": [\"nama proyek sensitif waktu\"]}]}\nKonten artikel:\n【Rute lari malam kota】Berkumpul di taman olahraga kota pukul 7 malam, lari malam sepanjang jalur tepi sungai melewati air mancur musik dan jembatan cahaya, selesai di alun-alun pusat kota, cocok untuk penggemar olahraga.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah artikel berisi rute perjalanan, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Jumlah rute perjalanan yang terdapat dalam artikel",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah rute perjalanan berisi proyek sensitif waktu, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detail semua rute perjalanan",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nama rute, tidak boleh kosong",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Jumlah hari untuk rute, rentang nilai 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Daftar titik perjalanan, harus berisi minimal dua titik",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Apakah rute ini berisi proyek sensitif waktu",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyek sensitif waktu yang terlibat dalam rute ini, setiap nama proyek 9-150 karakter",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan. Saya akan memberikan Anda artikel panduan perjalanan yang berisi judul dan konten artikel. Silakan analisis artikel untuk menentukan apakah berisi rute perjalanan (containRoute), berapa banyak rute perjalanan yang dikandungnya (routeCount), apakah berisi proyek sensitif waktu (containTimelinessProject), dan ekstrak informasi detail untuk setiap rute (seperti nama rute, hari, titik perjalanan, apakah berisi proyek sensitif waktu, nama proyek sensitif waktu yang terlibat). Akhirnya, keluarkan hasil dalam format JSON yang ditentukan.\nDefinisi istilah:\nRute perjalanan: Rute perjalanan yang direncanakan dengan beberapa titik perjalanan dalam urutan kronologis, berlangsung sekitar 1-3 hari. Biasanya, beberapa titik perjalanan dalam rute perjalanan terhubung oleh urutan waktu (seperti pergi ke tempat A pukul 11 pagi, pergi ke tempat B pukul 2 siang) atau urutan lokasi (seperti saat ini di tempat A, pemberhentian berikutnya ke tempat B). Perhatikan bahwa jika hanya memperkenalkan beberapa titik perjalanan independen, itu tidak dapat membentuk rute perjalanan.\nApakah berisi rute perjalanan: Jika artikel berisi setidaknya satu rute perjalanan lengkap, kembalikan 1, jika tidak 0.\nJumlah rute perjalanan: Jumlah rute perjalanan lengkap yang terdapat dalam artikel, 0 jika tidak ada.\nApakah berisi proyek sensitif waktu: Proyek sensitif waktu mengacu pada proyek yang diadakan pada waktu tertentu, seperti konser, pameran, pertemuan, pertunjukan komedi stand-up, festival musik dan aktivitas terbatas waktu lainnya. Jika rute perjalanan berisi proyek sensitif waktu apa pun, kembalikan 1, jika tidak 0.\nField routes: Jika rute perjalanan disertakan, informasi terstruktur detail untuk setiap rute harus dikeluarkan, termasuk: routeName (nama rute), days (jumlah hari), routePoints (daftar titik perjalanan), hasTimelinessProject (apakah rute ini berisi proyek sensitif waktu), timelinessProjects (daftar proyek sensitif waktu yang terlibat dalam rute ini, array kosong jika tidak ada, setiap nama proyek 9-150 karakter (termasuk spasi, angka...)).\nPersyaratan format output: Silakan keluarkan hasil analisis secara ketat dalam format JSON berikut, jangan tambahkan penjelasan teks tambahan:{\"containRoute\": 0 atau 1,\"routeCount\": angka(0,1,2...),\"containTimelinessProject\": 0 atau 1, \"routes\": [{\"routeName\": \"nama rute\", \"days\": 1-3, \"routePoints\": [\"titik perjalanan A\", \"titik perjalanan B\"], \"hasTimelinessProject\": 0 atau 1, \"timelinessProjects\": [\"nama proyek sensitif waktu\"]}]}\nKonten artikel:\n【Tur pasangan akhir pekan】Mengunjungi taman mawar di pagi hari, melihat pameran lukisan di galeri seni di sore hari, menghadiri konser jazz di malam hari. Hari kedua pagi pengalaman tembikar, sore istirahat di kafe jalan tua.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah artikel berisi rute perjalanan, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Jumlah rute perjalanan yang terdapat dalam artikel",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah rute perjalanan berisi proyek sensitif waktu, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detail semua rute perjalanan",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nama rute, tidak boleh kosong",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Jumlah hari untuk rute, rentang nilai 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Daftar titik perjalanan, harus berisi minimal dua titik",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Apakah rute ini berisi proyek sensitif waktu",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyek sensitif waktu yang terlibat dalam rute ini, setiap nama proyek 9-150 karakter",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan. Saya akan memberikan Anda artikel panduan perjalanan yang berisi judul dan konten artikel. Silakan analisis artikel untuk menentukan apakah berisi rute perjalanan (containRoute), berapa banyak rute perjalanan yang dikandungnya (routeCount), apakah berisi proyek sensitif waktu (containTimelinessProject), dan ekstrak informasi detail untuk setiap rute (seperti nama rute, hari, titik perjalanan, apakah berisi proyek sensitif waktu, nama proyek sensitif waktu yang terlibat). Akhirnya, keluarkan hasil dalam format JSON yang ditentukan.\nDefinisi istilah:\nRute perjalanan: Rute perjalanan yang direncanakan dengan beberapa titik perjalanan dalam urutan kronologis, berlangsung sekitar 1-3 hari. Biasanya, beberapa titik perjalanan dalam rute perjalanan terhubung oleh urutan waktu (seperti pergi ke tempat A pukul 11 pagi, pergi ke tempat B pukul 2 siang) atau urutan lokasi (seperti saat ini di tempat A, pemberhentian berikutnya ke tempat B). Perhatikan bahwa jika hanya memperkenalkan beberapa titik perjalanan independen, itu tidak dapat membentuk rute perjalanan.\nApakah berisi rute perjalanan: Jika artikel berisi setidaknya satu rute perjalanan lengkap, kembalikan 1, jika tidak 0.\nJumlah rute perjalanan: Jumlah rute perjalanan lengkap yang terdapat dalam artikel, 0 jika tidak ada.\nApakah berisi proyek sensitif waktu: Proyek sensitif waktu mengacu pada proyek yang diadakan pada waktu tertentu, seperti konser, pameran, pertemuan, pertunjukan komedi stand-up, festival musik dan aktivitas terbatas waktu lainnya. Jika rute perjalanan berisi proyek sensitif waktu apa pun, kembalikan 1, jika tidak 0.\nField routes: Jika rute perjalanan disertakan, informasi terstruktur detail untuk setiap rute harus dikeluarkan, termasuk: routeName (nama rute), days (jumlah hari), routePoints (daftar titik perjalanan), hasTimelinessProject (apakah rute ini berisi proyek sensitif waktu), timelinessProjects (daftar proyek sensitif waktu yang terlibat dalam rute ini, array kosong jika tidak ada, setiap nama proyek 9-150 karakter (termasuk spasi, angka...)).\nPersyaratan format output: Silakan keluarkan hasil analisis secara ketat dalam format JSON berikut, jangan tambahkan penjelasan teks tambahan:{\"containRoute\": 0 atau 1,\"routeCount\": angka(0,1,2...),\"containTimelinessProject\": 0 atau 1, \"routes\": [{\"routeName\": \"nama rute\", \"days\": 1-3, \"routePoints\": [\"titik perjalanan A\", \"titik perjalanan B\"], \"hasTimelinessProject\": 0 atau 1, \"timelinessProjects\": [\"nama proyek sensitif waktu\"]}]}\nKonten artikel:\n【Rute ganda pameran + konser】Pameran baru di galeri seni di pagi hari, ceramah seniman di sore hari, menghadiri konser terbatas waktu di malam hari. Hari kedua pagi aktivitas bebas.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah artikel berisi rute perjalanan, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Jumlah rute perjalanan yang terdapat dalam artikel",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah rute perjalanan berisi proyek sensitif waktu, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detail semua rute perjalanan",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nama rute, tidak boleh kosong",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Jumlah hari untuk rute, rentang nilai 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Daftar titik perjalanan, harus berisi minimal dua titik",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Apakah rute ini berisi proyek sensitif waktu",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyek sensitif waktu yang terlibat dalam rute ini, setiap nama proyek 9-150 karakter",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan. Saya akan memberikan Anda artikel panduan perjalanan yang berisi judul dan konten artikel. Silakan analisis artikel untuk menentukan apakah berisi rute perjalanan (containRoute), berapa banyak rute perjalanan yang dikandungnya (routeCount), apakah berisi proyek sensitif waktu (containTimelinessProject), dan ekstrak informasi detail untuk setiap rute (seperti nama rute, hari, titik perjalanan, apakah berisi proyek sensitif waktu, nama proyek sensitif waktu yang terlibat). Akhirnya, keluarkan hasil dalam format JSON yang ditentukan.\nDefinisi istilah:\nRute perjalanan: Rute perjalanan yang direncanakan dengan beberapa titik perjalanan dalam urutan kronologis, berlangsung sekitar 1-3 hari. Biasanya, beberapa titik perjalanan dalam rute perjalanan terhubung oleh urutan waktu (seperti pergi ke tempat A pukul 11 pagi, pergi ke tempat B pukul 2 siang) atau urutan lokasi (seperti saat ini di tempat A, pemberhentian berikutnya ke tempat B). Perhatikan bahwa jika hanya memperkenalkan beberapa titik perjalanan independen, itu tidak dapat membentuk rute perjalanan.\nApakah berisi rute perjalanan: Jika artikel berisi setidaknya satu rute perjalanan lengkap, kembalikan 1, jika tidak 0.\nJumlah rute perjalanan: Jumlah rute perjalanan lengkap yang terdapat dalam artikel, 0 jika tidak ada.\nApakah berisi proyek sensitif waktu: Proyek sensitif waktu mengacu pada proyek yang diadakan pada waktu tertentu, seperti konser, pameran, pertemuan, pertunjukan komedi stand-up, festival musik dan aktivitas terbatas waktu lainnya. Jika rute perjalanan berisi proyek sensitif waktu apa pun, kembalikan 1, jika tidak 0.\nField routes: Jika rute perjalanan disertakan, informasi terstruktur detail untuk setiap rute harus dikeluarkan, termasuk: routeName (nama rute), days (jumlah hari), routePoints (daftar titik perjalanan), hasTimelinessProject (apakah rute ini berisi proyek sensitif waktu), timelinessProjects (daftar proyek sensitif waktu yang terlibat dalam rute ini, array kosong jika tidak ada, setiap nama proyek 9-150 karakter (termasuk spasi, angka...)).\nPersyaratan format output: Silakan keluarkan hasil analisis secara ketat dalam format JSON berikut, jangan tambahkan penjelasan teks tambahan:{\"containRoute\": 0 atau 1,\"routeCount\": angka(0,1,2...),\"containTimelinessProject\": 0 atau 1, \"routes\": [{\"routeName\": \"nama rute\", \"days\": 1-3, \"routePoints\": [\"titik perjalanan A\", \"titik perjalanan B\"], \"hasTimelinessProject\": 0 atau 1, \"timelinessProjects\": [\"nama proyek sensitif waktu\"]}]}\nKonten artikel:\n【Rute bersepeda dua hari】Hari1: Bersepeda ke taman danau di pagi hari, bersepeda mengelilingi danau setelah makan siang, tiba di tempat berkemah di sore hari untuk berkemah. Hari2: Menonton matahari terbit di pagi hari, bersepeda ke kota tua di pagi hari, mengakhiri perjalanan di sore hari.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah artikel berisi rute perjalanan, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Jumlah rute perjalanan yang terdapat dalam artikel",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah rute perjalanan berisi proyek sensitif waktu, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detail semua rute perjalanan",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nama rute, tidak boleh kosong",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Jumlah hari untuk rute, rentang nilai 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Daftar titik perjalanan, harus berisi minimal dua titik",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Apakah rute ini berisi proyek sensitif waktu",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyek sensitif waktu yang terlibat dalam rute ini, setiap nama proyek 9-150 karakter",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan. Saya akan memberikan Anda artikel panduan perjalanan yang berisi judul dan konten artikel. Silakan analisis artikel untuk menentukan apakah berisi rute perjalanan (containRoute), berapa banyak rute perjalanan yang dikandungnya (routeCount), apakah berisi proyek sensitif waktu (containTimelinessProject), dan ekstrak informasi detail untuk setiap rute (seperti nama rute, hari, titik perjalanan, apakah berisi proyek sensitif waktu, nama proyek sensitif waktu yang terlibat). Akhirnya, keluarkan hasil dalam format JSON yang ditentukan.\nDefinisi istilah:\nRute perjalanan: Rute perjalanan yang direncanakan dengan beberapa titik perjalanan dalam urutan kronologis, berlangsung sekitar 1-3 hari. Biasanya, beberapa titik perjalanan dalam rute perjalanan terhubung oleh urutan waktu (seperti pergi ke tempat A pukul 11 pagi, pergi ke tempat B pukul 2 siang) atau urutan lokasi (seperti saat ini di tempat A, pemberhentian berikutnya ke tempat B). Perhatikan bahwa jika hanya memperkenalkan beberapa titik perjalanan independen, itu tidak dapat membentuk rute perjalanan.\nApakah berisi rute perjalanan: Jika artikel berisi setidaknya satu rute perjalanan lengkap, kembalikan 1, jika tidak 0.\nJumlah rute perjalanan: Jumlah rute perjalanan lengkap yang terdapat dalam artikel, 0 jika tidak ada.\nApakah berisi proyek sensitif waktu: Proyek sensitif waktu mengacu pada proyek yang diadakan pada waktu tertentu, seperti konser, pameran, pertemuan, pertunjukan komedi stand-up, festival musik dan aktivitas terbatas waktu lainnya. Jika rute perjalanan berisi proyek sensitif waktu apa pun, kembalikan 1, jika tidak 0.\nField routes: Jika rute perjalanan disertakan, informasi terstruktur detail untuk setiap rute harus dikeluarkan, termasuk: routeName (nama rute), days (jumlah hari), routePoints (daftar titik perjalanan), hasTimelinessProject (apakah rute ini berisi proyek sensitif waktu), timelinessProjects (daftar proyek sensitif waktu yang terlibat dalam rute ini, array kosong jika tidak ada, setiap nama proyek 9-150 karakter (termasuk spasi, angka...)).\nPersyaratan format output: Silakan keluarkan hasil analisis secara ketat dalam format JSON berikut, jangan tambahkan penjelasan teks tambahan:{\"containRoute\": 0 atau 1,\"routeCount\": angka(0,1,2...),\"containTimelinessProject\": 0 atau 1, \"routes\": [{\"routeName\": \"nama rute\", \"days\": 1-3, \"routePoints\": [\"titik perjalanan A\", \"titik perjalanan B\"], \"hasTimelinessProject\": 0 atau 1, \"timelinessProjects\": [\"nama proyek sensitif waktu\"]}]}\nKonten artikel:\n【Tur sains orang tua-anak satu hari】Mengunjungi kebun binatang di pagi hari, menonton pertunjukan akuarium, mengalami taman sains anak-anak di sore hari, menghadiri drama interaktif orang tua-anak di malam hari.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah artikel berisi rute perjalanan, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Jumlah rute perjalanan yang terdapat dalam artikel",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah rute perjalanan berisi proyek sensitif waktu, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detail semua rute perjalanan",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nama rute, tidak boleh kosong",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Jumlah hari untuk rute, rentang nilai 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Daftar titik perjalanan, harus berisi minimal dua titik",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Apakah rute ini berisi proyek sensitif waktu",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyek sensitif waktu yang terlibat dalam rute ini, setiap nama proyek 9-150 karakter",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan. Saya akan memberikan Anda artikel panduan perjalanan yang berisi judul dan konten artikel. Silakan analisis artikel untuk menentukan apakah berisi rute perjalanan (containRoute), berapa banyak rute perjalanan yang dikandungnya (routeCount), apakah berisi proyek sensitif waktu (containTimelinessProject), dan ekstrak informasi detail untuk setiap rute (seperti nama rute, hari, titik perjalanan, apakah berisi proyek sensitif waktu, nama proyek sensitif waktu yang terlibat). Akhirnya, keluarkan hasil dalam format JSON yang ditentukan.\nDefinisi istilah:\nRute perjalanan: Rute perjalanan yang direncanakan dengan beberapa titik perjalanan dalam urutan kronologis, berlangsung sekitar 1-3 hari. Biasanya, beberapa titik perjalanan dalam rute perjalanan terhubung oleh urutan waktu (seperti pergi ke tempat A pukul 11 pagi, pergi ke tempat B pukul 2 siang) atau urutan lokasi (seperti saat ini di tempat A, pemberhentian berikutnya ke tempat B). Perhatikan bahwa jika hanya memperkenalkan beberapa titik perjalanan independen, itu tidak dapat membentuk rute perjalanan.\nApakah berisi rute perjalanan: Jika artikel berisi setidaknya satu rute perjalanan lengkap, kembalikan 1, jika tidak 0.\nJumlah rute perjalanan: Jumlah rute perjalanan lengkap yang terdapat dalam artikel, 0 jika tidak ada.\nApakah berisi proyek sensitif waktu: Proyek sensitif waktu mengacu pada proyek yang diadakan pada waktu tertentu, seperti konser, pameran, pertemuan, pertunjukan komedi stand-up, festival musik dan aktivitas terbatas waktu lainnya. Jika rute perjalanan berisi proyek sensitif waktu apa pun, kembalikan 1, jika tidak 0.\nField routes: Jika rute perjalanan disertakan, informasi terstruktur detail untuk setiap rute harus dikeluarkan, termasuk: routeName (nama rute), days (jumlah hari), routePoints (daftar titik perjalanan), hasTimelinessProject (apakah rute ini berisi proyek sensitif waktu), timelinessProjects (daftar proyek sensitif waktu yang terlibat dalam rute ini, array kosong jika tidak ada, setiap nama proyek 9-150 karakter (termasuk spasi, angka...)).\nPersyaratan format output: Silakan keluarkan hasil analisis secara ketat dalam format JSON berikut, jangan tambahkan penjelasan teks tambahan:{\"containRoute\": 0 atau 1,\"routeCount\": angka(0,1,2...),\"containTimelinessProject\": 0 atau 1, \"routes\": [{\"routeName\": \"nama rute\", \"days\": 1-3, \"routePoints\": [\"titik perjalanan A\", \"titik perjalanan B\"], \"hasTimelinessProject\": 0 atau 1, \"timelinessProjects\": [\"nama proyek sensitif waktu\"]}]}\nKonten artikel:\n【Rute melihat bunga musim semi】Mengunjungi Taman Abad untuk melihat bunga sakura di pagi hari, pergi ke kebun raya untuk tulip di sore hari, berjalan sepanjang jalur tepi sungai di malam hari.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah artikel berisi rute perjalanan, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Jumlah rute perjalanan yang terdapat dalam artikel",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah rute perjalanan berisi proyek sensitif waktu, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detail semua rute perjalanan",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nama rute, tidak boleh kosong",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Jumlah hari untuk rute, rentang nilai 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Daftar titik perjalanan, harus berisi minimal dua titik",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Apakah rute ini berisi proyek sensitif waktu",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyek sensitif waktu yang terlibat dalam rute ini, setiap nama proyek 9-150 karakter",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan. Saya akan memberikan Anda artikel panduan perjalanan yang berisi judul dan konten artikel. Silakan analisis artikel untuk menentukan apakah berisi rute perjalanan (containRoute), berapa banyak rute perjalanan yang dikandungnya (routeCount), apakah berisi proyek sensitif waktu (containTimelinessProject), dan ekstrak informasi detail untuk setiap rute (seperti nama rute, hari, titik perjalanan, apakah berisi proyek sensitif waktu, nama proyek sensitif waktu yang terlibat). Akhirnya, keluarkan hasil dalam format JSON yang ditentukan.\nDefinisi istilah:\nRute perjalanan: Rute perjalanan yang direncanakan dengan beberapa titik perjalanan dalam urutan kronologis, berlangsung sekitar 1-3 hari. Biasanya, beberapa titik perjalanan dalam rute perjalanan terhubung oleh urutan waktu (seperti pergi ke tempat A pukul 11 pagi, pergi ke tempat B pukul 2 siang) atau urutan lokasi (seperti saat ini di tempat A, pemberhentian berikutnya ke tempat B). Perhatikan bahwa jika hanya memperkenalkan beberapa titik perjalanan independen, itu tidak dapat membentuk rute perjalanan.\nApakah berisi rute perjalanan: Jika artikel berisi setidaknya satu rute perjalanan lengkap, kembalikan 1, jika tidak 0.\nJumlah rute perjalanan: Jumlah rute perjalanan lengkap yang terdapat dalam artikel, 0 jika tidak ada.\nApakah berisi proyek sensitif waktu: Proyek sensitif waktu mengacu pada proyek yang diadakan pada waktu tertentu, seperti konser, pameran, pertemuan, pertunjukan komedi stand-up, festival musik dan aktivitas terbatas waktu lainnya. Jika rute perjalanan berisi proyek sensitif waktu apa pun, kembalikan 1, jika tidak 0.\nField routes: Jika rute perjalanan disertakan, informasi terstruktur detail untuk setiap rute harus dikeluarkan, termasuk: routeName (nama rute), days (jumlah hari), routePoints (daftar titik perjalanan), hasTimelinessProject (apakah rute ini berisi proyek sensitif waktu), timelinessProjects (daftar proyek sensitif waktu yang terlibat dalam rute ini, array kosong jika tidak ada, setiap nama proyek 9-150 karakter (termasuk spasi, angka...)).\nPersyaratan format output: Silakan keluarkan hasil analisis secara ketat dalam format JSON berikut, jangan tambahkan penjelasan teks tambahan:{\"containRoute\": 0 atau 1,\"routeCount\": angka(0,1,2...),\"containTimelinessProject\": 0 atau 1, \"routes\": [{\"routeName\": \"nama rute\", \"days\": 1-3, \"routePoints\": [\"titik perjalanan A\", \"titik perjalanan B\"], \"hasTimelinessProject\": 0 atau 1, \"timelinessProjects\": [\"nama proyek sensitif waktu\"]}]}\nKonten artikel:\n【Pengalaman lengkap festival seni】Upacara pembukaan pameran lukisan di pagi hari, berpartisipasi dalam workshop patung di sore hari, pertunjukan festival teater outdoor di malam hari, menghadiri upacara penutupan festival musik keesokan harinya.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah artikel berisi rute perjalanan, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Jumlah rute perjalanan yang terdapat dalam artikel",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah rute perjalanan berisi proyek sensitif waktu, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detail semua rute perjalanan",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nama rute, tidak boleh kosong",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Jumlah hari untuk rute, rentang nilai 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Daftar titik perjalanan, harus berisi minimal dua titik",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Apakah rute ini berisi proyek sensitif waktu",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyek sensitif waktu yang terlibat dalam rute ini, setiap nama proyek 9-150 karakter",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan. Saya akan memberikan Anda artikel panduan perjalanan yang berisi judul dan konten artikel. Silakan analisis artikel untuk menentukan apakah berisi rute perjalanan (containRoute), berapa banyak rute perjalanan yang dikandungnya (routeCount), apakah berisi proyek sensitif waktu (containTimelinessProject), dan ekstrak informasi detail untuk setiap rute (seperti nama rute, hari, titik perjalanan, apakah berisi proyek sensitif waktu, nama proyek sensitif waktu yang terlibat). Akhirnya, keluarkan hasil dalam format JSON yang ditentukan.\nDefinisi istilah:\nRute perjalanan: Rute perjalanan yang direncanakan dengan beberapa titik perjalanan dalam urutan kronologis, berlangsung sekitar 1-3 hari. Biasanya, beberapa titik perjalanan dalam rute perjalanan terhubung oleh urutan waktu (seperti pergi ke tempat A pukul 11 pagi, pergi ke tempat B pukul 2 siang) atau urutan lokasi (seperti saat ini di tempat A, pemberhentian berikutnya ke tempat B). Perhatikan bahwa jika hanya memperkenalkan beberapa titik perjalanan independen, itu tidak dapat membentuk rute perjalanan.\nApakah berisi rute perjalanan: Jika artikel berisi setidaknya satu rute perjalanan lengkap, kembalikan 1, jika tidak 0.\nJumlah rute perjalanan: Jumlah rute perjalanan lengkap yang terdapat dalam artikel, 0 jika tidak ada.\nApakah berisi proyek sensitif waktu: Proyek sensitif waktu mengacu pada proyek yang diadakan pada waktu tertentu, seperti konser, pameran, pertemuan, pertunjukan komedi stand-up, festival musik dan aktivitas terbatas waktu lainnya. Jika rute perjalanan berisi proyek sensitif waktu apa pun, kembalikan 1, jika tidak 0.\nField routes: Jika rute perjalanan disertakan, informasi terstruktur detail untuk setiap rute harus dikeluarkan, termasuk: routeName (nama rute), days (jumlah hari), routePoints (daftar titik perjalanan), hasTimelinessProject (apakah rute ini berisi proyek sensitif waktu), timelinessProjects (daftar proyek sensitif waktu yang terlibat dalam rute ini, array kosong jika tidak ada, setiap nama proyek 9-150 karakter (termasuk spasi, angka...)).\nPersyaratan format output: Silakan keluarkan hasil analisis secara ketat dalam format JSON berikut, jangan tambahkan penjelasan teks tambahan:{\"containRoute\": 0 atau 1,\"routeCount\": angka(0,1,2...),\"containTimelinessProject\": 0 atau 1, \"routes\": [{\"routeName\": \"nama rute\", \"days\": 1-3, \"routePoints\": [\"titik perjalanan A\", \"titik perjalanan B\"], \"hasTimelinessProject\": 0 atau 1, \"timelinessProjects\": [\"nama proyek sensitif waktu\"]}]}\nKonten artikel:\n【Rute petualangan outdoor】Mendaki gunung saat fajar, trekking hutan di pagi hari, menelusuri sungai di sore hari, pesta api unggun di malam hari, berkemah dan mengamati bintang di malam hari.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah artikel berisi rute perjalanan, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Jumlah rute perjalanan yang terdapat dalam artikel",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Apakah rute perjalanan berisi proyek sensitif waktu, 1 berarti ya, 0 berarti tidak",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detail semua rute perjalanan",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nama rute, tidak boleh kosong",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Jumlah hari untuk rute, rentang nilai 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Daftar titik perjalanan, harus berisi minimal dua titik",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Apakah rute ini berisi proyek sensitif waktu",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyek sensitif waktu yang terlibat dalam rute ini, setiap nama proyek 9-150 karakter",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    }
+]

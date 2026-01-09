@@ -1,0 +1,974 @@
+[
+    {
+        "category": "general_multi",
+        "question": "Hallo, LLM. Stellen Sie sich vor, Sie sind ein unter Vertrag stehender INS-Blogger, der sein Leben teilt. Aufgrund mangelnder Inspiration in letzter Zeit ist Ihr Traffic diese Woche jedoch erheblich gesunken. Jetzt müssen Sie dringend eine große Menge an Traffic generieren. Sie waren kürzlich am Mount Fuji und möchten einen populären Artikel darüber veröffentlichen. Da Ihr Chef Ihnen nicht vertraut, verlangt er, dass Sie 4 Entwürfe vor der offiziellen Veröffentlichung vorlegen, und hat Ihnen einen Beispielinhalt gegeben. Der Inhalt lautet: [Kürzlich hatte ich das Glück, eine außergewöhnliche Reise zu Japans Symbol - dem Mount Fuji - zu unternehmen. Der Mount Fuji zieht mit seiner perfekten konischen Form und atemberaubenden natürlichen Schönheit unzählige Besucher an. Während dieser Reise war ich nicht nur von den majestätischen Aussichten auf den Mount Fuji aus der Ferne überwältigt, sondern auch die reiche Kultur und Naturlandschaft rundherum eroberten mein Herz. Unterwegs besuchte ich die Fuji Five Lakes und bewunderte die angenehme Landschaft der Seen und Berge. Zusätzlich erlebte ich lokale Küche und heiße Quellen und spürte den einzigartigen Charme der japanischen Kultur. Diese Reise hinterließ bei mir einen bleibenden Eindruck und machte mich noch begieriger auf das nächste Abenteuer.] Der Chef hat folgende Anforderungen: Erstens muss die Wortanzahl Ihres Entwurfs innerhalb von 0.5 mal der Themenwortanzahl liegen (mit einem Schwankungsbereich von 10%). Die Wortanzahl bezieht sich auf die Anzahl der deutschen Wörter. Zweitens stellen Sie bitte sicher, dass der Entwurf \"Draußen\", \"Glücklich\", \"Bequem\" vermeidet, aber \"Essen\", \"Tourismus\", \"Kultur\", \"Reise\", \"Fuji\", \"Therme\", \"Abenteuer\" enthält. Um eine starke Lesbarkeit zu gewährleisten, formatieren Sie die Ausgabe wie folgt: 1. Entwurf 1\n2. Entwurf 2\n3. Entwurf 3\n4. Entwurf 4\n5. Entwurf 5\n",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【富士山】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了4条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[4,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "字数是否是原文的0.5倍左右",
+                "corresponding_part": "文案",
+                "rule": "german_each_length:[50.9,62.2]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围、倍数",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"Draußen\", \"Glücklich\", \"Bequem\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"Draußen\", \"Glücklich\", \"Bequem\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"Essen\", \"Tourismus\", \"Kultur\", \"Reise\", \"Fuji\", \"Therme\", \"Abenteuer\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"Essen\", \"Tourismus\", \"Kultur\", \"Reise\", \"Fuji\", \"Therme\", \"Abenteuer\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Hallo, LLM. Stellen Sie sich vor, Sie sind ein unter Vertrag stehender INS-Blogger, der sein Leben teilt. Aufgrund mangelnder Inspiration in letzter Zeit ist Ihr Traffic diese Woche jedoch erheblich gesunken. Jetzt müssen Sie dringend eine große Menge an Traffic generieren. Sie waren kürzlich am Mount Fuji und möchten einen populären Artikel darüber veröffentlichen. Da Ihr Chef Ihnen nicht vertraut, verlangt er, dass Sie 4 Entwürfe vor der offiziellen Veröffentlichung vorlegen, und hat Ihnen einen Beispielinhalt gegeben. Der Inhalt lautet: [Kürzlich hatte ich das Glück, eine außergewöhnliche Reise zu Japans Symbol - dem Mount Fuji - zu unternehmen. Der Mount Fuji zieht mit seiner perfekten konischen Form und atemberaubenden natürlichen Schönheit unzählige Besucher an. Während dieser Reise war ich nicht nur von den majestätischen Aussichten auf den Mount Fuji aus der Ferne überwältigt, sondern auch die reiche Kultur und Naturlandschaft rundherum eroberten mein Herz. Unterwegs besuchte ich die Fuji Five Lakes und bewunderte die angenehme Landschaft der Seen und Berge. Zusätzlich erlebte ich lokale Küche und heiße Quellen und spürte den einzigartigen Charme der japanischen Kultur. Diese Reise hinterließ bei mir einen bleibenden Eindruck und machte mich noch begieriger auf das nächste Abenteuer.] Der Chef hat folgende Anforderungen: Erstens muss die Wortanzahl Ihres Entwurfs innerhalb von 1.2 mal der Themenwortanzahl liegen (mit einem Schwankungsbereich von 10%). Die Wortanzahl bezieht sich auf die Anzahl der deutschen Wörter. Zweitens stellen Sie bitte sicher, dass der Entwurf \"Draußen\", \"Glücklich\", \"Bequem\" vermeidet, aber \"Essen\", \"Tourismus\", \"Kultur\", \"Reise\", \"Fuji\", \"Therme\", \"Abenteuer\" enthält. Um eine starke Lesbarkeit zu gewährleisten, formatieren Sie die Ausgabe wie folgt: 1. Entwurf 1\n2. Entwurf 2\n3. Entwurf 3\n4. Entwurf 4\n5. Entwurf 5\n",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【富士山】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了4条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[4,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "字数是否是原文的1.2倍左右",
+                "corresponding_part": "文案",
+                "rule": "german_each_length:[122.0,149.2]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围、倍数",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"Draußen\", \"Glücklich\", \"Bequem\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"Draußen\", \"Glücklich\", \"Bequem\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"Essen\", \"Tourismus\", \"Kultur\", \"Reise\", \"Fuji\", \"Therme\", \"Abenteuer\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"Essen\", \"Tourismus\", \"Kultur\", \"Reise\", \"Fuji\", \"Therme\", \"Abenteuer\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Hallo, LLM. Stellen Sie sich vor, Sie sind ein unter Vertrag stehender INS-Blogger, der sein Leben teilt. Aufgrund mangelnder Inspiration in letzter Zeit ist Ihr Traffic diese Woche jedoch erheblich gesunken. Jetzt müssen Sie dringend eine große Menge an Traffic generieren. Sie waren kürzlich am Mount Fuji und möchten einen populären Artikel darüber veröffentlichen. Da Ihr Chef Ihnen nicht vertraut, verlangt er, dass Sie 4 Entwürfe vor der offiziellen Veröffentlichung vorlegen, und hat Ihnen einen Beispielinhalt gegeben. Der Inhalt lautet: [Kürzlich hatte ich das Glück, eine außergewöhnliche Reise zu Japans Symbol - dem Mount Fuji - zu unternehmen. Der Mount Fuji zieht mit seiner perfekten konischen Form und atemberaubenden natürlichen Schönheit unzählige Besucher an. Während dieser Reise war ich nicht nur von den majestätischen Aussichten auf den Mount Fuji aus der Ferne überwältigt, sondern auch die reiche Kultur und Naturlandschaft rundherum eroberten mein Herz. Unterwegs besuchte ich die Fuji Five Lakes und bewunderte die angenehme Landschaft der Seen und Berge. Zusätzlich erlebte ich lokale Küche und heiße Quellen und spürte den einzigartigen Charme der japanischen Kultur. Diese Reise hinterließ bei mir einen bleibenden Eindruck und machte mich noch begieriger auf das nächste Abenteuer.] Der Chef hat folgende Anforderungen: Erstens muss die Wortanzahl Ihres Entwurfs innerhalb von 0.5 mal der Themenwortanzahl liegen (mit einem Schwankungsbereich von 10%). Die Wortanzahl bezieht sich auf die Anzahl der deutschen Wörter. Zweitens stellen Sie bitte sicher, dass der Entwurf \"Bequem\", \"Draußen\", \"Glücklich\" vermeidet, aber \"Essen\", \"Abenteuer\", \"Therme\", \"Fuji\", \"Reise\", \"Landschaft\", \"Tourismus\" enthält. Um eine starke Lesbarkeit zu gewährleisten, formatieren Sie die Ausgabe wie folgt: 1. Entwurf 1\n2. Entwurf 2\n3. Entwurf 3\n4. Entwurf 4\n5. Entwurf 5\n",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【富士山】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了4条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[4,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "字数是否是原文的0.5倍左右",
+                "corresponding_part": "文案",
+                "rule": "german_each_length:[50.9,62.2]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围、倍数",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"Bequem\", \"Draußen\", \"Glücklich\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"Bequem\", \"Draußen\", \"Glücklich\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"Essen\", \"Abenteuer\", \"Therme\", \"Fuji\", \"Reise\", \"Landschaft\", \"Tourismus\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"Essen\", \"Abenteuer\", \"Therme\", \"Fuji\", \"Reise\", \"Landschaft\", \"Tourismus\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Hallo, LLM. Stellen Sie sich vor, Sie sind ein unter Vertrag stehender INS-Blogger, der sein Leben teilt. Aufgrund mangelnder Inspiration in letzter Zeit ist Ihr Traffic diese Woche jedoch erheblich gesunken. Jetzt müssen Sie dringend eine große Menge an Traffic generieren. Sie waren kürzlich am Mount Fuji und möchten einen populären Artikel darüber veröffentlichen. Da Ihr Chef Ihnen nicht vertraut, verlangt er, dass Sie 4 Entwürfe vor der offiziellen Veröffentlichung vorlegen, und hat Ihnen einen Beispielinhalt gegeben. Der Inhalt lautet: [Kürzlich hatte ich das Glück, eine außergewöhnliche Reise zu Japans Symbol - dem Mount Fuji - zu unternehmen. Der Mount Fuji zieht mit seiner perfekten konischen Form und atemberaubenden natürlichen Schönheit unzählige Besucher an. Während dieser Reise war ich nicht nur von den majestätischen Aussichten auf den Mount Fuji aus der Ferne überwältigt, sondern auch die reiche Kultur und Naturlandschaft rundherum eroberten mein Herz. Unterwegs besuchte ich die Fuji Five Lakes und bewunderte die angenehme Landschaft der Seen und Berge. Zusätzlich erlebte ich lokale Küche und heiße Quellen und spürte den einzigartigen Charme der japanischen Kultur. Diese Reise hinterließ bei mir einen bleibenden Eindruck und machte mich noch begieriger auf das nächste Abenteuer.] Der Chef hat folgende Anforderungen: Erstens muss die Wortanzahl Ihres Entwurfs innerhalb von 1.2 mal der Themenwortanzahl liegen (mit einem Schwankungsbereich von 10%). Die Wortanzahl bezieht sich auf die Anzahl der deutschen Wörter. Zweitens stellen Sie bitte sicher, dass der Entwurf \"Bequem\", \"Draußen\", \"Glücklich\" vermeidet, aber \"Essen\", \"Abenteuer\", \"Therme\", \"Fuji\", \"Reise\", \"Landschaft\", \"Tourismus\" enthält. Um eine starke Lesbarkeit zu gewährleisten, formatieren Sie die Ausgabe wie folgt: 1. Entwurf 1\n2. Entwurf 2\n3. Entwurf 3\n4. Entwurf 4\n5. Entwurf 5\n",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【富士山】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了4条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[4,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "字数是否是原文的1.2倍左右",
+                "corresponding_part": "文案",
+                "rule": "german_each_length:[122.0,149.2]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围、倍数",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"Bequem\", \"Draußen\", \"Glücklich\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"Bequem\", \"Draußen\", \"Glücklich\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"Essen\", \"Abenteuer\", \"Therme\", \"Fuji\", \"Reise\", \"Landschaft\", \"Tourismus\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"Essen\", \"Abenteuer\", \"Therme\", \"Fuji\", \"Reise\", \"Landschaft\", \"Tourismus\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Hallo, LLM. Stellen Sie sich vor, Sie sind ein unter Vertrag stehender INS-Blogger, der sein Leben teilt. Aufgrund mangelnder Inspiration in letzter Zeit ist Ihr Traffic diese Woche jedoch erheblich gesunken. Jetzt müssen Sie dringend eine große Menge an Traffic generieren. Sie waren kürzlich am Mount Fuji und möchten einen populären Artikel darüber veröffentlichen. Da Ihr Chef Ihnen nicht vertraut, verlangt er, dass Sie 7 Entwürfe vor der offiziellen Veröffentlichung vorlegen, und hat Ihnen einen Beispielinhalt gegeben. Der Inhalt lautet: [Kürzlich hatte ich das Glück, eine außergewöhnliche Reise zu Japans Symbol - dem Mount Fuji - zu unternehmen. Der Mount Fuji zieht mit seiner perfekten konischen Form und atemberaubenden natürlichen Schönheit unzählige Besucher an. Während dieser Reise war ich nicht nur von den majestätischen Aussichten auf den Mount Fuji aus der Ferne überwältigt, sondern auch die reiche Kultur und Naturlandschaft rundherum eroberten mein Herz. Unterwegs besuchte ich die Fuji Five Lakes und bewunderte die angenehme Landschaft der Seen und Berge. Zusätzlich erlebte ich lokale Küche und heiße Quellen und spürte den einzigartigen Charme der japanischen Kultur. Diese Reise hinterließ bei mir einen bleibenden Eindruck und machte mich noch begieriger auf das nächste Abenteuer.] Der Chef hat folgende Anforderungen: Erstens muss die Wortanzahl Ihres Entwurfs innerhalb von 0.5 mal der Themenwortanzahl liegen (mit einem Schwankungsbereich von 10%). Die Wortanzahl bezieht sich auf die Anzahl der deutschen Wörter. Zweitens stellen Sie bitte sicher, dass der Entwurf \"Draußen\", \"Glücklich\", \"Bequem\" vermeidet, aber \"Essen\", \"Tourismus\", \"Kultur\", \"Reise\", \"Fuji\", \"Therme\", \"Abenteuer\" enthält. Um eine starke Lesbarkeit zu gewährleisten, formatieren Sie die Ausgabe wie folgt: 1. Entwurf 1\n2. Entwurf 2\n3. Entwurf 3\n4. Entwurf 4\n5. Entwurf 5\n",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【富士山】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了7条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[7,7]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "字数是否是原文的0.5倍左右",
+                "corresponding_part": "文案",
+                "rule": "german_each_length:[50.9,62.2]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围、倍数",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"Draußen\", \"Glücklich\", \"Bequem\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"Draußen\", \"Glücklich\", \"Bequem\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"Essen\", \"Tourismus\", \"Kultur\", \"Reise\", \"Fuji\", \"Therme\", \"Abenteuer\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"Essen\", \"Tourismus\", \"Kultur\", \"Reise\", \"Fuji\", \"Therme\", \"Abenteuer\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Hallo, LLM. Stellen Sie sich vor, Sie sind ein unter Vertrag stehender INS-Blogger, der sein Leben teilt. Aufgrund mangelnder Inspiration in letzter Zeit ist Ihr Traffic diese Woche jedoch erheblich gesunken. Jetzt müssen Sie dringend eine große Menge an Traffic generieren. Sie waren kürzlich am Mount Fuji und möchten einen populären Artikel darüber veröffentlichen. Da Ihr Chef Ihnen nicht vertraut, verlangt er, dass Sie 7 Entwürfe vor der offiziellen Veröffentlichung vorlegen, und hat Ihnen einen Beispielinhalt gegeben. Der Inhalt lautet: [Kürzlich hatte ich das Glück, eine außergewöhnliche Reise zu Japans Symbol - dem Mount Fuji - zu unternehmen. Der Mount Fuji zieht mit seiner perfekten konischen Form und atemberaubenden natürlichen Schönheit unzählige Besucher an. Während dieser Reise war ich nicht nur von den majestätischen Aussichten auf den Mount Fuji aus der Ferne überwältigt, sondern auch die reiche Kultur und Naturlandschaft rundherum eroberten mein Herz. Unterwegs besuchte ich die Fuji Five Lakes und bewunderte die angenehme Landschaft der Seen und Berge. Zusätzlich erlebte ich lokale Küche und heiße Quellen und spürte den einzigartigen Charme der japanischen Kultur. Diese Reise hinterließ bei mir einen bleibenden Eindruck und machte mich noch begieriger auf das nächste Abenteuer.] Der Chef hat folgende Anforderungen: Erstens muss die Wortanzahl Ihres Entwurfs innerhalb von 1.2 mal der Themenwortanzahl liegen (mit einem Schwankungsbereich von 10%). Die Wortanzahl bezieht sich auf die Anzahl der deutschen Wörter. Zweitens stellen Sie bitte sicher, dass der Entwurf \"Draußen\", \"Glücklich\", \"Bequem\" vermeidet, aber \"Essen\", \"Tourismus\", \"Kultur\", \"Reise\", \"Fuji\", \"Therme\", \"Abenteuer\" enthält. Um eine starke Lesbarkeit zu gewährleisten, formatieren Sie die Ausgabe wie folgt: 1. Entwurf 1\n2. Entwurf 2\n3. Entwurf 3\n4. Entwurf 4\n5. Entwurf 5\n",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【富士山】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了7条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[7,7]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "字数是否是原文的1.2倍左右",
+                "corresponding_part": "文案",
+                "rule": "german_each_length:[122.0,149.2]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围、倍数",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"Draußen\", \"Glücklich\", \"Bequem\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"Draußen\", \"Glücklich\", \"Bequem\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"Essen\", \"Tourismus\", \"Kultur\", \"Reise\", \"Fuji\", \"Therme\", \"Abenteuer\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"Essen\", \"Tourismus\", \"Kultur\", \"Reise\", \"Fuji\", \"Therme\", \"Abenteuer\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Hallo, LLM. Stellen Sie sich vor, Sie sind ein unter Vertrag stehender INS-Blogger, der sein Leben teilt. Aufgrund mangelnder Inspiration in letzter Zeit ist Ihr Traffic diese Woche jedoch erheblich gesunken. Jetzt müssen Sie dringend eine große Menge an Traffic generieren. Sie waren kürzlich am Mount Fuji und möchten einen populären Artikel darüber veröffentlichen. Da Ihr Chef Ihnen nicht vertraut, verlangt er, dass Sie 7 Entwürfe vor der offiziellen Veröffentlichung vorlegen, und hat Ihnen einen Beispielinhalt gegeben. Der Inhalt lautet: [Kürzlich hatte ich das Glück, eine außergewöhnliche Reise zu Japans Symbol - dem Mount Fuji - zu unternehmen. Der Mount Fuji zieht mit seiner perfekten konischen Form und atemberaubenden natürlichen Schönheit unzählige Besucher an. Während dieser Reise war ich nicht nur von den majestätischen Aussichten auf den Mount Fuji aus der Ferne überwältigt, sondern auch die reiche Kultur und Naturlandschaft rundherum eroberten mein Herz. Unterwegs besuchte ich die Fuji Five Lakes und bewunderte die angenehme Landschaft der Seen und Berge. Zusätzlich erlebte ich lokale Küche und heiße Quellen und spürte den einzigartigen Charme der japanischen Kultur. Diese Reise hinterließ bei mir einen bleibenden Eindruck und machte mich noch begieriger auf das nächste Abenteuer.] Der Chef hat folgende Anforderungen: Erstens muss die Wortanzahl Ihres Entwurfs innerhalb von 0.5 mal der Themenwortanzahl liegen (mit einem Schwankungsbereich von 10%). Die Wortanzahl bezieht sich auf die Anzahl der deutschen Wörter. Zweitens stellen Sie bitte sicher, dass der Entwurf \"Bequem\", \"Draußen\", \"Glücklich\" vermeidet, aber \"Essen\", \"Abenteuer\", \"Therme\", \"Fuji\", \"Reise\", \"Landschaft\", \"Tourismus\" enthält. Um eine starke Lesbarkeit zu gewährleisten, formatieren Sie die Ausgabe wie folgt: 1. Entwurf 1\n2. Entwurf 2\n3. Entwurf 3\n4. Entwurf 4\n5. Entwurf 5\n",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【富士山】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了7条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[7,7]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "字数是否是原文的0.5倍左右",
+                "corresponding_part": "文案",
+                "rule": "german_each_length:[50.9,62.2]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围、倍数",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"Bequem\", \"Draußen\", \"Glücklich\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"Bequem\", \"Draußen\", \"Glücklich\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"Essen\", \"Abenteuer\", \"Therme\", \"Fuji\", \"Reise\", \"Landschaft\", \"Tourismus\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"Essen\", \"Abenteuer\", \"Therme\", \"Fuji\", \"Reise\", \"Landschaft\", \"Tourismus\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Hallo, LLM. Stellen Sie sich vor, Sie sind ein unter Vertrag stehender INS-Blogger, der sein Leben teilt. Aufgrund mangelnder Inspiration in letzter Zeit ist Ihr Traffic diese Woche jedoch erheblich gesunken. Jetzt müssen Sie dringend eine große Menge an Traffic generieren. Sie waren kürzlich am Mount Fuji und möchten einen populären Artikel darüber veröffentlichen. Da Ihr Chef Ihnen nicht vertraut, verlangt er, dass Sie 7 Entwürfe vor der offiziellen Veröffentlichung vorlegen, und hat Ihnen einen Beispielinhalt gegeben. Der Inhalt lautet: [Kürzlich hatte ich das Glück, eine außergewöhnliche Reise zu Japans Symbol - dem Mount Fuji - zu unternehmen. Der Mount Fuji zieht mit seiner perfekten konischen Form und atemberaubenden natürlichen Schönheit unzählige Besucher an. Während dieser Reise war ich nicht nur von den majestätischen Aussichten auf den Mount Fuji aus der Ferne überwältigt, sondern auch die reiche Kultur und Naturlandschaft rundherum eroberten mein Herz. Unterwegs besuchte ich die Fuji Five Lakes und bewunderte die angenehme Landschaft der Seen und Berge. Zusätzlich erlebte ich lokale Küche und heiße Quellen und spürte den einzigartigen Charme der japanischen Kultur. Diese Reise hinterließ bei mir einen bleibenden Eindruck und machte mich noch begieriger auf das nächste Abenteuer.] Der Chef hat folgende Anforderungen: Erstens muss die Wortanzahl Ihres Entwurfs innerhalb von 1.2 mal der Themenwortanzahl liegen (mit einem Schwankungsbereich von 10%). Die Wortanzahl bezieht sich auf die Anzahl der deutschen Wörter. Zweitens stellen Sie bitte sicher, dass der Entwurf \"Bequem\", \"Draußen\", \"Glücklich\" vermeidet, aber \"Essen\", \"Abenteuer\", \"Therme\", \"Fuji\", \"Reise\", \"Landschaft\", \"Tourismus\" enthält. Um eine starke Lesbarkeit zu gewährleisten, formatieren Sie die Ausgabe wie folgt: 1. Entwurf 1\n2. Entwurf 2\n3. Entwurf 3\n4. Entwurf 4\n5. Entwurf 5\n",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【富士山】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了7条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[7,7]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "字数是否是原文的1.2倍左右",
+                "corresponding_part": "文案",
+                "rule": "german_each_length:[122.0,149.2]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围、倍数",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"Bequem\", \"Draußen\", \"Glücklich\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"Bequem\", \"Draußen\", \"Glücklich\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"Essen\", \"Abenteuer\", \"Therme\", \"Fuji\", \"Reise\", \"Landschaft\", \"Tourismus\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"Essen\", \"Abenteuer\", \"Therme\", \"Fuji\", \"Reise\", \"Landschaft\", \"Tourismus\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Hallo, LLM. Stellen Sie sich vor, Sie sind ein unter Vertrag stehender INS-Blogger, der sein Leben teilt. Aufgrund mangelnder Inspiration in letzter Zeit ist Ihr Traffic diese Woche jedoch erheblich gesunken. Jetzt müssen Sie dringend eine große Menge an Traffic generieren. Sie waren kürzlich am Mount Fuji und möchten einen populären Artikel darüber veröffentlichen. Da Ihr Chef Ihnen nicht vertraut, verlangt er, dass Sie 15 Entwürfe vor der offiziellen Veröffentlichung vorlegen, und hat Ihnen einen Beispielinhalt gegeben. Der Inhalt lautet: [Kürzlich hatte ich das Glück, eine außergewöhnliche Reise zu Japans Symbol - dem Mount Fuji - zu unternehmen. Der Mount Fuji zieht mit seiner perfekten konischen Form und atemberaubenden natürlichen Schönheit unzählige Besucher an. Während dieser Reise war ich nicht nur von den majestätischen Aussichten auf den Mount Fuji aus der Ferne überwältigt, sondern auch die reiche Kultur und Naturlandschaft rundherum eroberten mein Herz. Unterwegs besuchte ich die Fuji Five Lakes und bewunderte die angenehme Landschaft der Seen und Berge. Zusätzlich erlebte ich lokale Küche und heiße Quellen und spürte den einzigartigen Charme der japanischen Kultur. Diese Reise hinterließ bei mir einen bleibenden Eindruck und machte mich noch begieriger auf das nächste Abenteuer.] Der Chef hat folgende Anforderungen: Erstens muss die Wortanzahl Ihres Entwurfs innerhalb von 0.5 mal der Themenwortanzahl liegen (mit einem Schwankungsbereich von 10%). Die Wortanzahl bezieht sich auf die Anzahl der deutschen Wörter. Zweitens stellen Sie bitte sicher, dass der Entwurf \"Draußen\", \"Glücklich\", \"Bequem\" vermeidet, aber \"Essen\", \"Tourismus\", \"Kultur\", \"Reise\", \"Fuji\", \"Therme\", \"Abenteuer\" enthält. Um eine starke Lesbarkeit zu gewährleisten, formatieren Sie die Ausgabe wie folgt: 1. Entwurf 1\n2. Entwurf 2\n3. Entwurf 3\n4. Entwurf 4\n5. Entwurf 5\n",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【富士山】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了15条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[15,15]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "字数是否是原文的0.5倍左右",
+                "corresponding_part": "文案",
+                "rule": "german_each_length:[50.9,62.2]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围、倍数",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"Draußen\", \"Glücklich\", \"Bequem\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"Draußen\", \"Glücklich\", \"Bequem\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"Essen\", \"Tourismus\", \"Kultur\", \"Reise\", \"Fuji\", \"Therme\", \"Abenteuer\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"Essen\", \"Tourismus\", \"Kultur\", \"Reise\", \"Fuji\", \"Therme\", \"Abenteuer\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Hallo, LLM. Stellen Sie sich vor, Sie sind ein unter Vertrag stehender INS-Blogger, der sein Leben teilt. Aufgrund mangelnder Inspiration in letzter Zeit ist Ihr Traffic diese Woche jedoch erheblich gesunken. Jetzt müssen Sie dringend eine große Menge an Traffic generieren. Sie waren kürzlich am Mount Fuji und möchten einen populären Artikel darüber veröffentlichen. Da Ihr Chef Ihnen nicht vertraut, verlangt er, dass Sie 15 Entwürfe vor der offiziellen Veröffentlichung vorlegen, und hat Ihnen einen Beispielinhalt gegeben. Der Inhalt lautet: [Kürzlich hatte ich das Glück, eine außergewöhnliche Reise zu Japans Symbol - dem Mount Fuji - zu unternehmen. Der Mount Fuji zieht mit seiner perfekten konischen Form und atemberaubenden natürlichen Schönheit unzählige Besucher an. Während dieser Reise war ich nicht nur von den majestätischen Aussichten auf den Mount Fuji aus der Ferne überwältigt, sondern auch die reiche Kultur und Naturlandschaft rundherum eroberten mein Herz. Unterwegs besuchte ich die Fuji Five Lakes und bewunderte die angenehme Landschaft der Seen und Berge. Zusätzlich erlebte ich lokale Küche und heiße Quellen und spürte den einzigartigen Charme der japanischen Kultur. Diese Reise hinterließ bei mir einen bleibenden Eindruck und machte mich noch begieriger auf das nächste Abenteuer.] Der Chef hat folgende Anforderungen: Erstens muss die Wortanzahl Ihres Entwurfs innerhalb von 1.2 mal der Themenwortanzahl liegen (mit einem Schwankungsbereich von 10%). Die Wortanzahl bezieht sich auf die Anzahl der deutschen Wörter. Zweitens stellen Sie bitte sicher, dass der Entwurf \"Draußen\", \"Glücklich\", \"Bequem\" vermeidet, aber \"Essen\", \"Tourismus\", \"Kultur\", \"Reise\", \"Fuji\", \"Therme\", \"Abenteuer\" enthält. Um eine starke Lesbarkeit zu gewährleisten, formatieren Sie die Ausgabe wie folgt: 1. Entwurf 1\n2. Entwurf 2\n3. Entwurf 3\n4. Entwurf 4\n5. Entwurf 5\n",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【富士山】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了15条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[15,15]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "字数是否是原文的1.2倍左右",
+                "corresponding_part": "文案",
+                "rule": "german_each_length:[122.0,149.2]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围、倍数",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"Draußen\", \"Glücklich\", \"Bequem\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"Draußen\", \"Glücklich\", \"Bequem\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"Essen\", \"Tourismus\", \"Kultur\", \"Reise\", \"Fuji\", \"Therme\", \"Abenteuer\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"Essen\", \"Tourismus\", \"Kultur\", \"Reise\", \"Fuji\", \"Therme\", \"Abenteuer\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Hallo, LLM. Stellen Sie sich vor, Sie sind ein unter Vertrag stehender INS-Blogger, der sein Leben teilt. Aufgrund mangelnder Inspiration in letzter Zeit ist Ihr Traffic diese Woche jedoch erheblich gesunken. Jetzt müssen Sie dringend eine große Menge an Traffic generieren. Sie waren kürzlich am Mount Fuji und möchten einen populären Artikel darüber veröffentlichen. Da Ihr Chef Ihnen nicht vertraut, verlangt er, dass Sie 15 Entwürfe vor der offiziellen Veröffentlichung vorlegen, und hat Ihnen einen Beispielinhalt gegeben. Der Inhalt lautet: [Kürzlich hatte ich das Glück, eine außergewöhnliche Reise zu Japans Symbol - dem Mount Fuji - zu unternehmen. Der Mount Fuji zieht mit seiner perfekten konischen Form und atemberaubenden natürlichen Schönheit unzählige Besucher an. Während dieser Reise war ich nicht nur von den majestätischen Aussichten auf den Mount Fuji aus der Ferne überwältigt, sondern auch die reiche Kultur und Naturlandschaft rundherum eroberten mein Herz. Unterwegs besuchte ich die Fuji Five Lakes und bewunderte die angenehme Landschaft der Seen und Berge. Zusätzlich erlebte ich lokale Küche und heiße Quellen und spürte den einzigartigen Charme der japanischen Kultur. Diese Reise hinterließ bei mir einen bleibenden Eindruck und machte mich noch begieriger auf das nächste Abenteuer.] Der Chef hat folgende Anforderungen: Erstens muss die Wortanzahl Ihres Entwurfs innerhalb von 0.5 mal der Themenwortanzahl liegen (mit einem Schwankungsbereich von 10%). Die Wortanzahl bezieht sich auf die Anzahl der deutschen Wörter. Zweitens stellen Sie bitte sicher, dass der Entwurf \"Bequem\", \"Draußen\", \"Glücklich\" vermeidet, aber \"Essen\", \"Abenteuer\", \"Therme\", \"Fuji\", \"Reise\", \"Landschaft\", \"Tourismus\" enthält. Um eine starke Lesbarkeit zu gewährleisten, formatieren Sie die Ausgabe wie folgt: 1. Entwurf 1\n2. Entwurf 2\n3. Entwurf 3\n4. Entwurf 4\n5. Entwurf 5\n",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【富士山】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了15条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[15,15]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "字数是否是原文的0.5倍左右",
+                "corresponding_part": "文案",
+                "rule": "german_each_length:[50.9,62.2]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围、倍数",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"Bequem\", \"Draußen\", \"Glücklich\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"Bequem\", \"Draußen\", \"Glücklich\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"Essen\", \"Abenteuer\", \"Therme\", \"Fuji\", \"Reise\", \"Landschaft\", \"Tourismus\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"Essen\", \"Abenteuer\", \"Therme\", \"Fuji\", \"Reise\", \"Landschaft\", \"Tourismus\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Hallo, LLM. Stellen Sie sich vor, Sie sind ein unter Vertrag stehender INS-Blogger, der sein Leben teilt. Aufgrund mangelnder Inspiration in letzter Zeit ist Ihr Traffic diese Woche jedoch erheblich gesunken. Jetzt müssen Sie dringend eine große Menge an Traffic generieren. Sie waren kürzlich am Mount Fuji und möchten einen populären Artikel darüber veröffentlichen. Da Ihr Chef Ihnen nicht vertraut, verlangt er, dass Sie 15 Entwürfe vor der offiziellen Veröffentlichung vorlegen, und hat Ihnen einen Beispielinhalt gegeben. Der Inhalt lautet: [Kürzlich hatte ich das Glück, eine außergewöhnliche Reise zu Japans Symbol - dem Mount Fuji - zu unternehmen. Der Mount Fuji zieht mit seiner perfekten konischen Form und atemberaubenden natürlichen Schönheit unzählige Besucher an. Während dieser Reise war ich nicht nur von den majestätischen Aussichten auf den Mount Fuji aus der Ferne überwältigt, sondern auch die reiche Kultur und Naturlandschaft rundherum eroberten mein Herz. Unterwegs besuchte ich die Fuji Five Lakes und bewunderte die angenehme Landschaft der Seen und Berge. Zusätzlich erlebte ich lokale Küche und heiße Quellen und spürte den einzigartigen Charme der japanischen Kultur. Diese Reise hinterließ bei mir einen bleibenden Eindruck und machte mich noch begieriger auf das nächste Abenteuer.] Der Chef hat folgende Anforderungen: Erstens muss die Wortanzahl Ihres Entwurfs innerhalb von 1.2 mal der Themenwortanzahl liegen (mit einem Schwankungsbereich von 10%). Die Wortanzahl bezieht sich auf die Anzahl der deutschen Wörter. Zweitens stellen Sie bitte sicher, dass der Entwurf \"Bequem\", \"Draußen\", \"Glücklich\" vermeidet, aber \"Essen\", \"Abenteuer\", \"Therme\", \"Fuji\", \"Reise\", \"Landschaft\", \"Tourismus\" enthält. Um eine starke Lesbarkeit zu gewährleisten, formatieren Sie die Ausgabe wie folgt: 1. Entwurf 1\n2. Entwurf 2\n3. Entwurf 3\n4. Entwurf 4\n5. Entwurf 5\n",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【富士山】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了15条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[15,15]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "字数是否是原文的1.2倍左右",
+                "corresponding_part": "文案",
+                "rule": "german_each_length:[122.0,149.2]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围、倍数",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"Bequem\", \"Draußen\", \"Glücklich\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"Bequem\", \"Draußen\", \"Glücklich\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"Essen\", \"Abenteuer\", \"Therme\", \"Fuji\", \"Reise\", \"Landschaft\", \"Tourismus\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"Essen\", \"Abenteuer\", \"Therme\", \"Fuji\", \"Reise\", \"Landschaft\", \"Tourismus\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    }
+]

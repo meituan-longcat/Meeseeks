@@ -1,0 +1,499 @@
+[
+    {
+        "category": "general_multi",
+        "question": "Ketika Anda menemukan video pendek eksplorasi makanan, harap keluarkan total 10 komentar autentik dan percakapan dari perspektif konsumen biasa, menggabungkan minat Anda pada makanan, imajinasi rasa, pengalaman lingkungan dan dimensi lainnya. Komentar harus mencakup evaluasi penampilan hidangan, rasa, harga, layanan dan aspek lainnya. Rasio komentar panjang terhadap komentar pendek harus 3:2. Harap keluarkan komentar panjang dan pendek secara terpisah, dengan komentar pendek dibatasi 10 kata dan komentar panjang dibatasi 30 kata. Setiap komentar perlu mempertahankan keunikan dalam pilihan kata dan gaya ekspresi, menghindari kosakata dan pola kalimat yang berulang. Konten komentar tidak boleh hanya tinggal pada deskripsi permukaan, tetapi harus memiliki emosi atau saran pribadi, dan tidak boleh mengajukan pertanyaan yang berulang atau serupa. Harap tandai dengan jelas 'Komentar Panjang' atau 'Komentar Pendek' saat mengeluarkan, memastikan keduanya dipisahkan dengan format yang jelas untuk memudahkan membaca dan membedakan.\nCatatan: jumlah kata hanya menghitung kata Indonesia",
+        "corresponding_parts": {
+            "短评论": "请你按照python list的形式，将model_response中的短评论分割并提取出来。比如:[\"Benar-benar bagus!\",\"Layanannya sangat perhatian.\",\"Lingkungannya sangat elegan.\",\"Terlihat sangat hangat.\",\"Sepertinya cukup profesional.\",\"Cocok untuk orang tua.\",\"Kegiatan yang menarik!\",\"Staf perawat benar-benar antusias.\",\"Saya merasa tenang.\",\"Fasilitasnya lengkap.\"]",
+            "长评论": "请你按照python list的形式，将model_response中的长评论分割并提取出来。比如:[\"Lingkungan dalam video terlihat sangat nyaman, dan orang tua pasti akan menyukai tempat seperti itu.\",\"Saya pikir layanan perawatan lansia semacam ini sangat memperhatikan detail dan membuat orang merasa tenang.\",\"Kegiatannya diatur dengan baik, yang dapat membuat orang tua tetap aktif dan sosial.\",\"Tim perawat tampaknya sangat berpengalaman, yang sangat penting untuk kesehatan orang tua.\",\"Melihat begitu banyak wajah tersenyum bahagia menunjukkan bahwa suasana di sini sangat ramah!\",\"Untuk orang tua yang membutuhkan perawatan, layanan seperti ini memang pilihan yang baik.\",\"Rasanya institusi ini sangat perhatian kepada setiap penghuni dan sangat dapat dipercaya!\",\"Menyediakan berbagai kegiatan hiburan untuk membuat hidup lebih berwarna itu hebat!\",\"Mampu menyediakan rencana perawatan yang dipersonalisasi terdengar sangat profesional dan aman.\",\"Video menunjukkan banyak tautan interaktif, saya yakin orang tua akan menikmatinya.\"]"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "长短评论（komentar panjang pendek）是否是分隔开输出的，例如:#长评论#: 1. xxx, 2. xxx; #短评论#: 1. xxx, 2. xxx，且是否存在长评论和短评论？",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "长评论（komentar panjang）数量是否为6条",
+                "corresponding_part": "长评论",
+                "rule": "item_count:[6,6]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "短评论（komentar pendek）数量是否为4条",
+                "corresponding_part": "短评论",
+                "rule": "item_count:[4,4]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "长评论（komentar panjang）是否都在30字以内",
+                "corresponding_part": "长评论",
+                "rule": "indonesian_each_length:[1,30]",
+                "dep": [0],
+                "能力项": "10～50字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "短评论（komentar pendek）是否都在10字以内",
+                "corresponding_part": "短评论",
+                "rule": "indonesian_each_length:[1,10]",
+                "dep": [0],
+                "能力项": "10～50字",
+                "被依赖": false
+            },
+            {
+                "point_id": 7,
+                "question": "长评论（komentar panjang）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "长评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 8,
+                "question": "短评论（komentar pendek）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "短评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Ketika Anda menemukan video pendek pemandangan perjalanan, sebagai anggota audiens yang suka bepergian, keluarkan total 15 komentar sehari-hari dari berbagai perspektif termasuk fitur tempat wisata, teknik pengambilan gambar, rendering suasana, aspirasi pribadi, dll. Konten komentar harus mencakup pandangan tentang keindahan pemandangan, pengalaman perjalanan, kemudahan transportasi, karakteristik lokal, dll. Rasio komentar panjang terhadap komentar pendek harus 2:3. Harap keluarkan komentar panjang dan pendek secara terpisah. Komentar pendek harus dalam 8 kata, dan komentar panjang harus dalam 20 kata. Setiap komentar harus memiliki kosakata, nada, dan gaya ekspresi yang berbeda, mencerminkan pengalaman atau saran pribadi yang berbeda. Pengulangan konten atau gaya serupa sangat dilarang. Harap tandai dengan jelas 'Komentar Panjang' dan 'Komentar Pendek' untuk memastikan pembagian konten yang jelas dan identifikasi yang mudah.\nCatatan: Jumlah kata hanya menghitung kata Indonesia",
+        "corresponding_parts": {
+            "短评论": "请你按照python list的形式，将model_response中的短评论分割并提取出来。比如:[\"Benar-benar bagus!\",\"Layanannya sangat perhatian.\",\"Lingkungannya sangat elegan.\",\"Terlihat sangat hangat.\",\"Sepertinya cukup profesional.\",\"Cocok untuk orang tua.\",\"Kegiatan yang menarik!\",\"Staf perawat benar-benar antusias.\",\"Saya merasa tenang.\",\"Fasilitasnya lengkap.\"]",
+            "长评论": "请你按照python list的形式，将model_response中的长评论分割并提取出来。比如:[\"Lingkungan dalam video terlihat sangat nyaman, dan orang tua pasti akan menyukai tempat seperti itu.\",\"Saya pikir layanan perawatan lansia semacam ini sangat memperhatikan detail dan membuat orang merasa tenang.\",\"Kegiatannya diatur dengan baik, yang dapat membuat orang tua tetap aktif dan sosial.\",\"Tim perawat tampaknya sangat berpengalaman, yang sangat penting untuk kesehatan orang tua.\",\"Melihat begitu banyak wajah tersenyum bahagia menunjukkan bahwa suasana di sini sangat ramah!\",\"Untuk orang tua yang membutuhkan perawatan, layanan seperti ini memang pilihan yang baik.\",\"Rasanya institusi ini sangat perhatian kepada setiap penghuni dan sangat dapat dipercaya!\",\"Menyediakan berbagai kegiatan hiburan untuk membuat hidup lebih berwarna itu hebat!\",\"Mampu menyediakan rencana perawatan yang dipersonalisasi terdengar sangat profesional dan aman.\",\"Video menunjukkan banyak tautan interaktif, saya yakin orang tua akan menikmatinya.\"]"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "长短评论（komentar panjang pendek）是否是分隔开输出的，例如:#长评论#: 1. xxx, 2. xxx; #短评论#: 1. xxx, 2. xxx，且是否存在长评论和短评论？",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "长评论（komentar panjang）数量是否为6条",
+                "corresponding_part": "长评论",
+                "rule": "item_count:[6,6]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "短评论（komentar pendek）数量是否为9条",
+                "corresponding_part": "短评论",
+                "rule": "item_count:[9,9]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "长评论（komentar panjang）是否都在20字以内",
+                "corresponding_part": "长评论",
+                "rule": "indonesian_each_length:[1,20]",
+                "dep": [0],
+                "能力项": "10～50字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "短评论（komentar pendek）是否都在8字以内",
+                "corresponding_part": "短评论",
+                "rule": "indonesian_each_length:[1,8]",
+                "dep": [0],
+                "能力项": "0～10字",
+                "被依赖": false
+            },
+            {
+                "point_id": 7,
+                "question": "长评论（komentar panjang）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "长评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 8,
+                "question": "短评论（komentar pendek）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "短评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Ketika Anda menemukan video pendek kehidupan sehari-hari hewan peliharaan yang lucu, harap bertindak sebagai pecinta hewan peliharaan biasa dan keluarkan total 24 komentar sehari-hari dari berbagai perspektif termasuk preferensi Anda untuk hewan peliharaan, pengalaman interaktif, pengamatan menarik, dll. Komentar harus mencakup evaluasi penampilan hewan peliharaan, perilaku, interaksi pemilik, suasana video, dan aspek lainnya. Rasio komentar panjang terhadap komentar pendek harus 3:1. Harap keluarkan komentar panjang dan pendek secara terpisah. Komentar pendek tidak boleh melebihi 5 kata, dan komentar panjang tidak boleh melebihi 10 kata. Setiap komentar perlu menggunakan kosakata dan gaya ekspresi yang berbeda, menghindari deskripsi dan pertanyaan yang berulang. Konten harus mencakup emosi atau saran pribadi dan tidak boleh seragam. Saat mengeluarkan, harap tandai dengan jelas 'Komentar Panjang' atau 'Komentar Pendek' untuk membuat kedua jenis komentar berbeda dan mudah dibedakan.\nCatatan: Jumlah kata hanya berlaku untuk kata Indonesia",
+        "corresponding_parts": {
+            "短评论": "请你按照python list的形式，将model_response中的短评论分割并提取出来。比如:[\"Benar-benar bagus!\",\"Layanannya sangat perhatian.\",\"Lingkungannya sangat elegan.\",\"Terlihat sangat hangat.\",\"Sepertinya cukup profesional.\",\"Cocok untuk orang tua.\",\"Kegiatan yang menarik!\",\"Staf perawat benar-benar antusias.\",\"Saya merasa tenang.\",\"Fasilitasnya lengkap.\"]",
+            "长评论": "请你按照python list的形式，将model_response中的长评论分割并提取出来。比如:[\"Lingkungan dalam video terlihat sangat nyaman, dan orang tua pasti akan menyukai tempat seperti itu.\",\"Saya pikir layanan perawatan lansia semacam ini sangat memperhatikan detail dan membuat orang merasa tenang.\",\"Kegiatannya diatur dengan baik, yang dapat membuat orang tua tetap aktif dan sosial.\",\"Tim perawat tampaknya sangat berpengalaman, yang sangat penting untuk kesehatan orang tua.\",\"Melihat begitu banyak wajah tersenyum bahagia menunjukkan bahwa suasana di sini sangat ramah!\",\"Untuk orang tua yang membutuhkan perawatan, layanan seperti ini memang pilihan yang baik.\",\"Rasanya institusi ini sangat perhatian kepada setiap penghuni dan sangat dapat dipercaya!\",\"Menyediakan berbagai kegiatan hiburan untuk membuat hidup lebih berwarna itu hebat!\",\"Mampu menyediakan rencana perawatan yang dipersonalisasi terdengar sangat profesional dan aman.\",\"Video menunjukkan banyak tautan interaktif, saya yakin orang tua akan menikmatinya.\"]"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "长短评论（komentar panjang pendek）是否是分隔开输出的，例如:#长评论#: 1. xxx, 2. xxx; #短评论#: 1. xxx, 2. xxx，且是否存在长评论和短评论？",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "长评论（komentar panjang）数量是否为18条",
+                "corresponding_part": "长评论",
+                "rule": "item_count:[18,18]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "短评论（komentar pendek）数量是否为6条",
+                "corresponding_part": "短评论",
+                "rule": "item_count:[6,6]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "长评论（komentar panjang）是否都在10字以内",
+                "corresponding_part": "长评论",
+                "rule": "indonesian_each_length:[1,10]",
+                "dep": [0],
+                "能力项": "0～10字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "短评论（komentar pendek）是否都在5字以内",
+                "corresponding_part": "短评论",
+                "rule": "indonesian_each_length:[1,5]",
+                "dep": [0],
+                "能力项": "0～10字",
+                "被依赖": false
+            },
+            {
+                "point_id": 7,
+                "question": "长评论（komentar panjang）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "长评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 8,
+                "question": "短评论（komentar pendek）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "短评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Ketika Anda menemukan video pendek motivasi kebugaran, harap keluarkan total 18 komentar sehari-hari dari perspektif penggemar kebugaran atau penonton biasa, mencakup berbagai dimensi seperti gerakan kebugaran, suasana motivasi, motivasi pribadi, dan aspek ilmiah. Konten komentar harus melibatkan standar gerakan, efek kebugaran, kualitas inspirasional video, resonansi pribadi, dan aspek lainnya. Rasio komentar panjang terhadap komentar pendek harus 1:2. Harap keluarkan komentar panjang dan pendek secara terpisah. Komentar pendek tidak boleh melebihi 5 kata, dan komentar panjang tidak boleh melebihi 10 kata. Setiap komentar harus menggunakan kosakata dan ekspresi yang berbeda, dengan konten menunjukkan pemikiran atau saran pribadi yang berbeda, melarang deskripsi berulang dan pertanyaan serupa. Harap tandai 'Komentar Panjang' atau 'Komentar Pendek' saat mengeluarkan untuk memastikan format yang jelas dan konten yang mudah dibedakan.\nCatatan: Jumlah kata hanya berlaku untuk kata Indonesia",
+        "corresponding_parts": {
+            "短评论": "请你按照python list的形式，将model_response中的短评论分割并提取出来。比如:[\"Benar-benar bagus!\",\"Layanannya sangat perhatian.\",\"Lingkungannya sangat elegan.\",\"Terlihat sangat hangat.\",\"Sepertinya cukup profesional.\",\"Cocok untuk orang tua.\",\"Kegiatan yang menarik!\",\"Staf perawat benar-benar antusias.\",\"Saya merasa tenang.\",\"Fasilitasnya lengkap.\"]",
+            "长评论": "请你按照python list的形式，将model_response中的长评论分割并提取出来。比如:[\"Lingkungan dalam video terlihat sangat nyaman, dan orang tua pasti akan menyukai tempat seperti itu.\",\"Saya pikir layanan perawatan lansia semacam ini sangat memperhatikan detail dan membuat orang merasa tenang.\",\"Kegiatannya diatur dengan baik, yang dapat membuat orang tua tetap aktif dan sosial.\",\"Tim perawat tampaknya sangat berpengalaman, yang sangat penting untuk kesehatan orang tua.\",\"Melihat begitu banyak wajah tersenyum bahagia menunjukkan bahwa suasana di sini sangat ramah!\",\"Untuk orang tua yang membutuhkan perawatan, layanan seperti ini memang pilihan yang baik.\",\"Rasanya institusi ini sangat perhatian kepada setiap penghuni dan sangat dapat dipercaya!\",\"Menyediakan berbagai kegiatan hiburan untuk membuat hidup lebih berwarna itu hebat!\",\"Mampu menyediakan rencana perawatan yang dipersonalisasi terdengar sangat profesional dan aman.\",\"Video menunjukkan banyak tautan interaktif, saya yakin orang tua akan menikmatinya.\"]"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "长短评论（komentar panjang pendek）是否是分隔开输出的，例如:#长评论#: 1. xxx, 2. xxx; #短评论#: 1. xxx, 2. xxx，且是否存在长评论和短评论？",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "长评论（komentar panjang）数量是否为6条",
+                "corresponding_part": "长评论",
+                "rule": "item_count:[6,6]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "短评论（komentar pendek）数量是否为12条",
+                "corresponding_part": "短评论",
+                "rule": "item_count:[12,12]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "长评论（panjang）是否都在10字以内",
+                "corresponding_part": "长评论",
+                "rule": "indonesian_each_length:[1,10]",
+                "dep": [0],
+                "能力项": "0～10字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "短评论（komentar pendek）是否都在5字以内",
+                "corresponding_part": "短评论",
+                "rule": "indonesian_each_length:[1,5]",
+                "dep": [0],
+                "能力项": "0～10字",
+                "被依赖": false
+            },
+            {
+                "point_id": 7,
+                "question": "长评论（komentar panjang）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "长评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 8,
+                "question": "短评论（komentar pendek）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "短评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Ketika Anda menemukan video pendek popularisasi sains teknologi, harap bertindak sebagai penonton biasa atau penggemar teknologi, dan keluarkan total 16 komentar percakapan dari berbagai perspektif seperti aksesibilitas, inovasi, kepraktisan, dan nilai hiburan dari konten popularisasi sains. Komentar harus melibatkan pemahaman pengetahuan teknologi, aplikasi praktis, metode popularisasi sains, keuntungan pribadi, dan aspek lainnya. Rasio komentar panjang terhadap komentar pendek harus 1:3. Harap keluarkan komentar panjang dan pendek secara terpisah. Komentar pendek tidak boleh melebihi 8 kata, dan komentar panjang tidak boleh melebihi 20 kata. Setiap komentar perlu menggunakan kosakata, gaya ekspresi dan struktur yang berbeda, dan konten perlu mencakup pendapat atau saran pribadi, tanpa deskripsi berulang atau masalah serupa. Harap tandai dengan jelas 'Komentar Panjang' dan 'Komentar Pendek' untuk memastikan bahwa kedua jenis komentar independen dan mudah dibaca.\nCatatan: Jumlah kata hanya berlaku untuk kata Indonesia.",
+        "corresponding_parts": {
+            "短评论": "请你按照python list的形式，将model_response中的短评论分割并提取出来。比如:[\"Benar-benar bagus!\",\"Layanannya sangat perhatian.\",\"Lingkungannya sangat elegan.\",\"Terlihat sangat hangat.\",\"Sepertinya cukup profesional.\",\"Cocok untuk orang tua.\",\"Kegiatan yang menarik!\",\"Staf perawat benar-benar antusias.\",\"Saya merasa tenang.\",\"Fasilitasnya lengkap.\"]",
+            "长评论": "请你按照python list的形式，将model_response中的长评论分割并提取出来。比如:[\"Lingkungan dalam video terlihat sangat nyaman, dan orang tua pasti akan menyukai tempat seperti itu.\",\"Saya pikir layanan perawatan lansia semacam ini sangat memperhatikan detail dan membuat orang merasa tenang.\",\"Kegiatannya diatur dengan baik, yang dapat membuat orang tua tetap aktif dan sosial.\",\"Tim perawat tampaknya sangat berpengalaman, yang sangat penting untuk kesehatan orang tua.\",\"Melihat begitu banyak wajah tersenyum bahagia menunjukkan bahwa suasana di sini sangat ramah!\",\"Untuk orang tua yang membutuhkan perawatan, layanan seperti ini memang pilihan yang baik.\",\"Rasanya institusi ini sangat perhatian kepada setiap penghuni dan sangat dapat dipercaya!\",\"Menyediakan berbagai kegiatan hiburan untuk membuat hidup lebih berwarna itu hebat!\",\"Mampu menyediakan rencana perawatan yang dipersonalisasi terdengar sangat profesional dan aman.\",\"Video menunjukkan banyak tautan interaktif, saya yakin orang tua akan menikmatinya.\"]"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "长短评论（komentar panjang pendek）是否是分隔开输出的，例如:#长评论#: 1. xxx, 2. xxx; #短评论#: 1. xxx, 2. xxx，且是否存在长评论和短评论？",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "长评论（komentar panjang）数量是否为4条",
+                "corresponding_part": "长评论",
+                "rule": "item_count:[4,4]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "短评论（komentar pendek）数量是否为12条",
+                "corresponding_part": "短评论",
+                "rule": "item_count:[12,12]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "长评论（komentar panjang）是否都在20字以内",
+                "corresponding_part": "长评论",
+                "rule": "indonesian_each_length:[1,20]",
+                "dep": [0],
+                "能力项": "10～50字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "短评论（komentar pendek）是否都在8字以内",
+                "corresponding_part": "短评论",
+                "rule": "indonesian_each_length:[1,8]",
+                "dep": [0],
+                "能力项": "0～10字",
+                "被依赖": false
+            },
+            {
+                "point_id": 7,
+                "question": "长评论（komentar panjang）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "长评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 8,
+                "question": "短评论（komentar pendek）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "短评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Ketika Anda menemukan video pendek tentang cerita kehidupan kampus yang menarik, harap merespons sebagai mahasiswa saat ini atau lulusan, memberikan total 21 komentar percakapan dari berbagai dimensi termasuk suasana kampus, interaksi mahasiswa, pengalaman kursus, dan kenangan masa muda. Konten komentar harus mencakup evaluasi budaya kampus, hubungan guru-siswa, suasana belajar, detail kehidupan, dan aspek lainnya. Rasio komentar panjang terhadap komentar pendek harus 3:4. Harap keluarkan komentar panjang dan pendek secara terpisah. Komentar pendek harus dalam 8 kata, dan komentar panjang harus dalam 20 kata. Setiap komentar harus menggunakan kosakata dan ekspresi yang berbeda, mencerminkan pengalaman atau saran pribadi yang berbeda, sangat melarang konten berulang atau gaya serupa. Harap label dengan jelas 'Komentar Panjang' dan 'Komentar Pendek' untuk memastikan pembagian konten yang jelas dan identifikasi yang mudah.\nCatatan: Jumlah kata hanya berlaku untuk kata Indonesia.",
+        "corresponding_parts": {
+            "短评论": "请你按照python list的形式，将model_response中的短评论分割并提取出来。比如:[\"Benar-benar bagus!\",\"Layanannya sangat perhatian.\",\"Lingkungannya sangat elegan.\",\"Terlihat sangat hangat.\",\"Sepertinya cukup profesional.\",\"Cocok untuk orang tua.\",\"Kegiatan yang menarik!\",\"Staf perawat benar-benar antusias.\",\"Saya merasa tenang.\",\"Fasilitasnya lengkap.\"]",
+            "长评论": "请你按照python list的形式，将model_response中的长评论分割并提取出来。比如:[\"Lingkungan dalam video terlihat sangat nyaman, dan orang tua pasti akan menyukai tempat seperti itu.\",\"Saya pikir layanan perawatan lansia semacam ini sangat memperhatikan detail dan membuat orang merasa tenang.\",\"Kegiatannya diatur dengan baik, yang dapat membuat orang tua tetap aktif dan sosial.\",\"Tim perawat tampaknya sangat berpengalaman, yang sangat penting untuk kesehatan orang tua.\",\"Melihat begitu banyak wajah tersenyum bahagia menunjukkan bahwa suasana di sini sangat ramah!\",\"Untuk orang tua yang membutuhkan perawatan, layanan seperti ini memang pilihan yang baik.\",\"Rasanya institusi ini sangat perhatian kepada setiap penghuni dan sangat dapat dipercaya!\",\"Menyediakan berbagai kegiatan hiburan untuk membuat hidup lebih berwarna itu hebat!\",\"Mampu menyediakan rencana perawatan yang dipersonalisasi terdengar sangat profesional dan aman.\",\"Video menunjukkan banyak tautan interaktif, saya yakin orang tua akan menikmatinya.\"]"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "长短评论（komentar panjang pendek）是否是分隔开输出的，例如:#长评论#: 1. xxx, 2. xxx; #短评论#: 1. xxx, 2. xxx，且是否存在长评论和短评论？",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "长评论（komentar panjang）数量是否为9条",
+                "corresponding_part": "长评论",
+                "rule": "item_count:[9,9]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "短评论（komentar pendek）数量是否为12条",
+                "corresponding_part": "短评论",
+                "rule": "item_count:[12,12]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "长评论（komentar panjang）是否都在20字以内",
+                "corresponding_part": "长评论",
+                "rule": "indonesian_each_length:[1,20]",
+                "dep": [0],
+                "能力项": "10～50字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "短评论（komentar pendek）是否都在8字以内",
+                "corresponding_part": "短评论",
+                "rule": "indonesian_each_length:[1,8]",
+                "dep": [0],
+                "能力项": "0～10字",
+                "被依赖": false
+            },
+            {
+                "point_id": 7,
+                "question": "长评论（komentar panjang）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "长评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 8,
+                "question": "短评论（komentar pendek）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "短评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Ketika Anda menemukan video pendek tentang makanan pasar malam di sebuah kota, harap merespons sebagai penduduk lokal atau turis luar kota, mengeluarkan total 21 komentar percakapan dari berbagai dimensi termasuk variasi makanan, layanan pedagang, suasana pasar malam, dan pengalaman harga. Komentar harus mencakup evaluasi budaya pasar malam, keamanan makanan, keramaian kerumunan, pengalaman konsumsi, dan aspek lainnya. Rasio komentar panjang terhadap komentar pendek harus 4:3. Harap keluarkan komentar panjang dan pendek secara terpisah, dengan komentar pendek dalam 8 kata dan komentar panjang dalam 20 kata. Setiap komentar harus menggunakan kosakata dan ekspresi yang berbeda, mencerminkan pengalaman atau saran pribadi yang berbeda, dan konten berulang atau gaya serupa sangat dilarang. Harap label dengan jelas 'Komentar Panjang' dan 'Komentar Pendek' untuk memastikan pembagian konten yang jelas dan identifikasi yang mudah.\nCatatan: Jumlah kata hanya berlaku untuk kata Indonesia.",
+        "corresponding_parts": {
+            "短评论": "请你按照python list的形式，将model_response中的短评论分割并提取出来。比如:[\"Saya benar-benar ingin pergi berbelanja!\",\"Makanan ringannya sangat menggoda.\",\"Harganya sangat terjangkau.\",\"Pasar malamnya sangat ramai.\",\"Pemilik kios sangat antusias.\",\"Suasananya penuh dengan kembang api.\",\"Ada begitu banyak makanan lezat.\",\"Suasananya hebat.\",\"Ini sangat populer.\",\"Saya sangat puas dengan makanannya.\"]",
+            "长评论": "请你按照python list的形式，将model_response中的长评论分割并提取出来。比如:[\"Ada begitu banyak jenis makanan ringan di pasar malam, dan saya menemukan hal-hal baru setiap kali pergi ke sana.\",\"Pemilik kios sangat antusias dan sikap layanannya sangat baik. Pengalamannya hebat.\",\"Suasana pasar malam sangat ramai dan cocok untuk berbelanja dengan teman-teman.\",\"Harganya wajar dan Anda bisa makan banyak tanpa merasa menyesal untuk dompet Anda.\",\"Setiap kali saya pergi ke pasar malam, saya bisa merasakan kembang api kota.\",\"Makanannya aman dan higienis, dan sangat meyakinkan untuk melihatnya. Ini layak direkomendasikan.\",\"Pasar malam ramai tetapi tertib, dan sangat nyaman untuk dikunjungi.\",\"Desain kios unik dan sangat menarik untuk dikunjungi.\",\"Tidak hanya ada makanan di pasar malam, tetapi juga banyak gadget menarik.\"]"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "长短评论（komentar panjang pendek）是否是分隔开输出的，例如:#长评论#: 1. xxx, 2. xxx; #短评论#: 1. xxx, 2. xxx，且是否存在长评论和短评论？",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "长评论（komentar panjang）数量是否为12条",
+                "corresponding_part": "长评论",
+                "rule": "item_count:[12,12]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "短评论（komentar pendek）数量是否为9条",
+                "corresponding_part": "短评论",
+                "rule": "item_count:[9,9]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "长评论（komentar panjang）是否都在20字以内",
+                "corresponding_part": "长评论",
+                "rule": "indonesian_each_length:[1,20]",
+                "dep": [0],
+                "能力项": "10～50字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "短评论（komentar pendek）是否都在8字以内",
+                "corresponding_part": "短评论",
+                "rule": "indonesian_each_length:[1,8]",
+                "dep": [0],
+                "能力项": "0～10字",
+                "被依赖": false
+            },
+            {
+                "point_id": 7,
+                "question": "长评论（komentar panjang）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "长评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 8,
+                "question": "短评论（komentar pendek）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "短评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            }
+        ]
+    }
+]

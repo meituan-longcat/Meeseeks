@@ -1,0 +1,382 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Você é um assistente de produtos que ajuda os usuários a analisar os sabores dos produtos.\nMeu formato de entrada é: [{\"cspu\":\"Nome do Produto 1\"}, {\"cspu\":\"Nome do Produto 2\"}], onde cspu é o nome do produto a ser analisado.\nSeu formato de resposta é (deve seguir rigorosamente os requisitos de formato JSON):[{\"cspu\":\"Nome do Produto 1\", \"type\":\"Sabor 1\"}, {\"cspu\":\"Nome do Produto 2\",\"type\":\"Sabor 2\"}], onde type representa o sabor do produto.\nPor exemplo:\nSe minha entrada for [{\"cspu\":\"Batata Chips Lay's Sabor Manga 210g\"},{\"cspu\":\"Takis Fuego Pimenta Ardida & Lima 113g\"},{\"cspu\":\"Anéis de Frango Tyson Sabor Cebola 329g\"},{\"cspu\":\"Macarrão Instantâneo Maruchan Carne Picante + Carne com Tomate Pacote Variado 12 copos\"}]\nEspero que sua saída seja [{\"cspu\":\"Batata Chips Lay's Sabor Manga 210g\",\"type\":\"Manga\"},{\"cspu\":\"Takis Fuego Pimenta Ardida & Lima 113g\",\"type\":\"Pimenta Ardida & Lima\"},{\"cspu\":\"Anéis de Frango Tyson Sabor Cebola 329g\",\"type\":\"Cebola\"},{\"cspu\":\"Macarrão Instantâneo Maruchan Carne Picante + Carne com Tomate Pacote Variado 12 copos\",\"type\":\"Carne Picante, Carne com Tomate\"}]\nNota 1: Os resultados de sabor do produto devem existir no nome do produto, não abstraia ou converta arbitrariamente de forma equivalente, e os sabores devem corresponder a tipos reais de alimentos ou temperos, como sabor de manga, sabor picante, sabor de carne refogada, etc.\nNota 2: Às vezes o sabor é uma palavra descritiva, por exemplo, mingau de tâmara vermelha tem sabor de tâmara vermelha, chips de pepino têm sabor de pepino, refrigerante de lichia tem sabor de lichia, chá de jasmim tem sabor de jasmim\nDistinga entre tipo de produto e sabor. Se houver múltiplos sabores, produza todos os sabores separados por vírgulas\nNão misture tipos de produtos! Não misture tipos de produtos!\nSabores não devem incluir lanches, lazer, nomes de lugares, etc.\nSabores não incluirão palavras como folhas de macarrão, bolinhos de arroz, ramen\nSe o nome do produto não contém sabor, retorne NULL para o valor type\nNão há relação entre múltiplos produtos, e o contexto não afetará os resultados de análise de sabor de produtos individuais\nPor favor, analise a seguinte lista de produtos e retorne os resultados (formato JSON rigoroso):\n[{\"cspu\": \"Carne Seca Jack Link's Sabor Pato Picante 180g\"}, {\"cspu\": \"Pistaches Wonderful Pimenta Doce 156g\"}, {\"cspu\": \"Barra de Granola Nature Valley Aveia & Mel 502g\"}, {\"cspu\": \"Coca-Cola Zero Açúcar 350ml Pacote com 6\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um assistente de produtos que ajuda os usuários a analisar os sabores dos produtos.\nMeu formato de entrada é: [{\"cspu\":\"Nome do Produto 1\"}, {\"cspu\":\"Nome do Produto 2\"}], onde cspu é o nome do produto a ser analisado.\nSeu formato de resposta é (deve seguir rigorosamente os requisitos de formato JSON):[{\"cspu\":\"Nome do Produto 1\", \"type\":\"Sabor 1\"}, {\"cspu\":\"Nome do Produto 2\",\"type\":\"Sabor 2\"}], onde type representa o sabor do produto.\nPor exemplo:\nSe minha entrada for [{\"cspu\":\"Batata Chips Lay's Sabor Manga 210g\"},{\"cspu\":\"Takis Fuego Pimenta Ardida & Lima 113g\"},{\"cspu\":\"Anéis de Frango Tyson Sabor Cebola 329g\"},{\"cspu\":\"Macarrão Instantâneo Maruchan Carne Picante + Carne com Tomate Pacote Variado 12 copos\"}]\nEspero que sua saída seja [{\"cspu\":\"Batata Chips Lay's Sabor Manga 210g\",\"type\":\"Manga\"},{\"cspu\":\"Takis Fuego Pimenta Ardida & Lima 113g\",\"type\":\"Pimenta Ardida & Lima\"},{\"cspu\":\"Anéis de Frango Tyson Sabor Cebola 329g\",\"type\":\"Cebola\"},{\"cspu\":\"Macarrão Instantâneo Maruchan Carne Picante + Carne com Tomate Pacote Variado 12 copos\",\"type\":\"Carne Picante, Carne com Tomate\"}]\nNota 1: Os resultados de sabor do produto devem existir no nome do produto, não abstraia ou converta arbitrariamente de forma equivalente, e os sabores devem corresponder a tipos reais de alimentos ou temperos, como sabor de manga, sabor picante, sabor de carne refogada, etc.\nNota 2: Às vezes o sabor é uma palavra descritiva, por exemplo, mingau de tâmara vermelha tem sabor de tâmara vermelha, chips de pepino têm sabor de pepino, refrigerante de lichia tem sabor de lichia, chá de jasmim tem sabor de jasmim\nDistinga entre tipo de produto e sabor. Se houver múltiplos sabores, produza todos os sabores separados por vírgulas\nNão misture tipos de produtos! Não misture tipos de produtos!\nSabores não devem incluir lanches, lazer, nomes de lugares, etc.\nSabores não incluirão palavras como folhas de macarrão, bolinhos de arroz, ramen\nSe o nome do produto não contém sabor, retorne NULL para o valor type\nNão há relação entre múltiplos produtos, e o contexto não afetará os resultados de análise de sabor de produtos individuais\nPor favor, analise a seguinte lista de produtos e retorne os resultados (formato JSON rigoroso):\n[{\"cspu\": \"Chá Gelado Arizona Limão 680ml\"}, {\"cspu\": \"Cheetos Crocante Pimenta Ardida 241g Pacote com 3\"}, {\"cspu\": \"Sementes de Girassol David Original 149g\"}, {\"cspu\": \"Iogurte Grego Dannon Two Good Baunilha 150g Pacote com 12\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um assistente de produtos que ajuda os usuários a analisar os sabores dos produtos.\nMeu formato de entrada é: [{\"cspu\":\"Nome do Produto 1\"}, {\"cspu\":\"Nome do Produto 2\"}], onde cspu é o nome do produto a ser analisado.\nSeu formato de resposta é (deve seguir rigorosamente os requisitos de formato JSON):[{\"cspu\":\"Nome do Produto 1\", \"type\":\"Sabor 1\"}, {\"cspu\":\"Nome do Produto 2\",\"type\":\"Sabor 2\"}], onde type representa o sabor do produto.\nPor exemplo:\nSe minha entrada for [{\"cspu\":\"Batata Chips Lay's Sabor Manga 210g\"},{\"cspu\":\"Takis Fuego Pimenta Ardida & Lima 113g\"},{\"cspu\":\"Anéis de Frango Tyson Sabor Cebola 329g\"},{\"cspu\":\"Macarrão Instantâneo Maruchan Carne Picante + Carne com Tomate Pacote Variado 12 copos\"}]\nEspero que sua saída seja [{\"cspu\":\"Batata Chips Lay's Sabor Manga 210g\",\"type\":\"Manga\"},{\"cspu\":\"Takis Fuego Pimenta Ardida & Lima 113g\",\"type\":\"Pimenta Ardida & Lima\"},{\"cspu\":\"Anéis de Frango Tyson Sabor Cebola 329g\",\"type\":\"Cebola\"},{\"cspu\":\"Macarrão Instantâneo Maruchan Carne Picante + Carne com Tomate Pacote Variado 12 copos\",\"type\":\"Carne Picante, Carne com Tomate\"}]\nNota 1: Os resultados de sabor do produto devem existir no nome do produto, não abstraia ou converta arbitrariamente de forma equivalente, e os sabores devem corresponder a tipos reais de alimentos ou temperos, como sabor de manga, sabor picante, sabor de carne refogada, etc.\nNota 2: Às vezes o sabor é uma palavra descritiva, por exemplo, mingau de tâmara vermelha tem sabor de tâmara vermelha, chips de pepino têm sabor de pepino, refrigerante de lichia tem sabor de lichia, chá de jasmim tem sabor de jasmim\nDistinga entre tipo de produto e sabor. Se houver múltiplos sabores, produza todos os sabores separados por vírgulas\nNão misture tipos de produtos! Não misture tipos de produtos!\nSabores não devem incluir lanches, lazer, nomes de lugares, etc.\nSabores não incluirão palavras como folhas de macarrão, bolinhos de arroz, ramen\nSe o nome do produto não contém sabor, retorne NULL para o valor type\nNão há relação entre múltiplos produtos, e o contexto não afetará os resultados de análise de sabor de produtos individuais\nPor favor, analise a seguinte lista de produtos e retorne os resultados (formato JSON rigoroso):\n[{\"cspu\": \"Macarrão Instantâneo Maruchan Sabor Carne 85g\"}, {\"cspu\": \"Barrinhas de Cereal Rice Krispies Kellogg's 8 unidades\"}, {\"cspu\": \"Batata Chips Lay's Sabor Picles de Endro 220g\"}, {\"cspu\": \"Suco de Maçã Simply 1,5L\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um assistente de produtos que ajuda os usuários a analisar os sabores dos produtos.\nMeu formato de entrada é: [{\"cspu\":\"Nome do Produto 1\"}, {\"cspu\":\"Nome do Produto 2\"}], onde cspu é o nome do produto a ser analisado.\nSeu formato de resposta é (deve seguir rigorosamente os requisitos de formato JSON):[{\"cspu\":\"Nome do Produto 1\", \"type\":\"Sabor 1\"}, {\"cspu\":\"Nome do Produto 2\",\"type\":\"Sabor 2\"}], onde type representa o sabor do produto.\nPor exemplo:\nSe minha entrada for [{\"cspu\":\"Batata Chips Lay's Sabor Manga 210g\"},{\"cspu\":\"Takis Fuego Pimenta Ardida & Lima 113g\"},{\"cspu\":\"Anéis de Frango Tyson Sabor Cebola 329g\"},{\"cspu\":\"Macarrão Instantâneo Maruchan Carne Picante + Carne com Tomate Pacote Variado 12 copos\"}]\nEspero que sua saída seja [{\"cspu\":\"Batata Chips Lay's Sabor Manga 210g\",\"type\":\"Manga\"},{\"cspu\":\"Takis Fuego Pimenta Ardida & Lima 113g\",\"type\":\"Pimenta Ardida & Lima\"},{\"cspu\":\"Anéis de Frango Tyson Sabor Cebola 329g\",\"type\":\"Cebola\"},{\"cspu\":\"Macarrão Instantâneo Maruchan Carne Picante + Carne com Tomate Pacote Variado 12 copos\",\"type\":\"Carne Picante, Carne com Tomate\"}]\nNota 1: Os resultados de sabor do produto devem existir no nome do produto, não abstraia ou converta arbitrariamente de forma equivalente, e os sabores devem corresponder a tipos reais de alimentos ou temperos, como sabor de manga, sabor picante, sabor de carne refogada, etc.\nNota 2: Às vezes o sabor é uma palavra descritiva, por exemplo, mingau de tâmara vermelha tem sabor de tâmara vermelha, chips de pepino têm sabor de pepino, refrigerante de lichia tem sabor de lichia, chá de jasmim tem sabor de jasmim\nDistinga entre tipo de produto e sabor. Se houver múltiplos sabores, produza todos os sabores separados por vírgulas\nNão misture tipos de produtos! Não misture tipos de produtos!\nSabores não devem incluir lanches, lazer, nomes de lugares, etc.\nSabores não incluirão palavras como folhas de macarrão, bolinhos de arroz, ramen\nSe o nome do produto não contém sabor, retorne NULL para o valor type\nNão há relação entre múltiplos produtos, e o contexto não afetará os resultados de análise de sabor de produtos individuais\nPor favor, analise a seguinte lista de produtos e retorne os resultados (formato JSON rigoroso):\n[{\"cspu\": \"Biscoitos Goldfish Pepperidge Farm Sabor Cheddar 187g\"}, {\"cspu\": \"Shake Proteico Fairlife Core Power Baunilha 414ml Pacote com 12\"}, {\"cspu\": \"Água com Gás LaCroix Uva Branca 350ml\"}, {\"cspu\": \"Amêndoas Blue Diamond Pacote Variado\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um assistente de produtos que ajuda os usuários a analisar os sabores dos produtos.\nMeu formato de entrada é: [{\"cspu\":\"Nome do Produto 1\"}, {\"cspu\":\"Nome do Produto 2\"}], onde cspu é o nome do produto a ser analisado.\nSeu formato de resposta é (deve seguir rigorosamente os requisitos de formato JSON):[{\"cspu\":\"Nome do Produto 1\", \"type\":\"Sabor 1\"}, {\"cspu\":\"Nome do Produto 2\",\"type\":\"Sabor 2\"}], onde type representa o sabor do produto.\nPor exemplo:\nSe minha entrada for [{\"cspu\":\"Batata Chips Lay's Sabor Manga 210g\"},{\"cspu\":\"Takis Fuego Pimenta Ardida & Lima 113g\"},{\"cspu\":\"Anéis de Frango Tyson Sabor Cebola 329g\"},{\"cspu\":\"Macarrão Instantâneo Maruchan Carne Picante + Carne com Tomate Pacote Variado 12 copos\"}]\nEspero que sua saída seja [{\"cspu\":\"Batata Chips Lay's Sabor Manga 210g\",\"type\":\"Manga\"},{\"cspu\":\"Takis Fuego Pimenta Ardida & Lima 113g\",\"type\":\"Pimenta Ardida & Lima\"},{\"cspu\":\"Anéis de Frango Tyson Sabor Cebola 329g\",\"type\":\"Cebola\"},{\"cspu\":\"Macarrão Instantâneo Maruchan Carne Picante + Carne com Tomate Pacote Variado 12 copos\",\"type\":\"Carne Picante, Carne com Tomate\"}]\nNota 1: Os resultados de sabor do produto devem existir no nome do produto, não abstraia ou converta arbitrariamente de forma equivalente, e os sabores devem corresponder a tipos reais de alimentos ou temperos, como sabor de manga, sabor picante, sabor de carne refogada, etc.\nNota 2: Às vezes o sabor é uma palavra descritiva, por exemplo, mingau de tâmara vermelha tem sabor de tâmara vermelha, chips de pepino têm sabor de pepino, refrigerante de lichia tem sabor de lichia, chá de jasmim tem sabor de jasmim\nDistinga entre tipo de produto e sabor. Se houver múltiplos sabores, produza todos os sabores separados por vírgulas\nNão misture tipos de produtos! Não misture tipos de produtos!\nSabores não devem incluir lanches, lazer, nomes de lugares, etc.\nSabores não incluirão palavras como folhas de macarrão, bolinhos de arroz, ramen\nSe o nome do produto não contém sabor, retorne NULL para o valor type\nNão há relação entre múltiplos produtos, e o contexto não afetará os resultados de análise de sabor de produtos individuais\nPor favor, analise a seguinte lista de produtos e retorne os resultados (formato JSON rigoroso):\n[{\"cspu\": \"Batata Chips Lay's Sabor Churrasco 220g\"}, {\"cspu\": \"Chá Verde Arizona com Mel 680ml\"}, {\"cspu\": \"Pepsi Cola Clássica 350ml\"}, {\"cspu\": \"Sementes de Girassol David Sabor Ranch 149g\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um assistente de produtos que ajuda os usuários a analisar os sabores dos produtos.\nMeu formato de entrada é: [{\"cspu\":\"Nome do Produto 1\"}, {\"cspu\":\"Nome do Produto 2\"}], onde cspu é o nome do produto a ser analisado.\nSeu formato de resposta é (deve seguir rigorosamente os requisitos de formato JSON):[{\"cspu\":\"Nome do Produto 1\", \"type\":\"Sabor 1\"}, {\"cspu\":\"Nome do Produto 2\",\"type\":\"Sabor 2\"}], onde type representa o sabor do produto.\nPor exemplo:\nSe minha entrada for [{\"cspu\":\"Batata Chips Lay's Sabor Manga 210g\"},{\"cspu\":\"Takis Fuego Pimenta Ardida & Lima 113g\"},{\"cspu\":\"Anéis de Frango Tyson Sabor Cebola 329g\"},{\"cspu\":\"Macarrão Instantâneo Maruchan Carne Picante + Carne com Tomate Pacote Variado 12 copos\"}]\nEspero que sua saída seja [{\"cspu\":\"Batata Chips Lay's Sabor Manga 210g\",\"type\":\"Manga\"},{\"cspu\":\"Takis Fuego Pimenta Ardida & Lima 113g\",\"type\":\"Pimenta Ardida & Lima\"},{\"cspu\":\"Anéis de Frango Tyson Sabor Cebola 329g\",\"type\":\"Cebola\"},{\"cspu\":\"Macarrão Instantâneo Maruchan Carne Picante + Carne com Tomate Pacote Variado 12 copos\",\"type\":\"Carne Picante, Carne com Tomate\"}]\nNota 1: Os resultados de sabor do produto devem existir no nome do produto, não abstraia ou converta arbitrariamente de forma equivalente, e os sabores devem corresponder a tipos reais de alimentos ou temperos, como sabor de manga, sabor picante, sabor de carne refogada, etc.\nNota 2: Às vezes o sabor é uma palavra descritiva, por exemplo, mingau de tâmara vermelha tem sabor de tâmara vermelha, chips de pepino têm sabor de pepino, refrigerante de lichia tem sabor de lichia, chá de jasmim tem sabor de jasmim\nDistinga entre tipo de produto e sabor. Se houver múltiplos sabores, produza todos os sabores separados por vírgulas\nNão misture tipos de produtos! Não misture tipos de produtos!\nSabores não devem incluir lanches, lazer, nomes de lugares, etc.\nSabores não incluirão palavras como folhas de macarrão, bolinhos de arroz, ramen\nSe o nome do produto não contém sabor, retorne NULL para o valor type\nNão há relação entre múltiplos produtos, e o contexto não afetará os resultados de análise de sabor de produtos individuais\nPor favor, analise a seguinte lista de produtos e retorne os resultados (formato JSON rigoroso):\n[{\"cspu\": \"Carne Seca Slim Jim Original 8g\"}, {\"cspu\": \"Pistaches Wonderful Torrados com Mel 156g\"}, {\"cspu\": \"Batata Pringles Sabor Churrasco 156g\"}, {\"cspu\": \"Leite Fairlife 2% 1,5L\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um assistente de produtos que ajuda os usuários a analisar os sabores dos produtos.\nMeu formato de entrada é: [{\"cspu\":\"Nome do Produto 1\"}, {\"cspu\":\"Nome do Produto 2\"}], onde cspu é o nome do produto a ser analisado.\nSeu formato de resposta é (deve seguir rigorosamente os requisitos de formato JSON):[{\"cspu\":\"Nome do Produto 1\", \"type\":\"Sabor 1\"}, {\"cspu\":\"Nome do Produto 2\",\"type\":\"Sabor 2\"}], onde type representa o sabor do produto.\nPor exemplo:\nSe minha entrada for [{\"cspu\":\"Batata Chips Lay's Sabor Manga 210g\"},{\"cspu\":\"Takis Fuego Pimenta Ardida & Lima 113g\"},{\"cspu\":\"Anéis de Frango Tyson Sabor Cebola 329g\"},{\"cspu\":\"Macarrão Instantâneo Maruchan Carne Picante + Carne com Tomate Pacote Variado 12 copos\"}]\nEspero que sua saída seja [{\"cspu\":\"Batata Chips Lay's Sabor Manga 210g\",\"type\":\"Manga\"},{\"cspu\":\"Takis Fuego Pimenta Ardida & Lima 113g\",\"type\":\"Pimenta Ardida & Lima\"},{\"cspu\":\"Anéis de Frango Tyson Sabor Cebola 329g\",\"type\":\"Cebola\"},{\"cspu\":\"Macarrão Instantâneo Maruchan Carne Picante + Carne com Tomate Pacote Variado 12 copos\",\"type\":\"Carne Picante, Carne com Tomate\"}]\nNota 1: Os resultados de sabor do produto devem existir no nome do produto, não abstraia ou converta arbitrariamente de forma equivalente, e os sabores devem corresponder a tipos reais de alimentos ou temperos, como sabor de manga, sabor picante, sabor de carne refogada, etc.\nNota 2: Às vezes o sabor é uma palavra descritiva, por exemplo, mingau de tâmara vermelha tem sabor de tâmara vermelha, chips de pepino têm sabor de pepino, refrigerante de lichia tem sabor de lichia, chá de jasmim tem sabor de jasmim\nDistinga entre tipo de produto e sabor. Se houver múltiplos sabores, produza todos os sabores separados por vírgulas\nNão misture tipos de produtos! Não misture tipos de produtos!\nSabores não devem incluir lanches, lazer, nomes de lugares, etc.\nSabores não incluirão palavras como folhas de macarrão, bolinhos de arroz, ramen\nSe o nome do produto não contém sabor, retorne NULL para o valor type\nNão há relação entre múltiplos produtos, e o contexto não afetará os resultados de análise de sabor de produtos individuais\nPor favor, analise a seguinte lista de produtos e retorne os resultados (formato JSON rigoroso):\n[{\"cspu\": \"Pudim Jell-O Chocolate 4 unidades 439g\"}, {\"cspu\": \"Macarrão Instantâneo Maruchan Sabor Porco 85g\"}, {\"cspu\": \"Amêndoas Blue Diamond Defumadas 170g\"}, {\"cspu\": \"Água Smartwater Destilada a Vapor 1L\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um assistente de produtos que ajuda os usuários a analisar os sabores dos produtos.\nMeu formato de entrada é: [{\"cspu\":\"Nome do Produto 1\"}, {\"cspu\":\"Nome do Produto 2\"}], onde cspu é o nome do produto a ser analisado.\nSeu formato de resposta é (deve seguir rigorosamente os requisitos de formato JSON):[{\"cspu\":\"Nome do Produto 1\", \"type\":\"Sabor 1\"}, {\"cspu\":\"Nome do Produto 2\",\"type\":\"Sabor 2\"}], onde type representa o sabor do produto.\nPor exemplo:\nSe minha entrada for [{\"cspu\":\"Batata Chips Lay's Sabor Manga 210g\"},{\"cspu\":\"Takis Fuego Pimenta Ardida & Lima 113g\"},{\"cspu\":\"Anéis de Frango Tyson Sabor Cebola 329g\"},{\"cspu\":\"Macarrão Instantâneo Maruchan Carne Picante + Carne com Tomate Pacote Variado 12 copos\"}]\nEspero que sua saída seja [{\"cspu\":\"Batata Chips Lay's Sabor Manga 210g\",\"type\":\"Manga\"},{\"cspu\":\"Takis Fuego Pimenta Ardida & Lima 113g\",\"type\":\"Pimenta Ardida & Lima\"},{\"cspu\":\"Anéis de Frango Tyson Sabor Cebola 329g\",\"type\":\"Cebola\"},{\"cspu\":\"Macarrão Instantâneo Maruchan Carne Picante + Carne com Tomate Pacote Variado 12 copos\",\"type\":\"Carne Picante, Carne com Tomate\"}]\nNota 1: Os resultados de sabor do produto devem existir no nome do produto, não abstraia ou converta arbitrariamente de forma equivalente, e os sabores devem corresponder a tipos reais de alimentos ou temperos, como sabor de manga, sabor picante, sabor de carne refogada, etc.\nNota 2: Às vezes o sabor é uma palavra descritiva, por exemplo, mingau de tâmara vermelha tem sabor de tâmara vermelha, chips de pepino têm sabor de pepino, refrigerante de lichia tem sabor de lichia, chá de jasmim tem sabor de jasmim\nDistinga entre tipo de produto e sabor. Se houver múltiplos sabores, produza todos os sabores separados por vírgulas\nNão misture tipos de produtos! Não misture tipos de produtos!\nSabores não devem incluir lanches, lazer, nomes de lugares, etc.\nSabores não incluirão palavras como folhas de macarrão, bolinhos de arroz, ramen\nSe o nome do produto não contém sabor, retorne NULL para o valor type\nNão há relação entre múltiplos produtos, e o contexto não afetará os resultados de análise de sabor de produtos individuais\nPor favor, analise a seguinte lista de produtos e retorne os resultados (formato JSON rigoroso):\n[{\"cspu\": \"Leite com Chocolate Nestle Nesquik 237ml Pacote com 4\"}, {\"cspu\": \"Coca-Cola Cereja 500ml\"}, {\"cspu\": \"Biscoitos Milano Pepperidge Farm Chocolate Amargo 198g\"}, {\"cspu\": \"Batata Chips Lay's Original 220g\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um assistente de produtos que ajuda os usuários a analisar os sabores dos produtos.\nMeu formato de entrada é: [{\"cspu\":\"Nome do Produto 1\"}, {\"cspu\":\"Nome do Produto 2\"}], onde cspu é o nome do produto a ser analisado.\nSeu formato de resposta é (deve seguir rigorosamente os requisitos de formato JSON):[{\"cspu\":\"Nome do Produto 1\", \"type\":\"Sabor 1\"}, {\"cspu\":\"Nome do Produto 2\",\"type\":\"Sabor 2\"}], onde type representa o sabor do produto.\nPor exemplo:\nSe minha entrada for [{\"cspu\":\"Batata Chips Lay's Sabor Manga 210g\"},{\"cspu\":\"Takis Fuego Pimenta Ardida & Lima 113g\"},{\"cspu\":\"Anéis de Frango Tyson Sabor Cebola 329g\"},{\"cspu\":\"Macarrão Instantâneo Maruchan Carne Picante + Carne com Tomate Pacote Variado 12 copos\"}]\nEspero que sua saída seja [{\"cspu\":\"Batata Chips Lay's Sabor Manga 210g\",\"type\":\"Manga\"},{\"cspu\":\"Takis Fuego Pimenta Ardida & Lima 113g\",\"type\":\"Pimenta Ardida & Lima\"},{\"cspu\":\"Anéis de Frango Tyson Sabor Cebola 329g\",\"type\":\"Cebola\"},{\"cspu\":\"Macarrão Instantâneo Maruchan Carne Picante + Carne com Tomate Pacote Variado 12 copos\",\"type\":\"Carne Picante, Carne com Tomate\"}]\nNota 1: Os resultados de sabor do produto devem existir no nome do produto, não abstraia ou converta arbitrariamente de forma equivalente, e os sabores devem corresponder a tipos reais de alimentos ou temperos, como sabor de manga, sabor picante, sabor de carne refogada, etc.\nNota 2: Às vezes o sabor é uma palavra descritiva, por exemplo, mingau de tâmara vermelha tem sabor de tâmara vermelha, chips de pepino têm sabor de pepino, refrigerante de lichia tem sabor de lichia, chá de jasmim tem sabor de jasmim\nDistinga entre tipo de produto e sabor. Se houver múltiplos sabores, produza todos os sabores separados por vírgulas\nNão misture tipos de produtos! Não misture tipos de produtos!\nSabores não devem incluir lanches, lazer, nomes de lugares, etc.\nSabores não incluirão palavras como folhas de macarrão, bolinhos de arroz, ramen\nSe o nome do produto não contém sabor, retorne NULL para o valor type\nNão há relação entre múltiplos produtos, e o contexto não afetará os resultados de análise de sabor de produtos individuais\nPor favor, analise a seguinte lista de produtos e retorne os resultados (formato JSON rigoroso):\n[{\"cspu\": \"Fruit by the Foot Morango 128g\"}, {\"cspu\": \"Arizona Arnold Palmer Meio a Meio 680ml\"}, {\"cspu\": \"Amêndoas Blue Diamond Cruas 454g\"}, {\"cspu\": \"Leite Orgânico Horizon Morango 237ml\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um assistente de produtos que ajuda os usuários a analisar os sabores dos produtos.\nMeu formato de entrada é: [{\"cspu\":\"Nome do Produto 1\"}, {\"cspu\":\"Nome do Produto 2\"}], onde cspu é o nome do produto a ser analisado.\nSeu formato de resposta é (deve seguir rigorosamente os requisitos de formato JSON):[{\"cspu\":\"Nome do Produto 1\", \"type\":\"Sabor 1\"}, {\"cspu\":\"Nome do Produto 2\",\"type\":\"Sabor 2\"}], onde type representa o sabor do produto.\nPor exemplo:\nSe minha entrada for [{\"cspu\":\"Batata Chips Lay's Sabor Manga 210g\"},{\"cspu\":\"Takis Fuego Pimenta Ardida & Lima 113g\"},{\"cspu\":\"Anéis de Frango Tyson Sabor Cebola 329g\"},{\"cspu\":\"Macarrão Instantâneo Maruchan Carne Picante + Carne com Tomate Pacote Variado 12 copos\"}]\nEspero que sua saída seja [{\"cspu\":\"Batata Chips Lay's Sabor Manga 210g\",\"type\":\"Manga\"},{\"cspu\":\"Takis Fuego Pimenta Ardida & Lima 113g\",\"type\":\"Pimenta Ardida & Lima\"},{\"cspu\":\"Anéis de Frango Tyson Sabor Cebola 329g\",\"type\":\"Cebola\"},{\"cspu\":\"Macarrão Instantâneo Maruchan Carne Picante + Carne com Tomate Pacote Variado 12 copos\",\"type\":\"Carne Picante, Carne com Tomate\"}]\nNota 1: Os resultados de sabor do produto devem existir no nome do produto, não abstraia ou converta arbitrariamente de forma equivalente, e os sabores devem corresponder a tipos reais de alimentos ou temperos, como sabor de manga, sabor picante, sabor de carne refogada, etc.\nNota 2: Às vezes o sabor é uma palavra descritiva, por exemplo, mingau de tâmara vermelha tem sabor de tâmara vermelha, chips de pepino têm sabor de pepino, refrigerante de lichia tem sabor de lichia, chá de jasmim tem sabor de jasmim\nDistinga entre tipo de produto e sabor. Se houver múltiplos sabores, produza todos os sabores separados por vírgulas\nNão misture tipos de produtos! Não misture tipos de produtos!\nSabores não devem incluir lanches, lazer, nomes de lugares, etc.\nSabores não incluirão palavras como folhas de macarrão, bolinhos de arroz, ramen\nSe o nome do produto não contém sabor, retorne NULL para o valor type\nNão há relação entre múltiplos produtos, e o contexto não afetará os resultados de análise de sabor de produtos individuais\nPor favor, analise a seguinte lista de produtos e retorne os resultados (formato JSON rigoroso):\n[{\"cspu\": \"Macarrão Instantâneo Maruchan Frango + Carne Pacote Variado 12 unidades\"}, {\"cspu\": \"Chips de Vegetais Terra Batata Doce 170g\"}, {\"cspu\": \"Água com Gás LaCroix Lima 350ml\"}, {\"cspu\": \"Biscoitos Cheez-Its Original 351g\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    }
+]

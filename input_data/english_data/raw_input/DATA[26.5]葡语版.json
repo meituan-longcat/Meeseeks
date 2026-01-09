@@ -1,0 +1,2242 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Você é um especialista em viagens. Vou fornecer um artigo de guia de viagem contendo título e conteúdo do artigo. Por favor, analise o artigo para determinar se contém roteiros de viagem (contemRoteiro), quantos roteiros de viagem contém (quantidadeRoteiros), se contém projetos sensíveis ao tempo (contemProjetoTemporal), e extraia informações detalhadas para cada roteiro (como nome do roteiro, dias, pontos de viagem, se contém projetos sensíveis ao tempo, nomes dos projetos sensíveis ao tempo envolvidos). Finalmente, produza os resultados no formato JSON especificado.\nDefinições de termos:\nRoteiro de viagem: Um roteiro de viagem planejado com múltiplos pontos de viagem em ordem cronológica, durando cerca de 1-3 dias. Geralmente, múltiplos pontos de viagem em um roteiro de viagem são conectados por sequência temporal (como ir ao local A às 11h, ir ao local B às 14h) ou sequência de localização (como estar atualmente no local A, próxima parada no local B). Note que se apenas introduzir múltiplos pontos de viagem independentes, não pode constituir um roteiro de viagem.\nSe contém roteiros de viagem: Se o artigo contém pelo menos um roteiro de viagem completo, retorne 1, caso contrário retorne 0.\nNúmero de roteiros de viagem: O número de roteiros de viagem completos contidos no artigo, 0 se nenhum.\nSe contém projetos sensíveis ao tempo: Projetos sensíveis ao tempo referem-se a projetos realizados em horários específicos, como concertos, exposições, reuniões, shows de stand-up comedy, festivais de música e outras atividades por tempo limitado. Se o roteiro de viagem contém quaisquer projetos sensíveis ao tempo, retorne 1, caso contrário retorne 0.\nCampo roteiros: Se roteiros de viagem estão incluídos, informações estruturadas detalhadas para cada roteiro devem ser produzidas, incluindo: nomeRoteiro (nome do roteiro), dias (número de dias), pontosRoteiro (lista de pontos de viagem), temProjetoTemporal (se este roteiro contém projetos sensíveis ao tempo), projetosTemporal (lista de projetos sensíveis ao tempo envolvidos neste roteiro, array vazio se nenhum, cada nome de projeto tem 9-150 caracteres (incluindo espaço, número...)).\nRequisitos de formato de saída: Por favor, produza estritamente os resultados da análise no seguinte formato JSON, não adicione explicações de texto adicionais:{\"contemRoteiro\": 0 ou 1,\"quantidadeRoteiros\": número(0,1,2...),\"contemProjetoTemporal\": 0 ou 1, \"roteiros\": [{\"nomeRoteiro\": \"nome do roteiro\", \"dias\": 1-3, \"pontosRoteiro\": [\"ponto de viagem A\", \"ponto de viagem B\"], \"temProjetoTemporal\": 0 ou 1, \"projetosTemporal\": [\"nome do projeto sensível ao tempo\"]}]}\nConteúdo do artigo:\n【Arranjo de meio dia】14:00 Reunir para visitar fábrica centenária (reserva necessária) 15:30 Transferir para loja criativa adjacente 16:00 Participar de aula de experiência artesanal (diariamente 16:00-17:00)",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "contemRoteiro",
+                "quantidadeRoteiros",
+                "contemProjetoTemporal",
+                "roteiros"
+            ],
+            "properties": {
+                "contemRoteiro": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se o artigo contém roteiros de viagem, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "quantidadeRoteiros": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de roteiros de viagem contidos no artigo",
+                    "能力项": "特定格式"
+                },
+                "contemProjetoTemporal": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se os roteiros de viagem contêm projetos sensíveis ao tempo, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "roteiros": {
+                    "type": "array",
+                    "description": "Detalhes de todos os roteiros de viagem",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "nomeRoteiro",
+                            "dias",
+                            "pontosRoteiro",
+                            "temProjetoTemporal",
+                            "projetosTemporal"
+                        ],
+                        "properties": {
+                            "nomeRoteiro": {
+                                "type": "string",
+                                "description": "Nome do roteiro, não pode estar vazio",
+                                "能力项": "JSON"
+                            },
+                            "dias": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de dias para o roteiro, faixa de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "pontosRoteiro": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de pontos de viagem, deve conter pelo menos dois pontos",
+                                "能力项": "JSON"
+                            },
+                            "temProjetoTemporal": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Se este roteiro contém projetos sensíveis ao tempo",
+                                "能力项": "特定格式"
+                            },
+                            "projetosTemporal": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projetos sensíveis ao tempo envolvidos neste roteiro, cada nome de projeto tem 2-30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Se satisfaz o schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um especialista em viagens. Vou fornecer um artigo de guia de viagem contendo título e conteúdo do artigo. Por favor, analise o artigo para determinar se contém roteiros de viagem (contemRoteiro), quantos roteiros de viagem contém (quantidadeRoteiros), se contém projetos sensíveis ao tempo (contemProjetoTemporal), e extraia informações detalhadas para cada roteiro (como nome do roteiro, dias, pontos de viagem, se contém projetos sensíveis ao tempo, nomes dos projetos sensíveis ao tempo envolvidos). Finalmente, produza os resultados no formato JSON especificado.\nDefinições de termos:\nRoteiro de viagem: Um roteiro de viagem planejado com múltiplos pontos de viagem em ordem cronológica, durando cerca de 1-3 dias. Geralmente, múltiplos pontos de viagem em um roteiro de viagem são conectados por sequência temporal (como ir ao local A às 11h, ir ao local B às 14h) ou sequência de localização (como estar atualmente no local A, próxima parada no local B). Note que se apenas introduzir múltiplos pontos de viagem independentes, não pode constituir um roteiro de viagem.\nSe contém roteiros de viagem: Se o artigo contém pelo menos um roteiro de viagem completo, retorne 1, caso contrário retorne 0.\nNúmero de roteiros de viagem: O número de roteiros de viagem completos contidos no artigo, 0 se nenhum.\nSe contém projetos sensíveis ao tempo: Projetos sensíveis ao tempo referem-se a projetos realizados em horários específicos, como concertos, exposições, reuniões, shows de stand-up comedy, festivais de música e outras atividades por tempo limitado. Se o roteiro de viagem contém quaisquer projetos sensíveis ao tempo, retorne 1, caso contrário retorne 0.\nCampo roteiros: Se roteiros de viagem estão incluídos, informações estruturadas detalhadas para cada roteiro devem ser produzidas, incluindo: nomeRoteiro (nome do roteiro), dias (número de dias), pontosRoteiro (lista de pontos de viagem), temProjetoTemporal (se este roteiro contém projetos sensíveis ao tempo), projetosTemporal (lista de projetos sensíveis ao tempo envolvidos neste roteiro, array vazio se nenhum, cada nome de projeto tem 9-150 caracteres (incluindo espaço, número...)).\nRequisitos de formato de saída: Por favor, produza estritamente os resultados da análise no seguinte formato JSON, não adicione explicações de texto adicionais:{\"contemRoteiro\": 0 ou 1,\"quantidadeRoteiros\": número(0,1,2...),\"contemProjetoTemporal\": 0 ou 1, \"roteiros\": [{\"nomeRoteiro\": \"nome do roteiro\", \"dias\": 1-3, \"pontosRoteiro\": [\"ponto de viagem A\", \"ponto de viagem B\"], \"temProjetoTemporal\": 0 ou 1, \"projetosTemporal\": [\"nome do projeto sensível ao tempo\"]}]}\nConteúdo do artigo:\n【Tour aprofundado de um dia】Reunir no museu às 10h, depois caminhar até a galeria de arte, almoçar em restaurante próximo, participar de exposição por tempo limitado à tarde, assistir apresentação do festival de música à noite.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "contemRoteiro",
+                "quantidadeRoteiros",
+                "contemProjetoTemporal",
+                "roteiros"
+            ],
+            "properties": {
+                "contemRoteiro": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se o artigo contém roteiros de viagem, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "quantidadeRoteiros": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de roteiros de viagem contidos no artigo",
+                    "能力项": "特定格式"
+                },
+                "contemProjetoTemporal": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se os roteiros de viagem contêm projetos sensíveis ao tempo, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "roteiros": {
+                    "type": "array",
+                    "description": "Detalhes de todos os roteiros de viagem",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "nomeRoteiro",
+                            "dias",
+                            "pontosRoteiro",
+                            "temProjetoTemporal",
+                            "projetosTemporal"
+                        ],
+                        "properties": {
+                            "nomeRoteiro": {
+                                "type": "string",
+                                "description": "Nome do roteiro, não pode estar vazio",
+                                "能力项": "JSON"
+                            },
+                            "dias": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de dias para o roteiro, faixa de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "pontosRoteiro": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de pontos de viagem, deve conter pelo menos dois pontos",
+                                "能力项": "JSON"
+                            },
+                            "temProjetoTemporal": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Se este roteiro contém projetos sensíveis ao tempo",
+                                "能力项": "特定格式"
+                            },
+                            "projetosTemporal": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projetos sensíveis ao tempo envolvidos neste roteiro, cada nome de projeto tem 2-30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Se satisfaz o schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um especialista em viagens. Vou fornecer um artigo de guia de viagem contendo título e conteúdo do artigo. Por favor, analise o artigo para determinar se contém roteiros de viagem (contemRoteiro), quantos roteiros de viagem contém (quantidadeRoteiros), se contém projetos sensíveis ao tempo (contemProjetoTemporal), e extraia informações detalhadas para cada roteiro (como nome do roteiro, dias, pontos de viagem, se contém projetos sensíveis ao tempo, nomes dos projetos sensíveis ao tempo envolvidos). Finalmente, produza os resultados no formato JSON especificado.\nDefinições de termos:\nRoteiro de viagem: Um roteiro de viagem planejado com múltiplos pontos de viagem em ordem cronológica, durando cerca de 1-3 dias. Geralmente, múltiplos pontos de viagem em um roteiro de viagem são conectados por sequência temporal (como ir ao local A às 11h, ir ao local B às 14h) ou sequência de localização (como estar atualmente no local A, próxima parada no local B). Note que se apenas introduzir múltiplos pontos de viagem independentes, não pode constituir um roteiro de viagem.\nSe contém roteiros de viagem: Se o artigo contém pelo menos um roteiro de viagem completo, retorne 1, caso contrário retorne 0.\nNúmero de roteiros de viagem: O número de roteiros de viagem completos contidos no artigo, 0 se nenhum.\nSe contém projetos sensíveis ao tempo: Projetos sensíveis ao tempo referem-se a projetos realizados em horários específicos, como concertos, exposições, reuniões, shows de stand-up comedy, festivais de música e outras atividades por tempo limitado. Se o roteiro de viagem contém quaisquer projetos sensíveis ao tempo, retorne 1, caso contrário retorne 0.\nCampo roteiros: Se roteiros de viagem estão incluídos, informações estruturadas detalhadas para cada roteiro devem ser produzidas, incluindo: nomeRoteiro (nome do roteiro), dias (número de dias), pontosRoteiro (lista de pontos de viagem), temProjetoTemporal (se este roteiro contém projetos sensíveis ao tempo), projetosTemporal (lista de projetos sensíveis ao tempo envolvidos neste roteiro, array vazio se nenhum, cada nome de projeto tem 9-150 caracteres (incluindo espaço, número...)).\nRequisitos de formato de saída: Por favor, produza estritamente os resultados da análise no seguinte formato JSON, não adicione explicações de texto adicionais:{\"contemRoteiro\": 0 ou 1,\"quantidadeRoteiros\": número(0,1,2...),\"contemProjetoTemporal\": 0 ou 1, \"roteiros\": [{\"nomeRoteiro\": \"nome do roteiro\", \"dias\": 1-3, \"pontosRoteiro\": [\"ponto de viagem A\", \"ponto de viagem B\"], \"temProjetoTemporal\": 0 ou 1, \"projetosTemporal\": [\"nome do projeto sensível ao tempo\"]}]}\nConteúdo do artigo:\n【Recomendações gastronômicas】Rua de petiscos locais tem várias marcas tradicionais, recomendo barracas de café da manhã, confeitarias, churrasqueiras, sem sequência temporal, adequado para check-ins casuais.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "contemRoteiro",
+                "quantidadeRoteiros",
+                "contemProjetoTemporal",
+                "roteiros"
+            ],
+            "properties": {
+                "contemRoteiro": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se o artigo contém roteiros de viagem, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "quantidadeRoteiros": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de roteiros de viagem contidos no artigo",
+                    "能力项": "特定格式"
+                },
+                "contemProjetoTemporal": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se os roteiros de viagem contêm projetos sensíveis ao tempo, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "roteiros": {
+                    "type": "array",
+                    "description": "Detalhes de todos os roteiros de viagem",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "nomeRoteiro",
+                            "dias",
+                            "pontosRoteiro",
+                            "temProjetoTemporal",
+                            "projetosTemporal"
+                        ],
+                        "properties": {
+                            "nomeRoteiro": {
+                                "type": "string",
+                                "description": "Nome do roteiro, não pode estar vazio",
+                                "能力项": "JSON"
+                            },
+                            "dias": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de dias para o roteiro, faixa de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "pontosRoteiro": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de pontos de viagem, deve conter pelo menos dois pontos",
+                                "能力项": "JSON"
+                            },
+                            "temProjetoTemporal": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Se este roteiro contém projetos sensíveis ao tempo",
+                                "能力项": "特定格式"
+                            },
+                            "projetosTemporal": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projetos sensíveis ao tempo envolvidos neste roteiro, cada nome de projeto tem 2-30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Se satisfaz o schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um especialista em viagens. Vou fornecer um artigo de guia de viagem contendo título e conteúdo do artigo. Por favor, analise o artigo para determinar se contém roteiros de viagem (contemRoteiro), quantos roteiros de viagem contém (quantidadeRoteiros), se contém projetos sensíveis ao tempo (contemProjetoTemporal), e extraia informações detalhadas para cada roteiro (como nome do roteiro, dias, pontos de viagem, se contém projetos sensíveis ao tempo, nomes dos projetos sensíveis ao tempo envolvidos). Finalmente, produza os resultados no formato JSON especificado.\nDefinições de termos:\nRoteiro de viagem: Um roteiro de viagem planejado com múltiplos pontos de viagem em ordem cronológica, durando cerca de 1-3 dias. Geralmente, múltiplos pontos de viagem em um roteiro de viagem são conectados por sequência temporal (como ir ao local A às 11h, ir ao local B às 14h) ou sequência de localização (como estar atualmente no local A, próxima parada no local B). Note que se apenas introduzir múltiplos pontos de viagem independentes, não pode constituir um roteiro de viagem.\nSe contém roteiros de viagem: Se o artigo contém pelo menos um roteiro de viagem completo, retorne 1, caso contrário retorne 0.\nNúmero de roteiros de viagem: O número de roteiros de viagem completos contidos no artigo, 0 se nenhum.\nSe contém projetos sensíveis ao tempo: Projetos sensíveis ao tempo referem-se a projetos realizados em horários específicos, como concertos, exposições, reuniões, shows de stand-up comedy, festivais de música e outras atividades por tempo limitado. Se o roteiro de viagem contém quaisquer projetos sensíveis ao tempo, retorne 1, caso contrário retorne 0.\nCampo roteiros: Se roteiros de viagem estão incluídos, informações estruturadas detalhadas para cada roteiro devem ser produzidas, incluindo: nomeRoteiro (nome do roteiro), dias (número de dias), pontosRoteiro (lista de pontos de viagem), temProjetoTemporal (se este roteiro contém projetos sensíveis ao tempo), projetosTemporal (lista de projetos sensíveis ao tempo envolvidos neste roteiro, array vazio se nenhum, cada nome de projeto tem 9-150 caracteres (incluindo espaço, número...)).\nRequisitos de formato de saída: Por favor, produza estritamente os resultados da análise no seguinte formato JSON, não adicione explicações de texto adicionais:{\"contemRoteiro\": 0 ou 1,\"quantidadeRoteiros\": número(0,1,2...),\"contemProjetoTemporal\": 0 ou 1, \"roteiros\": [{\"nomeRoteiro\": \"nome do roteiro\", \"dias\": 1-3, \"pontosRoteiro\": [\"ponto de viagem A\", \"ponto de viagem B\"], \"temProjetoTemporal\": 0 ou 1, \"projetosTemporal\": [\"nome do projeto sensível ao tempo\"]}]}\nConteúdo do artigo:\n【Roteiro de dois dias】Dia1: Visitar cidade antiga pela manhã, visitar museu de cerâmica à tarde, participar do show de luzes do mercado noturno à noite. Dia2: Escalada pela manhã, águas termais à tarde.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "contemRoteiro",
+                "quantidadeRoteiros",
+                "contemProjetoTemporal",
+                "roteiros"
+            ],
+            "properties": {
+                "contemRoteiro": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se o artigo contém roteiros de viagem, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "quantidadeRoteiros": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de roteiros de viagem contidos no artigo",
+                    "能力项": "特定格式"
+                },
+                "contemProjetoTemporal": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se os roteiros de viagem contêm projetos sensíveis ao tempo, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "roteiros": {
+                    "type": "array",
+                    "description": "Detalhes de todos os roteiros de viagem",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "nomeRoteiro",
+                            "dias",
+                            "pontosRoteiro",
+                            "temProjetoTemporal",
+                            "projetosTemporal"
+                        ],
+                        "properties": {
+                            "nomeRoteiro": {
+                                "type": "string",
+                                "description": "Nome do roteiro, não pode estar vazio",
+                                "能力项": "JSON"
+                            },
+                            "dias": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de dias para o roteiro, faixa de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "pontosRoteiro": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de pontos de viagem, deve conter pelo menos dois pontos",
+                                "能力项": "JSON"
+                            },
+                            "temProjetoTemporal": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Se este roteiro contém projetos sensíveis ao tempo",
+                                "能力项": "特定格式"
+                            },
+                            "projetosTemporal": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projetos sensíveis ao tempo envolvidos neste roteiro, cada nome de projeto tem 2-30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Se satisfaz o schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um especialista em viagens. Vou fornecer um artigo de guia de viagem contendo título e conteúdo do artigo. Por favor, analise o artigo para determinar se contém roteiros de viagem (contemRoteiro), quantos roteiros de viagem contém (quantidadeRoteiros), se contém projetos sensíveis ao tempo (contemProjetoTemporal), e extraia informações detalhadas para cada roteiro (como nome do roteiro, dias, pontos de viagem, se contém projetos sensíveis ao tempo, nomes dos projetos sensíveis ao tempo envolvidos). Finalmente, produza os resultados no formato JSON especificado.\nDefinições de termos:\nRoteiro de viagem: Um roteiro de viagem planejado com múltiplos pontos de viagem em ordem cronológica, durando cerca de 1-3 dias. Geralmente, múltiplos pontos de viagem em um roteiro de viagem são conectados por sequência temporal (como ir ao local A às 11h, ir ao local B às 14h) ou sequência de localização (como estar atualmente no local A, próxima parada no local B). Note que se apenas introduzir múltiplos pontos de viagem independentes, não pode constituir um roteiro de viagem.\nSe contém roteiros de viagem: Se o artigo contém pelo menos um roteiro de viagem completo, retorne 1, caso contrário retorne 0.\nNúmero de roteiros de viagem: O número de roteiros de viagem completos contidos no artigo, 0 se nenhum.\nSe contém projetos sensíveis ao tempo: Projetos sensíveis ao tempo referem-se a projetos realizados em horários específicos, como concertos, exposições, reuniões, shows de stand-up comedy, festivais de música e outras atividades por tempo limitado. Se o roteiro de viagem contém quaisquer projetos sensíveis ao tempo, retorne 1, caso contrário retorne 0.\nCampo roteiros: Se roteiros de viagem estão incluídos, informações estruturadas detalhadas para cada roteiro devem ser produzidas, incluindo: nomeRoteiro (nome do roteiro), dias (número de dias), pontosRoteiro (lista de pontos de viagem), temProjetoTemporal (se este roteiro contém projetos sensíveis ao tempo), projetosTemporal (lista de projetos sensíveis ao tempo envolvidos neste roteiro, array vazio se nenhum, cada nome de projeto tem 9-150 caracteres (incluindo espaço, número...)).\nRequisitos de formato de saída: Por favor, produza estritamente os resultados da análise no seguinte formato JSON, não adicione explicações de texto adicionais:{\"contemRoteiro\": 0 ou 1,\"quantidadeRoteiros\": número(0,1,2...),\"contemProjetoTemporal\": 0 ou 1, \"roteiros\": [{\"nomeRoteiro\": \"nome do roteiro\", \"dias\": 1-3, \"pontosRoteiro\": [\"ponto de viagem A\", \"ponto de viagem B\"], \"temProjetoTemporal\": 0 ou 1, \"projetosTemporal\": [\"nome do projeto sensível ao tempo\"]}]}\nConteúdo do artigo:\n【Tour familiar de fim de semana】Visitar zoológico para ver pandas gigantes pela manhã, experimentar exposição de robôs no museu de ciências à tarde, assistir apresentação de teatro infantil à noite. Visitar jardim botânico na manhã do segundo dia, retornar à tarde.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "contemRoteiro",
+                "quantidadeRoteiros",
+                "contemProjetoTemporal",
+                "roteiros"
+            ],
+            "properties": {
+                "contemRoteiro": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se o artigo contém roteiros de viagem, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "quantidadeRoteiros": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de roteiros de viagem contidos no artigo",
+                    "能力项": "特定格式"
+                },
+                "contemProjetoTemporal": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se os roteiros de viagem contêm projetos sensíveis ao tempo, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "roteiros": {
+                    "type": "array",
+                    "description": "Detalhes de todos os roteiros de viagem",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "nomeRoteiro",
+                            "dias",
+                            "pontosRoteiro",
+                            "temProjetoTemporal",
+                            "projetosTemporal"
+                        ],
+                        "properties": {
+                            "nomeRoteiro": {
+                                "type": "string",
+                                "description": "Nome do roteiro, não pode estar vazio",
+                                "能力项": "JSON"
+                            },
+                            "dias": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de dias para o roteiro, faixa de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "pontosRoteiro": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de pontos de viagem, deve conter pelo menos dois pontos",
+                                "能力项": "JSON"
+                            },
+                            "temProjetoTemporal": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Se este roteiro contém projetos sensíveis ao tempo",
+                                "能力项": "特定格式"
+                            },
+                            "projetosTemporal": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projetos sensíveis ao tempo envolvidos neste roteiro, cada nome de projeto tem 2-30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Se satisfaz o schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um especialista em viagens. Vou fornecer um artigo de guia de viagem contendo título e conteúdo do artigo. Por favor, analise o artigo para determinar se contém roteiros de viagem (contemRoteiro), quantos roteiros de viagem contém (quantidadeRoteiros), se contém projetos sensíveis ao tempo (contemProjetoTemporal), e extraia informações detalhadas para cada roteiro (como nome do roteiro, dias, pontos de viagem, se contém projetos sensíveis ao tempo, nomes dos projetos sensíveis ao tempo envolvidos). Finalmente, produza os resultados no formato JSON especificado.\nDefinições de termos:\nRoteiro de viagem: Um roteiro de viagem planejado com múltiplos pontos de viagem em ordem cronológica, durando cerca de 1-3 dias. Geralmente, múltiplos pontos de viagem em um roteiro de viagem são conectados por sequência temporal (como ir ao local A às 11h, ir ao local B às 14h) ou sequência de localização (como estar atualmente no local A, próxima parada no local B). Note que se apenas introduzir múltiplos pontos de viagem independentes, não pode constituir um roteiro de viagem.\nSe contém roteiros de viagem: Se o artigo contém pelo menos um roteiro de viagem completo, retorne 1, caso contrário retorne 0.\nNúmero de roteiros de viagem: O número de roteiros de viagem completos contidos no artigo, 0 se nenhum.\nSe contém projetos sensíveis ao tempo: Projetos sensíveis ao tempo referem-se a projetos realizados em horários específicos, como concertos, exposições, reuniões, shows de stand-up comedy, festivais de música e outras atividades por tempo limitado. Se o roteiro de viagem contém quaisquer projetos sensíveis ao tempo, retorne 1, caso contrário retorne 0.\nCampo roteiros: Se roteiros de viagem estão incluídos, informações estruturadas detalhadas para cada roteiro devem ser produzidas, incluindo: nomeRoteiro (nome do roteiro), dias (número de dias), pontosRoteiro (lista de pontos de viagem), temProjetoTemporal (se este roteiro contém projetos sensíveis ao tempo), projetosTemporal (lista de projetos sensíveis ao tempo envolvidos neste roteiro, array vazio se nenhum, cada nome de projeto tem 9-150 caracteres (incluindo espaço, número...)).\nRequisitos de formato de saída: Por favor, produza estritamente os resultados da análise no seguinte formato JSON, não adicione explicações de texto adicionais:{\"contemRoteiro\": 0 ou 1,\"quantidadeRoteiros\": número(0,1,2...),\"contemProjetoTemporal\": 0 ou 1, \"roteiros\": [{\"nomeRoteiro\": \"nome do roteiro\", \"dias\": 1-3, \"pontosRoteiro\": [\"ponto de viagem A\", \"ponto de viagem B\"], \"temProjetoTemporal\": 0 ou 1, \"projetosTemporal\": [\"nome do projeto sensível ao tempo\"]}]}\nConteúdo do artigo:\n【Check-in de exposição】Galeria de arte tem nova exposição neste fim de semana, encontro com artista às 14h no sábado, show de stand-up comedy à noite, reserva antecipada necessária.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "contemRoteiro",
+                "quantidadeRoteiros",
+                "contemProjetoTemporal",
+                "roteiros"
+            ],
+            "properties": {
+                "contemRoteiro": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se o artigo contém roteiros de viagem, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "quantidadeRoteiros": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de roteiros de viagem contidos no artigo",
+                    "能力项": "特定格式"
+                },
+                "contemProjetoTemporal": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se os roteiros de viagem contêm projetos sensíveis ao tempo, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "roteiros": {
+                    "type": "array",
+                    "description": "Detalhes de todos os roteiros de viagem",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "nomeRoteiro",
+                            "dias",
+                            "pontosRoteiro",
+                            "temProjetoTemporal",
+                            "projetosTemporal"
+                        ],
+                        "properties": {
+                            "nomeRoteiro": {
+                                "type": "string",
+                                "description": "Nome do roteiro, não pode estar vazio",
+                                "能力项": "JSON"
+                            },
+                            "dias": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de dias para o roteiro, faixa de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "pontosRoteiro": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de pontos de viagem, deve conter pelo menos dois pontos",
+                                "能力项": "JSON"
+                            },
+                            "temProjetoTemporal": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Se este roteiro contém projetos sensíveis ao tempo",
+                                "能力项": "特定格式"
+                            },
+                            "projetosTemporal": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projetos sensíveis ao tempo envolvidos neste roteiro, cada nome de projeto tem 2-30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Se satisfaz o schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um especialista em viagens. Vou fornecer um artigo de guia de viagem contendo título e conteúdo do artigo. Por favor, analise o artigo para determinar se contém roteiros de viagem (contemRoteiro), quantos roteiros de viagem contém (quantidadeRoteiros), se contém projetos sensíveis ao tempo (contemProjetoTemporal), e extraia informações detalhadas para cada roteiro (como nome do roteiro, dias, pontos de viagem, se contém projetos sensíveis ao tempo, nomes dos projetos sensíveis ao tempo envolvidos). Finalmente, produza os resultados no formato JSON especificado.\nDefinições de termos:\nRoteiro de viagem: Um roteiro de viagem planejado com múltiplos pontos de viagem em ordem cronológica, durando cerca de 1-3 dias. Geralmente, múltiplos pontos de viagem em um roteiro de viagem são conectados por sequência temporal (como ir ao local A às 11h, ir ao local B às 14h) ou sequência de localização (como estar atualmente no local A, próxima parada no local B). Note que se apenas introduzir múltiplos pontos de viagem independentes, não pode constituir um roteiro de viagem.\nSe contém roteiros de viagem: Se o artigo contém pelo menos um roteiro de viagem completo, retorne 1, caso contrário retorne 0.\nNúmero de roteiros de viagem: O número de roteiros de viagem completos contidos no artigo, 0 se nenhum.\nSe contém projetos sensíveis ao tempo: Projetos sensíveis ao tempo referem-se a projetos realizados em horários específicos, como concertos, exposições, reuniões, shows de stand-up comedy, festivais de música e outras atividades por tempo limitado. Se o roteiro de viagem contém quaisquer projetos sensíveis ao tempo, retorne 1, caso contrário retorne 0.\nCampo roteiros: Se roteiros de viagem estão incluídos, informações estruturadas detalhadas para cada roteiro devem ser produzidas, incluindo: nomeRoteiro (nome do roteiro), dias (número de dias), pontosRoteiro (lista de pontos de viagem), temProjetoTemporal (se este roteiro contém projetos sensíveis ao tempo), projetosTemporal (lista de projetos sensíveis ao tempo envolvidos neste roteiro, array vazio se nenhum, cada nome de projeto tem 9-150 caracteres (incluindo espaço, número...)).\nRequisitos de formato de saída: Por favor, produza estritamente os resultados da análise no seguinte formato JSON, não adicione explicações de texto adicionais:{\"contemRoteiro\": 0 ou 1,\"quantidadeRoteiros\": número(0,1,2...),\"contemProjetoTemporal\": 0 ou 1, \"roteiros\": [{\"nomeRoteiro\": \"nome do roteiro\", \"dias\": 1-3, \"pontosRoteiro\": [\"ponto de viagem A\", \"ponto de viagem B\"], \"temProjetoTemporal\": 0 ou 1, \"projetosTemporal\": [\"nome do projeto sensível ao tempo\"]}]}\nConteúdo do artigo:\n【Guia de viagem independente】Atrações recomendadas incluem parques, ruas antigas, museus, mercados noturnos, cada um pode ser visitado independentemente, sem rota fixa.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "contemRoteiro",
+                "quantidadeRoteiros",
+                "contemProjetoTemporal",
+                "roteiros"
+            ],
+            "properties": {
+                "contemRoteiro": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se o artigo contém roteiros de viagem, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "quantidadeRoteiros": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de roteiros de viagem contidos no artigo",
+                    "能力项": "特定格式"
+                },
+                "contemProjetoTemporal": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se os roteiros de viagem contêm projetos sensíveis ao tempo, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "roteiros": {
+                    "type": "array",
+                    "description": "Detalhes de todos os roteiros de viagem",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "nomeRoteiro",
+                            "dias",
+                            "pontosRoteiro",
+                            "temProjetoTemporal",
+                            "projetosTemporal"
+                        ],
+                        "properties": {
+                            "nomeRoteiro": {
+                                "type": "string",
+                                "description": "Nome do roteiro, não pode estar vazio",
+                                "能力项": "JSON"
+                            },
+                            "dias": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de dias para o roteiro, faixa de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "pontosRoteiro": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de pontos de viagem, deve conter pelo menos dois pontos",
+                                "能力项": "JSON"
+                            },
+                            "temProjetoTemporal": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Se este roteiro contém projetos sensíveis ao tempo",
+                                "能力项": "特定格式"
+                            },
+                            "projetosTemporal": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projetos sensíveis ao tempo envolvidos neste roteiro, cada nome de projeto tem 2-30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Se satisfaz o schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um especialista em viagens. Vou fornecer um artigo de guia de viagem contendo título e conteúdo do artigo. Por favor, analise o artigo para determinar se contém roteiros de viagem (contemRoteiro), quantos roteiros de viagem contém (quantidadeRoteiros), se contém projetos sensíveis ao tempo (contemProjetoTemporal), e extraia informações detalhadas para cada roteiro (como nome do roteiro, dias, pontos de viagem, se contém projetos sensíveis ao tempo, nomes dos projetos sensíveis ao tempo envolvidos). Finalmente, produza os resultados no formato JSON especificado.\nDefinições de termos:\nRoteiro de viagem: Um roteiro de viagem planejado com múltiplos pontos de viagem em ordem cronológica, durando cerca de 1-3 dias. Geralmente, múltiplos pontos de viagem em um roteiro de viagem são conectados por sequência temporal (como ir ao local A às 11h, ir ao local B às 14h) ou sequência de localização (como estar atualmente no local A, próxima parada no local B). Note que se apenas introduzir múltiplos pontos de viagem independentes, não pode constituir um roteiro de viagem.\nSe contém roteiros de viagem: Se o artigo contém pelo menos um roteiro de viagem completo, retorne 1, caso contrário retorne 0.\nNúmero de roteiros de viagem: O número de roteiros de viagem completos contidos no artigo, 0 se nenhum.\nSe contém projetos sensíveis ao tempo: Projetos sensíveis ao tempo referem-se a projetos realizados em horários específicos, como concertos, exposições, reuniões, shows de stand-up comedy, festivais de música e outras atividades por tempo limitado. Se o roteiro de viagem contém quaisquer projetos sensíveis ao tempo, retorne 1, caso contrário retorne 0.\nCampo roteiros: Se roteiros de viagem estão incluídos, informações estruturadas detalhadas para cada roteiro devem ser produzidas, incluindo: nomeRoteiro (nome do roteiro), dias (número de dias), pontosRoteiro (lista de pontos de viagem), temProjetoTemporal (se este roteiro contém projetos sensíveis ao tempo), projetosTemporal (lista de projetos sensíveis ao tempo envolvidos neste roteiro, array vazio se nenhum, cada nome de projeto tem 9-150 caracteres (incluindo espaço, número...)).\nRequisitos de formato de saída: Por favor, produza estritamente os resultados da análise no seguinte formato JSON, não adicione explicações de texto adicionais:{\"contemRoteiro\": 0 ou 1,\"quantidadeRoteiros\": número(0,1,2...),\"contemProjetoTemporal\": 0 ou 1, \"roteiros\": [{\"nomeRoteiro\": \"nome do roteiro\", \"dias\": 1-3, \"pontosRoteiro\": [\"ponto de viagem A\", \"ponto de viagem B\"], \"temProjetoTemporal\": 0 ou 1, \"projetosTemporal\": [\"nome do projeto sensível ao tempo\"]}]}\nConteúdo do artigo:\n【Tour de um dia】Reunir na estação de trem às 8h, chegar à área cênica às 9h, fazer tour no topo da montanha às 10h, descer para almoçar às 12h, visitar vila folclórica à tarde, retornar às 16h.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "contemRoteiro",
+                "quantidadeRoteiros",
+                "contemProjetoTemporal",
+                "roteiros"
+            ],
+            "properties": {
+                "contemRoteiro": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se o artigo contém roteiros de viagem, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "quantidadeRoteiros": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de roteiros de viagem contidos no artigo",
+                    "能力项": "特定格式"
+                },
+                "contemProjetoTemporal": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se os roteiros de viagem contêm projetos sensíveis ao tempo, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "roteiros": {
+                    "type": "array",
+                    "description": "Detalhes de todos os roteiros de viagem",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "nomeRoteiro",
+                            "dias",
+                            "pontosRoteiro",
+                            "temProjetoTemporal",
+                            "projetosTemporal"
+                        ],
+                        "properties": {
+                            "nomeRoteiro": {
+                                "type": "string",
+                                "description": "Nome do roteiro, não pode estar vazio",
+                                "能力项": "JSON"
+                            },
+                            "dias": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de dias para o roteiro, faixa de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "pontosRoteiro": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de pontos de viagem, deve conter pelo menos dois pontos",
+                                "能力项": "JSON"
+                            },
+                            "temProjetoTemporal": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Se este roteiro contém projetos sensíveis ao tempo",
+                                "能力项": "特定格式"
+                            },
+                            "projetosTemporal": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projetos sensíveis ao tempo envolvidos neste roteiro, cada nome de projeto tem 2-30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Se satisfaz o schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um especialista em viagens. Vou fornecer um artigo de guia de viagem contendo título e conteúdo do artigo. Por favor, analise o artigo para determinar se contém roteiros de viagem (contemRoteiro), quantos roteiros de viagem contém (quantidadeRoteiros), se contém projetos sensíveis ao tempo (contemProjetoTemporal), e extraia informações detalhadas para cada roteiro (como nome do roteiro, dias, pontos de viagem, se contém projetos sensíveis ao tempo, nomes dos projetos sensíveis ao tempo envolvidos). Finalmente, produza os resultados no formato JSON especificado.\nDefinições de termos:\nRoteiro de viagem: Um roteiro de viagem planejado com múltiplos pontos de viagem em ordem cronológica, durando cerca de 1-3 dias. Geralmente, múltiplos pontos de viagem em um roteiro de viagem são conectados por sequência temporal (como ir ao local A às 11h, ir ao local B às 14h) ou sequência de localização (como estar atualmente no local A, próxima parada no local B). Note que se apenas introduzir múltiplos pontos de viagem independentes, não pode constituir um roteiro de viagem.\nSe contém roteiros de viagem: Se o artigo contém pelo menos um roteiro de viagem completo, retorne 1, caso contrário retorne 0.\nNúmero de roteiros de viagem: O número de roteiros de viagem completos contidos no artigo, 0 se nenhum.\nSe contém projetos sensíveis ao tempo: Projetos sensíveis ao tempo referem-se a projetos realizados em horários específicos, como concertos, exposições, reuniões, shows de stand-up comedy, festivais de música e outras atividades por tempo limitado. Se o roteiro de viagem contém quaisquer projetos sensíveis ao tempo, retorne 1, caso contrário retorne 0.\nCampo roteiros: Se roteiros de viagem estão incluídos, informações estruturadas detalhadas para cada roteiro devem ser produzidas, incluindo: nomeRoteiro (nome do roteiro), dias (número de dias), pontosRoteiro (lista de pontos de viagem), temProjetoTemporal (se este roteiro contém projetos sensíveis ao tempo), projetosTemporal (lista de projetos sensíveis ao tempo envolvidos neste roteiro, array vazio se nenhum, cada nome de projeto tem 9-150 caracteres (incluindo espaço, número...)).\nRequisitos de formato de saída: Por favor, produza estritamente os resultados da análise no seguinte formato JSON, não adicione explicações de texto adicionais:{\"contemRoteiro\": 0 ou 1,\"quantidadeRoteiros\": número(0,1,2...),\"contemProjetoTemporal\": 0 ou 1, \"roteiros\": [{\"nomeRoteiro\": \"nome do roteiro\", \"dias\": 1-3, \"pontosRoteiro\": [\"ponto de viagem A\", \"ponto de viagem B\"], \"temProjetoTemporal\": 0 ou 1, \"projetosTemporal\": [\"nome do projeto sensível ao tempo\"]}]}\nConteúdo do artigo:\n【Roteiro noturno】Reunir na beira do rio às 18:00, fazer tour noturno de barco às 18:30, caminhar até a praça musical após desembarcar às 20:00 para assistir concerto ao ar livre.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "contemRoteiro",
+                "quantidadeRoteiros",
+                "contemProjetoTemporal",
+                "roteiros"
+            ],
+            "properties": {
+                "contemRoteiro": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se o artigo contém roteiros de viagem, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "quantidadeRoteiros": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de roteiros de viagem contidos no artigo",
+                    "能力项": "特定格式"
+                },
+                "contemProjetoTemporal": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se os roteiros de viagem contêm projetos sensíveis ao tempo, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "roteiros": {
+                    "type": "array",
+                    "description": "Detalhes de todos os roteiros de viagem",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "nomeRoteiro",
+                            "dias",
+                            "pontosRoteiro",
+                            "temProjetoTemporal",
+                            "projetosTemporal"
+                        ],
+                        "properties": {
+                            "nomeRoteiro": {
+                                "type": "string",
+                                "description": "Nome do roteiro, não pode estar vazio",
+                                "能力项": "JSON"
+                            },
+                            "dias": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de dias para o roteiro, faixa de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "pontosRoteiro": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de pontos de viagem, deve conter pelo menos dois pontos",
+                                "能力项": "JSON"
+                            },
+                            "temProjetoTemporal": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Se este roteiro contém projetos sensíveis ao tempo",
+                                "能力项": "特定格式"
+                            },
+                            "projetosTemporal": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projetos sensíveis ao tempo envolvidos neste roteiro, cada nome de projeto tem 2-30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Se satisfaz o schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um especialista em viagens. Vou fornecer um artigo de guia de viagem contendo título e conteúdo do artigo. Por favor, analise o artigo para determinar se contém roteiros de viagem (contemRoteiro), quantos roteiros de viagem contém (quantidadeRoteiros), se contém projetos sensíveis ao tempo (contemProjetoTemporal), e extraia informações detalhadas para cada roteiro (como nome do roteiro, dias, pontos de viagem, se contém projetos sensíveis ao tempo, nomes dos projetos sensíveis ao tempo envolvidos). Finalmente, produza os resultados no formato JSON especificado.\nDefinições de termos:\nRoteiro de viagem: Um roteiro de viagem planejado com múltiplos pontos de viagem em ordem cronológica, durando cerca de 1-3 dias. Geralmente, múltiplos pontos de viagem em um roteiro de viagem são conectados por sequência temporal (como ir ao local A às 11h, ir ao local B às 14h) ou sequência de localização (como estar atualmente no local A, próxima parada no local B). Note que se apenas introduzir múltiplos pontos de viagem independentes, não pode constituir um roteiro de viagem.\nSe contém roteiros de viagem: Se o artigo contém pelo menos um roteiro de viagem completo, retorne 1, caso contrário retorne 0.\nNúmero de roteiros de viagem: O número de roteiros de viagem completos contidos no artigo, 0 se nenhum.\nSe contém projetos sensíveis ao tempo: Projetos sensíveis ao tempo referem-se a projetos realizados em horários específicos, como concertos, exposições, reuniões, shows de stand-up comedy, festivais de música e outras atividades por tempo limitado. Se o roteiro de viagem contém quaisquer projetos sensíveis ao tempo, retorne 1, caso contrário retorne 0.\nCampo roteiros: Se roteiros de viagem estão incluídos, informações estruturadas detalhadas para cada roteiro devem ser produzidas, incluindo: nomeRoteiro (nome do roteiro), dias (número de dias), pontosRoteiro (lista de pontos de viagem), temProjetoTemporal (se este roteiro contém projetos sensíveis ao tempo), projetosTemporal (lista de projetos sensíveis ao tempo envolvidos neste roteiro, array vazio se nenhum, cada nome de projeto tem 9-150 caracteres (incluindo espaço, número...)).\nRequisitos de formato de saída: Por favor, produza estritamente os resultados da análise no seguinte formato JSON, não adicione explicações de texto adicionais:{\"contemRoteiro\": 0 ou 1,\"quantidadeRoteiros\": número(0,1,2...),\"contemProjetoTemporal\": 0 ou 1, \"roteiros\": [{\"nomeRoteiro\": \"nome do roteiro\", \"dias\": 1-3, \"pontosRoteiro\": [\"ponto de viagem A\", \"ponto de viagem B\"], \"temProjetoTemporal\": 0 ou 1, \"projetosTemporal\": [\"nome do projeto sensível ao tempo\"]}]}\nConteúdo do artigo:\n【Guia】Recomendo três principais locais: museu, galeria de arte, museu de ciências, cada um com exposições características, adequado para visitas familiares, sem rota específica.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "contemRoteiro",
+                "quantidadeRoteiros",
+                "contemProjetoTemporal",
+                "roteiros"
+            ],
+            "properties": {
+                "contemRoteiro": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se o artigo contém roteiros de viagem, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "quantidadeRoteiros": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de roteiros de viagem contidos no artigo",
+                    "能力项": "特定格式"
+                },
+                "contemProjetoTemporal": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se os roteiros de viagem contêm projetos sensíveis ao tempo, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "roteiros": {
+                    "type": "array",
+                    "description": "Detalhes de todos os roteiros de viagem",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "nomeRoteiro",
+                            "dias",
+                            "pontosRoteiro",
+                            "temProjetoTemporal",
+                            "projetosTemporal"
+                        ],
+                        "properties": {
+                            "nomeRoteiro": {
+                                "type": "string",
+                                "description": "Nome do roteiro, não pode estar vazio",
+                                "能力项": "JSON"
+                            },
+                            "dias": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de dias para o roteiro, faixa de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "pontosRoteiro": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de pontos de viagem, deve conter pelo menos dois pontos",
+                                "能力项": "JSON"
+                            },
+                            "temProjetoTemporal": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Se este roteiro contém projetos sensíveis ao tempo",
+                                "能力项": "特定格式"
+                            },
+                            "projetosTemporal": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projetos sensíveis ao tempo envolvidos neste roteiro, cada nome de projeto tem 2-30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Se satisfaz o schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um especialista em viagens. Vou fornecer um artigo de guia de viagem contendo título e conteúdo do artigo. Por favor, analise o artigo para determinar se contém roteiros de viagem (contemRoteiro), quantos roteiros de viagem contém (quantidadeRoteiros), se contém projetos sensíveis ao tempo (contemProjetoTemporal), e extraia informações detalhadas para cada roteiro (como nome do roteiro, dias, pontos de viagem, se contém projetos sensíveis ao tempo, nomes dos projetos sensíveis ao tempo envolvidos). Finalmente, produza os resultados no formato JSON especificado.\nDefinições de termos:\nRoteiro de viagem: Um roteiro de viagem planejado com múltiplos pontos de viagem em ordem cronológica, durando cerca de 1-3 dias. Geralmente, múltiplos pontos de viagem em um roteiro de viagem são conectados por sequência temporal (como ir ao local A às 11h, ir ao local B às 14h) ou sequência de localização (como estar atualmente no local A, próxima parada no local B). Note que se apenas introduzir múltiplos pontos de viagem independentes, não pode constituir um roteiro de viagem.\nSe contém roteiros de viagem: Se o artigo contém pelo menos um roteiro de viagem completo, retorne 1, caso contrário retorne 0.\nNúmero de roteiros de viagem: O número de roteiros de viagem completos contidos no artigo, 0 se nenhum.\nSe contém projetos sensíveis ao tempo: Projetos sensíveis ao tempo referem-se a projetos realizados em horários específicos, como concertos, exposições, reuniões, shows de stand-up comedy, festivais de música e outras atividades por tempo limitado. Se o roteiro de viagem contém quaisquer projetos sensíveis ao tempo, retorne 1, caso contrário retorne 0.\nCampo roteiros: Se roteiros de viagem estão incluídos, informações estruturadas detalhadas para cada roteiro devem ser produzidas, incluindo: nomeRoteiro (nome do roteiro), dias (número de dias), pontosRoteiro (lista de pontos de viagem), temProjetoTemporal (se este roteiro contém projetos sensíveis ao tempo), projetosTemporal (lista de projetos sensíveis ao tempo envolvidos neste roteiro, array vazio se nenhum, cada nome de projeto tem 9-150 caracteres (incluindo espaço, número...)).\nRequisitos de formato de saída: Por favor, produza estritamente os resultados da análise no seguinte formato JSON, não adicione explicações de texto adicionais:{\"contemRoteiro\": 0 ou 1,\"quantidadeRoteiros\": número(0,1,2...),\"contemProjetoTemporal\": 0 ou 1, \"roteiros\": [{\"nomeRoteiro\": \"nome do roteiro\", \"dias\": 1-3, \"pontosRoteiro\": [\"ponto de viagem A\", \"ponto de viagem B\"], \"temProjetoTemporal\": 0 ou 1, \"projetosTemporal\": [\"nome do projeto sensível ao tempo\"]}]}\nConteúdo do artigo:\n【Tour de três dias de carro】Dia1: Partir pela manhã para Gubei Water Town, fazer tour da paisagem da cidade aquática após o almoço, participar do show de luzes da cidade aquática à noite. Dia2: Dirigir para as encostas da Grande Muralha pela manhã, escalar a Grande Muralha à tarde, acampar à noite. Dia3: Visitar Museu da Grande Muralha pela manhã, retornar à tarde.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "contemRoteiro",
+                "quantidadeRoteiros",
+                "contemProjetoTemporal",
+                "roteiros"
+            ],
+            "properties": {
+                "contemRoteiro": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se o artigo contém roteiros de viagem, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "quantidadeRoteiros": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de roteiros de viagem contidos no artigo",
+                    "能力项": "特定格式"
+                },
+                "contemProjetoTemporal": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se os roteiros de viagem contêm projetos sensíveis ao tempo, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "roteiros": {
+                    "type": "array",
+                    "description": "Detalhes de todos os roteiros de viagem",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "nomeRoteiro",
+                            "dias",
+                            "pontosRoteiro",
+                            "temProjetoTemporal",
+                            "projetosTemporal"
+                        ],
+                        "properties": {
+                            "nomeRoteiro": {
+                                "type": "string",
+                                "description": "Nome do roteiro, não pode estar vazio",
+                                "能力项": "JSON"
+                            },
+                            "dias": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de dias para o roteiro, faixa de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "pontosRoteiro": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de pontos de viagem, deve conter pelo menos dois pontos",
+                                "能力项": "JSON"
+                            },
+                            "temProjetoTemporal": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Se este roteiro contém projetos sensíveis ao tempo",
+                                "能力项": "特定格式"
+                            },
+                            "projetosTemporal": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projetos sensíveis ao tempo envolvidos neste roteiro, cada nome de projeto tem 2-30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Se satisfaz o schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um especialista em viagens. Vou fornecer um artigo de guia de viagem contendo título e conteúdo do artigo. Por favor, analise o artigo para determinar se contém roteiros de viagem (contemRoteiro), quantos roteiros de viagem contém (quantidadeRoteiros), se contém projetos sensíveis ao tempo (contemProjetoTemporal), e extraia informações detalhadas para cada roteiro (como nome do roteiro, dias, pontos de viagem, se contém projetos sensíveis ao tempo, nomes dos projetos sensíveis ao tempo envolvidos). Finalmente, produza os resultados no formato JSON especificado.\nDefinições de termos:\nRoteiro de viagem: Um roteiro de viagem planejado com múltiplos pontos de viagem em ordem cronológica, durando cerca de 1-3 dias. Geralmente, múltiplos pontos de viagem em um roteiro de viagem são conectados por sequência temporal (como ir ao local A às 11h, ir ao local B às 14h) ou sequência de localização (como estar atualmente no local A, próxima parada no local B). Note que se apenas introduzir múltiplos pontos de viagem independentes, não pode constituir um roteiro de viagem.\nSe contém roteiros de viagem: Se o artigo contém pelo menos um roteiro de viagem completo, retorne 1, caso contrário retorne 0.\nNúmero de roteiros de viagem: O número de roteiros de viagem completos contidos no artigo, 0 se nenhum.\nSe contém projetos sensíveis ao tempo: Projetos sensíveis ao tempo referem-se a projetos realizados em horários específicos, como concertos, exposições, reuniões, shows de stand-up comedy, festivais de música e outras atividades por tempo limitado. Se o roteiro de viagem contém quaisquer projetos sensíveis ao tempo, retorne 1, caso contrário retorne 0.\nCampo roteiros: Se roteiros de viagem estão incluídos, informações estruturadas detalhadas para cada roteiro devem ser produzidas, incluindo: nomeRoteiro (nome do roteiro), dias (número de dias), pontosRoteiro (lista de pontos de viagem), temProjetoTemporal (se este roteiro contém projetos sensíveis ao tempo), projetosTemporal (lista de projetos sensíveis ao tempo envolvidos neste roteiro, array vazio se nenhum, cada nome de projeto tem 9-150 caracteres (incluindo espaço, número...)).\nRequisitos de formato de saída: Por favor, produza estritamente os resultados da análise no seguinte formato JSON, não adicione explicações de texto adicionais:{\"contemRoteiro\": 0 ou 1,\"quantidadeRoteiros\": número(0,1,2...),\"contemProjetoTemporal\": 0 ou 1, \"roteiros\": [{\"nomeRoteiro\": \"nome do roteiro\", \"dias\": 1-3, \"pontosRoteiro\": [\"ponto de viagem A\", \"ponto de viagem B\"], \"temProjetoTemporal\": 0 ou 1, \"projetosTemporal\": [\"nome do projeto sensível ao tempo\"]}]}\nConteúdo do artigo:\n【Acampamento de verão para pais e filhos】Primeiro dia reunião pela manhã, visitar museu de ciências, experiência de experimento científico à tarde, show de stand-up comedy científico à noite. Segundo dia desenvolvimento ao ar livre o dia todo, terceiro dia visitar jardim botânico pela manhã, cerimônia de encerramento à tarde.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "contemRoteiro",
+                "quantidadeRoteiros",
+                "contemProjetoTemporal",
+                "roteiros"
+            ],
+            "properties": {
+                "contemRoteiro": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se o artigo contém roteiros de viagem, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "quantidadeRoteiros": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de roteiros de viagem contidos no artigo",
+                    "能力项": "特定格式"
+                },
+                "contemProjetoTemporal": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se os roteiros de viagem contêm projetos sensíveis ao tempo, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "roteiros": {
+                    "type": "array",
+                    "description": "Detalhes de todos os roteiros de viagem",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "nomeRoteiro",
+                            "dias",
+                            "pontosRoteiro",
+                            "temProjetoTemporal",
+                            "projetosTemporal"
+                        ],
+                        "properties": {
+                            "nomeRoteiro": {
+                                "type": "string",
+                                "description": "Nome do roteiro, não pode estar vazio",
+                                "能力项": "JSON"
+                            },
+                            "dias": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de dias para o roteiro, faixa de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "pontosRoteiro": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de pontos de viagem, deve conter pelo menos dois pontos",
+                                "能力项": "JSON"
+                            },
+                            "temProjetoTemporal": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Se este roteiro contém projetos sensíveis ao tempo",
+                                "能力项": "特定格式"
+                            },
+                            "projetosTemporal": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projetos sensíveis ao tempo envolvidos neste roteiro, cada nome de projeto tem 2-30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Se satisfaz o schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um especialista em viagens. Vou fornecer um artigo de guia de viagem contendo título e conteúdo do artigo. Por favor, analise o artigo para determinar se contém roteiros de viagem (contemRoteiro), quantos roteiros de viagem contém (quantidadeRoteiros), se contém projetos sensíveis ao tempo (contemProjetoTemporal), e extraia informações detalhadas para cada roteiro (como nome do roteiro, dias, pontos de viagem, se contém projetos sensíveis ao tempo, nomes dos projetos sensíveis ao tempo envolvidos). Finalmente, produza os resultados no formato JSON especificado.\nDefinições de termos:\nRoteiro de viagem: Um roteiro de viagem planejado com múltiplos pontos de viagem em ordem cronológica, durando cerca de 1-3 dias. Geralmente, múltiplos pontos de viagem em um roteiro de viagem são conectados por sequência temporal (como ir ao local A às 11h, ir ao local B às 14h) ou sequência de localização (como estar atualmente no local A, próxima parada no local B). Note que se apenas introduzir múltiplos pontos de viagem independentes, não pode constituir um roteiro de viagem.\nSe contém roteiros de viagem: Se o artigo contém pelo menos um roteiro de viagem completo, retorne 1, caso contrário retorne 0.\nNúmero de roteiros de viagem: O número de roteiros de viagem completos contidos no artigo, 0 se nenhum.\nSe contém projetos sensíveis ao tempo: Projetos sensíveis ao tempo referem-se a projetos realizados em horários específicos, como concertos, exposições, reuniões, shows de stand-up comedy, festivais de música e outras atividades por tempo limitado. Se o roteiro de viagem contém quaisquer projetos sensíveis ao tempo, retorne 1, caso contrário retorne 0.\nCampo roteiros: Se roteiros de viagem estão incluídos, informações estruturadas detalhadas para cada roteiro devem ser produzidas, incluindo: nomeRoteiro (nome do roteiro), dias (número de dias), pontosRoteiro (lista de pontos de viagem), temProjetoTemporal (se este roteiro contém projetos sensíveis ao tempo), projetosTemporal (lista de projetos sensíveis ao tempo envolvidos neste roteiro, array vazio se nenhum, cada nome de projeto tem 9-150 caracteres (incluindo espaço, número...)).\nRequisitos de formato de saída: Por favor, produza estritamente os resultados da análise no seguinte formato JSON, não adicione explicações de texto adicionais:{\"contemRoteiro\": 0 ou 1,\"quantidadeRoteiros\": número(0,1,2...),\"contemProjetoTemporal\": 0 ou 1, \"roteiros\": [{\"nomeRoteiro\": \"nome do roteiro\", \"dias\": 1-3, \"pontosRoteiro\": [\"ponto de viagem A\", \"ponto de viagem B\"], \"temProjetoTemporal\": 0 ou 1, \"projetosTemporal\": [\"nome do projeto sensível ao tempo\"]}]}\nConteúdo do artigo:\n【Rota de corrida noturna da cidade】Reunir no parque esportivo da cidade às 19h, corrida noturna ao longo da trilha ribeirinha passando pela fonte musical e ponte iluminada, terminar na praça do centro da cidade, adequado para entusiastas do esporte.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "contemRoteiro",
+                "quantidadeRoteiros",
+                "contemProjetoTemporal",
+                "roteiros"
+            ],
+            "properties": {
+                "contemRoteiro": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se o artigo contém roteiros de viagem, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "quantidadeRoteiros": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de roteiros de viagem contidos no artigo",
+                    "能力项": "特定格式"
+                },
+                "contemProjetoTemporal": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se os roteiros de viagem contêm projetos sensíveis ao tempo, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "roteiros": {
+                    "type": "array",
+                    "description": "Detalhes de todos os roteiros de viagem",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "nomeRoteiro",
+                            "dias",
+                            "pontosRoteiro",
+                            "temProjetoTemporal",
+                            "projetosTemporal"
+                        ],
+                        "properties": {
+                            "nomeRoteiro": {
+                                "type": "string",
+                                "description": "Nome do roteiro, não pode estar vazio",
+                                "能力项": "JSON"
+                            },
+                            "dias": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de dias para o roteiro, faixa de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "pontosRoteiro": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de pontos de viagem, deve conter pelo menos dois pontos",
+                                "能力项": "JSON"
+                            },
+                            "temProjetoTemporal": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Se este roteiro contém projetos sensíveis ao tempo",
+                                "能力项": "特定格式"
+                            },
+                            "projetosTemporal": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projetos sensíveis ao tempo envolvidos neste roteiro, cada nome de projeto tem 2-30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Se satisfaz o schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um especialista em viagens. Vou fornecer um artigo de guia de viagem contendo título e conteúdo do artigo. Por favor, analise o artigo para determinar se contém roteiros de viagem (contemRoteiro), quantos roteiros de viagem contém (quantidadeRoteiros), se contém projetos sensíveis ao tempo (contemProjetoTemporal), e extraia informações detalhadas para cada roteiro (como nome do roteiro, dias, pontos de viagem, se contém projetos sensíveis ao tempo, nomes dos projetos sensíveis ao tempo envolvidos). Finalmente, produza os resultados no formato JSON especificado.\nDefinições de termos:\nRoteiro de viagem: Um roteiro de viagem planejado com múltiplos pontos de viagem em ordem cronológica, durando cerca de 1-3 dias. Geralmente, múltiplos pontos de viagem em um roteiro de viagem são conectados por sequência temporal (como ir ao local A às 11h, ir ao local B às 14h) ou sequência de localização (como estar atualmente no local A, próxima parada no local B). Note que se apenas introduzir múltiplos pontos de viagem independentes, não pode constituir um roteiro de viagem.\nSe contém roteiros de viagem: Se o artigo contém pelo menos um roteiro de viagem completo, retorne 1, caso contrário retorne 0.\nNúmero de roteiros de viagem: O número de roteiros de viagem completos contidos no artigo, 0 se nenhum.\nSe contém projetos sensíveis ao tempo: Projetos sensíveis ao tempo referem-se a projetos realizados em horários específicos, como concertos, exposições, reuniões, shows de stand-up comedy, festivais de música e outras atividades por tempo limitado. Se o roteiro de viagem contém quaisquer projetos sensíveis ao tempo, retorne 1, caso contrário retorne 0.\nCampo roteiros: Se roteiros de viagem estão incluídos, informações estruturadas detalhadas para cada roteiro devem ser produzidas, incluindo: nomeRoteiro (nome do roteiro), dias (número de dias), pontosRoteiro (lista de pontos de viagem), temProjetoTemporal (se este roteiro contém projetos sensíveis ao tempo), projetosTemporal (lista de projetos sensíveis ao tempo envolvidos neste roteiro, array vazio se nenhum, cada nome de projeto tem 9-150 caracteres (incluindo espaço, número...)).\nRequisitos de formato de saída: Por favor, produza estritamente os resultados da análise no seguinte formato JSON, não adicione explicações de texto adicionais:{\"contemRoteiro\": 0 ou 1,\"quantidadeRoteiros\": número(0,1,2...),\"contemProjetoTemporal\": 0 ou 1, \"roteiros\": [{\"nomeRoteiro\": \"nome do roteiro\", \"dias\": 1-3, \"pontosRoteiro\": [\"ponto de viagem A\", \"ponto de viagem B\"], \"temProjetoTemporal\": 0 ou 1, \"projetosTemporal\": [\"nome do projeto sensível ao tempo\"]}]}\nConteúdo do artigo:\n【Tour de casal de fim de semana】Visitar jardim de rosas pela manhã, ver exposição de pintura na galeria de arte à tarde, assistir concerto de jazz à noite. Segundo dia experiência de cerâmica pela manhã, descansar no café da rua antiga à tarde.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "contemRoteiro",
+                "quantidadeRoteiros",
+                "contemProjetoTemporal",
+                "roteiros"
+            ],
+            "properties": {
+                "contemRoteiro": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se o artigo contém roteiros de viagem, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "quantidadeRoteiros": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de roteiros de viagem contidos no artigo",
+                    "能力项": "特定格式"
+                },
+                "contemProjetoTemporal": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se os roteiros de viagem contêm projetos sensíveis ao tempo, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "roteiros": {
+                    "type": "array",
+                    "description": "Detalhes de todos os roteiros de viagem",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "nomeRoteiro",
+                            "dias",
+                            "pontosRoteiro",
+                            "temProjetoTemporal",
+                            "projetosTemporal"
+                        ],
+                        "properties": {
+                            "nomeRoteiro": {
+                                "type": "string",
+                                "description": "Nome do roteiro, não pode estar vazio",
+                                "能力项": "JSON"
+                            },
+                            "dias": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de dias para o roteiro, faixa de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "pontosRoteiro": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de pontos de viagem, deve conter pelo menos dois pontos",
+                                "能力项": "JSON"
+                            },
+                            "temProjetoTemporal": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Se este roteiro contém projetos sensíveis ao tempo",
+                                "能力项": "特定格式"
+                            },
+                            "projetosTemporal": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projetos sensíveis ao tempo envolvidos neste roteiro, cada nome de projeto tem 2-30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Se satisfaz o schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um especialista em viagens. Vou fornecer um artigo de guia de viagem contendo título e conteúdo do artigo. Por favor, analise o artigo para determinar se contém roteiros de viagem (contemRoteiro), quantos roteiros de viagem contém (quantidadeRoteiros), se contém projetos sensíveis ao tempo (contemProjetoTemporal), e extraia informações detalhadas para cada roteiro (como nome do roteiro, dias, pontos de viagem, se contém projetos sensíveis ao tempo, nomes dos projetos sensíveis ao tempo envolvidos). Finalmente, produza os resultados no formato JSON especificado.\nDefinições de termos:\nRoteiro de viagem: Um roteiro de viagem planejado com múltiplos pontos de viagem em ordem cronológica, durando cerca de 1-3 dias. Geralmente, múltiplos pontos de viagem em um roteiro de viagem são conectados por sequência temporal (como ir ao local A às 11h, ir ao local B às 14h) ou sequência de localização (como estar atualmente no local A, próxima parada no local B). Note que se apenas introduzir múltiplos pontos de viagem independentes, não pode constituir um roteiro de viagem.\nSe contém roteiros de viagem: Se o artigo contém pelo menos um roteiro de viagem completo, retorne 1, caso contrário retorne 0.\nNúmero de roteiros de viagem: O número de roteiros de viagem completos contidos no artigo, 0 se nenhum.\nSe contém projetos sensíveis ao tempo: Projetos sensíveis ao tempo referem-se a projetos realizados em horários específicos, como concertos, exposições, reuniões, shows de stand-up comedy, festivais de música e outras atividades por tempo limitado. Se o roteiro de viagem contém quaisquer projetos sensíveis ao tempo, retorne 1, caso contrário retorne 0.\nCampo roteiros: Se roteiros de viagem estão incluídos, informações estruturadas detalhadas para cada roteiro devem ser produzidas, incluindo: nomeRoteiro (nome do roteiro), dias (número de dias), pontosRoteiro (lista de pontos de viagem), temProjetoTemporal (se este roteiro contém projetos sensíveis ao tempo), projetosTemporal (lista de projetos sensíveis ao tempo envolvidos neste roteiro, array vazio se nenhum, cada nome de projeto tem 9-150 caracteres (incluindo espaço, número...)).\nRequisitos de formato de saída: Por favor, produza estritamente os resultados da análise no seguinte formato JSON, não adicione explicações de texto adicionais:{\"contemRoteiro\": 0 ou 1,\"quantidadeRoteiros\": número(0,1,2...),\"contemProjetoTemporal\": 0 ou 1, \"roteiros\": [{\"nomeRoteiro\": \"nome do roteiro\", \"dias\": 1-3, \"pontosRoteiro\": [\"ponto de viagem A\", \"ponto de viagem B\"], \"temProjetoTemporal\": 0 ou 1, \"projetosTemporal\": [\"nome do projeto sensível ao tempo\"]}]}\nConteúdo do artigo:\n【Rota dupla exposição + concerto】Nova exposição na galeria de arte pela manhã, palestra do artista à tarde, assistir concerto por tempo limitado à noite. Segundo dia atividades livres pela manhã.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "contemRoteiro",
+                "quantidadeRoteiros",
+                "contemProjetoTemporal",
+                "roteiros"
+            ],
+            "properties": {
+                "contemRoteiro": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se o artigo contém roteiros de viagem, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "quantidadeRoteiros": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de roteiros de viagem contidos no artigo",
+                    "能力项": "特定格式"
+                },
+                "contemProjetoTemporal": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se os roteiros de viagem contêm projetos sensíveis ao tempo, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "roteiros": {
+                    "type": "array",
+                    "description": "Detalhes de todos os roteiros de viagem",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "nomeRoteiro",
+                            "dias",
+                            "pontosRoteiro",
+                            "temProjetoTemporal",
+                            "projetosTemporal"
+                        ],
+                        "properties": {
+                            "nomeRoteiro": {
+                                "type": "string",
+                                "description": "Nome do roteiro, não pode estar vazio",
+                                "能力项": "JSON"
+                            },
+                            "dias": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de dias para o roteiro, faixa de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "pontosRoteiro": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de pontos de viagem, deve conter pelo menos dois pontos",
+                                "能力项": "JSON"
+                            },
+                            "temProjetoTemporal": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Se este roteiro contém projetos sensíveis ao tempo",
+                                "能力项": "特定格式"
+                            },
+                            "projetosTemporal": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projetos sensíveis ao tempo envolvidos neste roteiro, cada nome de projeto tem 2-30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Se satisfaz o schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um especialista em viagens. Vou fornecer um artigo de guia de viagem contendo título e conteúdo do artigo. Por favor, analise o artigo para determinar se contém roteiros de viagem (contemRoteiro), quantos roteiros de viagem contém (quantidadeRoteiros), se contém projetos sensíveis ao tempo (contemProjetoTemporal), e extraia informações detalhadas para cada roteiro (como nome do roteiro, dias, pontos de viagem, se contém projetos sensíveis ao tempo, nomes dos projetos sensíveis ao tempo envolvidos). Finalmente, produza os resultados no formato JSON especificado.\nDefinições de termos:\nRoteiro de viagem: Um roteiro de viagem planejado com múltiplos pontos de viagem em ordem cronológica, durando cerca de 1-3 dias. Geralmente, múltiplos pontos de viagem em um roteiro de viagem são conectados por sequência temporal (como ir ao local A às 11h, ir ao local B às 14h) ou sequência de localização (como estar atualmente no local A, próxima parada no local B). Note que se apenas introduzir múltiplos pontos de viagem independentes, não pode constituir um roteiro de viagem.\nSe contém roteiros de viagem: Se o artigo contém pelo menos um roteiro de viagem completo, retorne 1, caso contrário retorne 0.\nNúmero de roteiros de viagem: O número de roteiros de viagem completos contidos no artigo, 0 se nenhum.\nSe contém projetos sensíveis ao tempo: Projetos sensíveis ao tempo referem-se a projetos realizados em horários específicos, como concertos, exposições, reuniões, shows de stand-up comedy, festivais de música e outras atividades por tempo limitado. Se o roteiro de viagem contém quaisquer projetos sensíveis ao tempo, retorne 1, caso contrário retorne 0.\nCampo roteiros: Se roteiros de viagem estão incluídos, informações estruturadas detalhadas para cada roteiro devem ser produzidas, incluindo: nomeRoteiro (nome do roteiro), dias (número de dias), pontosRoteiro (lista de pontos de viagem), temProjetoTemporal (se este roteiro contém projetos sensíveis ao tempo), projetosTemporal (lista de projetos sensíveis ao tempo envolvidos neste roteiro, array vazio se nenhum, cada nome de projeto tem 9-150 caracteres (incluindo espaço, número...)).\nRequisitos de formato de saída: Por favor, produza estritamente os resultados da análise no seguinte formato JSON, não adicione explicações de texto adicionais:{\"contemRoteiro\": 0 ou 1,\"quantidadeRoteiros\": número(0,1,2...),\"contemProjetoTemporal\": 0 ou 1, \"roteiros\": [{\"nomeRoteiro\": \"nome do roteiro\", \"dias\": 1-3, \"pontosRoteiro\": [\"ponto de viagem A\", \"ponto de viagem B\"], \"temProjetoTemporal\": 0 ou 1, \"projetosTemporal\": [\"nome do projeto sensível ao tempo\"]}]}\nConteúdo do artigo:\n【Roteiro de ciclismo de dois dias】Dia1: Pedalar até o parque do lago pela manhã, pedalar ao redor do lago após o almoço, chegar ao local de acampamento para acampar à tarde. Dia2: Assistir nascer do sol pela manhã, pedalar até a cidade antiga pela manhã, terminar a viagem à tarde.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "contemRoteiro",
+                "quantidadeRoteiros",
+                "contemProjetoTemporal",
+                "roteiros"
+            ],
+            "properties": {
+                "contemRoteiro": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se o artigo contém roteiros de viagem, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "quantidadeRoteiros": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de roteiros de viagem contidos no artigo",
+                    "能力项": "特定格式"
+                },
+                "contemProjetoTemporal": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se os roteiros de viagem contêm projetos sensíveis ao tempo, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "roteiros": {
+                    "type": "array",
+                    "description": "Detalhes de todos os roteiros de viagem",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "nomeRoteiro",
+                            "dias",
+                            "pontosRoteiro",
+                            "temProjetoTemporal",
+                            "projetosTemporal"
+                        ],
+                        "properties": {
+                            "nomeRoteiro": {
+                                "type": "string",
+                                "description": "Nome do roteiro, não pode estar vazio",
+                                "能力项": "JSON"
+                            },
+                            "dias": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de dias para o roteiro, faixa de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "pontosRoteiro": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de pontos de viagem, deve conter pelo menos dois pontos",
+                                "能力项": "JSON"
+                            },
+                            "temProjetoTemporal": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Se este roteiro contém projetos sensíveis ao tempo",
+                                "能力项": "特定格式"
+                            },
+                            "projetosTemporal": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projetos sensíveis ao tempo envolvidos neste roteiro, cada nome de projeto tem 2-30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Se satisfaz o schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um especialista em viagens. Vou fornecer um artigo de guia de viagem contendo título e conteúdo do artigo. Por favor, analise o artigo para determinar se contém roteiros de viagem (contemRoteiro), quantos roteiros de viagem contém (quantidadeRoteiros), se contém projetos sensíveis ao tempo (contemProjetoTemporal), e extraia informações detalhadas para cada roteiro (como nome do roteiro, dias, pontos de viagem, se contém projetos sensíveis ao tempo, nomes dos projetos sensíveis ao tempo envolvidos). Finalmente, produza os resultados no formato JSON especificado.\nDefinições de termos:\nRoteiro de viagem: Um roteiro de viagem planejado com múltiplos pontos de viagem em ordem cronológica, durando cerca de 1-3 dias. Geralmente, múltiplos pontos de viagem em um roteiro de viagem são conectados por sequência temporal (como ir ao local A às 11h, ir ao local B às 14h) ou sequência de localização (como estar atualmente no local A, próxima parada no local B). Note que se apenas introduzir múltiplos pontos de viagem independentes, não pode constituir um roteiro de viagem.\nSe contém roteiros de viagem: Se o artigo contém pelo menos um roteiro de viagem completo, retorne 1, caso contrário retorne 0.\nNúmero de roteiros de viagem: O número de roteiros de viagem completos contidos no artigo, 0 se nenhum.\nSe contém projetos sensíveis ao tempo: Projetos sensíveis ao tempo referem-se a projetos realizados em horários específicos, como concertos, exposições, reuniões, shows de stand-up comedy, festivais de música e outras atividades por tempo limitado. Se o roteiro de viagem contém quaisquer projetos sensíveis ao tempo, retorne 1, caso contrário retorne 0.\nCampo roteiros: Se roteiros de viagem estão incluídos, informações estruturadas detalhadas para cada roteiro devem ser produzidas, incluindo: nomeRoteiro (nome do roteiro), dias (número de dias), pontosRoteiro (lista de pontos de viagem), temProjetoTemporal (se este roteiro contém projetos sensíveis ao tempo), projetosTemporal (lista de projetos sensíveis ao tempo envolvidos neste roteiro, array vazio se nenhum, cada nome de projeto tem 9-150 caracteres (incluindo espaço, número...)).\nRequisitos de formato de saída: Por favor, produza estritamente os resultados da análise no seguinte formato JSON, não adicione explicações de texto adicionais:{\"contemRoteiro\": 0 ou 1,\"quantidadeRoteiros\": número(0,1,2...),\"contemProjetoTemporal\": 0 ou 1, \"roteiros\": [{\"nomeRoteiro\": \"nome do roteiro\", \"dias\": 1-3, \"pontosRoteiro\": [\"ponto de viagem A\", \"ponto de viagem B\"], \"temProjetoTemporal\": 0 ou 1, \"projetosTemporal\": [\"nome do projeto sensível ao tempo\"]}]}\nConteúdo do artigo:\n【Tour científico de um dia para pais e filhos】Visitar zoológico pela manhã, assistir show do aquário, experimentar parque científico infantil à tarde, assistir drama interativo para pais e filhos à noite.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "contemRoteiro",
+                "quantidadeRoteiros",
+                "contemProjetoTemporal",
+                "roteiros"
+            ],
+            "properties": {
+                "contemRoteiro": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se o artigo contém roteiros de viagem, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "quantidadeRoteiros": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de roteiros de viagem contidos no artigo",
+                    "能力项": "特定格式"
+                },
+                "contemProjetoTemporal": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se os roteiros de viagem contêm projetos sensíveis ao tempo, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "roteiros": {
+                    "type": "array",
+                    "description": "Detalhes de todos os roteiros de viagem",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "nomeRoteiro",
+                            "dias",
+                            "pontosRoteiro",
+                            "temProjetoTemporal",
+                            "projetosTemporal"
+                        ],
+                        "properties": {
+                            "nomeRoteiro": {
+                                "type": "string",
+                                "description": "Nome do roteiro, não pode estar vazio",
+                                "能力项": "JSON"
+                            },
+                            "dias": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de dias para o roteiro, faixa de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "pontosRoteiro": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de pontos de viagem, deve conter pelo menos dois pontos",
+                                "能力项": "JSON"
+                            },
+                            "temProjetoTemporal": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Se este roteiro contém projetos sensíveis ao tempo",
+                                "能力项": "特定格式"
+                            },
+                            "projetosTemporal": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projetos sensíveis ao tempo envolvidos neste roteiro, cada nome de projeto tem 2-30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Se satisfaz o schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um especialista em viagens. Vou fornecer um artigo de guia de viagem contendo título e conteúdo do artigo. Por favor, analise o artigo para determinar se contém roteiros de viagem (contemRoteiro), quantos roteiros de viagem contém (quantidadeRoteiros), se contém projetos sensíveis ao tempo (contemProjetoTemporal), e extraia informações detalhadas para cada roteiro (como nome do roteiro, dias, pontos de viagem, se contém projetos sensíveis ao tempo, nomes dos projetos sensíveis ao tempo envolvidos). Finalmente, produza os resultados no formato JSON especificado.\nDefinições de termos:\nRoteiro de viagem: Um roteiro de viagem planejado com múltiplos pontos de viagem em ordem cronológica, durando cerca de 1-3 dias. Geralmente, múltiplos pontos de viagem em um roteiro de viagem são conectados por sequência temporal (como ir ao local A às 11h, ir ao local B às 14h) ou sequência de localização (como estar atualmente no local A, próxima parada no local B). Note que se apenas introduzir múltiplos pontos de viagem independentes, não pode constituir um roteiro de viagem.\nSe contém roteiros de viagem: Se o artigo contém pelo menos um roteiro de viagem completo, retorne 1, caso contrário retorne 0.\nNúmero de roteiros de viagem: O número de roteiros de viagem completos contidos no artigo, 0 se nenhum.\nSe contém projetos sensíveis ao tempo: Projetos sensíveis ao tempo referem-se a projetos realizados em horários específicos, como concertos, exposições, reuniões, shows de stand-up comedy, festivais de música e outras atividades por tempo limitado. Se o roteiro de viagem contém quaisquer projetos sensíveis ao tempo, retorne 1, caso contrário retorne 0.\nCampo roteiros: Se roteiros de viagem estão incluídos, informações estruturadas detalhadas para cada roteiro devem ser produzidas, incluindo: nomeRoteiro (nome do roteiro), dias (número de dias), pontosRoteiro (lista de pontos de viagem), temProjetoTemporal (se este roteiro contém projetos sensíveis ao tempo), projetosTemporal (lista de projetos sensíveis ao tempo envolvidos neste roteiro, array vazio se nenhum, cada nome de projeto tem 9-150 caracteres (incluindo espaço, número...)).\nRequisitos de formato de saída: Por favor, produza estritamente os resultados da análise no seguinte formato JSON, não adicione explicações de texto adicionais:{\"contemRoteiro\": 0 ou 1,\"quantidadeRoteiros\": número(0,1,2...),\"contemProjetoTemporal\": 0 ou 1, \"roteiros\": [{\"nomeRoteiro\": \"nome do roteiro\", \"dias\": 1-3, \"pontosRoteiro\": [\"ponto de viagem A\", \"ponto de viagem B\"], \"temProjetoTemporal\": 0 ou 1, \"projetosTemporal\": [\"nome do projeto sensível ao tempo\"]}]}\nConteúdo do artigo:\n【Rota de observação de flores da primavera】Visitar Century Park para ver cerejeiras em flor pela manhã, ir ao jardim botânico para ver tulipas à tarde, caminhar pela trilha ribeirinha à noite.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "contemRoteiro",
+                "quantidadeRoteiros",
+                "contemProjetoTemporal",
+                "roteiros"
+            ],
+            "properties": {
+                "contemRoteiro": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se o artigo contém roteiros de viagem, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "quantidadeRoteiros": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de roteiros de viagem contidos no artigo",
+                    "能力项": "特定格式"
+                },
+                "contemProjetoTemporal": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se os roteiros de viagem contêm projetos sensíveis ao tempo, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "roteiros": {
+                    "type": "array",
+                    "description": "Detalhes de todos os roteiros de viagem",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "nomeRoteiro",
+                            "dias",
+                            "pontosRoteiro",
+                            "temProjetoTemporal",
+                            "projetosTemporal"
+                        ],
+                        "properties": {
+                            "nomeRoteiro": {
+                                "type": "string",
+                                "description": "Nome do roteiro, não pode estar vazio",
+                                "能力项": "JSON"
+                            },
+                            "dias": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de dias para o roteiro, faixa de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "pontosRoteiro": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de pontos de viagem, deve conter pelo menos dois pontos",
+                                "能力项": "JSON"
+                            },
+                            "temProjetoTemporal": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Se este roteiro contém projetos sensíveis ao tempo",
+                                "能力项": "特定格式"
+                            },
+                            "projetosTemporal": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projetos sensíveis ao tempo envolvidos neste roteiro, cada nome de projeto tem 2-30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Se satisfaz o schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um especialista em viagens. Vou fornecer um artigo de guia de viagem contendo título e conteúdo do artigo. Por favor, analise o artigo para determinar se contém roteiros de viagem (contemRoteiro), quantos roteiros de viagem contém (quantidadeRoteiros), se contém projetos sensíveis ao tempo (contemProjetoTemporal), e extraia informações detalhadas para cada roteiro (como nome do roteiro, dias, pontos de viagem, se contém projetos sensíveis ao tempo, nomes dos projetos sensíveis ao tempo envolvidos). Finalmente, produza os resultados no formato JSON especificado.\nDefinições de termos:\nRoteiro de viagem: Um roteiro de viagem planejado com múltiplos pontos de viagem em ordem cronológica, durando cerca de 1-3 dias. Geralmente, múltiplos pontos de viagem em um roteiro de viagem são conectados por sequência temporal (como ir ao local A às 11h, ir ao local B às 14h) ou sequência de localização (como estar atualmente no local A, próxima parada no local B). Note que se apenas introduzir múltiplos pontos de viagem independentes, não pode constituir um roteiro de viagem.\nSe contém roteiros de viagem: Se o artigo contém pelo menos um roteiro de viagem completo, retorne 1, caso contrário retorne 0.\nNúmero de roteiros de viagem: O número de roteiros de viagem completos contidos no artigo, 0 se nenhum.\nSe contém projetos sensíveis ao tempo: Projetos sensíveis ao tempo referem-se a projetos realizados em horários específicos, como concertos, exposições, reuniões, shows de stand-up comedy, festivais de música e outras atividades por tempo limitado. Se o roteiro de viagem contém quaisquer projetos sensíveis ao tempo, retorne 1, caso contrário retorne 0.\nCampo roteiros: Se roteiros de viagem estão incluídos, informações estruturadas detalhadas para cada roteiro devem ser produzidas, incluindo: nomeRoteiro (nome do roteiro), dias (número de dias), pontosRoteiro (lista de pontos de viagem), temProjetoTemporal (se este roteiro contém projetos sensíveis ao tempo), projetosTemporal (lista de projetos sensíveis ao tempo envolvidos neste roteiro, array vazio se nenhum, cada nome de projeto tem 9-150 caracteres (incluindo espaço, número...)).\nRequisitos de formato de saída: Por favor, produza estritamente os resultados da análise no seguinte formato JSON, não adicione explicações de texto adicionais:{\"contemRoteiro\": 0 ou 1,\"quantidadeRoteiros\": número(0,1,2...),\"contemProjetoTemporal\": 0 ou 1, \"roteiros\": [{\"nomeRoteiro\": \"nome do roteiro\", \"dias\": 1-3, \"pontosRoteiro\": [\"ponto de viagem A\", \"ponto de viagem B\"], \"temProjetoTemporal\": 0 ou 1, \"projetosTemporal\": [\"nome do projeto sensível ao tempo\"]}]}\nConteúdo do artigo:\n【Experiência completa do festival de arte】Cerimônia de abertura da exposição de pintura pela manhã, participar de oficina de escultura à tarde, apresentação do festival de teatro ao ar livre à noite, assistir cerimônia de encerramento do festival de música no dia seguinte.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "contemRoteiro",
+                "quantidadeRoteiros",
+                "contemProjetoTemporal",
+                "roteiros"
+            ],
+            "properties": {
+                "contemRoteiro": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se o artigo contém roteiros de viagem, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "quantidadeRoteiros": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de roteiros de viagem contidos no artigo",
+                    "能力项": "特定格式"
+                },
+                "contemProjetoTemporal": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se os roteiros de viagem contêm projetos sensíveis ao tempo, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "roteiros": {
+                    "type": "array",
+                    "description": "Detalhes de todos os roteiros de viagem",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "nomeRoteiro",
+                            "dias",
+                            "pontosRoteiro",
+                            "temProjetoTemporal",
+                            "projetosTemporal"
+                        ],
+                        "properties": {
+                            "nomeRoteiro": {
+                                "type": "string",
+                                "description": "Nome do roteiro, não pode estar vazio",
+                                "能力项": "JSON"
+                            },
+                            "dias": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de dias para o roteiro, faixa de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "pontosRoteiro": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de pontos de viagem, deve conter pelo menos dois pontos",
+                                "能力项": "JSON"
+                            },
+                            "temProjetoTemporal": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Se este roteiro contém projetos sensíveis ao tempo",
+                                "能力项": "特定格式"
+                            },
+                            "projetosTemporal": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projetos sensíveis ao tempo envolvidos neste roteiro, cada nome de projeto tem 2-30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Se satisfaz o schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um especialista em viagens. Vou fornecer um artigo de guia de viagem contendo título e conteúdo do artigo. Por favor, analise o artigo para determinar se contém roteiros de viagem (contemRoteiro), quantos roteiros de viagem contém (quantidadeRoteiros), se contém projetos sensíveis ao tempo (contemProjetoTemporal), e extraia informações detalhadas para cada roteiro (como nome do roteiro, dias, pontos de viagem, se contém projetos sensíveis ao tempo, nomes dos projetos sensíveis ao tempo envolvidos). Finalmente, produza os resultados no formato JSON especificado.\nDefinições de termos:\nRoteiro de viagem: Um roteiro de viagem planejado com múltiplos pontos de viagem em ordem cronológica, durando cerca de 1-3 dias. Geralmente, múltiplos pontos de viagem em um roteiro de viagem são conectados por sequência temporal (como ir ao local A às 11h, ir ao local B às 14h) ou sequência de localização (como estar atualmente no local A, próxima parada no local B). Note que se apenas introduzir múltiplos pontos de viagem independentes, não pode constituir um roteiro de viagem.\nSe contém roteiros de viagem: Se o artigo contém pelo menos um roteiro de viagem completo, retorne 1, caso contrário retorne 0.\nNúmero de roteiros de viagem: O número de roteiros de viagem completos contidos no artigo, 0 se nenhum.\nSe contém projetos sensíveis ao tempo: Projetos sensíveis ao tempo referem-se a projetos realizados em horários específicos, como concertos, exposições, reuniões, shows de stand-up comedy, festivais de música e outras atividades por tempo limitado. Se o roteiro de viagem contém quaisquer projetos sensíveis ao tempo, retorne 1, caso contrário retorne 0.\nCampo roteiros: Se roteiros de viagem estão incluídos, informações estruturadas detalhadas para cada roteiro devem ser produzidas, incluindo: nomeRoteiro (nome do roteiro), dias (número de dias), pontosRoteiro (lista de pontos de viagem), temProjetoTemporal (se este roteiro contém projetos sensíveis ao tempo), projetosTemporal (lista de projetos sensíveis ao tempo envolvidos neste roteiro, array vazio se nenhum, cada nome de projeto tem 9-150 caracteres (incluindo espaço, número...)).\nRequisitos de formato de saída: Por favor, produza estritamente os resultados da análise no seguinte formato JSON, não adicione explicações de texto adicionais:{\"contemRoteiro\": 0 ou 1,\"quantidadeRoteiros\": número(0,1,2...),\"contemProjetoTemporal\": 0 ou 1, \"roteiros\": [{\"nomeRoteiro\": \"nome do roteiro\", \"dias\": 1-3, \"pontosRoteiro\": [\"ponto de viagem A\", \"ponto de viagem B\"], \"temProjetoTemporal\": 0 ou 1, \"projetosTemporal\": [\"nome do projeto sensível ao tempo\"]}]}\nConteúdo do artigo:\n【Rota de aventura ao ar livre】Escalada ao amanhecer, trekking na floresta pela manhã, rastreamento de riacho à tarde, festa da fogueira à noite, acampamento e observação das estrelas à noite.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "contemRoteiro",
+                "quantidadeRoteiros",
+                "contemProjetoTemporal",
+                "roteiros"
+            ],
+            "properties": {
+                "contemRoteiro": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se o artigo contém roteiros de viagem, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "quantidadeRoteiros": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de roteiros de viagem contidos no artigo",
+                    "能力项": "特定格式"
+                },
+                "contemProjetoTemporal": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Se os roteiros de viagem contêm projetos sensíveis ao tempo, 1 significa sim, 0 significa não",
+                    "能力项": "特定格式"
+                },
+                "roteiros": {
+                    "type": "array",
+                    "description": "Detalhes de todos os roteiros de viagem",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "nomeRoteiro",
+                            "dias",
+                            "pontosRoteiro",
+                            "temProjetoTemporal",
+                            "projetosTemporal"
+                        ],
+                        "properties": {
+                            "nomeRoteiro": {
+                                "type": "string",
+                                "description": "Nome do roteiro, não pode estar vazio",
+                                "能力项": "JSON"
+                            },
+                            "dias": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de dias para o roteiro, faixa de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "pontosRoteiro": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de pontos de viagem, deve conter pelo menos dois pontos",
+                                "能力项": "JSON"
+                            },
+                            "temProjetoTemporal": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Se este roteiro contém projetos sensíveis ao tempo",
+                                "能力项": "特定格式"
+                            },
+                            "projetosTemporal": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projetos sensíveis ao tempo envolvidos neste roteiro, cada nome de projeto tem 2-30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Se satisfaz o schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    }
+]

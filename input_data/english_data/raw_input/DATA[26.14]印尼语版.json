@@ -1,0 +1,1262 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah pedagang hotel yang mengorganisir informasi hotel. Saya akan memberikan Anda panduan perjalanan media sosial yang berisi informasi tentang hotel, atraksi, layanan, dll. Anda perlu mengekstrak informasi dasar dari berbagai hotel sesuai dengan persyaratan saya sebagai berikut:\n\n(1) Panduan perjalanan mungkin berisi beberapa hotel. Silakan ekstrak nama dan karakteristik hotel yang berbeda dari panduan perjalanan yang diberikan;\n\n(2) Untuk setiap hotel, Anda perlu mengekstrak semua informasi yang relevan dan memenuhi persyaratan berikut:\\n- Nama hotel: {{name}},\\n- Kota hotel: {{city}} Prioritaskan mengidentifikasi kota di mana hotel berada dari artikel. Jika Anda tidak bisa mendapatkan kota di mana hotel berada, identifikasi atraksi di sekitar hotel dari artikel dan tentukan kota berdasarkan atraksi,\\n- Distrik administratif hotel: {{district}}, Prioritaskan mengidentifikasi distrik administratif di mana hotel berada dari artikel. Jika Anda tidak bisa mendapatkan distrik administratif di mana hotel berada, identifikasi atraksi di sekitar hotel dari artikel dan tentukan distrik administratif berdasarkan atraksi,\\n- Alamat hotel: {{address}} Prioritaskan mengidentifikasi alamat hotel dari artikel, termasuk provinsi, kota, distrik/kabupaten dan jalan. Jika Anda tidak bisa mendapatkan alamat hotel, identifikasi nama atraksi terkenal di sekitar alamat hotel dari artikel. Jika tidak ada informasi lokasi, kembalikan null,\\n- Telepon hotel: {{tel}} Identifikasi nomor telepon hotel dari artikel. Jika tidak ada informasi yang relevan, kembalikan null,\\n- Umpan balik: {{feedback}} Silakan menilai berdasarkan isi artikel apakah artikel ini merekomendasikan menginap di hotel ini. Umumnya, selama tidak ada masalah yang disebutkan atau ada evaluasi umum, itu dianggap direkomendasikan. Hasil output adalah \"Ya\" atau \"Tidak\". Jika Anda tidak bisa menilai, silakan output null,\\n- Deskripsi positif: {{positive}} Deskripsi dalam konten panduan yang memiliki kecenderungan emosional positif terhadap hotel,\\n- Deskripsi negatif: {{negative}} Deskripsi dalam konten panduan yang memiliki kecenderungan emosional negatif terhadap hotel,\\n- Fitur hotel: {{flavor}} Ekstrak fasilitas karakteristik hotel dan lingkungan sekitar yang disebutkan dalam teks, seperti kolam infinity, atap berbintang, dll. Jika tidak ada informasi yang relevan, kembalikan null,\\n- Sekitar hotel: {{surround}} Ekstrak nama area pemandangan yang disebutkan dalam teks. Jika tidak ada informasi lokasi, kembalikan null,\\n- Biaya hotel: {{cost}} Informasi terkait tarif hotel, termasuk jenis kamar dan harga. Jika tidak ada informasi yang relevan dalam artikel, kembalikan null,\\n- Kebijakan preferensial hotel: {{policy}} Kontrol jumlah kata dalam 30 kata. Jika tidak ada informasi yang relevan dalam artikel, kembalikan null\\n\\n\\n(3)\\nSilakan ekstrak informasi aktivitas dalam format JSON [{\\\"name\\\";,\\\"city\\\";,\\\"district\\\";,\\\"address\\\";,\\\"tel\\\";,\\\"feedback\\\";,\\\"positive\\\";,\\\"negative\\\";,\\\"flavor\\\";,\\\"surround\\\";,\\\"cost\\\":,\\\"policy\\\";,},{}]. Catatan, jangan kembalikan karakter apa pun selain JSON itu sendiri.\n\n\nBerikut adalah konten panduan perjalanan input: Koleksi Utama Hotel Boutique & Resort di Amerika Serikat\nTanpa peringkat khusus - berbagi hotel favorit saya dari dua tahun terakhir\n-\n·P2-P3 The Lodge at Pebble Beach, California\nPemandangan laut yang menakjubkan dengan desain minimalis. Sempurna untuk fotografi. Properti ini terasa seperti galeri seni dengan layanan luar biasa dan masakan gourmet. Harga sekitar $1,200+ per malam\n-\n·P4-P5 Amangiri, Utah\nLokasi Amangiri selalu sempurna. Properti Utah ini berada di ketinggian 4,000 kaki di Canyon Point, dikelilingi pemandangan gurun yang menakjubkan. Anda tidak akan ingin pergi setelah satu malam. Resort ini juga menawarkan perawatan spa kelas dunia dan masakan mewah. Sangat direkomendasikan. Harga $2,000-4,000+ per malam\n-\n·P6-P7 Blackberry Farm, Tennessee\nBlackberry Farm benar-benar luar biasa - ini adalah pengalaman resort pertanian mewah yang saya sukai. Semua kamar dilengkapi teknologi rumah pintar dan minibar yang lengkap. Lingkungannya berbicara sendiri - kemewahan yang canggih. Harga $1,500-3,000+ per malam\n-\n·P8-P9 The Greenwich Hotel, New York\nThe Greenwich Hotel jujur adalah hotel mewah dengan nilai terbaik tempat saya menginap. Tidak heran sering penuh. Anda mendapat pengalaman hotel $2,000+ dengan harga di bawah $800. Layanan luar biasa dengan sentuhan personal. Minuman gratis di kulkas lobi, dan lounge teh lantai dasar gratis digunakan dengan layanan teh. Properti yang sangat ramah yang terasa seperti rumah. Harga $600-1,200+ per malam\n-\n·P10-P11 The Ritz-Carlton, Half Moon Bay\nWajib dikunjungi saat mengunjungi Bay Area. Desain mewah bergaya Prancis sangat luar biasa. $1,200+ terasa seperti pengalaman $3,000. Layanan bintang lima di mana-mana, buffet sarapan yang luar biasa, dan Anda bisa merasakan lapangan golf kejuaraan mereka ⛳️\n-\n·P12-P13 Post Ranch Inn, Big Sur\nProperti lain yang sangat saya sukai karena estetikanya. Big Sur terasa lebih premium dan mewah, cenderung ke wilayah resort ultra-mewah. Desain yang luar biasa, sarapan yang menakjubkan dengan fusion Timur-Barat, dan Anda bisa memesan pengalaman api unggulan mereka untuk foto yang menakjubkan. Harga $1,500-8,000+ per malam\n-\n·P14-P15 Four Seasons Resort Jackson Hole\nHarga berkisar dari $1,500+ hingga $15,000+ dengan opsi villa pribadi. Pemandangan pegunungan benar-benar menakjubkan. Layanan profesional, masakan dan akomodasi yang luar biasa\n#LiburanAkhirPekan #WisataAS #HotelMewah #HotelBoutique #HotelDesain #WisataCalifornia #WisataUtah #Wisata #HotelNYC",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "city": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "district": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "tel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "feedback": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "Ya",
+                            "Tidak",
+                            null
+                        ],
+                        "能力项": "特定格式"
+                    },
+                    "positive": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "negative": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "flavor": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "surround": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "cost": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "policy": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束、10~50字"
+                    }
+                },
+                "required": [
+                    "name",
+                    "city",
+                    "district",
+                    "address",
+                    "tel",
+                    "feedback",
+                    "positive",
+                    "negative",
+                    "flavor",
+                    "surround",
+                    "cost",
+                    "policy"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah pedagang hotel yang mengorganisir informasi hotel. Saya akan memberikan Anda panduan perjalanan media sosial yang berisi informasi tentang hotel, atraksi, layanan, dll. Anda perlu mengekstrak informasi dasar dari berbagai hotel sesuai dengan persyaratan saya sebagai berikut:\n\n(1) Panduan perjalanan mungkin berisi beberapa hotel. Silakan ekstrak nama dan karakteristik hotel yang berbeda dari panduan perjalanan yang diberikan;\n\n(2) Untuk setiap hotel, Anda perlu mengekstrak semua informasi yang relevan dan memenuhi persyaratan berikut:\\n- Nama hotel: {{name}},\\n- Kota hotel: {{city}} Prioritaskan mengidentifikasi kota di mana hotel berada dari artikel. Jika Anda tidak bisa mendapatkan kota di mana hotel berada, identifikasi atraksi di sekitar hotel dari artikel dan tentukan kota berdasarkan atraksi,\\n- Distrik administratif hotel: {{district}}, Prioritaskan mengidentifikasi distrik administratif di mana hotel berada dari artikel. Jika Anda tidak bisa mendapatkan distrik administratif di mana hotel berada, identifikasi atraksi di sekitar hotel dari artikel dan tentukan distrik administratif berdasarkan atraksi,\\n- Alamat hotel: {{address}} Prioritaskan mengidentifikasi alamat hotel dari artikel, termasuk provinsi, kota, distrik/kabupaten dan jalan. Jika Anda tidak bisa mendapatkan alamat hotel, identifikasi nama atraksi terkenal di sekitar alamat hotel dari artikel. Jika tidak ada informasi lokasi, kembalikan null,\\n- Telepon hotel: {{tel}} Identifikasi nomor telepon hotel dari artikel. Jika tidak ada informasi yang relevan, kembalikan null,\\n- Umpan balik: {{feedback}} Silakan menilai berdasarkan isi artikel apakah artikel ini merekomendasikan menginap di hotel ini. Umumnya, selama tidak ada masalah yang disebutkan atau ada evaluasi umum, itu dianggap direkomendasikan. Hasil output adalah \"Ya\" atau \"Tidak\". Jika Anda tidak bisa menilai, silakan output null,\\n- Deskripsi positif: {{positive}} Deskripsi dalam konten panduan yang memiliki kecenderungan emosional positif terhadap hotel,\\n- Deskripsi negatif: {{negative}} Deskripsi dalam konten panduan yang memiliki kecenderungan emosional negatif terhadap hotel,\\n- Fitur hotel: {{flavor}} Ekstrak fasilitas karakteristik hotel dan lingkungan sekitar yang disebutkan dalam teks, seperti kolam infinity, atap berbintang, dll. Jika tidak ada informasi yang relevan, kembalikan null,\\n- Sekitar hotel: {{surround}} Ekstrak nama area pemandangan yang disebutkan dalam teks. Jika tidak ada informasi lokasi, kembalikan null,\\n- Biaya hotel: {{cost}} Informasi terkait tarif hotel, termasuk jenis kamar dan harga. Jika tidak ada informasi yang relevan dalam artikel, kembalikan null,\\n- Kebijakan preferensial hotel: {{policy}} Kontrol jumlah kata dalam 30 kata. Jika tidak ada informasi yang relevan dalam artikel, kembalikan null\\n\\n\\n(3)\\nSilakan ekstrak informasi aktivitas dalam format JSON [{\\\"name\\\";,\\\"city\\\";,\\\"district\\\";,\\\"address\\\";,\\\"tel\\\";,\\\"feedback\\\";,\\\"positive\\\";,\\\"negative\\\";,\\\"flavor\\\";,\\\"surround\\\";,\\\"cost\\\":,\\\"policy\\\";,},{}]. Catatan, jangan kembalikan karakter apa pun selain JSON itu sendiri.\n\n\nBerikut adalah konten panduan perjalanan input: Rekomendasi hotel dekat Times Square, New York: The Marriott Marquis, lokasi sangat baik, jarak jalan kaki ke teater Broadway, dekat Times Square dan Central Park. Kamar luas dan bersih, layanan luar biasa, buffet sarapan yang kaya. Harga sekitar $400/malam, penawaran khusus akhir pekan tersedia. Sangat direkomendasikan.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "city": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "district": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "tel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "feedback": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "Ya",
+                            "Tidak",
+                            null
+                        ],
+                        "能力项": "特定格式"
+                    },
+                    "positive": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "negative": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "flavor": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "surround": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "cost": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "policy": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束、10~50字"
+                    }
+                },
+                "required": [
+                    "name",
+                    "city",
+                    "district",
+                    "address",
+                    "tel",
+                    "feedback",
+                    "positive",
+                    "negative",
+                    "flavor",
+                    "surround",
+                    "cost",
+                    "policy"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah pedagang hotel yang mengorganisir informasi hotel. Saya akan memberikan Anda panduan perjalanan media sosial yang berisi informasi tentang hotel, atraksi, layanan, dll. Anda perlu mengekstrak informasi dasar dari berbagai hotel sesuai dengan persyaratan saya sebagai berikut:\n\n(1) Panduan perjalanan mungkin berisi beberapa hotel. Silakan ekstrak nama dan karakteristik hotel yang berbeda dari panduan perjalanan yang diberikan;\n\n(2) Untuk setiap hotel, Anda perlu mengekstrak semua informasi yang relevan dan memenuhi persyaratan berikut:\\n- Nama hotel: {{name}},\\n- Kota hotel: {{city}} Prioritaskan mengidentifikasi kota di mana hotel berada dari artikel. Jika Anda tidak bisa mendapatkan kota di mana hotel berada, identifikasi atraksi di sekitar hotel dari artikel dan tentukan kota berdasarkan atraksi,\\n- Distrik administratif hotel: {{district}}, Prioritaskan mengidentifikasi distrik administratif di mana hotel berada dari artikel. Jika Anda tidak bisa mendapatkan distrik administratif di mana hotel berada, identifikasi atraksi di sekitar hotel dari artikel dan tentukan distrik administratif berdasarkan atraksi,\\n- Alamat hotel: {{address}} Prioritaskan mengidentifikasi alamat hotel dari artikel, termasuk provinsi, kota, distrik/kabupaten dan jalan. Jika Anda tidak bisa mendapatkan alamat hotel, identifikasi nama atraksi terkenal di sekitar alamat hotel dari artikel. Jika tidak ada informasi lokasi, kembalikan null,\\n- Telepon hotel: {{tel}} Identifikasi nomor telepon hotel dari artikel. Jika tidak ada informasi yang relevan, kembalikan null,\\n- Umpan balik: {{feedback}} Silakan menilai berdasarkan isi artikel apakah artikel ini merekomendasikan menginap di hotel ini. Umumnya, selama tidak ada masalah yang disebutkan atau ada evaluasi umum, itu dianggap direkomendasikan. Hasil output adalah \"Ya\" atau \"Tidak\". Jika Anda tidak bisa menilai, silakan output null,\\n- Deskripsi positif: {{positive}} Deskripsi dalam konten panduan yang memiliki kecenderungan emosional positif terhadap hotel,\\n- Deskripsi negatif: {{negative}} Deskripsi dalam konten panduan yang memiliki kecenderungan emosional negatif terhadap hotel,\\n- Fitur hotel: {{flavor}} Ekstrak fasilitas karakteristik hotel dan lingkungan sekitar yang disebutkan dalam teks, seperti kolam infinity, atap berbintang, dll. Jika tidak ada informasi yang relevan, kembalikan null,\\n- Sekitar hotel: {{surround}} Ekstrak nama area pemandangan yang disebutkan dalam teks. Jika tidak ada informasi lokasi, kembalikan null,\\n- Biaya hotel: {{cost}} Informasi terkait tarif hotel, termasuk jenis kamar dan harga. Jika tidak ada informasi yang relevan dalam artikel, kembalikan null,\\n- Kebijakan preferensial hotel: {{policy}} Kontrol jumlah kata dalam 30 kata. Jika tidak ada informasi yang relevan dalam artikel, kembalikan null\\n\\n\\n(3)\\nSilakan ekstrak informasi aktivitas dalam format JSON [{\\\"name\\\";,\\\"city\\\";,\\\"district\\\";,\\\"address\\\";,\\\"tel\\\";,\\\"feedback\\\";,\\\"positive\\\";,\\\"negative\\\";,\\\"flavor\\\";,\\\"surround\\\";,\\\"cost\\\":,\\\"policy\\\";,},{}]. Catatan, jangan kembalikan karakter apa pun selain JSON itu sendiri.\n\n\nBerikut adalah konten panduan perjalanan input: Hilton San Francisco Union Square, transportasi nyaman, jarak jalan kaki ke Chinatown dan Fisherman's Wharf. Pemandangan kamar yang bagus, layanan yang perhatian, pusat kebugaran dan kolam renang tersedia. Harga sekitar $350/malam, diskon liburan tersedia.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "city": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "district": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "tel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "feedback": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "Ya",
+                            "Tidak",
+                            null
+                        ],
+                        "能力项": "特定格式"
+                    },
+                    "positive": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "negative": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "flavor": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "surround": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "cost": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "policy": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束、10~50字"
+                    }
+                },
+                "required": [
+                    "name",
+                    "city",
+                    "district",
+                    "address",
+                    "tel",
+                    "feedback",
+                    "positive",
+                    "negative",
+                    "flavor",
+                    "surround",
+                    "cost",
+                    "policy"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah pedagang hotel yang mengorganisir informasi hotel. Saya akan memberikan Anda panduan perjalanan media sosial yang berisi informasi tentang hotel, atraksi, layanan, dll. Anda perlu mengekstrak informasi dasar dari berbagai hotel sesuai dengan persyaratan saya sebagai berikut:\n\n(1) Panduan perjalanan mungkin berisi beberapa hotel. Silakan ekstrak nama dan karakteristik hotel yang berbeda dari panduan perjalanan yang diberikan;\n\n(2) Untuk setiap hotel, Anda perlu mengekstrak semua informasi yang relevan dan memenuhi persyaratan berikut:\\n- Nama hotel: {{name}},\\n- Kota hotel: {{city}} Prioritaskan mengidentifikasi kota di mana hotel berada dari artikel. Jika Anda tidak bisa mendapatkan kota di mana hotel berada, identifikasi atraksi di sekitar hotel dari artikel dan tentukan kota berdasarkan atraksi,\\n- Distrik administratif hotel: {{district}}, Prioritaskan mengidentifikasi distrik administratif di mana hotel berada dari artikel. Jika Anda tidak bisa mendapatkan distrik administratif di mana hotel berada, identifikasi atraksi di sekitar hotel dari artikel dan tentukan distrik administratif berdasarkan atraksi,\\n- Alamat hotel: {{address}} Prioritaskan mengidentifikasi alamat hotel dari artikel, termasuk provinsi, kota, distrik/kabupaten dan jalan. Jika Anda tidak bisa mendapatkan alamat hotel, identifikasi nama atraksi terkenal di sekitar alamat hotel dari artikel. Jika tidak ada informasi lokasi, kembalikan null,\\n- Telepon hotel: {{tel}} Identifikasi nomor telepon hotel dari artikel. Jika tidak ada informasi yang relevan, kembalikan null,\\n- Umpan balik: {{feedback}} Silakan menilai berdasarkan isi artikel apakah artikel ini merekomendasikan menginap di hotel ini. Umumnya, selama tidak ada masalah yang disebutkan atau ada evaluasi umum, itu dianggap direkomendasikan. Hasil output adalah \"Ya\" atau \"Tidak\". Jika Anda tidak bisa menilai, silakan output null,\\n- Deskripsi positif: {{positive}} Deskripsi dalam konten panduan yang memiliki kecenderungan emosional positif terhadap hotel,\\n- Deskripsi negatif: {{negative}} Deskripsi dalam konten panduan yang memiliki kecenderungan emosional negatif terhadap hotel,\\n- Fitur hotel: {{flavor}} Ekstrak fasilitas karakteristik hotel dan lingkungan sekitar yang disebutkan dalam teks, seperti kolam infinity, atap berbintang, dll. Jika tidak ada informasi yang relevan, kembalikan null,\\n- Sekitar hotel: {{surround}} Ekstrak nama area pemandangan yang disebutkan dalam teks. Jika tidak ada informasi lokasi, kembalikan null,\\n- Biaya hotel: {{cost}} Informasi terkait tarif hotel, termasuk jenis kamar dan harga. Jika tidak ada informasi yang relevan dalam artikel, kembalikan null,\\n- Kebijakan preferensial hotel: {{policy}} Kontrol jumlah kata dalam 30 kata. Jika tidak ada informasi yang relevan dalam artikel, kembalikan null\\n\\n\\n(3)\\nSilakan ekstrak informasi aktivitas dalam format JSON [{\\\"name\\\";,\\\"city\\\";,\\\"district\\\";,\\\"address\\\";,\\\"tel\\\";,\\\"feedback\\\";,\\\"positive\\\";,\\\"negative\\\";,\\\"flavor\\\";,\\\"surround\\\";,\\\"cost\\\":,\\\"policy\\\";,},{}]. Catatan, jangan kembalikan karakter apa pun selain JSON itu sendiri.\n\n\nBerikut adalah konten panduan perjalanan input: Mountain View Hotel dekat Taman Nasional Yosemite, lingkungan yang indah, dekat dengan Yosemite Valley. Kamar yang nyaman, layanan yang ramah. Sarapan tidak termasuk, ramah anggaran sekitar $150/malam. Sempurna untuk wisatawan yang sadar anggaran.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "city": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "district": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "tel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "feedback": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "Ya",
+                            "Tidak",
+                            null
+                        ],
+                        "能力项": "特定格式"
+                    },
+                    "positive": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "negative": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "flavor": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "surround": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "cost": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "policy": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束、10~50字"
+                    }
+                },
+                "required": [
+                    "name",
+                    "city",
+                    "district",
+                    "address",
+                    "tel",
+                    "feedback",
+                    "positive",
+                    "negative",
+                    "flavor",
+                    "surround",
+                    "cost",
+                    "policy"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah pedagang hotel yang mengorganisir informasi hotel. Saya akan memberikan Anda panduan perjalanan media sosial yang berisi informasi tentang hotel, atraksi, layanan, dll. Anda perlu mengekstrak informasi dasar dari berbagai hotel sesuai dengan persyaratan saya sebagai berikut:\n\n(1) Panduan perjalanan mungkin berisi beberapa hotel. Silakan ekstrak nama dan karakteristik hotel yang berbeda dari panduan perjalanan yang diberikan;\n\n(2) Untuk setiap hotel, Anda perlu mengekstrak semua informasi yang relevan dan memenuhi persyaratan berikut:\\n- Nama hotel: {{name}},\\n- Kota hotel: {{city}} Prioritaskan mengidentifikasi kota di mana hotel berada dari artikel. Jika Anda tidak bisa mendapatkan kota di mana hotel berada, identifikasi atraksi di sekitar hotel dari artikel dan tentukan kota berdasarkan atraksi,\\n- Distrik administratif hotel: {{district}}, Prioritaskan mengidentifikasi distrik administratif di mana hotel berada dari artikel. Jika Anda tidak bisa mendapatkan distrik administratif di mana hotel berada, identifikasi atraksi di sekitar hotel dari artikel dan tentukan distrik administratif berdasarkan atraksi,\\n- Alamat hotel: {{address}} Prioritaskan mengidentifikasi alamat hotel dari artikel, termasuk provinsi, kota, distrik/kabupaten dan jalan. Jika Anda tidak bisa mendapatkan alamat hotel, identifikasi nama atraksi terkenal di sekitar alamat hotel dari artikel. Jika tidak ada informasi lokasi, kembalikan null,\\n- Telepon hotel: {{tel}} Identifikasi nomor telepon hotel dari artikel. Jika tidak ada informasi yang relevan, kembalikan null,\\n- Umpan balik: {{feedback}} Silakan menilai berdasarkan isi artikel apakah artikel ini merekomendasikan menginap di hotel ini. Umumnya, selama tidak ada masalah yang disebutkan atau ada evaluasi umum, itu dianggap direkomendasikan. Hasil output adalah \"Ya\" atau \"Tidak\". Jika Anda tidak bisa menilai, silakan output null,\\n- Deskripsi positif: {{positive}} Deskripsi dalam konten panduan yang memiliki kecenderungan emosional positif terhadap hotel,\\n- Deskripsi negatif: {{negative}} Deskripsi dalam konten panduan yang memiliki kecenderungan emosional negatif terhadap hotel,\\n- Fitur hotel: {{flavor}} Ekstrak fasilitas karakteristik hotel dan lingkungan sekitar yang disebutkan dalam teks, seperti kolam infinity, atap berbintang, dll. Jika tidak ada informasi yang relevan, kembalikan null,\\n- Sekitar hotel: {{surround}} Ekstrak nama area pemandangan yang disebutkan dalam teks. Jika tidak ada informasi lokasi, kembalikan null,\\n- Biaya hotel: {{cost}} Informasi terkait tarif hotel, termasuk jenis kamar dan harga. Jika tidak ada informasi yang relevan dalam artikel, kembalikan null,\\n- Kebijakan preferensial hotel: {{policy}} Kontrol jumlah kata dalam 30 kata. Jika tidak ada informasi yang relevan dalam artikel, kembalikan null\\n\\n\\n(3)\\nSilakan ekstrak informasi aktivitas dalam format JSON [{\\\"name\\\";,\\\"city\\\";,\\\"district\\\";,\\\"address\\\";,\\\"tel\\\";,\\\"feedback\\\";,\\\"positive\\\";,\\\"negative\\\";,\\\"flavor\\\";,\\\"surround\\\";,\\\"cost\\\":,\\\"policy\\\";,},{}]. Catatan, jangan kembalikan karakter apa pun selain JSON itu sendiri.\n\n\nBerikut adalah konten panduan perjalanan input: The Ritz-Carlton Boston Common, lokasi utama tepat di Boston Common. Kamar mewah, sarapan buffet, layanan sempurna. Mulai dari $500/malam. Penawaran upgrade suite mewah liburan tersedia.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "city": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "district": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "tel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "feedback": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "Ya",
+                            "Tidak",
+                            null
+                        ],
+                        "能力项": "特定格式"
+                    },
+                    "positive": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "negative": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "flavor": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "surround": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "cost": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "policy": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束、10~50字"
+                    }
+                },
+                "required": [
+                    "name",
+                    "city",
+                    "district",
+                    "address",
+                    "tel",
+                    "feedback",
+                    "positive",
+                    "negative",
+                    "flavor",
+                    "surround",
+                    "cost",
+                    "policy"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah pedagang hotel yang mengorganisir informasi hotel. Saya akan memberikan Anda panduan perjalanan media sosial yang berisi informasi tentang hotel, atraksi, layanan, dll. Anda perlu mengekstrak informasi dasar dari berbagai hotel sesuai dengan persyaratan saya sebagai berikut:\n\n(1) Panduan perjalanan mungkin berisi beberapa hotel. Silakan ekstrak nama dan karakteristik hotel yang berbeda dari panduan perjalanan yang diberikan;\n\n(2) Untuk setiap hotel, Anda perlu mengekstrak semua informasi yang relevan dan memenuhi persyaratan berikut:\\n- Nama hotel: {{name}},\\n- Kota hotel: {{city}} Prioritaskan mengidentifikasi kota di mana hotel berada dari artikel. Jika Anda tidak bisa mendapatkan kota di mana hotel berada, identifikasi atraksi di sekitar hotel dari artikel dan tentukan kota berdasarkan atraksi,\\n- Distrik administratif hotel: {{district}}, Prioritaskan mengidentifikasi distrik administratif di mana hotel berada dari artikel. Jika Anda tidak bisa mendapatkan distrik administratif di mana hotel berada, identifikasi atraksi di sekitar hotel dari artikel dan tentukan distrik administratif berdasarkan atraksi,\\n- Alamat hotel: {{address}} Prioritaskan mengidentifikasi alamat hotel dari artikel, termasuk provinsi, kota, distrik/kabupaten dan jalan. Jika Anda tidak bisa mendapatkan alamat hotel, identifikasi nama atraksi terkenal di sekitar alamat hotel dari artikel. Jika tidak ada informasi lokasi, kembalikan null,\\n- Telepon hotel: {{tel}} Identifikasi nomor telepon hotel dari artikel. Jika tidak ada informasi yang relevan, kembalikan null,\\n- Umpan balik: {{feedback}} Silakan menilai berdasarkan isi artikel apakah artikel ini merekomendasikan menginap di hotel ini. Umumnya, selama tidak ada masalah yang disebutkan atau ada evaluasi umum, itu dianggap direkomendasikan. Hasil output adalah \"Ya\" atau \"Tidak\". Jika Anda tidak bisa menilai, silakan output null,\\n- Deskripsi positif: {{positive}} Deskripsi dalam konten panduan yang memiliki kecenderungan emosional positif terhadap hotel,\\n- Deskripsi negatif: {{negative}} Deskripsi dalam konten panduan yang memiliki kecenderungan emosional negatif terhadap hotel,\\n- Fitur hotel: {{flavor}} Ekstrak fasilitas karakteristik hotel dan lingkungan sekitar yang disebutkan dalam teks, seperti kolam infinity, atap berbintang, dll. Jika tidak ada informasi yang relevan, kembalikan null,\\n- Sekitar hotel: {{surround}} Ekstrak nama area pemandangan yang disebutkan dalam teks. Jika tidak ada informasi lokasi, kembalikan null,\\n- Biaya hotel: {{cost}} Informasi terkait tarif hotel, termasuk jenis kamar dan harga. Jika tidak ada informasi yang relevan dalam artikel, kembalikan null,\\n- Kebijakan preferensial hotel: {{policy}} Kontrol jumlah kata dalam 30 kata. Jika tidak ada informasi yang relevan dalam artikel, kembalikan null\\n\\n\\n(3)\\nSilakan ekstrak informasi aktivitas dalam format JSON [{\\\"name\\\";,\\\"city\\\";,\\\"district\\\";,\\\"address\\\";,\\\"tel\\\";,\\\"feedback\\\";,\\\"positive\\\";,\\\"negative\\\";,\\\"flavor\\\";,\\\"surround\\\";,\\\"cost\\\":,\\\"policy\\\";,},{}]. Catatan, jangan kembalikan karakter apa pun selain JSON itu sendiri.\n\n\nBerikut adalah konten panduan perjalanan input: Harbor View Hotel dekat Pike Place Market, Seattle, pemandangan malam yang menakjubkan, jarak jalan kaki ke Pike Place Market dan Space Needle. Kamar bersih, staf resepsionis yang antusias. $300/malam, promosi sarapan gratis akhir pekan.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "city": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "district": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "tel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "feedback": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "Ya",
+                            "Tidak",
+                            null
+                        ],
+                        "能力项": "特定格式"
+                    },
+                    "positive": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "negative": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "flavor": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "surround": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "cost": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "policy": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束、10~50字"
+                    }
+                },
+                "required": [
+                    "name",
+                    "city",
+                    "district",
+                    "address",
+                    "tel",
+                    "feedback",
+                    "positive",
+                    "negative",
+                    "flavor",
+                    "surround",
+                    "cost",
+                    "policy"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah pedagang hotel yang mengorganisir informasi hotel. Saya akan memberikan Anda panduan perjalanan media sosial yang berisi informasi tentang hotel, atraksi, layanan, dll. Anda perlu mengekstrak informasi dasar dari berbagai hotel sesuai dengan persyaratan saya sebagai berikut:\n\n(1) Panduan perjalanan mungkin berisi beberapa hotel. Silakan ekstrak nama dan karakteristik hotel yang berbeda dari panduan perjalanan yang diberikan;\n\n(2) Untuk setiap hotel, Anda perlu mengekstrak semua informasi yang relevan dan memenuhi persyaratan berikut:\\n- Nama hotel: {{name}},\\n- Kota hotel: {{city}} Prioritaskan mengidentifikasi kota di mana hotel berada dari artikel. Jika Anda tidak bisa mendapatkan kota di mana hotel berada, identifikasi atraksi di sekitar hotel dari artikel dan tentukan kota berdasarkan atraksi,\\n- Distrik administratif hotel: {{district}}, Prioritaskan mengidentifikasi distrik administratif di mana hotel berada dari artikel. Jika Anda tidak bisa mendapatkan distrik administratif di mana hotel berada, identifikasi atraksi di sekitar hotel dari artikel dan tentukan distrik administratif berdasarkan atraksi,\\n- Alamat hotel: {{address}} Prioritaskan mengidentifikasi alamat hotel dari artikel, termasuk provinsi, kota, distrik/kabupaten dan jalan. Jika Anda tidak bisa mendapatkan alamat hotel, identifikasi nama atraksi terkenal di sekitar alamat hotel dari artikel. Jika tidak ada informasi lokasi, kembalikan null,\\n- Telepon hotel: {{tel}} Identifikasi nomor telepon hotel dari artikel. Jika tidak ada informasi yang relevan, kembalikan null,\\n- Umpan balik: {{feedback}} Silakan menilai berdasarkan isi artikel apakah artikel ini merekomendasikan menginap di hotel ini. Umumnya, selama tidak ada masalah yang disebutkan atau ada evaluasi umum, itu dianggap direkomendasikan. Hasil output adalah \"Ya\" atau \"Tidak\". Jika Anda tidak bisa menilai, silakan output null,\\n- Deskripsi positif: {{positive}} Deskripsi dalam konten panduan yang memiliki kecenderungan emosional positif terhadap hotel,\\n- Deskripsi negatif: {{negative}} Deskripsi dalam konten panduan yang memiliki kecenderungan emosional negatif terhadap hotel,\\n- Fitur hotel: {{flavor}} Ekstrak fasilitas karakteristik hotel dan lingkungan sekitar yang disebutkan dalam teks, seperti kolam infinity, atap berbintang, dll. Jika tidak ada informasi yang relevan, kembalikan null,\\n- Sekitar hotel: {{surround}} Ekstrak nama area pemandangan yang disebutkan dalam teks. Jika tidak ada informasi lokasi, kembalikan null,\\n- Biaya hotel: {{cost}} Informasi terkait tarif hotel, termasuk jenis kamar dan harga. Jika tidak ada informasi yang relevan dalam artikel, kembalikan null,\\n- Kebijakan preferensial hotel: {{policy}} Kontrol jumlah kata dalam 30 kata. Jika tidak ada informasi yang relevan dalam artikel, kembalikan null\\n\\n\\n(3)\\nSilakan ekstrak informasi aktivitas dalam format JSON [{\\\"name\\\";,\\\"city\\\";,\\\"district\\\";,\\\"address\\\";,\\\"tel\\\";,\\\"feedback\\\";,\\\"positive\\\";,\\\"negative\\\";,\\\"flavor\\\";,\\\"surround\\\";,\\\"cost\\\":,\\\"policy\\\";,},{}]. Catatan, jangan kembalikan karakter apa pun selain JSON itu sendiri.\n\n\nBerikut adalah konten panduan perjalanan input: The Palmer House Hilton Chicago, lokasi sangat baik dekat Millennium Park dan Art Institute of Chicago. Kamar bersih, layanan yang perhatian. $400/malam, penawaran penukaran poin liburan tersedia.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "city": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "district": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "tel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "feedback": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "Ya",
+                            "Tidak",
+                            null
+                        ],
+                        "能力项": "特定格式"
+                    },
+                    "positive": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "negative": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "flavor": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "surround": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "cost": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "policy": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束、10~50字"
+                    }
+                },
+                "required": [
+                    "name",
+                    "city",
+                    "district",
+                    "address",
+                    "tel",
+                    "feedback",
+                    "positive",
+                    "negative",
+                    "flavor",
+                    "surround",
+                    "cost",
+                    "policy"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah pedagang hotel yang mengorganisir informasi hotel. Saya akan memberikan Anda panduan perjalanan media sosial yang berisi informasi tentang hotel, atraksi, layanan, dll. Anda perlu mengekstrak informasi dasar dari berbagai hotel sesuai dengan persyaratan saya sebagai berikut:\n\n(1) Panduan perjalanan mungkin berisi beberapa hotel. Silakan ekstrak nama dan karakteristik hotel yang berbeda dari panduan perjalanan yang diberikan;\n\n(2) Untuk setiap hotel, Anda perlu mengekstrak semua informasi yang relevan dan memenuhi persyaratan berikut:\\n- Nama hotel: {{name}},\\n- Kota hotel: {{city}} Prioritaskan mengidentifikasi kota di mana hotel berada dari artikel. Jika Anda tidak bisa mendapatkan kota di mana hotel berada, identifikasi atraksi di sekitar hotel dari artikel dan tentukan kota berdasarkan atraksi,\\n- Distrik administratif hotel: {{district}}, Prioritaskan mengidentifikasi distrik administratif di mana hotel berada dari artikel. Jika Anda tidak bisa mendapatkan distrik administratif di mana hotel berada, identifikasi atraksi di sekitar hotel dari artikel dan tentukan distrik administratif berdasarkan atraksi,\\n- Alamat hotel: {{address}} Prioritaskan mengidentifikasi alamat hotel dari artikel, termasuk provinsi, kota, distrik/kabupaten dan jalan. Jika Anda tidak bisa mendapatkan alamat hotel, identifikasi nama atraksi terkenal di sekitar alamat hotel dari artikel. Jika tidak ada informasi lokasi, kembalikan null,\\n- Telepon hotel: {{tel}} Identifikasi nomor telepon hotel dari artikel. Jika tidak ada informasi yang relevan, kembalikan null,\\n- Umpan balik: {{feedback}} Silakan menilai berdasarkan isi artikel apakah artikel ini merekomendasikan menginap di hotel ini. Umumnya, selama tidak ada masalah yang disebutkan atau ada evaluasi umum, itu dianggap direkomendasikan. Hasil output adalah \"Ya\" atau \"Tidak\". Jika Anda tidak bisa menilai, silakan output null,\\n- Deskripsi positif: {{positive}} Deskripsi dalam konten panduan yang memiliki kecenderungan emosional positif terhadap hotel,\\n- Deskripsi negatif: {{negative}} Deskripsi dalam konten panduan yang memiliki kecenderungan emosional negatif terhadap hotel,\\n- Fitur hotel: {{flavor}} Ekstrak fasilitas karakteristik hotel dan lingkungan sekitar yang disebutkan dalam teks, seperti kolam infinity, atap berbintang, dll. Jika tidak ada informasi yang relevan, kembalikan null,\\n- Sekitar hotel: {{surround}} Ekstrak nama area pemandangan yang disebutkan dalam teks. Jika tidak ada informasi lokasi, kembalikan null,\\n- Biaya hotel: {{cost}} Informasi terkait tarif hotel, termasuk jenis kamar dan harga. Jika tidak ada informasi yang relevan dalam artikel, kembalikan null,\\n- Kebijakan preferensial hotel: {{policy}} Kontrol jumlah kata dalam 30 kata. Jika tidak ada informasi yang relevan dalam artikel, kembalikan null\\n\\n\\n(3)\\nSilakan ekstrak informasi aktivitas dalam format JSON [{\\\"name\\\";,\\\"city\\\";,\\\"district\\\";,\\\"address\\\";,\\\"tel\\\";,\\\"feedback\\\";,\\\"positive\\\";,\\\"negative\\\";,\\\"flavor\\\";,\\\"surround\\\";,\\\"cost\\\":,\\\"policy\\\";,},{}]. Catatan, jangan kembalikan karakter apa pun selain JSON itu sendiri.\n\n\nBerikut adalah konten panduan perjalanan input: Oceanfront Resort dekat Disneyland, Anaheim, dekat Disneyland dan Disney California Adventure, sempurna untuk perjalanan keluarga. Kamar luas, fasilitas lengkap. $250/malam, paket makanan anak liburan tersedia.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "city": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "district": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "tel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "feedback": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "Ya",
+                            "Tidak",
+                            null
+                        ],
+                        "能力项": "特定格式"
+                    },
+                    "positive": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "negative": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "flavor": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "surround": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "cost": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "policy": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束、10~50字"
+                    }
+                },
+                "required": [
+                    "name",
+                    "city",
+                    "district",
+                    "address",
+                    "tel",
+                    "feedback",
+                    "positive",
+                    "negative",
+                    "flavor",
+                    "surround",
+                    "cost",
+                    "policy"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah pedagang hotel yang mengorganisir informasi hotel. Saya akan memberikan Anda panduan perjalanan media sosial yang berisi informasi tentang hotel, atraksi, layanan, dll. Anda perlu mengekstrak informasi dasar dari berbagai hotel sesuai dengan persyaratan saya sebagai berikut:\n\n(1) Panduan perjalanan mungkin berisi beberapa hotel. Silakan ekstrak nama dan karakteristik hotel yang berbeda dari panduan perjalanan yang diberikan;\n\n(2) Untuk setiap hotel, Anda perlu mengekstrak semua informasi yang relevan dan memenuhi persyaratan berikut:\\n- Nama hotel: {{name}},\\n- Kota hotel: {{city}} Prioritaskan mengidentifikasi kota di mana hotel berada dari artikel. Jika Anda tidak bisa mendapatkan kota di mana hotel berada, identifikasi atraksi di sekitar hotel dari artikel dan tentukan kota berdasarkan atraksi,\\n- Distrik administratif hotel: {{district}}, Prioritaskan mengidentifikasi distrik administratif di mana hotel berada dari artikel. Jika Anda tidak bisa mendapatkan distrik administratif di mana hotel berada, identifikasi atraksi di sekitar hotel dari artikel dan tentukan distrik administratif berdasarkan atraksi,\\n- Alamat hotel: {{address}} Prioritaskan mengidentifikasi alamat hotel dari artikel, termasuk provinsi, kota, distrik/kabupaten dan jalan. Jika Anda tidak bisa mendapatkan alamat hotel, identifikasi nama atraksi terkenal di sekitar alamat hotel dari artikel. Jika tidak ada informasi lokasi, kembalikan null,\\n- Telepon hotel: {{tel}} Identifikasi nomor telepon hotel dari artikel. Jika tidak ada informasi yang relevan, kembalikan null,\\n- Umpan balik: {{feedback}} Silakan menilai berdasarkan isi artikel apakah artikel ini merekomendasikan menginap di hotel ini. Umumnya, selama tidak ada masalah yang disebutkan atau ada evaluasi umum, itu dianggap direkomendasikan. Hasil output adalah \"Ya\" atau \"Tidak\". Jika Anda tidak bisa menilai, silakan output null,\\n- Deskripsi positif: {{positive}} Deskripsi dalam konten panduan yang memiliki kecenderungan emosional positif terhadap hotel,\\n- Deskripsi negatif: {{negative}} Deskripsi dalam konten panduan yang memiliki kecenderungan emosional negatif terhadap hotel,\\n- Fitur hotel: {{flavor}} Ekstrak fasilitas karakteristik hotel dan lingkungan sekitar yang disebutkan dalam teks, seperti kolam infinity, atap berbintang, dll. Jika tidak ada informasi yang relevan, kembalikan null,\\n- Sekitar hotel: {{surround}} Ekstrak nama area pemandangan yang disebutkan dalam teks. Jika tidak ada informasi lokasi, kembalikan null,\\n- Biaya hotel: {{cost}} Informasi terkait tarif hotel, termasuk jenis kamar dan harga. Jika tidak ada informasi yang relevan dalam artikel, kembalikan null,\\n- Kebijakan preferensial hotel: {{policy}} Kontrol jumlah kata dalam 30 kata. Jika tidak ada informasi yang relevan dalam artikel, kembalikan null\\n\\n\\n(3)\\nSilakan ekstrak informasi aktivitas dalam format JSON [{\\\"name\\\";,\\\"city\\\";,\\\"district\\\";,\\\"address\\\";,\\\"tel\\\";,\\\"feedback\\\";,\\\"positive\\\";,\\\"negative\\\";,\\\"flavor\\\";,\\\"surround\\\";,\\\"cost\\\":,\\\"policy\\\";,},{}]. Catatan, jangan kembalikan karakter apa pun selain JSON itu sendiri.\n\n\nBerikut adalah konten panduan perjalanan input: Historic Inn di Beacon Hill, Boston, karakter bersejarah yang menawan, dekat Freedom Trail dan Boston Tea Party Ships. Kamar yang didekorasi unik, layanan yang hangat. $200/malam, pengalaman teh artisan akhir pekan tersedia.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "city": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "district": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "tel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "feedback": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "Ya",
+                            "Tidak",
+                            null
+                        ],
+                        "能力项": "特定格式"
+                    },
+                    "positive": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "negative": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "flavor": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "surround": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "cost": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "policy": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束、10~50字"
+                    }
+                },
+                "required": [
+                    "name",
+                    "city",
+                    "district",
+                    "address",
+                    "tel",
+                    "feedback",
+                    "positive",
+                    "negative",
+                    "flavor",
+                    "surround",
+                    "cost",
+                    "policy"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah pedagang hotel yang mengorganisir informasi hotel. Saya akan memberikan Anda panduan perjalanan media sosial yang berisi informasi tentang hotel, atraksi, layanan, dll. Anda perlu mengekstrak informasi dasar dari berbagai hotel sesuai dengan persyaratan saya sebagai berikut:\n\n(1) Panduan perjalanan mungkin berisi beberapa hotel. Silakan ekstrak nama dan karakteristik hotel yang berbeda dari panduan perjalanan yang diberikan;\n\n(2) Untuk setiap hotel, Anda perlu mengekstrak semua informasi yang relevan dan memenuhi persyaratan berikut:\\n- Nama hotel: {{name}},\\n- Kota hotel: {{city}} Prioritaskan mengidentifikasi kota di mana hotel berada dari artikel. Jika Anda tidak bisa mendapatkan kota di mana hotel berada, identifikasi atraksi di sekitar hotel dari artikel dan tentukan kota berdasarkan atraksi,\\n- Distrik administratif hotel: {{district}}, Prioritaskan mengidentifikasi distrik administratif di mana hotel berada dari artikel. Jika Anda tidak bisa mendapatkan distrik administratif di mana hotel berada, identifikasi atraksi di sekitar hotel dari artikel dan tentukan distrik administratif berdasarkan atraksi,\\n- Alamat hotel: {{address}} Prioritaskan mengidentifikasi alamat hotel dari artikel, termasuk provinsi, kota, distrik/kabupaten dan jalan. Jika Anda tidak bisa mendapatkan alamat hotel, identifikasi nama atraksi terkenal di sekitar alamat hotel dari artikel. Jika tidak ada informasi lokasi, kembalikan null,\\n- Telepon hotel: {{tel}} Identifikasi nomor telepon hotel dari artikel. Jika tidak ada informasi yang relevan, kembalikan null,\\n- Umpan balik: {{feedback}} Silakan menilai berdasarkan isi artikel apakah artikel ini merekomendasikan menginap di hotel ini. Umumnya, selama tidak ada masalah yang disebutkan atau ada evaluasi umum, itu dianggap direkomendasikan. Hasil output adalah \"Ya\" atau \"Tidak\". Jika Anda tidak bisa menilai, silakan output null,\\n- Deskripsi positif: {{positive}} Deskripsi dalam konten panduan yang memiliki kecenderungan emosional positif terhadap hotel,\\n- Deskripsi negatif: {{negative}} Deskripsi dalam konten panduan yang memiliki kecenderungan emosional negatif terhadap hotel,\\n- Fitur hotel: {{flavor}} Ekstrak fasilitas karakteristik hotel dan lingkungan sekitar yang disebutkan dalam teks, seperti kolam infinity, atap berbintang, dll. Jika tidak ada informasi yang relevan, kembalikan null,\\n- Sekitar hotel: {{surround}} Ekstrak nama area pemandangan yang disebutkan dalam teks. Jika tidak ada informasi lokasi, kembalikan null,\\n- Biaya hotel: {{cost}} Informasi terkait tarif hotel, termasuk jenis kamar dan harga. Jika tidak ada informasi yang relevan dalam artikel, kembalikan null,\\n- Kebijakan preferensial hotel: {{policy}} Kontrol jumlah kata dalam 30 kata. Jika tidak ada informasi yang relevan dalam artikel, kembalikan null\\n\\n\\n(3)\\nSilakan ekstrak informasi aktivitas dalam format JSON [{\\\"name\\\";,\\\"city\\\";,\\\"district\\\";,\\\"address\\\";,\\\"tel\\\";,\\\"feedback\\\";,\\\"positive\\\";,\\\"negative\\\";,\\\"flavor\\\";,\\\"surround\\\";,\\\"cost\\\":,\\\"policy\\\";,},{}]. Catatan, jangan kembalikan karakter apa pun selain JSON itu sendiri.\n\n\nBerikut adalah konten panduan perjalanan input: Downtown Hotel dekat Golden Gate Bridge, San Francisco, transportasi nyaman, dikelilingi Lombard Street dan tur Alcatraz. Kamar yang nyaman, layanan rata-rata. $180/malam, tidak ada penawaran khusus.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "city": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "district": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "tel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "feedback": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "Ya",
+                            "Tidak",
+                            null
+                        ],
+                        "能力项": "特定格式"
+                    },
+                    "positive": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "negative": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "flavor": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "surround": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "cost": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "policy": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束、10~50字"
+                    }
+                },
+                "required": [
+                    "name",
+                    "city",
+                    "district",
+                    "address",
+                    "tel",
+                    "feedback",
+                    "positive",
+                    "negative",
+                    "flavor",
+                    "surround",
+                    "cost",
+                    "policy"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    }
+]

@@ -1,0 +1,1062 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "あなたは経験豊富な旅行専門家であり、プロの記事分析者です。私は適切な旅行先を推薦する記事を提供します。あなたの任務は、この記事を分析し、観光地名の次元で情報を抽出することです。\n\n1. poiName: 記事で言及されている観光地の名前を抽出してください。観光地は必ず場所レベルの地理的位置でなければならず、絶対に都市や省ではありません。例：植物園、公園、古鎮、景勝地、博物館、寺院などの具体的な観光地（太原植物園、景山公園、古北水鎮など）。\n\n出力要件：\n1. JSON形式で抽出した情報を返してください\n2. 各観光地を個別のオブジェクトとし、poiNameフィールドを含む\n3. すべての観光地オブジェクトで配列を形成する\n4. JSON形式以外の文字は返さないでください\n各観光地のタイプ（公園、古鎮、博物館、寺院、テーマパーク、景勝地など）を識別し、jsonでpoiTypeフィールドを返す必要があります。\n各観光地が親子での遊びに適しているかどうかを識別し（適している場合は「はい」、そうでなければ「いいえ」を返す）、jsonでisParentChildFriendlyフィールドを返す必要があります。\n各観光地に夜景があるかどうかを識別し（夜景がある場合は「はい」、そうでなければ「いいえ」を返す）、jsonでhasNightViewフィールドを返す必要があります。\n出力形式例：\n[\n  {\"poiName\": \"例の値\", \"poiType\": \"例のタイプ\", \"isParentChildFriendly\": \"はい/いいえ\", \"hasNightView\": \"はい/いいえ\"}\n]\n\n記事内容：北京周辺旅行のおすすめ：\n1. 太原植物園は華北最大の植物園で、親子旅行に適している\n2. 景山公園から紫禁城の全景を見下ろせる\n3. 古北水鎮の夜景は美しく、景勝地での宿泊をおすすめ",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "isParentChildFriendly",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "観光地名、具体的な場所レベルの地理的位置でなければならない",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "観光地のタイプ、公園、古鎮、博物館、寺院、テーマパーク、景勝地など",
+                        "能力項": "JSON"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "親子に適しているかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜景があるかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは経験豊富な旅行専門家であり、プロの記事分析者です。私は適切な旅行先を推薦する記事を提供します。あなたの任務は、この記事を分析し、観光地名の次元で情報を抽出することです。\n\n1. poiName: 記事で言及されている観光地の名前を抽出してください。観光地は必ず場所レベルの地理的位置でなければならず、絶対に都市や省ではありません。例：植物園、公園、古鎮、景勝地、博物館、寺院などの具体的な観光地（太原植物園、景山公園、古北水鎮など）。\n\n出力要件：\n1. JSON形式で抽出した情報を返してください\n2. 各観光地を個別のオブジェクトとし、poiNameフィールドを含む\n3. すべての観光地オブジェクトで配列を形成する\n4. JSON形式以外の文字は返さないでください\n各観光地のタイプ（公園、古鎮、博物館、寺院、テーマパーク、景勝地など）を識別し、jsonでpoiTypeフィールドを返す必要があります。\n各観光地に夜景があるかどうかを識別し（夜景がある場合は「はい」、そうでなければ「いいえ」を返す）、jsonでhasNightViewフィールドを返す必要があります。\n出力形式例：\n[\n  {\"poiName\": \"例の値\", \"poiType\": \"例のタイプ\", \"hasNightView\": \"はい/いいえ\"}\n]\n\n記事内容：上海シティウォーク：\n1. 上海ディズニーランドは家族でのお出かけに適しており、夜の花火ショーは見逃せない\n2. 外灘のライトショーは魅力的な夜景がある\n3. 上海博物館で中国文化を体験できる",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "観光地名、具体的な場所レベルの地理的位置でなければならない",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "観光地のタイプ、公園、古鎮、博物館、寺院、テーマパーク、景勝地など",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜景があるかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは経験豊富な旅行専門家であり、プロの記事分析者です。私は適切な旅行先を推薦する記事を提供します。あなたの任務は、この記事を分析し、観光地名の次元で情報を抽出することです。\n\n1. poiName: 記事で言及されている観光地の名前を抽出してください。観光地は必ず場所レベルの地理的位置でなければならず、絶対に都市や省ではありません。例：植物園、公園、古鎮、景勝地、博物館、寺院などの具体的な観光地（太原植物園、景山公園、古北水鎮など）。\n\n出力要件：\n1. JSON形式で抽出した情報を返してください\n2. 各観光地を個別のオブジェクトとし、poiNameフィールドを含む\n3. すべての観光地オブジェクトで配列を形成する\n4. JSON形式以外の文字は返さないでください\n各観光地のタイプ（公園、古鎮、博物館、寺院、テーマパーク、景勝地など）を識別し、jsonでpoiTypeフィールドを返す必要があります。\n各観光地が親子での遊びに適しているかどうかを識別し（適している場合は「はい」、そうでなければ「いいえ」を返す）、jsonでisParentChildFriendlyフィールドを返す必要があります。\n出力形式例：\n[\n  {\"poiName\": \"例の値\", \"poiType\": \"例のタイプ\", \"isParentChildFriendly\": \"はい/いいえ\"}\n]\n\n記事内容：広州親子旅行：\n1. 長隆サファリパークは親子家族に適している\n2. 白雲山はハイキングに良い場所\n3. 沙面島にはヨーロッパ建築とカフェがある",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "isParentChildFriendly"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "観光地名、具体的な場所レベルの地理的位置でなければならない",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "観光地のタイプ、公園、古鎮、博物館、寺院、テーマパーク、景勝地など",
+                        "能力項": "JSON"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "親子に適しているかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは経験豊富な旅行専門家であり、プロの記事分析者です。私は適切な旅行先を推薦する記事を提供します。あなたの任務は、この記事を分析し、観光地名の次元で情報を抽出することです。\n\n1. poiName: 記事で言及されている観光地の名前を抽出してください。観光地は必ず場所レベルの地理的位置でなければならず、絶対に都市や省ではありません。例：植物園、公園、古鎮、景勝地、博物館、寺院などの具体的な観光地（太原植物園、景山公園、古北水鎮など）。\n\n出力要件：\n1. JSON形式で抽出した情報を返してください\n2. 各観光地を個別のオブジェクトとし、poiNameフィールドを含む\n3. すべての観光地オブジェクトで配列を形成する\n4. JSON形式以外の文字は返さないでください\n各観光地のタイプ（公園、古鎮、博物館、寺院、テーマパーク、景勝地など）を識別し、jsonでpoiTypeフィールドを返す必要があります。\n各観光地に文化的パフォーマンスがあるかどうかを識別し（ある場合は「はい」、そうでなければ「いいえ」を返す）、jsonでhasCulturalShowフィールドを返す必要があります。\n各観光地に夜景があるかどうかを識別し（夜景がある場合は「はい」、そうでなければ「いいえ」を返す）、jsonでhasNightViewフィールドを返す必要があります。\n出力形式例：\n[\n  {\"poiName\": \"例の値\", \"poiType\": \"例のタイプ\", \"hasCulturalShow\": \"はい/いいえ\", \"hasNightView\": \"はい/いいえ\"}\n]\n\n記事内容：成都文化旅行：\n1. 武侯祠には三国文化のパフォーマンスがある\n2. 杜甫草堂は唐詩文化を展示している\n3. 寛窄巷子は夜の散策とスナック試食に適している",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasCulturalShow",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "観光地名、具体的な場所レベルの地理的位置でなければならない",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "観光地のタイプ、公園、古鎮、博物館、寺院、テーマパーク、景勝地など",
+                        "能力項": "JSON"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "文化的パフォーマンスがあるかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜景があるかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは経験豊富な旅行専門家であり、プロの記事分析者です。私は適切な旅行先を推薦する記事を提供します。あなたの任務は、この記事を分析し、観光地名の次元で情報を抽出することです。\n\n1. poiName: 記事で言及されている観光地の名前を抽出してください。観光地は必ず場所レベルの地理的位置でなければならず、絶対に都市や省ではありません。例：植物園、公園、古鎮、景勝地、博物館、寺院などの具体的な観光地（太原植物園、景山公園、古北水鎮など）。\n\n出力要件：\n1. JSON形式で抽出した情報を返してください\n2. 各観光地を個別のオブジェクトとし、poiNameフィールドを含む\n3. すべての観光地オブジェクトで配列を形成する\n4. JSON形式以外の文字は返さないでください\n各観光地のタイプ（公園、古鎮、博物館、寺院、テーマパーク、景勝地など）を識別し、jsonでpoiTypeフィールドを返す必要があります。\n各観光地に夜景があるかどうかを識別し（夜景がある場合は「はい」、そうでなければ「いいえ」を返す）、jsonでhasNightViewフィールドを返す必要があります。\n出力形式例：\n[\n  {\"poiName\": \"例の値\", \"poiType\": \"例のタイプ\", \"hasNightView\": \"はい/いいえ\"}\n]\n\n記事内容：西安歴史探索：\n1. 大雁塔広場には夜の噴水パフォーマンスがある\n2. 兵馬俑博物館は世界的に有名\n3. 回民街は美食チェックイン場所",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "観光地名、具体的な場所レベルの地理的位置でなければならない",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "観光地のタイプ、公園、古鎮、博物館、寺院、テーマパーク、景勝地など",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜景があるかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは経験豊富な旅行専門家であり、プロの記事分析者です。私は適切な旅行先を推薦する記事を提供します。あなたの任務は、この記事を分析し、観光地名の次元で情報を抽出することです。\n\n1. poiName: 記事で言及されている観光地の名前を抽出してください。観光地は必ず場所レベルの地理的位置でなければならず、絶対に都市や省ではありません。例：植物園、公園、古鎮、景勝地、博物館、寺院などの具体的な観光地（太原植物園、景山公園、古北水鎮など）。\n\n出力要件：\n1. JSON形式で抽出した情報を返してください\n2. 各観光地を個別のオブジェクトとし、poiNameフィールドを含む\n3. すべての観光地オブジェクトで配列を形成する\n4. JSON形式以外の文字は返さないでください\n各観光地のタイプ（公園、古鎮、博物館、寺院、テーマパーク、景勝地など）を識別し、jsonでpoiTypeフィールドを返す必要があります。\n各観光地に夜景があるかどうかを識別し（夜景がある場合は「はい」、そうでなければ「いいえ」を返す）、jsonでhasNightViewフィールドを返す必要があります。\n各観光地が屋外の観光地かどうかを識別し（はい/いいえ）、jsonでisOutdoorフィールドを返す必要があります。\n出力形式例：\n[\n  {\"poiName\": \"例の値\", \"poiType\": \"例のタイプ\", \"hasNightView\": \"はい/いいえ\", \"isOutdoor\": \"はい/いいえ\"}\n]\n\n記事内容：杭州湖山風景：\n1. 西湖景勝地は美しい夜景があり、雷峰塔のライトショーが魅力的\n2. 霊隠寺は有名な仏教寺院\n3. 千島湖は屋外サイクリングに適している",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView",
+                    "isOutdoor"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "観光地名、具体的な場所レベルの地理的位置でなければならない",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "観光地のタイプ、公園、古鎮、博物館、寺院、テーマパーク、景勝地など",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜景があるかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "屋外の観光地かどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは経験豊富な旅行専門家であり、プロの記事分析者です。私は適切な旅行先を推薦する記事を提供します。あなたの任務は、この記事を分析し、観光地名の次元で情報を抽出することです。\n\n1. poiName: 記事で言及されている観光地の名前を抽出してください。観光地は必ず場所レベルの地理的位置でなければならず、絶対に都市や省ではありません。例：植物園、公園、古鎮、景勝地、博物館、寺院などの具体的な観光地（太原植物園、景山公園、古北水鎮など）。\n\n出力要件：\n1. JSON形式で抽出した情報を返してください\n2. 各観光地を個別のオブジェクトとし、poiNameフィールドを含む\n3. すべての観光地オブジェクトで配列を形成する\n4. JSON形式以外の文字は返さないでください\n各観光地のタイプ（公園、古鎮、博物館、寺院、テーマパーク、景勝地など）を識別し、jsonでpoiTypeフィールドを返す必要があります。\n各観光地に夜景があるかどうかを識別し（夜景がある場合は「はい」、そうでなければ「いいえ」を返す）、jsonでhasNightViewフィールドを返す必要があります。\n各観光地に文化的パフォーマンスがあるかどうかを識別し（ある場合は「はい」、そうでなければ「いいえ」を返す）、jsonでhasCulturalShowフィールドを返す必要があります。\n出力形式例：\n[\n  {\"poiName\": \"例の値\", \"poiType\": \"例のタイプ\", \"hasNightView\": \"はい/いいえ\", \"hasCulturalShow\": \"はい/いいえ\"}\n]\n\n記事内容：重慶夜景体験：\n1. 洪崖洞の夜景は多くの観光客を魅了する\n2. 南山植物園には展望台がある\n3. 磁器口古鎮には豊富な民俗パフォーマンスがある",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView",
+                    "hasCulturalShow"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "観光地名、具体的な場所レベルの地理的位置でなければならない",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "観光地のタイプ、公園、古鎮、博物館、寺院、テーマパーク、景勝地など",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜景があるかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "文化的パフォーマンスがあるかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは経験豊富な旅行専門家であり、プロの記事分析者です。私は適切な旅行先を推薦する記事を提供します。あなたの任務は、この記事を分析し、観光地名の次元で情報を抽出することです。\n\n1. poiName: 記事で言及されている観光地の名前を抽出してください。観光地は必ず場所レベルの地理的位置でなければならず、絶対に都市や省ではありません。例：植物園、公園、古鎮、景勝地、博物館、寺院などの具体的な観光地（太原植物園、景山公園、古北水鎮など）。\n\n出力要件：\n1. JSON形式で抽出した情報を返してください\n2. 各観光地を個別のオブジェクトとし、poiNameフィールドを含む\n3. すべての観光地オブジェクトで配列を形成する\n4. JSON形式以外の文字は返さないでください\n各観光地のタイプ（公園、古鎮、博物館、寺院、テーマパーク、景勝地など）を識別し、jsonでpoiTypeフィールドを返す必要があります。\n各観光地に夜景があるかどうかを識別し（夜景がある場合は「はい」、そうでなければ「いいえ」を返す）、jsonでhasNightViewフィールドを返す必要があります。\n出力形式例：\n[\n  {\"poiName\": \"例の値\", \"poiType\": \"例のタイプ\", \"hasNightView\": \"はい/いいえ\"}\n]\n\n記事内容：蘇州庭園旅行：\n1. 拙政園は江南庭園の代表\n2. 獅子林は奇石で有名\n3. 金鶏湖景勝地にはロマンチックな夜景がある",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "観光地名、具体的な場所レベルの地理的位置でなければならない",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "観光地のタイプ、公園、古鎮、博物館、寺院、テーマパーク、景勝地など",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜景があるかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは経験豊富な旅行専門家であり、プロの記事分析者です。私は適切な旅行先を推薦する記事を提供します。あなたの任務は、この記事を分析し、観光地名の次元で情報を抽出することです。\n\n1. poiName: 記事で言及されている観光地の名前を抽出してください。観光地は必ず場所レベルの地理的位置でなければならず、絶対に都市や省ではありません。例：植物園、公園、古鎮、景勝地、博物館、寺院などの具体的な観光地（太原植物園、景山公園、古北水鎮など）。\n\n出力要件：\n1. JSON形式で抽出した情報を返してください\n2. 各観光地を個別のオブジェクトとし、poiNameフィールドを含む\n3. すべての観光地オブジェクトで配列を形成する\n4. JSON形式以外の文字は返さないでください\n各観光地のタイプ（公園、古鎮、博物館、寺院、テーマパーク、景勝地など）を識別し、jsonでpoiTypeフィールドを返す必要があります。\n各観光地が屋外の観光地かどうかを識別し（はい/いいえ）、jsonでisOutdoorフィールドを返す必要があります。\n各観光地に夜景があるかどうかを識別し（夜景がある場合は「はい」、そうでなければ「いいえ」を返す）、jsonでhasNightViewフィールドを返す必要があります。\n出力形式例：\n[\n  {\"poiName\": \"例の値\", \"poiType\": \"例のタイプ\", \"isOutdoor\": \"はい/いいえ\", \"hasNightView\": \"はい/いいえ\"}\n]\n\n記事内容：桂林山水旅行：\n1. 象鼻山公園は桂林のランドマーク\n2. 漓江下りは屋外に適している\n3. 陽朔西街には夜市とバーがある",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "isOutdoor",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "観光地名、具体的な場所レベルの地理的位置でなければならない",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "観光地のタイプ、公園、古鎮、博物館、寺院、テーマパーク、景勝地など",
+                        "能力項": "JSON"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "屋外の観光地かどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜景があるかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは経験豊富な旅行専門家であり、プロの記事分析者です。私は適切な旅行先を推薦する記事を提供します。あなたの任務は、この記事を分析し、観光地名の次元で情報を抽出することです。\n\n1. poiName: 記事で言及されている観光地の名前を抽出してください。観光地は必ず場所レベルの地理的位置でなければならず、絶対に都市や省ではありません。例：植物園、公園、古鎮、景勝地、博物館、寺院などの具体的な観光地（太原植物園、景山公園、古北水鎮など）。\n\n出力要件：\n1. JSON形式で抽出した情報を返してください\n2. 各観光地を個別のオブジェクトとし、poiNameフィールドを含む\n3. すべての観光地オブジェクトで配列を形成する\n4. JSON形式以外の文字は返さないでください\n各観光地のタイプ（公園、古鎮、博物館、寺院、テーマパーク、景勝地など）を識別し、jsonでpoiTypeフィールドを返す必要があります。\n各観光地に文化的パフォーマンスがあるかどうかを識別し（ある場合は「はい」、そうでなければ「いいえ」を返す）、jsonでhasCulturalShowフィールドを返す必要があります。\n出力形式例：\n[\n  {\"poiName\": \"例の値\", \"poiType\": \"例のタイプ\", \"hasCulturalShow\": \"はい/いいえ\"}\n]\n\n記事内容：厦門文化レジャー：\n1. 鼓浪嶼音楽ホールにはピアノパフォーマンスがある\n2. 南普陀寺は香火が盛ん\n3. 曾厝垵には多くの文芸店がある",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasCulturalShow"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "観光地名、具体的な場所レベルの地理的位置でなければならない",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "観光地のタイプ、公園、古鎮、博物館、寺院、テーマパーク、景勝地など",
+                        "能力項": "JSON"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "文化的パフォーマンスがあるかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは経験豊富な旅行専門家であり、プロの記事分析者です。私は適切な旅行先を推薦する記事を提供します。あなたの任務は、この記事を分析し、観光地名の次元で情報を抽出することです。\n\n1. poiName: 記事で言及されている観光地の名前を抽出してください。観光地は必ず場所レベルの地理的位置でなければならず、絶対に都市や省ではありません。例：植物園、公園、古鎮、景勝地、博物館、寺院などの具体的な観光地（太原植物園、景山公園、古北水鎮など）。\n\n出力要件：\n1. JSON形式で抽出した情報を返してください\n2. 各観光地を個別のオブジェクトとし、poiNameフィールドを含む\n3. すべての観光地オブジェクトで配列を形成する\n4. JSON形式以外の文字は返さないでください\n各観光地のタイプ（公園、古鎮、博物館、寺院、テーマパーク、景勝地など）を識別し、jsonでpoiTypeフィールドを返す必要があります。\n各観光地に夜景があるかどうかを識別し（夜景がある場合は「はい」、そうでなければ「いいえ」を返す）、jsonでhasNightViewフィールドを返す必要があります。\n各観光地に温泉があるかどうかを識別し（温泉がある場合は「はい」、そうでなければ「いいえ」を返す）、jsonでhasHotSpringフィールドを返す必要があります。\n出力形式例：\n[\n  {\"poiName\": \"例の値\", \"poiType\": \"例のタイプ\", \"hasNightView\": \"はい/いいえ\", \"hasHotSpring\": \"はい/いいえ\"}\n]\n\n記事内容：青島海岸風情：\n1. 五四広場には魅力的な夜景がある\n2. 八大関景勝地はサイクリングに適している\n3. 崂山には天然温泉がある",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView",
+                    "hasHotSpring"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "観光地名、具体的な場所レベルの地理的位置でなければならない",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "観光地のタイプ、公園、古鎮、博物館、寺院、テーマパーク、景勝地など",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜景があるかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "温泉があるかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは経験豊富な旅行専門家であり、プロの記事分析者です。私は適切な旅行先を推薦する記事を提供します。あなたの任務は、この記事を分析し、観光地名の次元で情報を抽出することです。\n\n1. poiName: 記事で言及されている観光地の名前を抽出してください。観光地は必ず場所レベルの地理的位置でなければならず、絶対に都市や省ではありません。例：植物園、公園、古鎮、景勝地、博物館、寺院などの具体的な観光地（太原植物園、景山公園、古北水鎮など）。\n\n出力要件：\n1. JSON形式で抽出した情報を返してください\n2. 各観光地を個別のオブジェクトとし、poiNameフィールドを含む\n3. すべての観光地オブジェクトで配列を形成する\n4. JSON形式以外の文字は返さないでください\n各観光地のタイプ（公園、古鎮、博物館、寺院、テーマパーク、景勝地など）を識別し、jsonでpoiTypeフィールドを返す必要があります。\n各観光地に夜景があるかどうかを識別し（夜景がある場合は「はい」、そうでなければ「いいえ」を返す）、jsonでhasNightViewフィールドを返す必要があります。\n出力形式例：\n[\n  {\"poiName\": \"例の値\", \"poiType\": \"例のタイプ\", \"hasNightView\": \"はい/いいえ\"}\n]\n\n記事内容：南京文化チェックイン：\n1. 夫子廟秦淮河夜遊はロマンチック\n2. 中山陵は荘厳\n3. 老門東には民国風情がある",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "観光地名、具体的な場所レベルの地理的位置でなければならない",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "観光地のタイプ、公園、古鎮、博物館、寺院、テーマパーク、景勝地など",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜景があるかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは経験豊富な旅行専門家であり、プロの記事分析者です。私は適切な旅行先を推薦する記事を提供します。あなたの任務は、この記事を分析し、観光地名の次元で情報を抽出することです。\n\n1. poiName: 記事で言及されている観光地の名前を抽出してください。観光地は必ず場所レベルの地理的位置でなければならず、絶対に都市や省ではありません。例：植物園、公園、古鎮、景勝地、博物館、寺院などの具体的な観光地（太原植物園、景山公園、古北水鎮など）。\n\n出力要件：\n1. JSON形式で抽出した情報を返してください\n2. 各観光地を個別のオブジェクトとし、poiNameフィールドを含む\n3. すべての観光地オブジェクトで配列を形成する\n4. JSON形式以外の文字は返さないでください\n各観光地のタイプ（公園、古鎮、博物館、寺院、テーマパーク、景勝地など）を識別し、jsonでpoiTypeフィールドを返す必要があります。\n各観光地に夜景があるかどうかを識別し（夜景がある場合は「はい」、そうでなければ「いいえ」を返す）、jsonでhasNightViewフィールドを返す必要があります。\n各観光地に文化的パフォーマンスがあるかどうかを識別し（ある場合は「はい」、そうでなければ「いいえ」を返す）、jsonでhasCulturalShowフィールドを返す必要があります。\n出力形式例：\n[\n  {\"poiName\": \"例の値\", \"poiType\": \"例のタイプ\", \"hasNightView\": \"はい/いいえ\", \"hasCulturalShow\": \"はい/いいえ\"}\n]\n\n記事内容：天津ヨーロッパ風情：\n1. イタリア風情区には教会とカフェがある\n2. 古文化街には伝統工芸品がある\n3. 海河クルーズには輝かしい夜景がある",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView",
+                    "hasCulturalShow"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "観光地名、具体的な場所レベルの地理的位置でなければならない",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "観光地のタイプ、公園、古鎮、博物館、寺院、テーマパーク、景勝地など",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜景があるかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "文化的パフォーマンスがあるかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは経験豊富な旅行専門家であり、プロの記事分析者です。私は適切な旅行先を推薦する記事を提供します。あなたの任務は、この記事を分析し、観光地名の次元で情報を抽出することです。\n\n1. poiName: 記事で言及されている観光地の名前を抽出してください。観光地は必ず場所レベルの地理的位置でなければならず、絶対に都市や省ではありません。例：植物園、公園、古鎮、景勝地、博物館、寺院などの具体的な観光地（太原植物園、景山公園、古北水鎮など）。\n\n出力要件：\n1. JSON形式で抽出した情報を返してください\n2. 各観光地を個別のオブジェクトとし、poiNameフィールドを含む\n3. すべての観光地オブジェクトで配列を形成する\n4. JSON形式以外の文字は返さないでください\n各観光地のタイプ（公園、古鎮、博物館、寺院、テーマパーク、景勝地など）を識別し、jsonでpoiTypeフィールドを返す必要があります。\n各観光地に夜景があるかどうかを識別し（夜景がある場合は「はい」、そうでなければ「いいえ」を返す）、jsonでhasNightViewフィールドを返す必要があります。\n各観光地が屋外の観光地かどうかを識別し（はい/いいえ）、jsonでisOutdoorフィールドを返す必要があります。\n出力形式例：\n[\n  {\"poiName\": \"例の値\", \"poiType\": \"例のタイプ\", \"hasNightView\": \"はい/いいえ\", \"isOutdoor\": \"はい/いいえ\"}\n]\n\n記事内容：ハルビン氷雪世界：\n1. 氷雪大世界には輝かしい夜間照明がある\n2. 聖ソフィア大聖堂は壮大な建築\n3. 松花江では冬にスキーができる",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView",
+                    "isOutdoor"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "観光地名、具体的な場所レベルの地理的位置でなければならない",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "観光地のタイプ、公園、古鎮、博物館、寺院、テーマパーク、景勝地など",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜景があるかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "屋外の観光地かどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは経験豊富な旅行専門家であり、プロの記事分析者です。私は適切な旅行先を推薦する記事を提供します。あなたの任務は、この記事を分析し、観光地名の次元で情報を抽出することです。\n\n1. poiName: 記事で言及されている観光地の名前を抽出してください。観光地は必ず場所レベルの地理的位置でなければならず、絶対に都市や省ではありません。例：植物園、公園、古鎮、景勝地、博物館、寺院などの具体的な観光地（太原植物園、景山公園、古北水鎮など）。\n\n出力要件：\n1. JSON形式で抽出した情報を返してください\n2. 各観光地を個別のオブジェクトとし、poiNameフィールドを含む\n3. すべての観光地オブジェクトで配列を形成する\n4. JSON形式以外の文字は返さないでください\n各観光地のタイプ（公園、古鎮、博物館、寺院、テーマパーク、景勝地など）を識別し、jsonでpoiTypeフィールドを返す必要があります。\n各観光地に夜景があるかどうかを識別し（夜景がある場合は「はい」、そうでなければ「いいえ」を返す）、jsonでhasNightViewフィールドを返す必要があります。\n出力形式例：\n[\n  {\"poiName\": \"例の値\", \"poiType\": \"例のタイプ\", \"hasNightView\": \"はい/いいえ\"}\n]\n\n記事内容：昆明春の花海：\n1. 世紀公園の桜が満開\n2. 石林景勝地には独特の地形がある\n3. 滇池湿地はバードウォッチングに適している",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "観光地名、具体的な場所レベルの地理的位置でなければならない",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "観光地のタイプ、公園、古鎮、博物館、寺院、テーマパーク、景勝地など",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜景があるかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは経験豊富な旅行専門家であり、プロの記事分析者です。私は適切な旅行先を推薦する記事を提供します。あなたの任務は、この記事を分析し、観光地名の次元で情報を抽出することです。\n\n1. poiName: 記事で言及されている観光地の名前を抽出してください。観光地は必ず場所レベルの地理的位置でなければならず、絶対に都市や省ではありません。例：植物園、公園、古鎮、景勝地、博物館、寺院などの具体的な観光地（太原植物園、景山公園、古北水鎮など）。\n\n出力要件：\n1. JSON形式で抽出した情報を返してください\n2. 各観光地を個別のオブジェクトとし、poiNameフィールドを含む\n3. すべての観光地オブジェクトで配列を形成する\n4. JSON形式以外の文字は返さないでください\n各観光地のタイプ（公園、古鎮、博物館、寺院、テーマパーク、景勝地など）を識別し、jsonでpoiTypeフィールドを返す必要があります。\n各観光地に文化的パフォーマンスがあるかどうかを識別し（ある場合は「はい」、そうでなければ「いいえ」を返す）、jsonでhasCulturalShowフィールドを返す必要があります。\n各観光地が親子での遊びに適しているかどうかを識別し（適している場合は「はい」、そうでなければ「いいえ」を返す）、jsonでisParentChildFriendlyフィールドを返す必要があります。\n出力形式例：\n[\n  {\"poiName\": \"例の値\", \"poiType\": \"例のタイプ\", \"hasCulturalShow\": \"はい/いいえ\", \"isParentChildFriendly\": \"はい/いいえ\"}\n]\n\n記事内容：深圳都市レジャー：\n1. 歓楽谷テーマパークには夜のパフォーマンスがある\n2. 大梅沙海浜公園は親子に適している\n3. 世界の窓には世界のライトショーがある",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasCulturalShow",
+                    "isParentChildFriendly"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "観光地名、具体的な場所レベルの地理的位置でなければならない",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "観光地のタイプ、公園、古鎮、博物館、寺院、テーマパーク、景勝地など",
+                        "能力項": "JSON"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "文化的パフォーマンスがあるかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "親子に適しているかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは経験豊富な旅行専門家であり、プロの記事分析者です。私は適切な旅行先を推薦する記事を提供します。あなたの任務は、この記事を分析し、観光地名の次元で情報を抽出することです。\n\n1. poiName: 記事で言及されている観光地の名前を抽出してください。観光地は必ず場所レベルの地理的位置でなければならず、絶対に都市や省ではありません。例：植物園、公園、古鎮、景勝地、博物館、寺院などの具体的な観光地（太原植物園、景山公園、古北水鎮など）。\n\n出力要件：\n1. JSON形式で抽出した情報を返してください\n2. 各観光地を個別のオブジェクトとし、poiNameフィールドを含む\n3. すべての観光地オブジェクトで配列を形成する\n4. JSON形式以外の文字は返さないでください\n各観光地のタイプ（公園、古鎮、博物館、寺院、テーマパーク、景勝地など）を識別し、jsonでpoiTypeフィールドを返す必要があります。\n各観光地に夜景があるかどうかを識別し（夜景がある場合は「はい」、そうでなければ「いいえ」を返す）、jsonでhasNightViewフィールドを返す必要があります。\n各観光地が屋外の観光地かどうかを識別し（はい/いいえ）、jsonでisOutdoorフィールドを返す必要があります。\n出力形式例：\n[\n  {\"poiName\": \"例の値\", \"poiType\": \"例のタイプ\", \"hasNightView\": \"はい/いいえ\", \"isOutdoor\": \"はい/いいえ\"}\n]\n\n記事内容：長沙文芸青年ルート：\n1. 橘子洲頭で花火を見ることができる\n2. 岳麓山はハイキングに適している\n3. 太平街には特色スナックがある",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView",
+                    "isOutdoor"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "観光地名、具体的な場所レベルの地理的位置でなければならない",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "観光地のタイプ、公園、古鎮、博物館、寺院、テーマパーク、景勝地など",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜景があるかどうか",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "屋外の観光地かどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは経験豊富な旅行専門家であり、プロの記事分析者です。私は適切な旅行先を推薦する記事を提供します。あなたの任務は、この記事を分析し、観光地名の次元で情報を抽出することです。\n\n1. poiName: 記事で言及されている観光地の名前を抽出してください。観光地は必ず場所レベルの地理的位置でなければならず、絶対に都市や省ではありません。例：植物園、公園、古鎮、景勝地、博物館、寺院などの具体的な観光地（太原植物園、景山公園、古北水鎮など）。\n\n出力要件：\n1. JSON形式で抽出した情報を返してください\n2. 各観光地を個別のオブジェクトとし、poiNameフィールドを含む\n3. すべての観光地オブジェクトで配列を形成する\n4. JSON形式以外の文字は返さないでください\n各観光地のタイプ（公園、古鎮、博物館、寺院、テーマパーク、景勝地など）を識別し、jsonでpoiTypeフィールドを返す必要があります。\n各観光地に夜景があるかどうかを識別し（夜景がある場合は「はい」、そうでなければ「いいえ」を返す）、jsonでhasNightViewフィールドを返す必要があります。\n出力形式例：\n[\n  {\"poiName\": \"例の値\", \"poiType\": \"例のタイプ\", \"hasNightView\": \"はい/いいえ\"}\n]\n\n記事内容：済南泉水旅行：\n1. 大明湖公園には蓮の展示がある\n2. 趵突泉は泉城のシンボル\n3. 千仏山は登山と展望に適している",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "観光地名、具体的な場所レベルの地理的位置でなければならない",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "観光地のタイプ、公園、古鎮、博物館、寺院、テーマパーク、景勝地など",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜景があるかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは経験豊富な旅行専門家であり、プロの記事分析者です。私は適切な旅行先を推薦する記事を提供します。あなたの任務は、この記事を分析し、観光地名の次元で情報を抽出することです。\n\n1. poiName: 記事で言及されている観光地の名前を抽出してください。観光地は必ず場所レベルの地理的位置でなければならず、絶対に都市や省ではありません。例：植物園、公園、古鎮、景勝地、博物館、寺院などの具体的な観光地（太原植物園、景山公園、古北水鎮など）。\n\n出力要件：\n1. JSON形式で抽出した情報を返してください\n2. 各観光地を個別のオブジェクトとし、poiNameフィールドを含む\n3. すべての観光地オブジェクトで配列を形成する\n4. JSON形式以外の文字は返さないでください\n各観光地のタイプ（公園、古鎮、博物館、寺院、テーマパーク、景勝地など）を識別し、jsonでpoiTypeフィールドを返す必要があります。\n各観光地が親子での遊びに適しているかどうかを識別し（適している場合は「はい」、そうでなければ「いいえ」を返す）、jsonでisParentChildFriendlyフィールドを返す必要があります。\n出力形式例：\n[\n  {\"poiName\": \"例の値\", \"poiType\": \"例のタイプ\", \"isParentChildFriendly\": \"はい/いいえ\"}\n]\n\n記事内容：合肥週末旅行：\n1. 包公園には包拯文化展示がある\n2. 三河古鎮の夜市は賑やか\n3. 合肥植物園は親子活動に適している",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "isParentChildFriendly"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "観光地名、具体的な場所レベルの地理的位置でなければならない",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "観光地のタイプ、公園、古鎮、博物館、寺院、テーマパーク、景勝地など",
+                        "能力項": "JSON"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "親子に適しているかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは経験豊富な旅行専門家であり、プロの記事分析者です。私は適切な旅行先を推薦する記事を提供します。あなたの任務は、この記事を分析し、観光地名の次元で情報を抽出することです。\n\n1. poiName: 記事で言及されている観光地の名前を抽出してください。観光地は必ず場所レベルの地理的位置でなければならず、絶対に都市や省ではありません。例：植物園、公園、古鎮、景勝地、博物館、寺院などの具体的な観光地（太原植物園、景山公園、古北水鎮など）。\n\n出力要件：\n1. JSON形式で抽出した情報を返してください\n2. 各観光地を個別のオブジェクトとし、poiNameフィールドを含む\n3. すべての観光地オブジェクトで配列を形成する\n4. JSON形式以外の文字は返さないでください\n各観光地のタイプ（公園、古鎮、博物館、寺院、テーマパーク、景勝地など）を識別し、jsonでpoiTypeフィールドを返す必要があります。\n各観光地に夜景があるかどうかを識別し（夜景がある場合は「はい」、そうでなければ「いいえ」を返す）、jsonでhasNightViewフィールドを返す必要があります。\n出力形式例：\n[\n  {\"poiName\": \"例の値\", \"poiType\": \"例のタイプ\", \"hasNightView\": \"はい/いいえ\"}\n]\n\n記事内容：洛陽歴史旅行：\n1. 龍門石窟には精巧な彫刻がある\n2. 白馬寺は中国最古の仏教寺院\n3. 隋唐遺跡植物園には夜景がある",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "観光地名、具体的な場所レベルの地理的位置でなければならない",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "観光地のタイプ、公園、古鎮、博物館、寺院、テーマパーク、景勝地など",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "はい",
+                            "いいえ"
+                        ],
+                        "description": "夜景があるかどうか",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているかどうか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    }
+]

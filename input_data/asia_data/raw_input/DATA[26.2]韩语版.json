@@ -1,0 +1,2162 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "배경: 당신은 기사 분석가입니다. 기사와 POI 이름을 제공하겠습니다. 당신의 임무는 이 기사를 분석하여 이 기사가 레크리에이션 활동과 관련이 있는지, 핫 이벤트 유형과 관련이 있는지 판단하고, 최종적으로 판단의 근거를 제공하는 것입니다.\n현재 날짜: 2024-06-01.\n지식: 레크리에이션 가이드인지 여부는 다음 차원에 따라 판단하며, 이러한 차원의 판단이 모두 통과해야만 레크리에이션 관련 가이드로 인정될 수 있습니다:\n1. 기사에 여행 가이드, 레크리에이션 활동, 레크리에이션 프로젝트, 여행 경로, 여행 순서, 체크인 포인트, 관광지, 여행 경험 등의 정보가 포함되어 있는지 여부. 출현 빈도가 높을수록 레크리에이션 기사일 가능성이 높습니다(하지만 필수는 아닙니다).\n2. 기사 내용이 판매, 광고, 임대, 매매, 부동산, 식음료, 숙박 유형 메모에 관한 것이라면 레크리에이션 기사에 속하지 않습니다. 기사 정보가 비어있는 경우에도 레크리에이션 기사에 속하지 않습니다.\n3. 온천, 스키 등의 키워드가 포함된 경우 레크리에이션 기사로 분류됩니다.\n4. 크리스마스, 할로윈, 신정 등의 휴일이 포함된 경우 레크리에이션 기사로 분류됩니다.\n5. 조명쇼, 불꽃쇼 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n6. 춘절 등불축제, 춘절 장터 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n기사에 축제, 축하, 장터, 등불축제 등의 단어가 포함된 경우 우선적으로 레크리에이션 기사로 분류하세요.\n기사가 여러 도시의 관광지를 포함하고 모두 레크리에이션 목적인 경우 관련으로 분류합니다.\n출력 형식: JSON 형식을 사용하여 추출된 정보를 반환하세요. 모든 필드는 '예' 또는 '아니오' 또는 '관련' 또는 '무관련'만 반환할 수 있습니다. 예시 형식은 다음과 같습니다: {\"relate\":\"관련/무관련\",\"reason\":\"이유\",\"isExpired\":\"예/아니오\",\"isFestival\":\"예/아니오\",\"isMultiPOI\":\"예/아니오\",\"isParentChild\":\"예/아니오\",\"isNightEvent\":\"예/아니오\",\"isOutdoor\":\"예/아니오\"}. relate는 관련 또는 무관련을 반환합니다; reason은 판단의 이유를 반환합니다; isExpired는 이벤트가 만료되었는지를 나타내고, isFestival은 축제 관련인지를 나타내며, isMultiPOI는 여러 POI가 관련되는지를 나타내고, isParentChild는 부모-자녀 관련인지를 나타내며, isNightEvent는 야간 이벤트인지를 나타내고, isOutdoor는 야외 활동인지를 나타냅니다. 반환되는 JSON 데이터 구조가 올바르고 위의 규칙을 준수하는지 확인하세요. JSON 이외의 문자는 반환하지 마세요.\n기사 내용: 【[관광 정보] 2024년 상하이 관광축제는 9월 20일부터 10월 6일까지 개최되며, 올해는 새로운 디즈니 특별 퍼레이드가 있어 800만 명 이상의 관광객을 유치할 것으로 예상됩니다. 주 회장은 푸둥 세계박람회 공원에 설치되고, 부 회장은 난징로, 와이탄 등의 장소에 있습니다.】",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "관련",
+                        "무관련"
+                    ],
+                    "description": "레크리에이션 기사인지 여부",
+                    "能力項": "주제제약"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "판단을 내린 이유",
+                    "能力項": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "이벤트가 만료되었는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "축제 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "여러 POI가 관련되는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "부모-자녀 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야간 활동인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야외 활동인지 여부",
+                    "能力項": "특정형식"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "배경: 당신은 기사 분석가입니다. 기사와 POI 이름을 제공하겠습니다. 당신의 임무는 이 기사를 분석하여 이 기사가 레크리에이션 활동과 관련이 있는지, 핫 이벤트 유형과 관련이 있는지 판단하고, 최종적으로 판단의 근거를 제공하는 것입니다.\n현재 날짜: 2024-06-01.\n지식: 레크리에이션 가이드인지 여부는 다음 차원에 따라 판단하며, 이러한 차원의 판단이 모두 통과해야만 레크리에이션 관련 가이드로 인정될 수 있습니다:\n1. 기사에 여행 가이드, 레크리에이션 활동, 레크리에이션 프로젝트, 여행 경로, 여행 순서, 체크인 포인트, 관광지, 여행 경험 등의 정보가 포함되어 있는지 여부. 출현 빈도가 높을수록 레크리에이션 기사일 가능성이 높습니다(하지만 필수는 아닙니다).\n2. 기사 내용이 판매, 광고, 임대, 매매, 부동산, 식음료, 숙박 유형 메모에 관한 것이라면 레크리에이션 기사에 속하지 않습니다. 기사 정보가 비어있는 경우에도 레크리에이션 기사에 속하지 않습니다.\n3. 온천, 스키 등의 키워드가 포함된 경우 레크리에이션 기사로 분류됩니다.\n4. 크리스마스, 할로윈, 신정 등의 휴일이 포함된 경우 레크리에이션 기사로 분류됩니다.\n5. 조명쇼, 불꽃쇼 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n6. 춘절 등불축제, 춘절 장터 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n기사에 #체크인, #관광, #매장탐방 등의 태그가 포함되고 내용에 레크리에이션 경험이 포함된 경우 관련으로 분류하는 경향이 있습니다.\n기사에 축제, 축하, 장터, 등불축제 등의 단어가 포함된 경우 우선적으로 레크리에이션 기사로 분류하세요.\n출력 형식: JSON 형식을 사용하여 추출된 정보를 반환하세요. 모든 필드는 '예' 또는 '아니오' 또는 '관련' 또는 '무관련'만 반환할 수 있습니다. 예시 형식은 다음과 같습니다: {\"relate\":\"관련/무관련\",\"reason\":\"이유\",\"isExpired\":\"예/아니오\",\"isFestival\":\"예/아니오\",\"isMultiPOI\":\"예/아니오\",\"isParentChild\":\"예/아니오\",\"isNightEvent\":\"예/아니오\",\"isOutdoor\":\"예/아니오\"}. relate는 관련 또는 무관련을 반환합니다; reason은 판단의 이유를 반환합니다; isExpired는 이벤트가 만료되었는지를 나타내고, isFestival은 축제 관련인지를 나타내며, isMultiPOI는 여러 POI가 관련되는지를 나타내고, isParentChild는 부모-자녀 관련인지를 나타내며, isNightEvent는 야간 이벤트인지를 나타내고, isOutdoor는 야외 활동인지를 나타냅니다. 반환되는 JSON 데이터 구조가 올바르고 위의 규칙을 준수하는지 확인하세요. JSON 이외의 문자는 반환하지 마세요.\n기사 내용: 【[여행 블로그] 주말에 친구들과 난징 부자묘 야시장을 체크인하고, 친화이강 등불축제를 방문하여 등불 퍼레이드와 야시장 음식을 경험하고 여러 체크인 스탬프를 수집했습니다.】",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "관련",
+                        "무관련"
+                    ],
+                    "description": "레크리에이션 기사인지 여부",
+                    "能力項": "주제제약"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "판단을 내린 이유",
+                    "能力項": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "이벤트가 만료되었는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "축제 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "여러 POI가 관련되는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "부모-자녀 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야간 활동인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야외 활동인지 여부",
+                    "能力項": "특정형식"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "배경: 당신은 기사 분석가입니다. 기사와 POI 이름을 제공하겠습니다. 당신의 임무는 이 기사를 분석하여 이 기사가 레크리에이션 활동과 관련이 있는지, 핫 이벤트 유형과 관련이 있는지 판단하고, 최종적으로 판단의 근거를 제공하는 것입니다.\n현재 날짜: 2024-06-01.\n지식: 레크리에이션 가이드인지 여부는 다음 차원에 따라 판단하며, 이러한 차원의 판단이 모두 통과해야만 레크리에이션 관련 가이드로 인정될 수 있습니다:\n1. 기사에 여행 가이드, 레크리에이션 활동, 레크리에이션 프로젝트, 여행 경로, 여행 순서, 체크인 포인트, 관광지, 여행 경험 등의 정보가 포함되어 있는지 여부. 출현 빈도가 높을수록 레크리에이션 기사일 가능성이 높습니다(하지만 필수는 아닙니다).\n2. 기사 내용이 판매, 광고, 임대, 매매, 부동산, 식음료, 숙박 유형 메모에 관한 것이라면 레크리에이션 기사에 속하지 않습니다. 기사 정보가 비어있는 경우에도 레크리에이션 기사에 속하지 않습니다.\n3. 온천, 스키 등의 키워드가 포함된 경우 레크리에이션 기사로 분류됩니다.\n4. 크리스마스, 할로윈, 신정 등의 휴일이 포함된 경우 레크리에이션 기사로 분류됩니다.\n5. 조명쇼, 불꽃쇼 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n6. 춘절 등불축제, 춘절 장터 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n기사 내용이 비어있는 경우 직접 무관련으로 분류합니다.\n기사 내용이 주로 음식에 관한 것이고 레크리에이션 활동 설명이 없는 경우 레크리에이션으로 계산하지 않습니다.\n출력 형식: JSON 형식을 사용하여 추출된 정보를 반환하세요. 모든 필드는 '예' 또는 '아니오' 또는 '관련' 또는 '무관련'만 반환할 수 있습니다. 예시 형식은 다음과 같습니다: {\"relate\":\"관련/무관련\",\"reason\":\"이유\",\"isExpired\":\"예/아니오\",\"isFestival\":\"예/아니오\",\"isMultiPOI\":\"예/아니오\",\"isParentChild\":\"예/아니오\",\"isNightEvent\":\"예/아니오\",\"isOutdoor\":\"예/아니오\"}. relate는 관련 또는 무관련을 반환합니다; reason은 판단의 이유를 반환합니다; isExpired는 이벤트가 만료되었는지를 나타내고, isFestival은 축제 관련인지를 나타내며, isMultiPOI는 여러 POI가 관련되는지를 나타내고, isParentChild는 부모-자녀 관련인지를 나타내며, isNightEvent는 야간 이벤트인지를 나타내고, isOutdoor는 야외 활동인지를 나타냅니다. 반환되는 JSON 데이터 구조가 올바르고 위의 규칙을 준수하는지 확인하세요. JSON 이외의 문자는 반환하지 마세요.\n기사 내용: 【[부동산 추천] 이 커뮤니티는 지하철에 가깝고 주변 시설이 완비되어 생활이 편리합니다. 현재 일부 유닛이 인기 판매 중이니 견학 문의를 환영합니다.】",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "관련",
+                        "무관련"
+                    ],
+                    "description": "레크리에이션 기사인지 여부",
+                    "能力項": "주제제약"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "판단을 내린 이유",
+                    "能力項": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "이벤트가 만료되었는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "축제 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "여러 POI가 관련되는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "부모-자녀 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야간 활동인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야외 활동인지 여부",
+                    "能力項": "특정형식"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "배경: 당신은 기사 분석가입니다. 기사와 POI 이름을 제공하겠습니다. 당신의 임무는 이 기사를 분석하여 이 기사가 레크리에이션 활동과 관련이 있는지, 핫 이벤트 유형과 관련이 있는지 판단하고, 최종적으로 판단의 근거를 제공하는 것입니다.\n현재 날짜: 2024-06-01.\n지식: 레크리에이션 가이드인지 여부는 다음 차원에 따라 판단하며, 이러한 차원의 판단이 모두 통과해야만 레크리에이션 관련 가이드로 인정될 수 있습니다:\n1. 기사에 여행 가이드, 레크리에이션 활동, 레크리에이션 프로젝트, 여행 경로, 여행 순서, 체크인 포인트, 관광지, 여행 경험 등의 정보가 포함되어 있는지 여부. 출현 빈도가 높을수록 레크리에이션 기사일 가능성이 높습니다(하지만 필수는 아닙니다).\n2. 기사 내용이 판매, 광고, 임대, 매매, 부동산, 식음료, 숙박 유형 메모에 관한 것이라면 레크리에이션 기사에 속하지 않습니다. 기사 정보가 비어있는 경우에도 레크리에이션 기사에 속하지 않습니다.\n3. 온천, 스키 등의 키워드가 포함된 경우 레크리에이션 기사로 분류됩니다.\n4. 크리스마스, 할로윈, 신정 등의 휴일이 포함된 경우 레크리에이션 기사로 분류됩니다.\n5. 조명쇼, 불꽃쇼 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n6. 춘절 등불축제, 춘절 장터 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n기사 내용이 주로 음식에 관한 것이고 레크리에이션 활동 설명이 없는 경우 레크리에이션으로 계산하지 않습니다.\n출력 형식: JSON 형식을 사용하여 추출된 정보를 반환하세요. 모든 필드는 '예' 또는 '아니오' 또는 '관련' 또는 '무관련'만 반환할 수 있습니다. 예시 형식은 다음과 같습니다: {\"relate\":\"관련/무관련\",\"reason\":\"이유\",\"isExpired\":\"예/아니오\",\"isFestival\":\"예/아니오\",\"isMultiPOI\":\"예/아니오\",\"isParentChild\":\"예/아니오\",\"isNightEvent\":\"예/아니오\",\"isOutdoor\":\"예/아니오\"}. relate는 관련 또는 무관련을 반환합니다; reason은 판단의 이유를 반환합니다; isExpired는 이벤트가 만료되었는지를 나타내고, isFestival은 축제 관련인지를 나타내며, isMultiPOI는 여러 POI가 관련되는지를 나타내고, isParentChild는 부모-자녀 관련인지를 나타내며, isNightEvent는 야간 이벤트인지를 나타내고, isOutdoor는 야외 활동인지를 나타냅니다. 반환되는 JSON 데이터 구조가 올바르고 위의 규칙을 준수하는지 확인하세요. JSON 이외의 문자는 반환하지 마세요.\n기사 내용: 【[음식 탐방] 광저우 전통 레스토랑을 방문하여 조식차와 각종 딤섬을 맛보았고, 편안한 환경으로 가족 모임에 적합합니다.】",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "관련",
+                        "무관련"
+                    ],
+                    "description": "레크리에이션 기사인지 여부",
+                    "能力項": "주제제약"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "판단을 내린 이유",
+                    "能力項": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "이벤트가 만료되었는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "축제 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "여러 POI가 관련되는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "부모-자녀 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야간 활동인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야외 활동인지 여부",
+                    "能力項": "특정형식"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "배경: 당신은 기사 분석가입니다. 기사와 POI 이름을 제공하겠습니다. 당신의 임무는 이 기사를 분석하여 이 기사가 레크리에이션 활동과 관련이 있는지, 핫 이벤트 유형과 관련이 있는지 판단하고, 최종적으로 판단의 근거를 제공하는 것입니다.\n현재 날짜: 2024-06-01.\n지식: 레크리에이션 가이드인지 여부는 다음 차원에 따라 판단하며, 이러한 차원의 판단이 모두 통과해야만 레크리에이션 관련 가이드로 인정될 수 있습니다:\n1. 기사에 여행 가이드, 레크리에이션 활동, 레크리에이션 프로젝트, 여행 경로, 여행 순서, 체크인 포인트, 관광지, 여행 경험 등의 정보가 포함되어 있는지 여부. 출현 빈도가 높을수록 레크리에이션 기사일 가능성이 높습니다(하지만 필수는 아닙니다).\n2. 기사 내용이 판매, 광고, 임대, 매매, 부동산, 식음료, 숙박 유형 메모에 관한 것이라면 레크리에이션 기사에 속하지 않습니다. 기사 정보가 비어있는 경우에도 레크리에이션 기사에 속하지 않습니다.\n3. 온천, 스키 등의 키워드가 포함된 경우 레크리에이션 기사로 분류됩니다.\n4. 크리스마스, 할로윈, 신정 등의 휴일이 포함된 경우 레크리에이션 기사로 분류됩니다.\n5. 조명쇼, 불꽃쇼 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n6. 춘절 등불축제, 춘절 장터 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n기사 내용이 주어진 POI 이름과 높은 관련성을 가지고 레크리에이션 경험을 설명하는 경우 관련으로 분류합니다.\n출력 형식: JSON 형식을 사용하여 추출된 정보를 반환하세요. 모든 필드는 '예' 또는 '아니오' 또는 '관련' 또는 '무관련'만 반환할 수 있습니다. 예시 형식은 다음과 같습니다: {\"relate\":\"관련/무관련\",\"reason\":\"이유\",\"isExpired\":\"예/아니오\",\"isFestival\":\"예/아니오\",\"isMultiPOI\":\"예/아니오\",\"isParentChild\":\"예/아니오\",\"isNightEvent\":\"예/아니오\",\"isOutdoor\":\"예/아니오\"}. relate는 관련 또는 무관련을 반환합니다; reason은 판단의 이유를 반환합니다; isExpired는 이벤트가 만료되었는지를 나타내고, isFestival은 축제 관련인지를 나타내며, isMultiPOI는 여러 POI가 관련되는지를 나타내고, isParentChild는 부모-자녀 관련인지를 나타내며, isNightEvent는 야간 이벤트인지를 나타내고, isOutdoor는 야외 활동인지를 나타냅니다. 반환되는 JSON 데이터 구조가 올바르고 위의 규칙을 준수하는지 확인하세요. JSON 이외의 문자는 반환하지 마세요.\n기사 내용: 【[스키 가이드] 충리 스키장이 12월에 개장하며, 초급, 중급, 고급의 여러 슬로프를 포함하고, 전문 코칭 서비스와 스키 장비 대여가 가능하여 초보자와 고급자에게 적합합니다.】",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "관련",
+                        "무관련"
+                    ],
+                    "description": "레크리에이션 기사인지 여부",
+                    "能力項": "주제제약"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "판단을 내린 이유",
+                    "能力項": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "이벤트가 만료되었는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "축제 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "여러 POI가 관련되는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "부모-자녀 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야간 활동인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야외 활동인지 여부",
+                    "能力項": "특정형식"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "배경: 당신은 기사 분석가입니다. 기사와 POI 이름을 제공하겠습니다. 당신의 임무는 이 기사를 분석하여 이 기사가 레크리에이션 활동과 관련이 있는지, 핫 이벤트 유형과 관련이 있는지 판단하고, 최종적으로 판단의 근거를 제공하는 것입니다.\n현재 날짜: 2024-06-01.\n지식: 레크리에이션 가이드인지 여부는 다음 차원에 따라 판단하며, 이러한 차원의 판단이 모두 통과해야만 레크리에이션 관련 가이드로 인정될 수 있습니다:\n1. 기사에 여행 가이드, 레크리에이션 활동, 레크리에이션 프로젝트, 여행 경로, 여행 순서, 체크인 포인트, 관광지, 여행 경험 등의 정보가 포함되어 있는지 여부. 출현 빈도가 높을수록 레크리에이션 기사일 가능성이 높습니다(하지만 필수는 아닙니다).\n2. 기사 내용이 판매, 광고, 임대, 매매, 부동산, 식음료, 숙박 유형 메모에 관한 것이라면 레크리에이션 기사에 속하지 않습니다. 기사 정보가 비어있는 경우에도 레크리에이션 기사에 속하지 않습니다.\n3. 온천, 스키 등의 키워드가 포함된 경우 레크리에이션 기사로 분류됩니다.\n4. 크리스마스, 할로윈, 신정 등의 휴일이 포함된 경우 레크리에이션 기사로 분류됩니다.\n5. 조명쇼, 불꽃쇼 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n6. 춘절 등불축제, 춘절 장터 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n기사에 축제, 축하, 장터, 등불축제 등의 단어가 포함된 경우 우선적으로 레크리에이션 기사로 분류하세요.\n출력 형식: JSON 형식을 사용하여 추출된 정보를 반환하세요. 모든 필드는 '예' 또는 '아니오' 또는 '관련' 또는 '무관련'만 반환할 수 있습니다. 예시 형식은 다음과 같습니다: {\"relate\":\"관련/무관련\",\"reason\":\"이유\",\"isExpired\":\"예/아니오\",\"isFestival\":\"예/아니오\",\"isMultiPOI\":\"예/아니오\",\"isParentChild\":\"예/아니오\",\"isNightEvent\":\"예/아니오\",\"isOutdoor\":\"예/아니오\"}. relate는 관련 또는 무관련을 반환합니다; reason은 판단의 이유를 반환합니다; isExpired는 이벤트가 만료되었는지를 나타내고, isFestival은 축제 관련인지를 나타내며, isMultiPOI는 여러 POI가 관련되는지를 나타내고, isParentChild는 부모-자녀 관련인지를 나타내며, isNightEvent는 야간 이벤트인지를 나타내고, isOutdoor는 야외 활동인지를 나타냅니다. 반환되는 JSON 데이터 구조가 올바르고 위의 규칙을 준수하는지 확인하세요. JSON 이외의 문자는 반환하지 마세요.\n기사 내용: 【[조명쇼 예고] 2024년 선전만 신년 조명쇼가 12월 31일에 개최되며, 드론 공연과 불꽃쇼를 특징으로 하고, 관람 포인트 사전 예약을 권장합니다.】",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "관련",
+                        "무관련"
+                    ],
+                    "description": "레크리에이션 기사인지 여부",
+                    "能力項": "주제제약"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "판단을 내린 이유",
+                    "能力項": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "이벤트가 만료되었는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "축제 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "여러 POI가 관련되는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "부모-자녀 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야간 활동인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야외 활동인지 여부",
+                    "能力項": "특정형식"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "배경: 당신은 기사 분석가입니다. 기사와 POI 이름을 제공하겠습니다. 당신의 임무는 이 기사를 분석하여 이 기사가 레크리에이션 활동과 관련이 있는지, 핫 이벤트 유형과 관련이 있는지 판단하고, 최종적으로 판단의 근거를 제공하는 것입니다.\n현재 날짜: 2024-06-01.\n지식: 레크리에이션 가이드인지 여부는 다음 차원에 따라 판단하며, 이러한 차원의 판단이 모두 통과해야만 레크리에이션 관련 가이드로 인정될 수 있습니다:\n1. 기사에 여행 가이드, 레크리에이션 활동, 레크리에이션 프로젝트, 여행 경로, 여행 순서, 체크인 포인트, 관광지, 여행 경험 등의 정보가 포함되어 있는지 여부. 출현 빈도가 높을수록 레크리에이션 기사일 가능성이 높습니다(하지만 필수는 아닙니다).\n2. 기사 내용이 판매, 광고, 임대, 매매, 부동산, 식음료, 숙박 유형 메모에 관한 것이라면 레크리에이션 기사에 속하지 않습니다. 기사 정보가 비어있는 경우에도 레크리에이션 기사에 속하지 않습니다.\n3. 온천, 스키 등의 키워드가 포함된 경우 레크리에이션 기사로 분류됩니다.\n4. 크리스마스, 할로윈, 신정 등의 휴일이 포함된 경우 레크리에이션 기사로 분류됩니다.\n5. 조명쇼, 불꽃쇼 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n6. 춘절 등불축제, 춘절 장터 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n기사에 축제, 축하, 장터, 등불축제 등의 단어가 포함된 경우 우선적으로 레크리에이션 기사로 분류하세요.\n부모-자녀, 어린이 놀이터 등의 단어가 나타나고 레크리에이션 설명이 있는 경우 관련으로 분류합니다.\n출력 형식: JSON 형식을 사용하여 추출된 정보를 반환하세요. 모든 필드는 '예' 또는 '아니오' 또는 '관련' 또는 '무관련'만 반환할 수 있습니다. 예시 형식은 다음과 같습니다: {\"relate\":\"관련/무관련\",\"reason\":\"이유\",\"isExpired\":\"예/아니오\",\"isFestival\":\"예/아니오\",\"isMultiPOI\":\"예/아니오\",\"isParentChild\":\"예/아니오\",\"isNightEvent\":\"예/아니오\",\"isOutdoor\":\"예/아니오\"}. relate는 관련 또는 무관련을 반환합니다; reason은 판단의 이유를 반환합니다; isExpired는 이벤트가 만료되었는지를 나타내고, isFestival은 축제 관련인지를 나타내며, isMultiPOI는 여러 POI가 관련되는지를 나타내고, isParentChild는 부모-자녀 관련인지를 나타내며, isNightEvent는 야간 이벤트인지를 나타내고, isOutdoor는 야외 활동인지를 나타냅니다. 반환되는 JSON 데이터 구조가 올바르고 위의 규칙을 준수하는지 확인하세요. JSON 이외의 문자는 반환하지 마세요.\n기사 내용: 【[신정 장터] 2025년 베이징 디탄 장터가 1월 1일부터 1월 5일까지 개최되며, 민속 공연, 수공예 체험, 음식 노점 등을 포함하여 부모-자녀 가족 방문에 적합합니다.】",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "관련",
+                        "무관련"
+                    ],
+                    "description": "레크리에이션 기사인지 여부",
+                    "能力項": "주제제약"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "판단을 내린 이유",
+                    "能力項": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "이벤트가 만료되었는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "축제 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "여러 POI가 관련되는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "부모-자녀 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야간 활동인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야외 활동인지 여부",
+                    "能力項": "특정형식"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "배경: 당신은 기사 분석가입니다. 기사와 POI 이름을 제공하겠습니다. 당신의 임무는 이 기사를 분석하여 이 기사가 레크리에이션 활동과 관련이 있는지, 핫 이벤트 유형과 관련이 있는지 판단하고, 최종적으로 판단의 근거를 제공하는 것입니다.\n현재 날짜: 2024-06-01.\n지식: 레크리에이션 가이드인지 여부는 다음 차원에 따라 판단하며, 이러한 차원의 판단이 모두 통과해야만 레크리에이션 관련 가이드로 인정될 수 있습니다:\n1. 기사에 여행 가이드, 레크리에이션 활동, 레크리에이션 프로젝트, 여행 경로, 여행 순서, 체크인 포인트, 관광지, 여행 경험 등의 정보가 포함되어 있는지 여부. 출현 빈도가 높을수록 레크리에이션 기사일 가능성이 높습니다(하지만 필수는 아닙니다).\n2. 기사 내용이 판매, 광고, 임대, 매매, 부동산, 식음료, 숙박 유형 메모에 관한 것이라면 레크리에이션 기사에 속하지 않습니다. 기사 정보가 비어있는 경우에도 레크리에이션 기사에 속하지 않습니다.\n3. 온천, 스키 등의 키워드가 포함된 경우 레크리에이션 기사로 분류됩니다.\n4. 크리스마스, 할로윈, 신정 등의 휴일이 포함된 경우 레크리에이션 기사로 분류됩니다.\n5. 조명쇼, 불꽃쇼 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n6. 춘절 등불축제, 춘절 장터 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n기사 내용이 비어있는 경우 직접 무관련으로 분류합니다.\n출력 형식: JSON 형식을 사용하여 추출된 정보를 반환하세요. 모든 필드는 '예' 또는 '아니오' 또는 '관련' 또는 '무관련'만 반환할 수 있습니다. 예시 형식은 다음과 같습니다: {\"relate\":\"관련/무관련\",\"reason\":\"이유\",\"isExpired\":\"예/아니오\",\"isFestival\":\"예/아니오\",\"isMultiPOI\":\"예/아니오\",\"isParentChild\":\"예/아니오\",\"isNightEvent\":\"예/아니오\",\"isOutdoor\":\"예/아니오\"}. relate는 관련 또는 무관련을 반환합니다; reason은 판단의 이유를 반환합니다; isExpired는 이벤트가 만료되었는지를 나타내고, isFestival은 축제 관련인지를 나타내며, isMultiPOI는 여러 POI가 관련되는지를 나타내고, isParentChild는 부모-자녀 관련인지를 나타내며, isNightEvent는 야간 이벤트인지를 나타내고, isOutdoor는 야외 활동인지를 나타냅니다. 반환되는 JSON 데이터 구조가 올바르고 위의 규칙을 준수하는지 확인하세요. JSON 이외의 문자는 반환하지 마세요.\n기사 내용: 【[임대 정보] 시내 중심가 고급 아파트 임대, 교통 편리, 즉시 입주 가능, 견학 예약 전화를 환영합니다.】",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "관련",
+                        "무관련"
+                    ],
+                    "description": "레크리에이션 기사인지 여부",
+                    "能力項": "주제제약"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "판단을 내린 이유",
+                    "能力項": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "이벤트가 만료되었는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "축제 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "여러 POI가 관련되는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "부모-자녀 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야간 활동인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야외 활동인지 여부",
+                    "能力項": "특정형식"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "배경: 당신은 기사 분석가입니다. 기사와 POI 이름을 제공하겠습니다. 당신의 임무는 이 기사를 분석하여 이 기사가 레크리에이션 활동과 관련이 있는지, 핫 이벤트 유형과 관련이 있는지 판단하고, 최종적으로 판단의 근거를 제공하는 것입니다.\n현재 날짜: 2024-06-01.\n지식: 레크리에이션 가이드인지 여부는 다음 차원에 따라 판단하며, 이러한 차원의 판단이 모두 통과해야만 레크리에이션 관련 가이드로 인정될 수 있습니다:\n1. 기사에 여행 가이드, 레크리에이션 활동, 레크리에이션 프로젝트, 여행 경로, 여행 순서, 체크인 포인트, 관광지, 여행 경험 등의 정보가 포함되어 있는지 여부. 출현 빈도가 높을수록 레크리에이션 기사일 가능성이 높습니다(하지만 필수는 아닙니다).\n2. 기사 내용이 판매, 광고, 임대, 매매, 부동산, 식음료, 숙박 유형 메모에 관한 것이라면 레크리에이션 기사에 속하지 않습니다. 기사 정보가 비어있는 경우에도 레크리에이션 기사에 속하지 않습니다.\n3. 온천, 스키 등의 키워드가 포함된 경우 레크리에이션 기사로 분류됩니다.\n4. 크리스마스, 할로윈, 신정 등의 휴일이 포함된 경우 레크리에이션 기사로 분류됩니다.\n5. 조명쇼, 불꽃쇼 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n6. 춘절 등불축제, 춘절 장터 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n기사에 축제, 축하, 장터, 등불축제 등의 단어가 포함된 경우 우선적으로 레크리에이션 기사로 분류하세요.\n출력 형식: JSON 형식을 사용하여 추출된 정보를 반환하세요. 모든 필드는 '예' 또는 '아니오' 또는 '관련' 또는 '무관련'만 반환할 수 있습니다. 예시 형식은 다음과 같습니다: {\"relate\":\"관련/무관련\",\"reason\":\"이유\",\"isExpired\":\"예/아니오\",\"isFestival\":\"예/아니오\",\"isMultiPOI\":\"예/아니오\",\"isParentChild\":\"예/아니오\",\"isNightEvent\":\"예/아니오\",\"isOutdoor\":\"예/아니오\"}. relate는 관련 또는 무관련을 반환합니다; reason은 판단의 이유를 반환합니다; isExpired는 이벤트가 만료되었는지를 나타내고, isFestival은 축제 관련인지를 나타내며, isMultiPOI는 여러 POI가 관련되는지를 나타내고, isParentChild는 부모-자녀 관련인지를 나타내며, isNightEvent는 야간 이벤트인지를 나타내고, isOutdoor는 야외 활동인지를 나타냅니다. 반환되는 JSON 데이터 구조가 올바르고 위의 규칙을 준수하는지 확인하세요. JSON 이외의 문자는 반환하지 마세요.\n기사 내용: 【[춘절 등불축제] 2025년 난징 친화이 등불축제가 2월 2일부터 2월 20일까지 개최되며, 주최자는 등불 퍼레이드, 무형문화유산 공연 등의 활동을 개최하고, 야간 조명쇼가 장관입니다.】",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "관련",
+                        "무관련"
+                    ],
+                    "description": "레크리에이션 기사인지 여부",
+                    "能力項": "주제제약"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "판단을 내린 이유",
+                    "能力項": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "이벤트가 만료되었는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "축제 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "여러 POI가 관련되는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "부모-자녀 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야간 활동인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야외 활동인지 여부",
+                    "能力項": "특정형식"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "배경: 당신은 기사 분석가입니다. 기사와 POI 이름을 제공하겠습니다. 당신의 임무는 이 기사를 분석하여 이 기사가 레크리에이션 활동과 관련이 있는지, 핫 이벤트 유형과 관련이 있는지 판단하고, 최종적으로 판단의 근거를 제공하는 것입니다.\n현재 날짜: 2024-06-01.\n지식: 레크리에이션 가이드인지 여부는 다음 차원에 따라 판단하며, 이러한 차원의 판단이 모두 통과해야만 레크리에이션 관련 가이드로 인정될 수 있습니다:\n1. 기사에 여행 가이드, 레크리에이션 활동, 레크리에이션 프로젝트, 여행 경로, 여행 순서, 체크인 포인트, 관광지, 여행 경험 등의 정보가 포함되어 있는지 여부. 출현 빈도가 높을수록 레크리에이션 기사일 가능성이 높습니다(하지만 필수는 아닙니다).\n2. 기사 내용이 판매, 광고, 임대, 매매, 부동산, 식음료, 숙박 유형 메모에 관한 것이라면 레크리에이션 기사에 속하지 않습니다. 기사 정보가 비어있는 경우에도 레크리에이션 기사에 속하지 않습니다.\n3. 온천, 스키 등의 키워드가 포함된 경우 레크리에이션 기사로 분류됩니다.\n4. 크리스마스, 할로윈, 신정 등의 휴일이 포함된 경우 레크리에이션 기사로 분류됩니다.\n5. 조명쇼, 불꽃쇼 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n6. 춘절 등불축제, 춘절 장터 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n기사 내용이 주어진 POI 이름과 높은 관련성을 가지고 레크리에이션 경험을 설명하는 경우 관련으로 분류합니다.\n부모-자녀, 어린이 놀이터 등의 단어가 나타나고 레크리에이션 설명이 있는 경우 관련으로 분류합니다.\n출력 형식: JSON 형식을 사용하여 추출된 정보를 반환하세요. 모든 필드는 '예' 또는 '아니오' 또는 '관련' 또는 '무관련'만 반환할 수 있습니다. 예시 형식은 다음과 같습니다: {\"relate\":\"관련/무관련\",\"reason\":\"이유\",\"isExpired\":\"예/아니오\",\"isFestival\":\"예/아니오\",\"isMultiPOI\":\"예/아니오\",\"isParentChild\":\"예/아니오\",\"isNightEvent\":\"예/아니오\",\"isOutdoor\":\"예/아니오\"}. relate는 관련 또는 무관련을 반환합니다; reason은 판단의 이유를 반환합니다; isExpired는 이벤트가 만료되었는지를 나타내고, isFestival은 축제 관련인지를 나타내며, isMultiPOI는 여러 POI가 관련되는지를 나타내고, isParentChild는 부모-자녀 관련인지를 나타내며, isNightEvent는 야간 이벤트인지를 나타내고, isOutdoor는 야외 활동인지를 나타냅니다. 반환되는 JSON 데이터 구조가 올바르고 위의 규칙을 준수하는지 확인하세요. JSON 이외의 문자는 반환하지 마세요.\n기사 내용: 【[온천 체험] 충칭 난산 온천 리조트가 새로 개장하여 다양한 테마 풀, 부모-자녀 놀이터, SPA 마사지 구역을 포함하며 겨울 레저 레크리에이션에 적합합니다.】",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "관련",
+                        "무관련"
+                    ],
+                    "description": "레크리에이션 기사인지 여부",
+                    "能力項": "주제제약"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "판단을 내린 이유",
+                    "能力項": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "이벤트가 만료되었는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "축제 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "여러 POI가 관련되는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "부모-자녀 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야간 활동인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야외 활동인지 여부",
+                    "能力項": "특정형식"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "배경: 당신은 기사 분석가입니다. 기사와 POI 이름을 제공하겠습니다. 당신의 임무는 이 기사를 분석하여 이 기사가 레크리에이션 활동과 관련이 있는지, 핫 이벤트 유형과 관련이 있는지 판단하고, 최종적으로 판단의 근거를 제공하는 것입니다.\n현재 날짜: 2024-06-01.\n지식: 레크리에이션 가이드인지 여부는 다음 차원에 따라 판단하며, 이러한 차원의 판단이 모두 통과해야만 레크리에이션 관련 가이드로 인정될 수 있습니다:\n1. 기사에 여행 가이드, 레크리에이션 활동, 레크리에이션 프로젝트, 여행 경로, 여행 순서, 체크인 포인트, 관광지, 여행 경험 등의 정보가 포함되어 있는지 여부. 출현 빈도가 높을수록 레크리에이션 기사일 가능성이 높습니다(하지만 필수는 아닙니다).\n2. 기사 내용이 판매, 광고, 임대, 매매, 부동산, 식음료, 숙박 유형 메모에 관한 것이라면 레크리에이션 기사에 속하지 않습니다. 기사 정보가 비어있는 경우에도 레크리에이션 기사에 속하지 않습니다.\n3. 온천, 스키 등의 키워드가 포함된 경우 레크리에이션 기사로 분류됩니다.\n4. 크리스마스, 할로윈, 신정 등의 휴일이 포함된 경우 레크리에이션 기사로 분류됩니다.\n5. 조명쇼, 불꽃쇼 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n6. 춘절 등불축제, 춘절 장터 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n기사가 여러 도시의 관광지를 포함하고 모두 레크리에이션 목적인 경우 관련으로 분류합니다.\n마라톤, 하이킹, 사이클링 등의 야외 활동이 나타나고 레크리에이션 경험이 있는 경우 관련으로 분류합니다.\n출력 형식: JSON 형식을 사용하여 추출된 정보를 반환하세요. 모든 필드는 '예' 또는 '아니오' 또는 '관련' 또는 '무관련'만 반환할 수 있습니다. 예시 형식은 다음과 같습니다: {\"relate\":\"관련/무관련\",\"reason\":\"이유\",\"isExpired\":\"예/아니오\",\"isFestival\":\"예/아니오\",\"isMultiPOI\":\"예/아니오\",\"isParentChild\":\"예/아니오\",\"isNightEvent\":\"예/아니오\",\"isOutdoor\":\"예/아니오\"}. relate는 관련 또는 무관련을 반환합니다; reason은 판단의 이유를 반환합니다; isExpired는 이벤트가 만료되었는지를 나타내고, isFestival은 축제 관련인지를 나타내며, isMultiPOI는 여러 POI가 관련되는지를 나타내고, isParentChild는 부모-자녀 관련인지를 나타내며, isNightEvent는 야간 이벤트인지를 나타내고, isOutdoor는 야외 활동인지를 나타냅니다. 반환되는 JSON 데이터 구조가 올바르고 위의 규칙을 준수하는지 확인하세요. JSON 이외의 문자는 반환하지 마세요.\n기사 내용: 【[광고] 저희 매장에 새로운 수입 가전제품이 입고되었으며, 프로모션 할인 중이니 방문 및 쇼핑을 환영합니다.】",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "관련",
+                        "무관련"
+                    ],
+                    "description": "레크리에이션 기사인지 여부",
+                    "能力項": "주제제약"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "판단을 내린 이유",
+                    "能力項": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "이벤트가 만료되었는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "축제 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "여러 POI가 관련되는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "부모-자녀 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야간 활동인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야외 활동인지 여부",
+                    "能力項": "특정형식"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "배경: 당신은 기사 분석가입니다. 기사와 POI 이름을 제공하겠습니다. 당신의 임무는 이 기사를 분석하여 이 기사가 레크리에이션 활동과 관련이 있는지, 핫 이벤트 유형과 관련이 있는지 판단하고, 최종적으로 판단의 근거를 제공하는 것입니다.\n현재 날짜: 2024-06-01.\n지식: 레크리에이션 가이드인지 여부는 다음 차원에 따라 판단하며, 이러한 차원의 판단이 모두 통과해야만 레크리에이션 관련 가이드로 인정될 수 있습니다:\n1. 기사에 여행 가이드, 레크리에이션 활동, 레크리에이션 프로젝트, 여행 경로, 여행 순서, 체크인 포인트, 관광지, 여행 경험 등의 정보가 포함되어 있는지 여부. 출현 빈도가 높을수록 레크리에이션 기사일 가능성이 높습니다(하지만 필수는 아닙니다).\n2. 기사 내용이 판매, 광고, 임대, 매매, 부동산, 식음료, 숙박 유형 메모에 관한 것이라면 레크리에이션 기사에 속하지 않습니다. 기사 정보가 비어있는 경우에도 레크리에이션 기사에 속하지 않습니다.\n3. 온천, 스키 등의 키워드가 포함된 경우 레크리에이션 기사로 분류됩니다.\n4. 크리스마스, 할로윈, 신정 등의 휴일이 포함된 경우 레크리에이션 기사로 분류됩니다.\n5. 조명쇼, 불꽃쇼 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n6. 춘절 등불축제, 춘절 장터 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n부모-자녀, 어린이 놀이터 등의 단어가 나타나고 레크리에이션 설명이 있는 경우 관련으로 분류합니다.\n기사에 #체크인, #관광, #매장탐방 등의 태그가 포함되고 내용에 레크리에이션 경험이 포함된 경우 관련으로 분류하는 경향이 있습니다.\n출력 형식: JSON 형식을 사용하여 추출된 정보를 반환하세요. 모든 필드는 '예' 또는 '아니오' 또는 '관련' 또는 '무관련'만 반환할 수 있습니다. 예시 형식은 다음과 같습니다: {\"relate\":\"관련/무관련\",\"reason\":\"이유\",\"isExpired\":\"예/아니오\",\"isFestival\":\"예/아니오\",\"isMultiPOI\":\"예/아니오\",\"isParentChild\":\"예/아니오\",\"isNightEvent\":\"예/아니오\",\"isOutdoor\":\"예/아니오\"}. relate는 관련 또는 무관련을 반환합니다; reason은 판단의 이유를 반환합니다; isExpired는 이벤트가 만료되었는지를 나타내고, isFestival은 축제 관련인지를 나타내며, isMultiPOI는 여러 POI가 관련되는지를 나타내고, isParentChild는 부모-자녀 관련인지를 나타내며, isNightEvent는 야간 이벤트인지를 나타내고, isOutdoor는 야외 활동인지를 나타냅니다. 반환되는 JSON 데이터 구조가 올바르고 위의 규칙을 준수하는지 확인하세요. JSON 이외의 문자는 반환하지 마세요.\n기사 내용: 【[가이드] 난징 부자묘 방문 순서 추천: 먼저 친화이강 야시장을 방문하고, 다음으로 부자묘 고건축을 견학하며, 마지막으로 음식거리에서 간식을 맛보세요.】",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "관련",
+                        "무관련"
+                    ],
+                    "description": "레크리에이션 기사인지 여부",
+                    "能力項": "주제제약"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "판단을 내린 이유",
+                    "能力項": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "이벤트가 만료되었는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "축제 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "여러 POI가 관련되는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "부모-자녀 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야간 활동인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야외 활동인지 여부",
+                    "能力項": "특정형식"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "배경: 당신은 기사 분석가입니다. 기사와 POI 이름을 제공하겠습니다. 당신의 임무는 이 기사를 분석하여 이 기사가 레크리에이션 활동과 관련이 있는지, 핫 이벤트 유형과 관련이 있는지 판단하고, 최종적으로 판단의 근거를 제공하는 것입니다.\n현재 날짜: 2024-06-01.\n지식: 레크리에이션 가이드인지 여부는 다음 차원에 따라 판단하며, 이러한 차원의 판단이 모두 통과해야만 레크리에이션 관련 가이드로 인정될 수 있습니다:\n1. 기사에 여행 가이드, 레크리에이션 활동, 레크리에이션 프로젝트, 여행 경로, 여행 순서, 체크인 포인트, 관광지, 여행 경험 등의 정보가 포함되어 있는지 여부. 출현 빈도가 높을수록 레크리에이션 기사일 가능성이 높습니다(하지만 필수는 아닙니다).\n2. 기사 내용이 판매, 광고, 임대, 매매, 부동산, 식음료, 숙박 유형 메모에 관한 것이라면 레크리에이션 기사에 속하지 않습니다. 기사 정보가 비어있는 경우에도 레크리에이션 기사에 속하지 않습니다.\n3. 온천, 스키 등의 키워드가 포함된 경우 레크리에이션 기사로 분류됩니다.\n4. 크리스마스, 할로윈, 신정 등의 휴일이 포함된 경우 레크리에이션 기사로 분류됩니다.\n5. 조명쇼, 불꽃쇼 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n6. 춘절 등불축제, 춘절 장터 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n\n기사에 #체크인, #관광, #매장탐방 등의 태그가 포함되고 내용에 레크리에이션 경험이 포함된 경우 관련으로 분류하는 경향이 있습니다.\n출력 형식: JSON 형식을 사용하여 추출된 정보를 반환하세요. 모든 필드는 '예' 또는 '아니오' 또는 '관련' 또는 '무관련'만 반환할 수 있습니다. 예시 형식은 다음과 같습니다: {\"relate\":\"관련/무관련\",\"reason\":\"이유\",\"isExpired\":\"예/아니오\",\"isFestival\":\"예/아니오\",\"isMultiPOI\":\"예/아니오\",\"isParentChild\":\"예/아니오\",\"isNightEvent\":\"예/아니오\",\"isOutdoor\":\"예/아니오\"}. relate는 관련 또는 무관련을 반환합니다; reason은 판단의 이유를 반환합니다; isExpired는 이벤트가 만료되었는지를 나타내고, isFestival은 축제 관련인지를 나타내며, isMultiPOI는 여러 POI가 관련되는지를 나타내고, isParentChild는 부모-자녀 관련인지를 나타내며, isNightEvent는 야간 이벤트인지를 나타내고, isOutdoor는 야외 활동인지를 나타냅니다. 반환되는 JSON 데이터 구조가 올바르고 위의 규칙을 준수하는지 확인하세요. JSON 이외의 문자는 반환하지 마세요.\n기사 내용: 【[관광 활동] 2024년 청두 판다축제가 10월에 개최되며, 주 전시 구역은 청두 자이언트 판다 번식 기지이고, 활동에는 부모-자녀 상호작용, 판다 테마 퍼레이드, 체크인 포인트 스탬프 수집 등이 포함됩니다.】",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "관련",
+                        "무관련"
+                    ],
+                    "description": "레크리에이션 기사인지 여부",
+                    "能力項": "주제제약"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "판단을 내린 이유",
+                    "能力項": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "이벤트가 만료되었는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "축제 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "여러 POI가 관련되는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "부모-자녀 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야간 활동인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야외 활동인지 여부",
+                    "能力項": "특정형식"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "배경: 당신은 기사 분석가입니다. 기사와 POI 이름을 제공하겠습니다. 당신의 임무는 이 기사를 분석하여 이 기사가 레크리에이션 활동과 관련이 있는지, 핫 이벤트 유형과 관련이 있는지 판단하고, 최종적으로 판단의 근거를 제공하는 것입니다.\n현재 날짜: 2024-06-01.\n지식: 레크리에이션 가이드인지 여부는 다음 차원에 따라 판단하며, 이러한 차원의 판단이 모두 통과해야만 레크리에이션 관련 가이드로 인정될 수 있습니다:\n1. 기사에 여행 가이드, 레크리에이션 활동, 레크리에이션 프로젝트, 여행 경로, 여행 순서, 체크인 포인트, 관광지, 여행 경험 등의 정보가 포함되어 있는지 여부. 출현 빈도가 높을수록 레크리에이션 기사일 가능성이 높습니다(하지만 필수는 아닙니다).\n2. 기사 내용이 판매, 광고, 임대, 매매, 부동산, 식음료, 숙박 유형 메모에 관한 것이라면 레크리에이션 기사에 속하지 않습니다. 기사 정보가 비어있는 경우에도 레크리에이션 기사에 속하지 않습니다.\n3. 온천, 스키 등의 키워드가 포함된 경우 레크리에이션 기사로 분류됩니다.\n4. 크리스마스, 할로윈, 신정 등의 휴일이 포함된 경우 레크리에이션 기사로 분류됩니다.\n5. 조명쇼, 불꽃쇼 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n6. 춘절 등불축제, 춘절 장터 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n기사 내용이 주어진 POI 이름과 높은 관련성을 가지고 레크리에이션 경험을 설명하는 경우 관련으로 분류합니다.\n기사 내용이 비어있는 경우 직접 무관련으로 분류합니다.\n출력 형식: JSON 형식을 사용하여 추출된 정보를 반환하세요. 모든 필드는 '예' 또는 '아니오' 또는 '관련' 또는 '무관련'만 반환할 수 있습니다. 예시 형식은 다음과 같습니다: {\"relate\":\"관련/무관련\",\"reason\":\"이유\",\"isExpired\":\"예/아니오\",\"isFestival\":\"예/아니오\",\"isMultiPOI\":\"예/아니오\",\"isParentChild\":\"예/아니오\",\"isNightEvent\":\"예/아니오\",\"isOutdoor\":\"예/아니오\"}. relate는 관련 또는 무관련을 반환합니다; reason은 판단의 이유를 반환합니다; isExpired는 이벤트가 만료되었는지를 나타내고, isFestival은 축제 관련인지를 나타내며, isMultiPOI는 여러 POI가 관련되는지를 나타내고, isParentChild는 부모-자녀 관련인지를 나타내며, isNightEvent는 야간 이벤트인지를 나타내고, isOutdoor는 야외 활동인지를 나타냅니다. 반환되는 JSON 데이터 구조가 올바르고 위의 규칙을 준수하는지 확인하세요. JSON 이외의 문자는 반환하지 마세요.\n기사 내용: 【[호텔 추천] 산야 바다 전망 호텔, 해변까지 도보 거리, 인피니티 풀과 어린이 놀이터를 갖추고 있어 가족 휴가에 적합합니다.】",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "관련",
+                        "무관련"
+                    ],
+                    "description": "레크리에이션 기사인지 여부",
+                    "能力項": "주제제약"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "판단을 내린 이유",
+                    "能力項": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "이벤트가 만료되었는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "축제 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "여러 POI가 관련되는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "부모-자녀 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야간 활동인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야외 활동인지 여부",
+                    "能力項": "특정형식"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "배경: 당신은 기사 분석가입니다. 기사와 POI 이름을 제공하겠습니다. 당신의 임무는 이 기사를 분석하여 이 기사가 레크리에이션 활동과 관련이 있는지, 핫 이벤트 유형과 관련이 있는지 판단하고, 최종적으로 판단의 근거를 제공하는 것입니다.\n현재 날짜: 2024-06-01.\n지식: 레크리에이션 가이드인지 여부는 다음 차원에 따라 판단하며, 이러한 차원의 판단이 모두 통과해야만 레크리에이션 관련 가이드로 인정될 수 있습니다:\n1. 기사에 여행 가이드, 레크리에이션 활동, 레크리에이션 프로젝트, 여행 경로, 여행 순서, 체크인 포인트, 관광지, 여행 경험 등의 정보가 포함되어 있는지 여부. 출현 빈도가 높을수록 레크리에이션 기사일 가능성이 높습니다(하지만 필수는 아닙니다).\n2. 기사 내용이 판매, 광고, 임대, 매매, 부동산, 식음료, 숙박 유형 메모에 관한 것이라면 레크리에이션 기사에 속하지 않습니다. 기사 정보가 비어있는 경우에도 레크리에이션 기사에 속하지 않습니다.\n3. 온천, 스키 등의 키워드가 포함된 경우 레크리에이션 기사로 분류됩니다.\n4. 크리스마스, 할로윈, 신정 등의 휴일이 포함된 경우 레크리에이션 기사로 분류됩니다.\n5. 조명쇼, 불꽃쇼 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n6. 춘절 등불축제, 춘절 장터 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n출력 형식: JSON 형식을 사용하여 추출된 정보를 반환하세요. 모든 필드는 '예' 또는 '아니오' 또는 '관련' 또는 '무관련'만 반환할 수 있습니다. 예시 형식은 다음과 같습니다: {\"relate\":\"관련/무관련\",\"reason\":\"이유\",\"isExpired\":\"예/아니오\",\"isFestival\":\"예/아니오\",\"isMultiPOI\":\"예/아니오\",\"isParentChild\":\"예/아니오\",\"isNightEvent\":\"예/아니오\",\"isOutdoor\":\"예/아니오\"}. relate는 관련 또는 무관련을 반환합니다; reason은 판단의 이유를 반환합니다; isExpired는 이벤트가 만료되었는지를 나타내고, isFestival은 축제 관련인지를 나타내며, isMultiPOI는 여러 POI가 관련되는지를 나타내고, isParentChild는 부모-자녀 관련인지를 나타내며, isNightEvent는 야간 이벤트인지를 나타내고, isOutdoor는 야외 활동인지를 나타냅니다. 반환되는 JSON 데이터 구조가 올바르고 위의 규칙을 준수하는지 확인하세요. JSON 이외의 문자는 반환하지 마세요.\n기사 내용: 【[할로윈 활동] 2024년 광저우 창룽 할로윈 야간 세션이 10월 31일에 개장하며, 공원은 유령의 집과 호박 등불로 장식되고 퍼레이드 공연과 테마 파티를 개최합니다.】",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "관련",
+                        "무관련"
+                    ],
+                    "description": "레크리에이션 기사인지 여부",
+                    "能力項": "주제제약"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "판단을 내린 이유",
+                    "能力項": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "이벤트가 만료되었는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "축제 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "여러 POI가 관련되는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "부모-자녀 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야간 활동인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야외 활동인지 여부",
+                    "能力項": "특정형식"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "배경: 당신은 기사 분석가입니다. 기사와 POI 이름을 제공하겠습니다. 당신의 임무는 이 기사를 분석하여 이 기사가 레크리에이션 활동과 관련이 있는지, 핫 이벤트 유형과 관련이 있는지 판단하고, 최종적으로 판단의 근거를 제공하는 것입니다.\n현재 날짜: 2024-06-01.\n지식: 레크리에이션 가이드인지 여부는 다음 차원에 따라 판단하며, 이러한 차원의 판단이 모두 통과해야만 레크리에이션 관련 가이드로 인정될 수 있습니다:\n1. 기사에 여행 가이드, 레크리에이션 활동, 레크리에이션 프로젝트, 여행 경로, 여행 순서, 체크인 포인트, 관광지, 여행 경험 등의 정보가 포함되어 있는지 여부. 출현 빈도가 높을수록 레크리에이션 기사일 가능성이 높습니다(하지만 필수는 아닙니다).\n2. 기사 내용이 판매, 광고, 임대, 매매, 부동산, 식음료, 숙박 유형 메모에 관한 것이라면 레크리에이션 기사에 속하지 않습니다. 기사 정보가 비어있는 경우에도 레크리에이션 기사에 속하지 않습니다.\n3. 온천, 스키 등의 키워드가 포함된 경우 레크리에이션 기사로 분류됩니다.\n4. 크리스마스, 할로윈, 신정 등의 휴일이 포함된 경우 레크리에이션 기사로 분류됩니다.\n5. 조명쇼, 불꽃쇼 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n6. 춘절 등불축제, 춘절 장터 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n기사에 축제, 축하, 장터, 등불축제 등의 단어가 포함된 경우 우선적으로 레크리에이션 기사로 분류하세요.\n출력 형식: JSON 형식을 사용하여 추출된 정보를 반환하세요. 모든 필드는 '예' 또는 '아니오' 또는 '관련' 또는 '무관련'만 반환할 수 있습니다. 예시 형식은 다음과 같습니다: {\"relate\":\"관련/무관련\",\"reason\":\"이유\",\"isExpired\":\"예/아니오\",\"isFestival\":\"예/아니오\",\"isMultiPOI\":\"예/아니오\",\"isParentChild\":\"예/아니오\",\"isNightEvent\":\"예/아니오\",\"isOutdoor\":\"예/아니오\"}. relate는 관련 또는 무관련을 반환합니다; reason은 판단의 이유를 반환합니다; isExpired는 이벤트가 만료되었는지를 나타내고, isFestival은 축제 관련인지를 나타내며, isMultiPOI는 여러 POI가 관련되는지를 나타내고, isParentChild는 부모-자녀 관련인지를 나타내며, isNightEvent는 야간 이벤트인지를 나타내고, isOutdoor는 야외 활동인지를 나타냅니다. 반환되는 JSON 데이터 구조가 올바르고 위의 규칙을 준수하는지 확인하세요. JSON 이외의 문자는 반환하지 마세요.\n기사 내용: 【[레크리에이션 체험] 충칭 홍야동의 야경이 매우 아름다우니 저녁 체크인을 추천하며, 강변을 걸으며 조명쇼를 즐기고 근처 음식 선택이 풍부합니다.】",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "관련",
+                        "무관련"
+                    ],
+                    "description": "레크리에이션 기사인지 여부",
+                    "能力項": "주제제약"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "판단을 내린 이유",
+                    "能力項": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "이벤트가 만료되었는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "축제 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "여러 POI가 관련되는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "부모-자녀 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야간 활동인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야외 활동인지 여부",
+                    "能力項": "특정형식"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "배경: 당신은 기사 분석가입니다. 기사와 POI 이름을 제공하겠습니다. 당신의 임무는 이 기사를 분석하여 이 기사가 레크리에이션 활동과 관련이 있는지, 핫 이벤트 유형과 관련이 있는지 판단하고, 최종적으로 판단의 근거를 제공하는 것입니다.\n현재 날짜: 2024-06-01.\n지식: 레크리에이션 가이드인지 여부는 다음 차원에 따라 판단하며, 이러한 차원의 판단이 모두 통과해야만 레크리에이션 관련 가이드로 인정될 수 있습니다:\n1. 기사에 여행 가이드, 레크리에이션 활동, 레크리에이션 프로젝트, 여행 경로, 여행 순서, 체크인 포인트, 관광지, 여행 경험 등의 정보가 포함되어 있는지 여부. 출현 빈도가 높을수록 레크리에이션 기사일 가능성이 높습니다(하지만 필수는 아닙니다).\n2. 기사 내용이 판매, 광고, 임대, 매매, 부동산, 식음료, 숙박 유형 메모에 관한 것이라면 레크리에이션 기사에 속하지 않습니다. 기사 정보가 비어있는 경우에도 레크리에이션 기사에 속하지 않습니다.\n3. 온천, 스키 등의 키워드가 포함된 경우 레크리에이션 기사로 분류됩니다.\n4. 크리스마스, 할로윈, 신정 등의 휴일이 포함된 경우 레크리에이션 기사로 분류됩니다.\n5. 조명쇼, 불꽃쇼 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n6. 춘절 등불축제, 춘절 장터 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n기사가 여러 도시의 관광지를 포함하고 모두 레크리에이션 목적인 경우 관련으로 분류합니다.\n\n출력 형식: JSON 형식을 사용하여 추출된 정보를 반환하세요. 모든 필드는 '예' 또는 '아니오' 또는 '관련' 또는 '무관련'만 반환할 수 있습니다. 예시 형식은 다음과 같습니다: {\"relate\":\"관련/무관련\",\"reason\":\"이유\",\"isExpired\":\"예/아니오\",\"isFestival\":\"예/아니오\",\"isMultiPOI\":\"예/아니오\",\"isParentChild\":\"예/아니오\",\"isNightEvent\":\"예/아니오\",\"isOutdoor\":\"예/아니오\"}. relate는 관련 또는 무관련을 반환합니다; reason은 판단의 이유를 반환합니다; isExpired는 이벤트가 만료되었는지를 나타내고, isFestival은 축제 관련인지를 나타내며, isMultiPOI는 여러 POI가 관련되는지를 나타내고, isParentChild는 부모-자녀 관련인지를 나타내며, isNightEvent는 야간 이벤트인지를 나타내고, isOutdoor는 야외 활동인지를 나타냅니다. 반환되는 JSON 데이터 구조가 올바르고 위의 규칙을 준수하는지 확인하세요. JSON 이외의 문자는 반환하지 마세요.\n기사 내용: 【[빈 내용]】",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "관련",
+                        "무관련"
+                    ],
+                    "description": "레크리에이션 기사인지 여부",
+                    "能力項": "주제제약"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "판단을 내린 이유",
+                    "能力項": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "이벤트가 만료되었는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "축제 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "여러 POI가 관련되는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "부모-자녀 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야간 활동인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야외 활동인지 여부",
+                    "能力項": "특정형식"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "배경: 당신은 기사 분석가입니다. 기사와 POI 이름을 제공하겠습니다. 당신의 임무는 이 기사를 분석하여 이 기사가 레크리에이션 활동과 관련이 있는지, 핫 이벤트 유형과 관련이 있는지 판단하고, 최종적으로 판단의 근거를 제공하는 것입니다.\n현재 날짜: 2024-06-01.\n지식: 레크리에이션 가이드인지 여부는 다음 차원에 따라 판단하며, 이러한 차원의 판단이 모두 통과해야만 레크리에이션 관련 가이드로 인정될 수 있습니다:\n1. 기사에 여행 가이드, 레크리에이션 활동, 레크리에이션 프로젝트, 여행 경로, 여행 순서, 체크인 포인트, 관광지, 여행 경험 등의 정보가 포함되어 있는지 여부. 출현 빈도가 높을수록 레크리에이션 기사일 가능성이 높습니다(하지만 필수는 아닙니다).\n2. 기사 내용이 판매, 광고, 임대, 매매, 부동산, 식음료, 숙박 유형 메모에 관한 것이라면 레크리에이션 기사에 속하지 않습니다. 기사 정보가 비어있는 경우에도 레크리에이션 기사에 속하지 않습니다.\n3. 온천, 스키 등의 키워드가 포함된 경우 레크리에이션 기사로 분류됩니다.\n4. 크리스마스, 할로윈, 신정 등의 휴일이 포함된 경우 레크리에이션 기사로 분류됩니다.\n5. 조명쇼, 불꽃쇼 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n6. 춘절 등불축제, 춘절 장터 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n\n기사 내용이 주어진 POI 이름과 높은 관련성을 가지고 레크리에이션 경험을 설명하는 경우 관련으로 분류합니다.\n출력 형식: JSON 형식을 사용하여 추출된 정보를 반환하세요. 모든 필드는 '예' 또는 '아니오' 또는 '관련' 또는 '무관련'만 반환할 수 있습니다. 예시 형식은 다음과 같습니다: {\"relate\":\"관련/무관련\",\"reason\":\"이유\",\"isExpired\":\"예/아니오\",\"isFestival\":\"예/아니오\",\"isMultiPOI\":\"예/아니오\",\"isParentChild\":\"예/아니오\",\"isNightEvent\":\"예/아니오\",\"isOutdoor\":\"예/아니오\"}. relate는 관련 또는 무관련을 반환합니다; reason은 판단의 이유를 반환합니다; isExpired는 이벤트가 만료되었는지를 나타내고, isFestival은 축제 관련인지를 나타내며, isMultiPOI는 여러 POI가 관련되는지를 나타내고, isParentChild는 부모-자녀 관련인지를 나타내며, isNightEvent는 야간 이벤트인지를 나타내고, isOutdoor는 야외 활동인지를 나타냅니다. 반환되는 JSON 데이터 구조가 올바르고 위의 규칙을 준수하는지 확인하세요. JSON 이외의 문자는 반환하지 마세요.\n기사 내용: 【[레크리에이션 가이드] 시안 성벽 마라톤 코스 완전 가이드, 여러 역사적 관광지를 통과하며, 이벤트 중 조명쇼와 문화 공연이 있습니다.】",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "관련",
+                        "무관련"
+                    ],
+                    "description": "레크리에이션 기사인지 여부",
+                    "能力項": "주제제약"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "판단을 내린 이유",
+                    "能力項": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "이벤트가 만료되었는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "축제 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "여러 POI가 관련되는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "부모-자녀 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야간 활동인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야외 활동인지 여부",
+                    "能力項": "특정형식"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "배경: 당신은 기사 분석가입니다. 기사와 POI 이름을 제공하겠습니다. 당신의 임무는 이 기사를 분석하여 이 기사가 레크리에이션 활동과 관련이 있는지, 핫 이벤트 유형과 관련이 있는지 판단하고, 최종적으로 판단의 근거를 제공하는 것입니다.\n현재 날짜: 2024-06-01.\n지식: 레크리에이션 가이드인지 여부는 다음 차원에 따라 판단하며, 이러한 차원의 판단이 모두 통과해야만 레크리에이션 관련 가이드로 인정될 수 있습니다:\n1. 기사에 여행 가이드, 레크리에이션 활동, 레크리에이션 프로젝트, 여행 경로, 여행 순서, 체크인 포인트, 관광지, 여행 경험 등의 정보가 포함되어 있는지 여부. 출현 빈도가 높을수록 레크리에이션 기사일 가능성이 높습니다(하지만 필수는 아닙니다).\n2. 기사 내용이 판매, 광고, 임대, 매매, 부동산, 식음료, 숙박 유형 메모에 관한 것이라면 레크리에이션 기사에 속하지 않습니다. 기사 정보가 비어있는 경우에도 레크리에이션 기사에 속하지 않습니다.\n3. 온천, 스키 등의 키워드가 포함된 경우 레크리에이션 기사로 분류됩니다.\n4. 크리스마스, 할로윈, 신정 등의 휴일이 포함된 경우 레크리에이션 기사로 분류됩니다.\n5. 조명쇼, 불꽃쇼 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n6. 춘절 등불축제, 춘절 장터 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n\n기사 내용이 주어진 POI 이름과 높은 관련성을 가지고 레크리에이션 경험을 설명하는 경우 관련으로 분류합니다.\n출력 형식: JSON 형식을 사용하여 추출된 정보를 반환하세요. 모든 필드는 '예' 또는 '아니오' 또는 '관련' 또는 '무관련'만 반환할 수 있습니다. 예시 형식은 다음과 같습니다: {\"relate\":\"관련/무관련\",\"reason\":\"이유\",\"isExpired\":\"예/아니오\",\"isFestival\":\"예/아니오\",\"isMultiPOI\":\"예/아니오\",\"isParentChild\":\"예/아니오\",\"isNightEvent\":\"예/아니오\",\"isOutdoor\":\"예/아니오\"}. relate는 관련 또는 무관련을 반환합니다; reason은 판단의 이유를 반환합니다; isExpired는 이벤트가 만료되었는지를 나타내고, isFestival은 축제 관련인지를 나타내며, isMultiPOI는 여러 POI가 관련되는지를 나타내고, isParentChild는 부모-자녀 관련인지를 나타내며, isNightEvent는 야간 이벤트인지를 나타내고, isOutdoor는 야외 활동인지를 나타냅니다. 반환되는 JSON 데이터 구조가 올바르고 위의 규칙을 준수하는지 확인하세요. JSON 이외의 문자는 반환하지 마세요.\n기사 내용: 【[불꽃쇼 예고] 2024년 우한 동호 불꽃쇼가 5월 1일에 공연되며, 최고의 관람 포인트는 모산 경치구이고, 레크리에이션 경로의 사전 계획을 권장합니다.】",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "관련",
+                        "무관련"
+                    ],
+                    "description": "레크리에이션 기사인지 여부",
+                    "能力項": "주제제약"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "판단을 내린 이유",
+                    "能力項": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "이벤트가 만료되었는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "축제 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "여러 POI가 관련되는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "부모-자녀 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야간 활동인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야외 활동인지 여부",
+                    "能力項": "특정형식"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "배경: 당신은 기사 분석가입니다. 기사와 POI 이름을 제공하겠습니다. 당신의 임무는 이 기사를 분석하여 이 기사가 레크리에이션 활동과 관련이 있는지, 핫 이벤트 유형과 관련이 있는지 판단하고, 최종적으로 판단의 근거를 제공하는 것입니다.\n현재 날짜: 2024-06-01.\n지식: 레크리에이션 가이드인지 여부는 다음 차원에 따라 판단하며, 이러한 차원의 판단이 모두 통과해야만 레크리에이션 관련 가이드로 인정될 수 있습니다:\n1. 기사에 여행 가이드, 레크리에이션 활동, 레크리에이션 프로젝트, 여행 경로, 여행 순서, 체크인 포인트, 관광지, 여행 경험 등의 정보가 포함되어 있는지 여부. 출현 빈도가 높을수록 레크리에이션 기사일 가능성이 높습니다(하지만 필수는 아닙니다).\n2. 기사 내용이 판매, 광고, 임대, 매매, 부동산, 식음료, 숙박 유형 메모에 관한 것이라면 레크리에이션 기사에 속하지 않습니다. 기사 정보가 비어있는 경우에도 레크리에이션 기사에 속하지 않습니다.\n3. 온천, 스키 등의 키워드가 포함된 경우 레크리에이션 기사로 분류됩니다.\n4. 크리스마스, 할로윈, 신정 등의 휴일이 포함된 경우 레크리에이션 기사로 분류됩니다.\n5. 조명쇼, 불꽃쇼 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n6. 춘절 등불축제, 춘절 장터 등의 활동이 포함된 경우 레크리에이션 기사로 분류됩니다.\n기사에 축제, 축하, 장터, 등불축제 등의 단어가 포함된 경우 우선적으로 레크리에이션 기사로 분류하세요.\n기사 내용이 주어진 POI 이름과 높은 관련성을 가지고 레크리에이션 경험을 설명하는 경우 관련으로 분류합니다.\n출력 형식: JSON 형식을 사용하여 추출된 정보를 반환하세요. 모든 필드는 '예' 또는 '아니오' 또는 '관련' 또는 '무관련'만 반환할 수 있습니다. 예시 형식은 다음과 같습니다: {\"relate\":\"관련/무관련\",\"reason\":\"이유\",\"isExpired\":\"예/아니오\",\"isFestival\":\"예/아니오\",\"isMultiPOI\":\"예/아니오\",\"isParentChild\":\"예/아니오\",\"isNightEvent\":\"예/아니오\",\"isOutdoor\":\"예/아니오\"}. relate는 관련 또는 무관련을 반환합니다; reason은 판단의 이유를 반환합니다; isExpired는 이벤트가 만료되었는지를 나타내고, isFestival은 축제 관련인지를 나타내며, isMultiPOI는 여러 POI가 관련되는지를 나타내고, isParentChild는 부모-자녀 관련인지를 나타내며, isNightEvent는 야간 이벤트인지를 나타내고, isOutdoor는 야외 활동인지를 나타냅니다. 반환되는 JSON 데이터 구조가 올바르고 위의 규칙을 준수하는지 확인하세요. JSON 이외의 문자는 반환하지 마세요.\n기사 내용: 【[크리스마스 활동] 2024년 상하이 글로벌 하버 크리스마스 조명쇼가 12월 24일에 개장하며, 크리스마스 마켓, 음식 노점, 퍼레이드 공연, 부모-자녀 상호작용이 모두 이용 가능합니다.】",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "관련",
+                        "무관련"
+                    ],
+                    "description": "레크리에이션 기사인지 여부",
+                    "能力項": "주제제약"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "판단을 내린 이유",
+                    "能力項": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "이벤트가 만료되었는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "축제 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "여러 POI가 관련되는지 여부",
+                    "能力項": "특정형식"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "부모-자녀 관련인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야간 활동인지 여부",
+                    "能力項": "특정형식"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "예",
+                        "아니오"
+                    ],
+                    "description": "야외 활동인지 여부",
+                    "能力項": "특정형식"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    }
+]

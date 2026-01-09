@@ -1,0 +1,552 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Verkaufsassistent. Bitte fassen Sie zunächst das Szenario des folgenden Gesprächsinhalts zusammen und schreiben Sie den Gesprächsinhalt in einen flüssigen Gesprächsverlauf um. Der umgeschriebene Inhalt sollte 200 Zeichen nicht überschreiten.\nHinweis:\n1. Sie müssen die Flüssigkeit des umgeschriebenen Dialogs gewährleisten.\n2. Sie müssen die Relevanz des umgeschriebenen Dialogs gewährleisten: Das Thema des umgeschriebenen Gesprächs darf nicht vom ursprünglichen Gespräch abweichen.\n3. Beachten Sie, dass das umgeschriebene Gespräch keine Informationen enthalten darf, die nicht im ursprünglichen Gespräch enthalten sind.\n4. Sie müssen sicherstellen, dass das umgeschriebene Gespräch logisch klar, prägnant und von höherer Qualität ist.\n5. Beachten Sie, dass im umgeschriebenen Gespräch der Ton von Händlern und Verkäufern umgangssprachlich sein sollte, entsprechend ihren jeweiligen Rollen, und Verkäufer sollten auf Höflichkeit achten.\n6. Ausgabe im JSON-Format, zum Beispiel: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nAusgabeanforderungen:\n1. Verwenden Sie das JSON-Format, um die extrahierten Informationen zurückzugeben;\n2. \"scenario_summary\" ist eine einsätzige Szenariobeschreibung, \"dialogue_rewrite\" ist ein Dialog-Array, Verkäufer und Händler sprechen abwechselnd, jeweils nicht mehr als 50 Wörter, Gesamtlänge nicht mehr als 200 Zeichen;\n3. Geben Sie keine anderen Zeichen als das JSON-Format zurück.\nDas Folgende ist der Gesprächsinhalt zwischen Meituan-Verkäufern und Händlern:\nHändler: Hallo, hier ist das Sichuan Restaurant.\nVerkäufer: Hallo, ich bin von Meituan. Ich möchte wissen, ob Ihr Geschäft kürzlich Online-Werbebedarf hat?\nHändler: Wir verlassen uns hauptsächlich auf Stammkunden und haben nicht viel Werbung gemacht.\nVerkäufer: Meituan hat jetzt neue Aktivitäten mit sehr günstigen Werbekosten, die Ihnen helfen können, mehr neue Kunden zu gewinnen.\nHändler: Unser Chef ist auf Geschäftsreise, wir müssen warten, bis er zurückkommt, um das zu besprechen.\nVerkäufer: Ich verstehe, ich werde Sie nächste Woche wieder kontaktieren. Ich wünsche Ihrem Geschäft Wohlstand!\nHändler: Okay, danke.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Einsätzige Zusammenfassung des Anrufszenarios",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Umgeschriebener Dialogverlauf",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Verkäuferaussage",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Händleraussage",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Verkaufsassistent. Bitte fassen Sie zunächst das Szenario des folgenden Gesprächsinhalts zusammen und schreiben Sie den Gesprächsinhalt in einen flüssigen Gesprächsverlauf um. Der umgeschriebene Inhalt sollte 200 Zeichen nicht überschreiten.\nHinweis:\n1. Sie müssen die Flüssigkeit des umgeschriebenen Dialogs gewährleisten.\n2. Sie müssen die Relevanz des umgeschriebenen Dialogs gewährleisten: Das Thema des umgeschriebenen Gesprächs darf nicht vom ursprünglichen Gespräch abweichen.\n3. Beachten Sie, dass das umgeschriebene Gespräch keine Informationen enthalten darf, die nicht im ursprünglichen Gespräch enthalten sind.\n4. Sie müssen sicherstellen, dass das umgeschriebene Gespräch logisch klar, prägnant und von höherer Qualität ist.\n5. Beachten Sie, dass im umgeschriebenen Gespräch der Ton von Händlern und Verkäufern umgangssprachlich sein sollte, entsprechend ihren jeweiligen Rollen, und Verkäufer sollten auf Höflichkeit achten.\n6. Ausgabe im JSON-Format, zum Beispiel: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nAusgabeanforderungen:\n1. Verwenden Sie das JSON-Format, um die extrahierten Informationen zurückzugeben;\n2. \"scenario_summary\" ist eine einsätzige Szenariobeschreibung, \"dialogue_rewrite\" ist ein Dialog-Array, Verkäufer und Händler sprechen abwechselnd, jeweils nicht mehr als 50 Wörter, Gesamtlänge nicht mehr als 200 Zeichen;\n3. Geben Sie keine anderen Zeichen als das JSON-Format zurück.\nDas Folgende ist der Gesprächsinhalt zwischen Meituan-Verkäufern und Händlern:\nHändler: Hallo, hier ist Yuedong Fitness.\nVerkäufer: Hallo, ich möchte fragen, ob Ihr Geschäft derzeit Gruppenkäufe oder Online-Werbung macht?\nHändler: Wir verlassen uns hauptsächlich auf Mitgliederempfehlungen, machen keine Online-Gruppenkäufe.\nVerkäufer: Meituans Gruppenkaufaktivitäten sind jetzt sehr stark, und Fitnesscenter in derselben Branche machen alle mit guten Ergebnissen.\nHändler: Können Sie mein WeChat hinzufügen, um im Detail zu chatten?\nVerkäufer: Natürlich, bitte senden Sie mir Ihre WeChat-ID.\nHändler: Okay, ich sende sie Ihnen später.\nVerkäufer: Danke, ich freue mich auf die Zusammenarbeit!",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Einsätzige Zusammenfassung des Anrufszenarios",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Umgeschriebener Dialogverlauf",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Verkäuferaussage",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Händleraussage",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Verkaufsassistent. Bitte fassen Sie zunächst das Szenario des folgenden Gesprächsinhalts zusammen und schreiben Sie den Gesprächsinhalt in einen flüssigen Gesprächsverlauf um. Der umgeschriebene Inhalt sollte 200 Zeichen nicht überschreiten.\nHinweis:\n1. Sie müssen die Flüssigkeit des umgeschriebenen Dialogs gewährleisten.\n2. Sie müssen die Relevanz des umgeschriebenen Dialogs gewährleisten: Das Thema des umgeschriebenen Gesprächs darf nicht vom ursprünglichen Gespräch abweichen.\n3. Beachten Sie, dass das umgeschriebene Gespräch keine Informationen enthalten darf, die nicht im ursprünglichen Gespräch enthalten sind.\n4. Sie müssen sicherstellen, dass das umgeschriebene Gespräch logisch klar, prägnant und von höherer Qualität ist.\n5. Beachten Sie, dass im umgeschriebenen Gespräch der Ton von Händlern und Verkäufern umgangssprachlich sein sollte, entsprechend ihren jeweiligen Rollen, und Verkäufer sollten auf Höflichkeit achten.\n6. Ausgabe im JSON-Format, zum Beispiel: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nAusgabeanforderungen:\n1. Verwenden Sie das JSON-Format, um die extrahierten Informationen zurückzugeben;\n2. \"scenario_summary\" ist eine einsätzige Szenariobeschreibung, \"dialogue_rewrite\" ist ein Dialog-Array, Verkäufer und Händler sprechen abwechselnd, jeweils nicht mehr als 50 Wörter, Gesamtlänge nicht mehr als 200 Zeichen;\n3. Geben Sie keine anderen Zeichen als das JSON-Format zurück.\nDas Folgende ist der Gesprächsinhalt zwischen Meituan-Verkäufern und Händlern:\nHändler: Hallo.\nVerkäufer: Hallo, ist das Huatian Xiaozhu B&B?\nHändler: Ja, wer ist das?\nVerkäufer: Ich bin von Meituan. Ich möchte wissen, ob Ihr B&B Meituan-Werbung machen möchte?\nHändler: Unsere Bestellungen sind im Moment okay, wir denken vorerst nicht daran.\nVerkäufer: Ich verstehe, bitte kontaktieren Sie mich gerne, wenn Sie es in Zukunft brauchen.\nHändler: Okay, danke.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Einsätzige Zusammenfassung des Anrufszenarios",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Umgeschriebener Dialogverlauf",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Verkäuferaussage",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Händleraussage",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Verkaufsassistent. Bitte fassen Sie zunächst das Szenario des folgenden Gesprächsinhalts zusammen und schreiben Sie den Gesprächsinhalt in einen flüssigen Gesprächsverlauf um. Der umgeschriebene Inhalt sollte 200 Zeichen nicht überschreiten.\nHinweis:\n1. Sie müssen die Flüssigkeit des umgeschriebenen Dialogs gewährleisten.\n2. Sie müssen die Relevanz des umgeschriebenen Dialogs gewährleisten: Das Thema des umgeschriebenen Gesprächs darf nicht vom ursprünglichen Gespräch abweichen.\n3. Beachten Sie, dass das umgeschriebene Gespräch keine Informationen enthalten darf, die nicht im ursprünglichen Gespräch enthalten sind.\n4. Sie müssen sicherstellen, dass das umgeschriebene Gespräch logisch klar, prägnant und von höherer Qualität ist.\n5. Beachten Sie, dass im umgeschriebenen Gespräch der Ton von Händlern und Verkäufern umgangssprachlich sein sollte, entsprechend ihren jeweiligen Rollen, und Verkäufer sollten auf Höflichkeit achten.\n6. Ausgabe im JSON-Format, zum Beispiel: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nAusgabeanforderungen:\n1. Verwenden Sie das JSON-Format, um die extrahierten Informationen zurückzugeben;\n2. \"scenario_summary\" ist eine einsätzige Szenariobeschreibung, \"dialogue_rewrite\" ist ein Dialog-Array, Verkäufer und Händler sprechen abwechselnd, jeweils nicht mehr als 50 Wörter, Gesamtlänge nicht mehr als 200 Zeichen;\n3. Geben Sie keine anderen Zeichen als das JSON-Format zurück.\nDas Folgende ist der Gesprächsinhalt zwischen Meituan-Verkäufern und Händlern:\nHändler: Hallo.\nVerkäufer: Hallo, ich bin von Meituan. Ich möchte fragen, ob Ihr Geschäft Online-Werbung macht?\nHändler: Im Moment nicht, der Chef hat das noch nicht arrangiert.\nVerkäufer: Wenn Sie interessiert sind, können Sie mich jederzeit kontaktieren. Meituan hat kürzlich Vorzugspolitiken.\nHändler: Okay, verstanden.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Einsätzige Zusammenfassung des Anrufszenarios",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Umgeschriebener Dialogverlauf",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Verkäuferaussage",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Händleraussage",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Verkaufsassistent. Bitte fassen Sie zunächst das Szenario des folgenden Gesprächsinhalts zusammen und schreiben Sie den Gesprächsinhalt in einen flüssigen Gesprächsverlauf um. Der umgeschriebene Inhalt sollte 200 Zeichen nicht überschreiten.\nHinweis:\n1. Sie müssen die Flüssigkeit des umgeschriebenen Dialogs gewährleisten.\n2. Sie müssen die Relevanz des umgeschriebenen Dialogs gewährleisten: Das Thema des umgeschriebenen Gesprächs darf nicht vom ursprünglichen Gespräch abweichen.\n3. Beachten Sie, dass das umgeschriebene Gespräch keine Informationen enthalten darf, die nicht im ursprünglichen Gespräch enthalten sind.\n4. Sie müssen sicherstellen, dass das umgeschriebene Gespräch logisch klar, prägnant und von höherer Qualität ist.\n5. Beachten Sie, dass im umgeschriebenen Gespräch der Ton von Händlern und Verkäufern umgangssprachlich sein sollte, entsprechend ihren jeweiligen Rollen, und Verkäufer sollten auf Höflichkeit achten.\n6. Ausgabe im JSON-Format, zum Beispiel: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nAusgabeanforderungen:\n1. Verwenden Sie das JSON-Format, um die extrahierten Informationen zurückzugeben;\n2. \"scenario_summary\" ist eine einsätzige Szenariobeschreibung, \"dialogue_rewrite\" ist ein Dialog-Array, Verkäufer und Händler sprechen abwechselnd, jeweils nicht mehr als 50 Wörter, Gesamtlänge nicht mehr als 200 Zeichen;\n3. Geben Sie keine anderen Zeichen als das JSON-Format zurück.\nDas Folgende ist der Gesprächsinhalt zwischen Meituan-Verkäufern und Händlern:\nHändler: Hallo, hier ist Lexiang KTV.\nVerkäufer: Hallo, Meituan macht jetzt exklusive KTV-Werbeaktivitäten. Ich möchte fragen, ob Ihr Geschäft an der Teilnahme interessiert ist?\nHändler: Wir haben vorerst keine Pläne, der Chef überlegt es sich.\nVerkäufer: Ich verstehe, Sie können mich jederzeit kontaktieren, wenn Sie später Ideen haben.\nHändler: Okay, danke.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Einsätzige Zusammenfassung des Anrufszenarios",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Umgeschriebener Dialogverlauf",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Verkäuferaussage",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Händleraussage",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Verkaufsassistent. Bitte fassen Sie zunächst das Szenario des folgenden Gesprächsinhalts zusammen und schreiben Sie den Gesprächsinhalt in einen flüssigen Gesprächsverlauf um. Der umgeschriebene Inhalt sollte 200 Zeichen nicht überschreiten.\nHinweis:\n1. Sie müssen die Flüssigkeit des umgeschriebenen Dialogs gewährleisten.\n2. Sie müssen die Relevanz des umgeschriebenen Dialogs gewährleisten: Das Thema des umgeschriebenen Gesprächs darf nicht vom ursprünglichen Gespräch abweichen.\n3. Beachten Sie, dass das umgeschriebene Gespräch keine Informationen enthalten darf, die nicht im ursprünglichen Gespräch enthalten sind.\n4. Sie müssen sicherstellen, dass das umgeschriebene Gespräch logisch klar, prägnant und von höherer Qualität ist.\n5. Beachten Sie, dass im umgeschriebenen Gespräch der Ton von Händlern und Verkäufern umgangssprachlich sein sollte, entsprechend ihren jeweiligen Rollen, und Verkäufer sollten auf Höflichkeit achten.\n6. Ausgabe im JSON-Format, zum Beispiel: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nAusgabeanforderungen:\n1. Verwenden Sie das JSON-Format, um die extrahierten Informationen zurückzugeben;\n2. \"scenario_summary\" ist eine einsätzige Szenariobeschreibung, \"dialogue_rewrite\" ist ein Dialog-Array, Verkäufer und Händler sprechen abwechselnd, jeweils nicht mehr als 50 Wörter, Gesamtlänge nicht mehr als 200 Zeichen;\n3. Geben Sie keine anderen Zeichen als das JSON-Format zurück.\nDas Folgende ist der Gesprächsinhalt zwischen Meituan-Verkäufern und Händlern:\nHändler: Hallo, September Coffee.\nVerkäufer: Hallo, ich möchte wissen, ob Ihr Geschäft kürzlich Online-Werbung gemacht hat?\nHändler: Wir haben es gemacht, aber unser Budget ist kürzlich begrenzt.\nVerkäufer: Meituan hat kürzlich Aktivitäten mit günstigeren Werbekosten.\nHändler: Okay, wir werden Sie kontaktieren, wenn nötig.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Einsätzige Zusammenfassung des Anrufszenarios",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Umgeschriebener Dialogverlauf",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Verkäuferaussage",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Händleraussage",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Verkaufsassistent. Bitte fassen Sie zunächst das Szenario des folgenden Gesprächsinhalts zusammen und schreiben Sie den Gesprächsinhalt in einen flüssigen Gesprächsverlauf um. Der umgeschriebene Inhalt sollte 200 Zeichen nicht überschreiten.\nHinweis:\n1. Sie müssen die Flüssigkeit des umgeschriebenen Dialogs gewährleisten.\n2. Sie müssen die Relevanz des umgeschriebenen Dialogs gewährleisten: Das Thema des umgeschriebenen Gesprächs darf nicht vom ursprünglichen Gespräch abweichen.\n3. Beachten Sie, dass das umgeschriebene Gespräch keine Informationen enthalten darf, die nicht im ursprünglichen Gespräch enthalten sind.\n4. Sie müssen sicherstellen, dass das umgeschriebene Gespräch logisch klar, prägnant und von höherer Qualität ist.\n5. Beachten Sie, dass im umgeschriebenen Gespräch der Ton von Händlern und Verkäufern umgangssprachlich sein sollte, entsprechend ihren jeweiligen Rollen, und Verkäufer sollten auf Höflichkeit achten.\n6. Ausgabe im JSON-Format, zum Beispiel: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nAusgabeanforderungen:\n1. Verwenden Sie das JSON-Format, um die extrahierten Informationen zurückzugeben;\n2. \"scenario_summary\" ist eine einsätzige Szenariobeschreibung, \"dialogue_rewrite\" ist ein Dialog-Array, Verkäufer und Händler sprechen abwechselnd, jeweils nicht mehr als 50 Wörter, Gesamtlänge nicht mehr als 200 Zeichen;\n3. Geben Sie keine anderen Zeichen als das JSON-Format zurück.\nDas Folgende ist der Gesprächsinhalt zwischen Meituan-Verkäufern und Händlern:\nHändler: Hallo.\nVerkäufer: Hallo, ist das Happy Florist?\nHändler: Ja, wer ist das?\nVerkäufer: Ich bin von Meituan. Ich möchte fragen, ob Sie Online-Werbung gemacht haben?\nHändler: Vorerst nicht, wir werden Sie kontaktieren, wenn nötig.\nVerkäufer: Okay, ich wünsche Ihrem Geschäft Wohlstand!",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Einsätzige Zusammenfassung des Anrufszenarios",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Umgeschriebener Dialogverlauf",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Verkäuferaussage",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Händleraussage",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Verkaufsassistent. Bitte fassen Sie zunächst das Szenario des folgenden Gesprächsinhalts zusammen und schreiben Sie den Gesprächsinhalt in einen flüssigen Gesprächsverlauf um. Der umgeschriebene Inhalt sollte 200 Zeichen nicht überschreiten.\nHinweis:\n1. Sie müssen die Flüssigkeit des umgeschriebenen Dialogs gewährleisten.\n2. Sie müssen die Relevanz des umgeschriebenen Dialogs gewährleisten: Das Thema des umgeschriebenen Gesprächs darf nicht vom ursprünglichen Gespräch abweichen.\n3. Beachten Sie, dass das umgeschriebene Gespräch keine Informationen enthalten darf, die nicht im ursprünglichen Gespräch enthalten sind.\n4. Sie müssen sicherstellen, dass das umgeschriebene Gespräch logisch klar, prägnant und von höherer Qualität ist.\n5. Beachten Sie, dass im umgeschriebenen Gespräch der Ton von Händlern und Verkäufern umgangssprachlich sein sollte, entsprechend ihren jeweiligen Rollen, und Verkäufer sollten auf Höflichkeit achten.\n6. Ausgabe im JSON-Format, zum Beispiel: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nAusgabeanforderungen:\n1. Verwenden Sie das JSON-Format, um die extrahierten Informationen zurückzugeben;\n2. \"scenario_summary\" ist eine einsätzige Szenariobeschreibung, \"dialogue_rewrite\" ist ein Dialog-Array, Verkäufer und Händler sprechen abwechselnd, jeweils nicht mehr als 50 Wörter, Gesamtlänge nicht mehr als 200 Zeichen;\n3. Geben Sie keine anderen Zeichen als das JSON-Format zurück.\nDas Folgende ist der Gesprächsinhalt zwischen Meituan-Verkäufern und Händlern:\nHändler: Hallo.\nVerkäufer: Hallo, ist das Sunshine Hotel?\nHändler: Ja.\nVerkäufer: Ich bin von Meituan. Ich möchte wissen, ob Ihr Geschäft Online-Werbung macht?\nHändler: Wir verlassen uns hauptsächlich auf Stammkunden, machen keine Werbung.\nVerkäufer: Ich verstehe, Sie können mich jederzeit kontaktieren, wenn nötig.\nHändler: Okay, danke.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Einsätzige Zusammenfassung des Anrufszenarios",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Umgeschriebener Dialogverlauf",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Verkäuferaussage",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Händleraussage",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Verkaufsassistent. Bitte fassen Sie zunächst das Szenario des folgenden Gesprächsinhalts zusammen und schreiben Sie den Gesprächsinhalt in einen flüssigen Gesprächsverlauf um. Der umgeschriebene Inhalt sollte 200 Zeichen nicht überschreiten.\nHinweis:\n1. Sie müssen die Flüssigkeit des umgeschriebenen Dialogs gewährleisten.\n2. Sie müssen die Relevanz des umgeschriebenen Dialogs gewährleisten: Das Thema des umgeschriebenen Gesprächs darf nicht vom ursprünglichen Gespräch abweichen.\n3. Beachten Sie, dass das umgeschriebene Gespräch keine Informationen enthalten darf, die nicht im ursprünglichen Gespräch enthalten sind.\n4. Sie müssen sicherstellen, dass das umgeschriebene Gespräch logisch klar, prägnant und von höherer Qualität ist.\n5. Beachten Sie, dass im umgeschriebenen Gespräch der Ton von Händlern und Verkäufern umgangssprachlich sein sollte, entsprechend ihren jeweiligen Rollen, und Verkäufer sollten auf Höflichkeit achten.\n6. Ausgabe im JSON-Format, zum Beispiel: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nAusgabeanforderungen:\n1. Verwenden Sie das JSON-Format, um die extrahierten Informationen zurückzugeben;\n2. \"scenario_summary\" ist eine einsätzige Szenariobeschreibung, \"dialogue_rewrite\" ist ein Dialog-Array, Verkäufer und Händler sprechen abwechselnd, jeweils nicht mehr als 50 Wörter, Gesamtlänge nicht mehr als 200 Zeichen;\n3. Geben Sie keine anderen Zeichen als das JSON-Format zurück.\nDas Folgende ist der Gesprächsinhalt zwischen Meituan-Verkäufern und Händlern:\nHändler: Hallo, Fumanlou Restaurant.\nVerkäufer: Hallo, ich bin von Meituan. Ich möchte fragen, ob Ihr Geschäft kürzlich Online-Werbebedarf hat?\nHändler: Wir haben kürzlich weniger Aktivitäten, denken vorerst nicht daran.\nVerkäufer: Okay, bitte kontaktieren Sie uns gerne, wenn Sie es in Zukunft brauchen.\nHändler: Danke.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Einsätzige Zusammenfassung des Anrufszenarios",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Umgeschriebener Dialogverlauf",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Verkäuferaussage",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Händleraussage",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Verkaufsassistent. Bitte fassen Sie zunächst das Szenario des folgenden Gesprächsinhalts zusammen und schreiben Sie den Gesprächsinhalt in einen flüssigen Gesprächsverlauf um. Der umgeschriebene Inhalt sollte 200 Zeichen nicht überschreiten.\nHinweis:\n1. Sie müssen die Flüssigkeit des umgeschriebenen Dialogs gewährleisten.\n2. Sie müssen die Relevanz des umgeschriebenen Dialogs gewährleisten: Das Thema des umgeschriebenen Gesprächs darf nicht vom ursprünglichen Gespräch abweichen.\n3. Beachten Sie, dass das umgeschriebene Gespräch keine Informationen enthalten darf, die nicht im ursprünglichen Gespräch enthalten sind.\n4. Sie müssen sicherstellen, dass das umgeschriebene Gespräch logisch klar, prägnant und von höherer Qualität ist.\n5. Beachten Sie, dass im umgeschriebenen Gespräch der Ton von Händlern und Verkäufern umgangssprachlich sein sollte, entsprechend ihren jeweiligen Rollen, und Verkäufer sollten auf Höflichkeit achten.\n6. Ausgabe im JSON-Format, zum Beispiel: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nAusgabeanforderungen:\n1. Verwenden Sie das JSON-Format, um die extrahierten Informationen zurückzugeben;\n2. \"scenario_summary\" ist eine einsätzige Szenariobeschreibung, \"dialogue_rewrite\" ist ein Dialog-Array, Verkäufer und Händler sprechen abwechselnd, jeweils nicht mehr als 50 Wörter, Gesamtlänge nicht mehr als 200 Zeichen;\n3. Geben Sie keine anderen Zeichen als das JSON-Format zurück.\nDas Folgende ist der Gesprächsinhalt zwischen Meituan-Verkäufern und Händlern:\nHändler: Hallo.\nVerkäufer: Hallo, ich bin von Meituan. Ich möchte wissen, ob Ihr Geschäft Online-Gruppenkäufe macht?\nHändler: Im Moment nicht, der Chef hat noch nicht entschieden.\nVerkäufer: Ich verstehe, Sie können mich jederzeit kontaktieren, wenn nötig.\nHändler: Okay.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Einsätzige Zusammenfassung des Anrufszenarios",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Umgeschriebener Dialogverlauf",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Verkäuferaussage",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Händleraussage",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    }
+]

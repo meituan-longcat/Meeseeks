@@ -1,0 +1,1262 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un marchand d'hôtels organisant les informations hôtelières. Je vais vous donner un guide de voyage des médias sociaux contenant des informations sur les hôtels, attractions, services, etc. Vous devez extraire les informations de base de différents hôtels selon mes exigences comme suit :\n\n(1) Un guide de voyage peut contenir plusieurs hôtels. Veuillez extraire les noms et caractéristiques de différents hôtels du guide de voyage donné ;\n\n(2) Pour chaque hôtel, vous devez extraire toutes les informations pertinentes et répondre aux exigences suivantes :\\n- Nom de l'hôtel : {{name}},\\n- Ville de l'hôtel : {{city}} Priorisez l'identification de la ville où se trouve l'hôtel à partir de l'article. Si vous ne pouvez pas obtenir la ville où se trouve l'hôtel, identifiez les attractions autour de l'hôtel à partir de l'article et déterminez la ville basée sur les attractions,\\n- District administratif de l'hôtel : {{district}}, Priorisez l'identification du district administratif où se trouve l'hôtel à partir de l'article. Si vous ne pouvez pas obtenir le district administratif où se trouve l'hôtel, identifiez les attractions autour de l'hôtel à partir de l'article et déterminez le district administratif basé sur les attractions,\\n- Adresse de l'hôtel : {{address}} Priorisez l'identification de l'adresse de l'hôtel à partir de l'article, incluant province, ville, district/comté et rue. Si vous ne pouvez pas obtenir l'adresse de l'hôtel, identifiez les noms d'attractions célèbres autour de l'adresse de l'hôtel à partir de l'article. S'il n'y a pas d'informations de localisation, retournez null,\\n- Téléphone de l'hôtel : {{tel}} Identifiez le numéro de téléphone de l'hôtel à partir de l'article. S'il n'y a pas d'informations pertinentes, retournez null,\\n- Commentaire : {{feedback}} Veuillez juger basé sur le contenu de l'article si cet article recommande de séjourner dans cet hôtel. Généralement parlant, tant qu'aucun problème n'est mentionné ou qu'il y a des évaluations générales, c'est considéré comme recommandé. Le résultat de sortie est \"Oui\" ou \"Non\". Si vous ne pouvez pas juger, veuillez sortir null,\\n- Description positive : {{positive}} Descriptions dans le contenu du guide qui ont une tendance émotionnelle positive envers l'hôtel,\\n- Description négative : {{negative}} Descriptions dans le contenu du guide qui ont une tendance émotionnelle négative envers l'hôtel,\\n- Caractéristiques de l'hôtel : {{flavor}} Extrayez les installations caractéristiques de l'hôtel et l'environnement environnant mentionnés dans le texte, comme les piscines à débordement, toits étoilés, etc. S'il n'y a pas d'informations pertinentes, retournez null,\\n- Environnement de l'hôtel : {{surround}} Extrayez les noms des zones pittoresques mentionnées dans le texte. S'il n'y a pas d'informations de localisation, retournez null,\\n- Coût de l'hôtel : {{cost}} Informations liées aux tarifs de l'hôtel, incluant types de chambres et prix. S'il n'y a pas d'informations pertinentes dans l'article, retournez null,\\n- Politique préférentielle de l'hôtel : {{policy}} Contrôlez le nombre de mots dans les 30 mots. S'il n'y a pas d'informations pertinentes dans l'article, retournez null\\n\\n\\n(3)\\nVeuillez extraire les informations d'activité au format JSON [{\\\"name\\\";,\\\"city\\\";,\\\"district\\\";,\\\"address\\\";,\\\"tel\\\";,\\\"feedback\\\";,\\\"positive\\\";,\\\"negative\\\";,\\\"flavor\\\";,\\\"surround\\\";,\\\"cost\\\":,\\\"policy\\\";,},{}]. Notez, ne retournez aucun caractère autre que le JSON lui-même.\n\n\nVoici le contenu du guide de voyage d'entrée : Collection Ultime d'Hôtels Boutique & Resorts aux États-Unis\nAucun classement particulier - partage mes hôtels préférés des deux dernières années\n-\n·P2-P3 The Lodge at Pebble Beach, Californie\nVues océaniques époustouflantes avec un design minimaliste. Parfait pour la photographie. La propriété ressemble à une galerie d'art avec un service exceptionnel et une cuisine gastronomique. Prix environ 1 200$+ par nuit\n-\n·P4-P5 Amangiri, Utah\nL'emplacement d'Amangiri est toujours impeccable. Cette propriété de l'Utah se situe à 4 000 pieds d'altitude à Canyon Point, entourée de paysages désertiques à couper le souffle. Vous ne voudrez pas partir après une nuit. Le resort propose également des soins spa de classe mondiale et une cuisine raffinée. Hautement recommandé. Prix 2 000-4 000$+ par nuit\n-\n·P6-P7 Blackberry Farm, Tennessee\nBlackberry Farm est vraiment exceptionnel - c'est l'expérience de resort de ferme de luxe que j'adore. Toutes les chambres disposent de la technologie domotique et de mini-bars bien approvisionnés. L'environnement parle de lui-même - élégance sophistiquée. Prix 1 500-3 000$+ par nuit\n-\n·P8-P9 The Greenwich Hotel, New York\nThe Greenwich Hotel est honnêtement le meilleur hôtel de luxe rapport qualité-prix où j'ai séjourné. Pas étonnant qu'il soit souvent complet. Vous obtenez une expérience d'hôtel à 2 000$+ pour moins de 800$. Service exceptionnel avec des touches personnelles. Boissons gratuites dans le réfrigérateur du lobby, et le salon de thé du rez-de-chaussée est gratuit avec service de thé. Une propriété si accueillante qui donne l'impression d'être chez soi. Prix 600-1 200$+ par nuit\n-\n·P10-P11 The Ritz-Carlton, Half Moon Bay\nUn incontournable lors de la visite de la Bay Area. Le design de luxe d'inspiration française est incroyable. 1 200$+ ressemble à une expérience à 3 000$. Service cinq étoiles partout, excellent buffet de petit-déjeuner, et vous pouvez découvrir leur parcours de golf de championnat ⛳️\n-\n·P12-P13 Post Ranch Inn, Big Sur\nUne autre propriété que j'adore absolument pour son esthétique. Big Sur semble encore plus premium et luxueux, tendant vers le territoire de resort ultra-luxe. Design exceptionnel, petit-déjeuner incroyable avec fusion Est-Ouest, et vous pouvez réserver leur expérience de feu de camp signature pour des photos fantastiques. Prix 1 500-8 000$+ par nuit\n-\n·P14-P15 Four Seasons Resort Jackson Hole\nLes prix vont de 1 500$+ à 15 000$+ avec des options de villas privées. Le paysage montagneux est absolument époustouflant. Service professionnel, excellente cuisine et hébergements\n#EscapadeWeekend #VoyageUSA #HôtelsLuxe #HôtelsBoutique #HôtelsDesign #VoyageCalifornie #VoyageUtah #Voyage #HôtelsNYC",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "city": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "district": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "tel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "feedback": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "Oui",
+                            "Non",
+                            null
+                        ],
+                        "能力项": "特定格式"
+                    },
+                    "positive": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "negative": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "flavor": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "surround": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "cost": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "policy": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束、10~50字"
+                    }
+                },
+                "required": [
+                    "name",
+                    "city",
+                    "district",
+                    "address",
+                    "tel",
+                    "feedback",
+                    "positive",
+                    "negative",
+                    "flavor",
+                    "surround",
+                    "cost",
+                    "policy"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "S'il correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un marchand d'hôtels organisant les informations hôtelières. Je vais vous donner un guide de voyage des médias sociaux contenant des informations sur les hôtels, attractions, services, etc. Vous devez extraire les informations de base de différents hôtels selon mes exigences comme suit :\n\n(1) Un guide de voyage peut contenir plusieurs hôtels. Veuillez extraire les noms et caractéristiques de différents hôtels du guide de voyage donné ;\n\n(2) Pour chaque hôtel, vous devez extraire toutes les informations pertinentes et répondre aux exigences suivantes :\\n- Nom de l'hôtel : {{name}},\\n- Ville de l'hôtel : {{city}} Priorisez l'identification de la ville où se trouve l'hôtel à partir de l'article. Si vous ne pouvez pas obtenir la ville où se trouve l'hôtel, identifiez les attractions autour de l'hôtel à partir de l'article et déterminez la ville basée sur les attractions,\\n- District administratif de l'hôtel : {{district}}, Priorisez l'identification du district administratif où se trouve l'hôtel à partir de l'article. Si vous ne pouvez pas obtenir le district administratif où se trouve l'hôtel, identifiez les attractions autour de l'hôtel à partir de l'article et déterminez le district administratif basé sur les attractions,\\n- Adresse de l'hôtel : {{address}} Priorisez l'identification de l'adresse de l'hôtel à partir de l'article, incluant province, ville, district/comté et rue. Si vous ne pouvez pas obtenir l'adresse de l'hôtel, identifiez les noms d'attractions célèbres autour de l'adresse de l'hôtel à partir de l'article. S'il n'y a pas d'informations de localisation, retournez null,\\n- Téléphone de l'hôtel : {{tel}} Identifiez le numéro de téléphone de l'hôtel à partir de l'article. S'il n'y a pas d'informations pertinentes, retournez null,\\n- Commentaire : {{feedback}} Veuillez juger basé sur le contenu de l'article si cet article recommande de séjourner dans cet hôtel. Généralement parlant, tant qu'aucun problème n'est mentionné ou qu'il y a des évaluations générales, c'est considéré comme recommandé. Le résultat de sortie est \"Oui\" ou \"Non\". Si vous ne pouvez pas juger, veuillez sortir null,\\n- Description positive : {{positive}} Descriptions dans le contenu du guide qui ont une tendance émotionnelle positive envers l'hôtel,\\n- Description négative : {{negative}} Descriptions dans le contenu du guide qui ont une tendance émotionnelle négative envers l'hôtel,\\n- Caractéristiques de l'hôtel : {{flavor}} Extrayez les installations caractéristiques de l'hôtel et l'environnement environnant mentionnés dans le texte, comme les piscines à débordement, toits étoilés, etc. S'il n'y a pas d'informations pertinentes, retournez null,\\n- Environnement de l'hôtel : {{surround}} Extrayez les noms des zones pittoresques mentionnées dans le texte. S'il n'y a pas d'informations de localisation, retournez null,\\n- Coût de l'hôtel : {{cost}} Informations liées aux tarifs de l'hôtel, incluant types de chambres et prix. S'il n'y a pas d'informations pertinentes dans l'article, retournez null,\\n- Politique préférentielle de l'hôtel : {{policy}} Contrôlez le nombre de mots dans les 30 mots. S'il n'y a pas d'informations pertinentes dans l'article, retournez null\\n\\n\\n(3)\\nVeuillez extraire les informations d'activité au format JSON [{\\\"name\\\";,\\\"city\\\";,\\\"district\\\";,\\\"address\\\";,\\\"tel\\\";,\\\"feedback\\\";,\\\"positive\\\";,\\\"negative\\\";,\\\"flavor\\\";,\\\"surround\\\";,\\\"cost\\\":,\\\"policy\\\";,},{}]. Notez, ne retournez aucun caractère autre que le JSON lui-même.\n\n\nVoici le contenu du guide de voyage d'entrée : Recommandation d'hôtel près de Times Square, New York : Le Marriott Marquis, excellent emplacement, à distance de marche des théâtres de Broadway, près de Times Square et Central Park. Chambres spacieuses et propres, service exceptionnel, buffet de petit-déjeuner riche. Prix environ 400$/nuit, offres spéciales week-end disponibles. Hautement recommandé.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "city": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "district": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "tel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "feedback": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "Oui",
+                            "Non",
+                            null
+                        ],
+                        "能力项": "特定格式"
+                    },
+                    "positive": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "negative": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "flavor": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "surround": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "cost": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "policy": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束、10~50字"
+                    }
+                },
+                "required": [
+                    "name",
+                    "city",
+                    "district",
+                    "address",
+                    "tel",
+                    "feedback",
+                    "positive",
+                    "negative",
+                    "flavor",
+                    "surround",
+                    "cost",
+                    "policy"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "S'il correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un marchand d'hôtels organisant les informations hôtelières. Je vais vous donner un guide de voyage des médias sociaux contenant des informations sur les hôtels, attractions, services, etc. Vous devez extraire les informations de base de différents hôtels selon mes exigences comme suit :\n\n(1) Un guide de voyage peut contenir plusieurs hôtels. Veuillez extraire les noms et caractéristiques de différents hôtels du guide de voyage donné ;\n\n(2) Pour chaque hôtel, vous devez extraire toutes les informations pertinentes et répondre aux exigences suivantes :\\n- Nom de l'hôtel : {{name}},\\n- Ville de l'hôtel : {{city}} Priorisez l'identification de la ville où se trouve l'hôtel à partir de l'article. Si vous ne pouvez pas obtenir la ville où se trouve l'hôtel, identifiez les attractions autour de l'hôtel à partir de l'article et déterminez la ville basée sur les attractions,\\n- District administratif de l'hôtel : {{district}}, Priorisez l'identification du district administratif où se trouve l'hôtel à partir de l'article. Si vous ne pouvez pas obtenir le district administratif où se trouve l'hôtel, identifiez les attractions autour de l'hôtel à partir de l'article et déterminez le district administratif basé sur les attractions,\\n- Adresse de l'hôtel : {{address}} Priorisez l'identification de l'adresse de l'hôtel à partir de l'article, incluant province, ville, district/comté et rue. Si vous ne pouvez pas obtenir l'adresse de l'hôtel, identifiez les noms d'attractions célèbres autour de l'adresse de l'hôtel à partir de l'article. S'il n'y a pas d'informations de localisation, retournez null,\\n- Téléphone de l'hôtel : {{tel}} Identifiez le numéro de téléphone de l'hôtel à partir de l'article. S'il n'y a pas d'informations pertinentes, retournez null,\\n- Commentaire : {{feedback}} Veuillez juger basé sur le contenu de l'article si cet article recommande de séjourner dans cet hôtel. Généralement parlant, tant qu'aucun problème n'est mentionné ou qu'il y a des évaluations générales, c'est considéré comme recommandé. Le résultat de sortie est \"Oui\" ou \"Non\". Si vous ne pouvez pas juger, veuillez sortir null,\\n- Description positive : {{positive}} Descriptions dans le contenu du guide qui ont une tendance émotionnelle positive envers l'hôtel,\\n- Description négative : {{negative}} Descriptions dans le contenu du guide qui ont une tendance émotionnelle négative envers l'hôtel,\\n- Caractéristiques de l'hôtel : {{flavor}} Extrayez les installations caractéristiques de l'hôtel et l'environnement environnant mentionnés dans le texte, comme les piscines à débordement, toits étoilés, etc. S'il n'y a pas d'informations pertinentes, retournez null,\\n- Environnement de l'hôtel : {{surround}} Extrayez les noms des zones pittoresques mentionnées dans le texte. S'il n'y a pas d'informations de localisation, retournez null,\\n- Coût de l'hôtel : {{cost}} Informations liées aux tarifs de l'hôtel, incluant types de chambres et prix. S'il n'y a pas d'informations pertinentes dans l'article, retournez null,\\n- Politique préférentielle de l'hôtel : {{policy}} Contrôlez le nombre de mots dans les 30 mots. S'il n'y a pas d'informations pertinentes dans l'article, retournez null\\n\\n\\n(3)\\nVeuillez extraire les informations d'activité au format JSON [{\\\"name\\\";,\\\"city\\\";,\\\"district\\\";,\\\"address\\\";,\\\"tel\\\";,\\\"feedback\\\";,\\\"positive\\\";,\\\"negative\\\";,\\\"flavor\\\";,\\\"surround\\\";,\\\"cost\\\":,\\\"policy\\\";,},{}]. Notez, ne retournez aucun caractère autre que le JSON lui-même.\n\n\nVoici le contenu du guide de voyage d'entrée : Hilton San Francisco Union Square, transport pratique, à distance de marche de Chinatown et Fisherman's Wharf. Superbes vues depuis les chambres, service attentionné, centre de fitness et piscine disponibles. Prix environ 350$/nuit, réductions de vacances disponibles.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "city": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "district": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "tel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "feedback": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "Oui",
+                            "Non",
+                            null
+                        ],
+                        "能力项": "特定格式"
+                    },
+                    "positive": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "negative": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "flavor": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "surround": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "cost": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "policy": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束、10~50字"
+                    }
+                },
+                "required": [
+                    "name",
+                    "city",
+                    "district",
+                    "address",
+                    "tel",
+                    "feedback",
+                    "positive",
+                    "negative",
+                    "flavor",
+                    "surround",
+                    "cost",
+                    "policy"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "S'il correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un marchand d'hôtels organisant les informations hôtelières. Je vais vous donner un guide de voyage des médias sociaux contenant des informations sur les hôtels, attractions, services, etc. Vous devez extraire les informations de base de différents hôtels selon mes exigences comme suit :\n\n(1) Un guide de voyage peut contenir plusieurs hôtels. Veuillez extraire les noms et caractéristiques de différents hôtels du guide de voyage donné ;\n\n(2) Pour chaque hôtel, vous devez extraire toutes les informations pertinentes et répondre aux exigences suivantes :\\n- Nom de l'hôtel : {{name}},\\n- Ville de l'hôtel : {{city}} Priorisez l'identification de la ville où se trouve l'hôtel à partir de l'article. Si vous ne pouvez pas obtenir la ville où se trouve l'hôtel, identifiez les attractions autour de l'hôtel à partir de l'article et déterminez la ville basée sur les attractions,\\n- District administratif de l'hôtel : {{district}}, Priorisez l'identification du district administratif où se trouve l'hôtel à partir de l'article. Si vous ne pouvez pas obtenir le district administratif où se trouve l'hôtel, identifiez les attractions autour de l'hôtel à partir de l'article et déterminez le district administratif basé sur les attractions,\\n- Adresse de l'hôtel : {{address}} Priorisez l'identification de l'adresse de l'hôtel à partir de l'article, incluant province, ville, district/comté et rue. Si vous ne pouvez pas obtenir l'adresse de l'hôtel, identifiez les noms d'attractions célèbres autour de l'adresse de l'hôtel à partir de l'article. S'il n'y a pas d'informations de localisation, retournez null,\\n- Téléphone de l'hôtel : {{tel}} Identifiez le numéro de téléphone de l'hôtel à partir de l'article. S'il n'y a pas d'informations pertinentes, retournez null,\\n- Commentaire : {{feedback}} Veuillez juger basé sur le contenu de l'article si cet article recommande de séjourner dans cet hôtel. Généralement parlant, tant qu'aucun problème n'est mentionné ou qu'il y a des évaluations générales, c'est considéré comme recommandé. Le résultat de sortie est \"Oui\" ou \"Non\". Si vous ne pouvez pas juger, veuillez sortir null,\\n- Description positive : {{positive}} Descriptions dans le contenu du guide qui ont une tendance émotionnelle positive envers l'hôtel,\\n- Description négative : {{negative}} Descriptions dans le contenu du guide qui ont une tendance émotionnelle négative envers l'hôtel,\\n- Caractéristiques de l'hôtel : {{flavor}} Extrayez les installations caractéristiques de l'hôtel et l'environnement environnant mentionnés dans le texte, comme les piscines à débordement, toits étoilés, etc. S'il n'y a pas d'informations pertinentes, retournez null,\\n- Environnement de l'hôtel : {{surround}} Extrayez les noms des zones pittoresques mentionnées dans le texte. S'il n'y a pas d'informations de localisation, retournez null,\\n- Coût de l'hôtel : {{cost}} Informations liées aux tarifs de l'hôtel, incluant types de chambres et prix. S'il n'y a pas d'informations pertinentes dans l'article, retournez null,\\n- Politique préférentielle de l'hôtel : {{policy}} Contrôlez le nombre de mots dans les 30 mots. S'il n'y a pas d'informations pertinentes dans l'article, retournez null\\n\\n\\n(3)\\nVeuillez extraire les informations d'activité au format JSON [{\\\"name\\\";,\\\"city\\\";,\\\"district\\\";,\\\"address\\\";,\\\"tel\\\";,\\\"feedback\\\";,\\\"positive\\\";,\\\"negative\\\";,\\\"flavor\\\";,\\\"surround\\\";,\\\"cost\\\":,\\\"policy\\\";,},{}]. Notez, ne retournez aucun caractère autre que le JSON lui-même.\n\n\nVoici le contenu du guide de voyage d'entrée : Mountain View Hotel près du Parc National de Yosemite, bel environnement, proche de Yosemite Valley. Chambres confortables, service amical. Petit-déjeuner non inclus, économique à environ 150$/nuit. Parfait pour les voyageurs soucieux du budget.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "city": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "district": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "tel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "feedback": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "Oui",
+                            "Non",
+                            null
+                        ],
+                        "能力项": "特定格式"
+                    },
+                    "positive": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "negative": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "flavor": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "surround": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "cost": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "policy": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束、10~50字"
+                    }
+                },
+                "required": [
+                    "name",
+                    "city",
+                    "district",
+                    "address",
+                    "tel",
+                    "feedback",
+                    "positive",
+                    "negative",
+                    "flavor",
+                    "surround",
+                    "cost",
+                    "policy"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "S'il correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un marchand d'hôtels organisant les informations hôtelières. Je vais vous donner un guide de voyage des médias sociaux contenant des informations sur les hôtels, attractions, services, etc. Vous devez extraire les informations de base de différents hôtels selon mes exigences comme suit :\n\n(1) Un guide de voyage peut contenir plusieurs hôtels. Veuillez extraire les noms et caractéristiques de différents hôtels du guide de voyage donné ;\n\n(2) Pour chaque hôtel, vous devez extraire toutes les informations pertinentes et répondre aux exigences suivantes :\\n- Nom de l'hôtel : {{name}},\\n- Ville de l'hôtel : {{city}} Priorisez l'identification de la ville où se trouve l'hôtel à partir de l'article. Si vous ne pouvez pas obtenir la ville où se trouve l'hôtel, identifiez les attractions autour de l'hôtel à partir de l'article et déterminez la ville basée sur les attractions,\\n- District administratif de l'hôtel : {{district}}, Priorisez l'identification du district administratif où se trouve l'hôtel à partir de l'article. Si vous ne pouvez pas obtenir le district administratif où se trouve l'hôtel, identifiez les attractions autour de l'hôtel à partir de l'article et déterminez le district administratif basé sur les attractions,\\n- Adresse de l'hôtel : {{address}} Priorisez l'identification de l'adresse de l'hôtel à partir de l'article, incluant province, ville, district/comté et rue. Si vous ne pouvez pas obtenir l'adresse de l'hôtel, identifiez les noms d'attractions célèbres autour de l'adresse de l'hôtel à partir de l'article. S'il n'y a pas d'informations de localisation, retournez null,\\n- Téléphone de l'hôtel : {{tel}} Identifiez le numéro de téléphone de l'hôtel à partir de l'article. S'il n'y a pas d'informations pertinentes, retournez null,\\n- Commentaire : {{feedback}} Veuillez juger basé sur le contenu de l'article si cet article recommande de séjourner dans cet hôtel. Généralement parlant, tant qu'aucun problème n'est mentionné ou qu'il y a des évaluations générales, c'est considéré comme recommandé. Le résultat de sortie est \"Oui\" ou \"Non\". Si vous ne pouvez pas juger, veuillez sortir null,\\n- Description positive : {{positive}} Descriptions dans le contenu du guide qui ont une tendance émotionnelle positive envers l'hôtel,\\n- Description négative : {{negative}} Descriptions dans le contenu du guide qui ont une tendance émotionnelle négative envers l'hôtel,\\n- Caractéristiques de l'hôtel : {{flavor}} Extrayez les installations caractéristiques de l'hôtel et l'environnement environnant mentionnés dans le texte, comme les piscines à débordement, toits étoilés, etc. S'il n'y a pas d'informations pertinentes, retournez null,\\n- Environnement de l'hôtel : {{surround}} Extrayez les noms des zones pittoresques mentionnées dans le texte. S'il n'y a pas d'informations de localisation, retournez null,\\n- Coût de l'hôtel : {{cost}} Informations liées aux tarifs de l'hôtel, incluant types de chambres et prix. S'il n'y a pas d'informations pertinentes dans l'article, retournez null,\\n- Politique préférentielle de l'hôtel : {{policy}} Contrôlez le nombre de mots dans les 30 mots. S'il n'y a pas d'informations pertinentes dans l'article, retournez null\\n\\n\\n(3)\\nVeuillez extraire les informations d'activité au format JSON [{\\\"name\\\";,\\\"city\\\";,\\\"district\\\";,\\\"address\\\";,\\\"tel\\\";,\\\"feedback\\\";,\\\"positive\\\";,\\\"negative\\\";,\\\"flavor\\\";,\\\"surround\\\";,\\\"cost\\\":,\\\"policy\\\";,},{}]. Notez, ne retournez aucun caractère autre que le JSON lui-même.\n\n\nVoici le contenu du guide de voyage d'entrée : The Ritz-Carlton Boston Common, emplacement de choix directement sur Boston Common. Chambres luxueuses, petit-déjeuner buffet, service impeccable. À partir de 500$/nuit. Offres de surclassement de suite de luxe de vacances disponibles.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "city": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "district": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "tel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "feedback": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "Oui",
+                            "Non",
+                            null
+                        ],
+                        "能力项": "特定格式"
+                    },
+                    "positive": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "negative": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "flavor": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "surround": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "cost": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "policy": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束、10~50字"
+                    }
+                },
+                "required": [
+                    "name",
+                    "city",
+                    "district",
+                    "address",
+                    "tel",
+                    "feedback",
+                    "positive",
+                    "negative",
+                    "flavor",
+                    "surround",
+                    "cost",
+                    "policy"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "S'il correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un marchand d'hôtels organisant les informations hôtelières. Je vais vous donner un guide de voyage des médias sociaux contenant des informations sur les hôtels, attractions, services, etc. Vous devez extraire les informations de base de différents hôtels selon mes exigences comme suit :\n\n(1) Un guide de voyage peut contenir plusieurs hôtels. Veuillez extraire les noms et caractéristiques de différents hôtels du guide de voyage donné ;\n\n(2) Pour chaque hôtel, vous devez extraire toutes les informations pertinentes et répondre aux exigences suivantes :\\n- Nom de l'hôtel : {{name}},\\n- Ville de l'hôtel : {{city}} Priorisez l'identification de la ville où se trouve l'hôtel à partir de l'article. Si vous ne pouvez pas obtenir la ville où se trouve l'hôtel, identifiez les attractions autour de l'hôtel à partir de l'article et déterminez la ville basée sur les attractions,\\n- District administratif de l'hôtel : {{district}}, Priorisez l'identification du district administratif où se trouve l'hôtel à partir de l'article. Si vous ne pouvez pas obtenir le district administratif où se trouve l'hôtel, identifiez les attractions autour de l'hôtel à partir de l'article et déterminez le district administratif basé sur les attractions,\\n- Adresse de l'hôtel : {{address}} Priorisez l'identification de l'adresse de l'hôtel à partir de l'article, incluant province, ville, district/comté et rue. Si vous ne pouvez pas obtenir l'adresse de l'hôtel, identifiez les noms d'attractions célèbres autour de l'adresse de l'hôtel à partir de l'article. S'il n'y a pas d'informations de localisation, retournez null,\\n- Téléphone de l'hôtel : {{tel}} Identifiez le numéro de téléphone de l'hôtel à partir de l'article. S'il n'y a pas d'informations pertinentes, retournez null,\\n- Commentaire : {{feedback}} Veuillez juger basé sur le contenu de l'article si cet article recommande de séjourner dans cet hôtel. Généralement parlant, tant qu'aucun problème n'est mentionné ou qu'il y a des évaluations générales, c'est considéré comme recommandé. Le résultat de sortie est \"Oui\" ou \"Non\". Si vous ne pouvez pas juger, veuillez sortir null,\\n- Description positive : {{positive}} Descriptions dans le contenu du guide qui ont une tendance émotionnelle positive envers l'hôtel,\\n- Description négative : {{negative}} Descriptions dans le contenu du guide qui ont une tendance émotionnelle négative envers l'hôtel,\\n- Caractéristiques de l'hôtel : {{flavor}} Extrayez les installations caractéristiques de l'hôtel et l'environnement environnant mentionnés dans le texte, comme les piscines à débordement, toits étoilés, etc. S'il n'y a pas d'informations pertinentes, retournez null,\\n- Environnement de l'hôtel : {{surround}} Extrayez les noms des zones pittoresques mentionnées dans le texte. S'il n'y a pas d'informations de localisation, retournez null,\\n- Coût de l'hôtel : {{cost}} Informations liées aux tarifs de l'hôtel, incluant types de chambres et prix. S'il n'y a pas d'informations pertinentes dans l'article, retournez null,\\n- Politique préférentielle de l'hôtel : {{policy}} Contrôlez le nombre de mots dans les 30 mots. S'il n'y a pas d'informations pertinentes dans l'article, retournez null\\n\\n\\n(3)\\nVeuillez extraire les informations d'activité au format JSON [{\\\"name\\\";,\\\"city\\\";,\\\"district\\\";,\\\"address\\\";,\\\"tel\\\";,\\\"feedback\\\";,\\\"positive\\\";,\\\"negative\\\";,\\\"flavor\\\";,\\\"surround\\\";,\\\"cost\\\":,\\\"policy\\\";,},{}]. Notez, ne retournez aucun caractère autre que le JSON lui-même.\n\n\nVoici le contenu du guide de voyage d'entrée : Harbor View Hotel près de Pike Place Market, Seattle, vues nocturnes époustouflantes, à distance de marche de Pike Place Market et Space Needle. Chambres propres, personnel de réception enthousiaste. 300$/nuit, promotion petit-déjeuner gratuit week-end.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "city": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "district": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "tel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "feedback": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "Oui",
+                            "Non",
+                            null
+                        ],
+                        "能力项": "特定格式"
+                    },
+                    "positive": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "negative": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "flavor": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "surround": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "cost": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "policy": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束、10~50字"
+                    }
+                },
+                "required": [
+                    "name",
+                    "city",
+                    "district",
+                    "address",
+                    "tel",
+                    "feedback",
+                    "positive",
+                    "negative",
+                    "flavor",
+                    "surround",
+                    "cost",
+                    "policy"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "S'il correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un marchand d'hôtels organisant les informations hôtelières. Je vais vous donner un guide de voyage des médias sociaux contenant des informations sur les hôtels, attractions, services, etc. Vous devez extraire les informations de base de différents hôtels selon mes exigences comme suit :\n\n(1) Un guide de voyage peut contenir plusieurs hôtels. Veuillez extraire les noms et caractéristiques de différents hôtels du guide de voyage donné ;\n\n(2) Pour chaque hôtel, vous devez extraire toutes les informations pertinentes et répondre aux exigences suivantes :\\n- Nom de l'hôtel : {{name}},\\n- Ville de l'hôtel : {{city}} Priorisez l'identification de la ville où se trouve l'hôtel à partir de l'article. Si vous ne pouvez pas obtenir la ville où se trouve l'hôtel, identifiez les attractions autour de l'hôtel à partir de l'article et déterminez la ville basée sur les attractions,\\n- District administratif de l'hôtel : {{district}}, Priorisez l'identification du district administratif où se trouve l'hôtel à partir de l'article. Si vous ne pouvez pas obtenir le district administratif où se trouve l'hôtel, identifiez les attractions autour de l'hôtel à partir de l'article et déterminez le district administratif basé sur les attractions,\\n- Adresse de l'hôtel : {{address}} Priorisez l'identification de l'adresse de l'hôtel à partir de l'article, incluant province, ville, district/comté et rue. Si vous ne pouvez pas obtenir l'adresse de l'hôtel, identifiez les noms d'attractions célèbres autour de l'adresse de l'hôtel à partir de l'article. S'il n'y a pas d'informations de localisation, retournez null,\\n- Téléphone de l'hôtel : {{tel}} Identifiez le numéro de téléphone de l'hôtel à partir de l'article. S'il n'y a pas d'informations pertinentes, retournez null,\\n- Commentaire : {{feedback}} Veuillez juger basé sur le contenu de l'article si cet article recommande de séjourner dans cet hôtel. Généralement parlant, tant qu'aucun problème n'est mentionné ou qu'il y a des évaluations générales, c'est considéré comme recommandé. Le résultat de sortie est \"Oui\" ou \"Non\". Si vous ne pouvez pas juger, veuillez sortir null,\\n- Description positive : {{positive}} Descriptions dans le contenu du guide qui ont une tendance émotionnelle positive envers l'hôtel,\\n- Description négative : {{negative}} Descriptions dans le contenu du guide qui ont une tendance émotionnelle négative envers l'hôtel,\\n- Caractéristiques de l'hôtel : {{flavor}} Extrayez les installations caractéristiques de l'hôtel et l'environnement environnant mentionnés dans le texte, comme les piscines à débordement, toits étoilés, etc. S'il n'y a pas d'informations pertinentes, retournez null,\\n- Environnement de l'hôtel : {{surround}} Extrayez les noms des zones pittoresques mentionnées dans le texte. S'il n'y a pas d'informations de localisation, retournez null,\\n- Coût de l'hôtel : {{cost}} Informations liées aux tarifs de l'hôtel, incluant types de chambres et prix. S'il n'y a pas d'informations pertinentes dans l'article, retournez null,\\n- Politique préférentielle de l'hôtel : {{policy}} Contrôlez le nombre de mots dans les 30 mots. S'il n'y a pas d'informations pertinentes dans l'article, retournez null\\n\\n\\n(3)\\nVeuillez extraire les informations d'activité au format JSON [{\\\"name\\\";,\\\"city\\\";,\\\"district\\\";,\\\"address\\\";,\\\"tel\\\";,\\\"feedback\\\";,\\\"positive\\\";,\\\"negative\\\";,\\\"flavor\\\";,\\\"surround\\\";,\\\"cost\\\":,\\\"policy\\\";,},{}]. Notez, ne retournez aucun caractère autre que le JSON lui-même.\n\n\nVoici le contenu du guide de voyage d'entrée : The Palmer House Hilton Chicago, excellent emplacement près de Millennium Park et Art Institute of Chicago. Chambres propres, service attentionné. 400$/nuit, offres d'échange de points de vacances disponibles.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "city": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "district": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "tel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "feedback": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "Oui",
+                            "Non",
+                            null
+                        ],
+                        "能力项": "特定格式"
+                    },
+                    "positive": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "negative": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "flavor": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "surround": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "cost": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "policy": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束、10~50字"
+                    }
+                },
+                "required": [
+                    "name",
+                    "city",
+                    "district",
+                    "address",
+                    "tel",
+                    "feedback",
+                    "positive",
+                    "negative",
+                    "flavor",
+                    "surround",
+                    "cost",
+                    "policy"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "S'il correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un marchand d'hôtels organisant les informations hôtelières. Je vais vous donner un guide de voyage des médias sociaux contenant des informations sur les hôtels, attractions, services, etc. Vous devez extraire les informations de base de différents hôtels selon mes exigences comme suit :\n\n(1) Un guide de voyage peut contenir plusieurs hôtels. Veuillez extraire les noms et caractéristiques de différents hôtels du guide de voyage donné ;\n\n(2) Pour chaque hôtel, vous devez extraire toutes les informations pertinentes et répondre aux exigences suivantes :\\n- Nom de l'hôtel : {{name}},\\n- Ville de l'hôtel : {{city}} Priorisez l'identification de la ville où se trouve l'hôtel à partir de l'article. Si vous ne pouvez pas obtenir la ville où se trouve l'hôtel, identifiez les attractions autour de l'hôtel à partir de l'article et déterminez la ville basée sur les attractions,\\n- District administratif de l'hôtel : {{district}}, Priorisez l'identification du district administratif où se trouve l'hôtel à partir de l'article. Si vous ne pouvez pas obtenir le district administratif où se trouve l'hôtel, identifiez les attractions autour de l'hôtel à partir de l'article et déterminez le district administratif basé sur les attractions,\\n- Adresse de l'hôtel : {{address}} Priorisez l'identification de l'adresse de l'hôtel à partir de l'article, incluant province, ville, district/comté et rue. Si vous ne pouvez pas obtenir l'adresse de l'hôtel, identifiez les noms d'attractions célèbres autour de l'adresse de l'hôtel à partir de l'article. S'il n'y a pas d'informations de localisation, retournez null,\\n- Téléphone de l'hôtel : {{tel}} Identifiez le numéro de téléphone de l'hôtel à partir de l'article. S'il n'y a pas d'informations pertinentes, retournez null,\\n- Commentaire : {{feedback}} Veuillez juger basé sur le contenu de l'article si cet article recommande de séjourner dans cet hôtel. Généralement parlant, tant qu'aucun problème n'est mentionné ou qu'il y a des évaluations générales, c'est considéré comme recommandé. Le résultat de sortie est \"Oui\" ou \"Non\". Si vous ne pouvez pas juger, veuillez sortir null,\\n- Description positive : {{positive}} Descriptions dans le contenu du guide qui ont une tendance émotionnelle positive envers l'hôtel,\\n- Description négative : {{negative}} Descriptions dans le contenu du guide qui ont une tendance émotionnelle négative envers l'hôtel,\\n- Caractéristiques de l'hôtel : {{flavor}} Extrayez les installations caractéristiques de l'hôtel et l'environnement environnant mentionnés dans le texte, comme les piscines à débordement, toits étoilés, etc. S'il n'y a pas d'informations pertinentes, retournez null,\\n- Environnement de l'hôtel : {{surround}} Extrayez les noms des zones pittoresques mentionnées dans le texte. S'il n'y a pas d'informations de localisation, retournez null,\\n- Coût de l'hôtel : {{cost}} Informations liées aux tarifs de l'hôtel, incluant types de chambres et prix. S'il n'y a pas d'informations pertinentes dans l'article, retournez null,\\n- Politique préférentielle de l'hôtel : {{policy}} Contrôlez le nombre de mots dans les 30 mots. S'il n'y a pas d'informations pertinentes dans l'article, retournez null\\n\\n\\n(3)\\nVeuillez extraire les informations d'activité au format JSON [{\\\"name\\\";,\\\"city\\\";,\\\"district\\\";,\\\"address\\\";,\\\"tel\\\";,\\\"feedback\\\";,\\\"positive\\\";,\\\"negative\\\";,\\\"flavor\\\";,\\\"surround\\\";,\\\"cost\\\":,\\\"policy\\\";,},{}]. Notez, ne retournez aucun caractère autre que le JSON lui-même.\n\n\nVoici le contenu du guide de voyage d'entrée : Oceanfront Resort près de Disneyland, Anaheim, proche de Disneyland et Disney California Adventure, parfait pour les voyages en famille. Chambres spacieuses, installations complètes. 250$/nuit, forfaits repas enfants de vacances disponibles.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "city": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "district": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "tel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "feedback": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "Oui",
+                            "Non",
+                            null
+                        ],
+                        "能力项": "特定格式"
+                    },
+                    "positive": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "negative": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "flavor": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "surround": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "cost": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "policy": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束、10~50字"
+                    }
+                },
+                "required": [
+                    "name",
+                    "city",
+                    "district",
+                    "address",
+                    "tel",
+                    "feedback",
+                    "positive",
+                    "negative",
+                    "flavor",
+                    "surround",
+                    "cost",
+                    "policy"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "S'il correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un marchand d'hôtels organisant les informations hôtelières. Je vais vous donner un guide de voyage des médias sociaux contenant des informations sur les hôtels, attractions, services, etc. Vous devez extraire les informations de base de différents hôtels selon mes exigences comme suit :\n\n(1) Un guide de voyage peut contenir plusieurs hôtels. Veuillez extraire les noms et caractéristiques de différents hôtels du guide de voyage donné ;\n\n(2) Pour chaque hôtel, vous devez extraire toutes les informations pertinentes et répondre aux exigences suivantes :\\n- Nom de l'hôtel : {{name}},\\n- Ville de l'hôtel : {{city}} Priorisez l'identification de la ville où se trouve l'hôtel à partir de l'article. Si vous ne pouvez pas obtenir la ville où se trouve l'hôtel, identifiez les attractions autour de l'hôtel à partir de l'article et déterminez la ville basée sur les attractions,\\n- District administratif de l'hôtel : {{district}}, Priorisez l'identification du district administratif où se trouve l'hôtel à partir de l'article. Si vous ne pouvez pas obtenir le district administratif où se trouve l'hôtel, identifiez les attractions autour de l'hôtel à partir de l'article et déterminez le district administratif basé sur les attractions,\\n- Adresse de l'hôtel : {{address}} Priorisez l'identification de l'adresse de l'hôtel à partir de l'article, incluant province, ville, district/comté et rue. Si vous ne pouvez pas obtenir l'adresse de l'hôtel, identifiez les noms d'attractions célèbres autour de l'adresse de l'hôtel à partir de l'article. S'il n'y a pas d'informations de localisation, retournez null,\\n- Téléphone de l'hôtel : {{tel}} Identifiez le numéro de téléphone de l'hôtel à partir de l'article. S'il n'y a pas d'informations pertinentes, retournez null,\\n- Commentaire : {{feedback}} Veuillez juger basé sur le contenu de l'article si cet article recommande de séjourner dans cet hôtel. Généralement parlant, tant qu'aucun problème n'est mentionné ou qu'il y a des évaluations générales, c'est considéré comme recommandé. Le résultat de sortie est \"Oui\" ou \"Non\". Si vous ne pouvez pas juger, veuillez sortir null,\\n- Description positive : {{positive}} Descriptions dans le contenu du guide qui ont une tendance émotionnelle positive envers l'hôtel,\\n- Description négative : {{negative}} Descriptions dans le contenu du guide qui ont une tendance émotionnelle négative envers l'hôtel,\\n- Caractéristiques de l'hôtel : {{flavor}} Extrayez les installations caractéristiques de l'hôtel et l'environnement environnant mentionnés dans le texte, comme les piscines à débordement, toits étoilés, etc. S'il n'y a pas d'informations pertinentes, retournez null,\\n- Environnement de l'hôtel : {{surround}} Extrayez les noms des zones pittoresques mentionnées dans le texte. S'il n'y a pas d'informations de localisation, retournez null,\\n- Coût de l'hôtel : {{cost}} Informations liées aux tarifs de l'hôtel, incluant types de chambres et prix. S'il n'y a pas d'informations pertinentes dans l'article, retournez null,\\n- Politique préférentielle de l'hôtel : {{policy}} Contrôlez le nombre de mots dans les 30 mots. S'il n'y a pas d'informations pertinentes dans l'article, retournez null\\n\\n\\n(3)\\nVeuillez extraire les informations d'activité au format JSON [{\\\"name\\\";,\\\"city\\\";,\\\"district\\\";,\\\"address\\\";,\\\"tel\\\";,\\\"feedback\\\";,\\\"positive\\\";,\\\"negative\\\";,\\\"flavor\\\";,\\\"surround\\\";,\\\"cost\\\":,\\\"policy\\\";,},{}]. Notez, ne retournez aucun caractère autre que le JSON lui-même.\n\n\nVoici le contenu du guide de voyage d'entrée : Historic Inn sur Beacon Hill, Boston, caractère historique charmant, près de Freedom Trail et Boston Tea Party Ships. Chambres décorées de manière unique, service chaleureux. 200$/nuit, expérience thé artisanal week-end disponible.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "city": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "district": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "tel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "feedback": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "Oui",
+                            "Non",
+                            null
+                        ],
+                        "能力项": "特定格式"
+                    },
+                    "positive": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "negative": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "flavor": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "surround": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "cost": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "policy": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束、10~50字"
+                    }
+                },
+                "required": [
+                    "name",
+                    "city",
+                    "district",
+                    "address",
+                    "tel",
+                    "feedback",
+                    "positive",
+                    "negative",
+                    "flavor",
+                    "surround",
+                    "cost",
+                    "policy"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "S'il correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un marchand d'hôtels organisant les informations hôtelières. Je vais vous donner un guide de voyage des médias sociaux contenant des informations sur les hôtels, attractions, services, etc. Vous devez extraire les informations de base de différents hôtels selon mes exigences comme suit :\n\n(1) Un guide de voyage peut contenir plusieurs hôtels. Veuillez extraire les noms et caractéristiques de différents hôtels du guide de voyage donné ;\n\n(2) Pour chaque hôtel, vous devez extraire toutes les informations pertinentes et répondre aux exigences suivantes :\\n- Nom de l'hôtel : {{name}},\\n- Ville de l'hôtel : {{city}} Priorisez l'identification de la ville où se trouve l'hôtel à partir de l'article. Si vous ne pouvez pas obtenir la ville où se trouve l'hôtel, identifiez les attractions autour de l'hôtel à partir de l'article et déterminez la ville basée sur les attractions,\\n- District administratif de l'hôtel : {{district}}, Priorisez l'identification du district administratif où se trouve l'hôtel à partir de l'article. Si vous ne pouvez pas obtenir le district administratif où se trouve l'hôtel, identifiez les attractions autour de l'hôtel à partir de l'article et déterminez le district administratif basé sur les attractions,\\n- Adresse de l'hôtel : {{address}} Priorisez l'identification de l'adresse de l'hôtel à partir de l'article, incluant province, ville, district/comté et rue. Si vous ne pouvez pas obtenir l'adresse de l'hôtel, identifiez les noms d'attractions célèbres autour de l'adresse de l'hôtel à partir de l'article. S'il n'y a pas d'informations de localisation, retournez null,\\n- Téléphone de l'hôtel : {{tel}} Identifiez le numéro de téléphone de l'hôtel à partir de l'article. S'il n'y a pas d'informations pertinentes, retournez null,\\n- Commentaire : {{feedback}} Veuillez juger basé sur le contenu de l'article si cet article recommande de séjourner dans cet hôtel. Généralement parlant, tant qu'aucun problème n'est mentionné ou qu'il y a des évaluations générales, c'est considéré comme recommandé. Le résultat de sortie est \"Oui\" ou \"Non\". Si vous ne pouvez pas juger, veuillez sortir null,\\n- Description positive : {{positive}} Descriptions dans le contenu du guide qui ont une tendance émotionnelle positive envers l'hôtel,\\n- Description négative : {{negative}} Descriptions dans le contenu du guide qui ont une tendance émotionnelle négative envers l'hôtel,\\n- Caractéristiques de l'hôtel : {{flavor}} Extrayez les installations caractéristiques de l'hôtel et l'environnement environnant mentionnés dans le texte, comme les piscines à débordement, toits étoilés, etc. S'il n'y a pas d'informations pertinentes, retournez null,\\n- Environnement de l'hôtel : {{surround}} Extrayez les noms des zones pittoresques mentionnées dans le texte. S'il n'y a pas d'informations de localisation, retournez null,\\n- Coût de l'hôtel : {{cost}} Informations liées aux tarifs de l'hôtel, incluant types de chambres et prix. S'il n'y a pas d'informations pertinentes dans l'article, retournez null,\\n- Politique préférentielle de l'hôtel : {{policy}} Contrôlez le nombre de mots dans les 30 mots. S'il n'y a pas d'informations pertinentes dans l'article, retournez null\\n\\n\\n(3)\\nVeuillez extraire les informations d'activité au format JSON [{\\\"name\\\";,\\\"city\\\";,\\\"district\\\";,\\\"address\\\";,\\\"tel\\\";,\\\"feedback\\\";,\\\"positive\\\";,\\\"negative\\\";,\\\"flavor\\\";,\\\"surround\\\";,\\\"cost\\\":,\\\"policy\\\";,},{}]. Notez, ne retournez aucun caractère autre que le JSON lui-même.\n\n\nVoici le contenu du guide de voyage d'entrée : Downtown Hotel près du Golden Gate Bridge, San Francisco, transport pratique, entouré de Lombard Street et tours d'Alcatraz. Chambres confortables, service moyen. 180$/nuit, aucune offre spéciale.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "city": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "district": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "tel": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "feedback": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "Oui",
+                            "Non",
+                            null
+                        ],
+                        "能力项": "特定格式"
+                    },
+                    "positive": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "negative": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "flavor": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "surround": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "cost": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    },
+                    "policy": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束、10~50字"
+                    }
+                },
+                "required": [
+                    "name",
+                    "city",
+                    "district",
+                    "address",
+                    "tel",
+                    "feedback",
+                    "positive",
+                    "negative",
+                    "flavor",
+                    "surround",
+                    "cost",
+                    "policy"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "S'il correspond au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    }
+]

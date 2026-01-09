@@ -27,68 +27,70 @@ install_requirements()
 
 import json
 import time
-import requests
 from process_corresponding_parts import extract_content
 from process_evaluation import process_all_items
 from multi_round_template_added import multi_round_template_added
-from LLM_APIs.qwen_api import set_qwen_url
-from LLM_APIs.qwen_coder_api import set_qwen_coder_url
-from LLM_APIs.tested_model_api import set_tested_model_url, call_tested_model
+from LLM_APIs.qwen_api import set_qwen_config
+from LLM_APIs.qwen_coder_api import set_qwen_coder_config
+from LLM_APIs.tested_model_api import set_tested_model_config, call_tested_model
 
 
-def test_single_api(url, api_name, test_prompt="Hello"):
+def test_single_api(client, model_name, api_name):
     """测试单个API是否可用"""
-    print(f"🔗 Testing {api_name}: {url}")
-
-    payload = {
-        "prompt": test_prompt,
-        "max_new_tokens": 50,
-        "temperature": 0.00,
-        "top_k": 1
-    }
-    headers = {
-        "Content-Type": "application/json"
-    }
+    print(f"🔗 Testing {api_name} with model: {model_name}")
 
     try:
-        response = requests.post(url, headers=headers, json=payload, timeout=1800)
-
-        if response.status_code == 200:
-            try:
-                response_json = response.json()
-                if 'completions' in response_json and response_json['completions']:
-                    print(f"✅ {api_name} is working")
-                    return True
-                else:
-                    print(f"❌ {api_name} returned invalid format")
-                    return False
-            except json.JSONDecodeError:
-                print(f"❌ {api_name} returned non-JSON response")
-                return False
+        response = client.chat.completions.create(
+            model=model_name,
+            messages=[
+                {"role": "system", "content": ""},
+                {"role": "user", "content": "Hello"},
+            ],
+            max_tokens=50,
+            temperature=0.00,
+            timeout=30
+        )
+        
+        if response.choices and len(response.choices) > 0:
+            print(f"✅ {api_name} is working")
+            return True
         else:
-            print(f"❌ {api_name} returned HTTP {response.status_code}")
+            print(f"❌ {api_name} returned invalid format")
             return False
 
-    except requests.exceptions.ConnectionError:
-        print(f"❌ {api_name} connection failed")
-        return False
-    except requests.exceptions.Timeout:
-        print(f"❌ {api_name} timeout")
-        return False
     except Exception as e:
         print(f"❌ {api_name} error: {e}")
         return False
 
 
-def test_all_apis(qwen_url, qwen_coder_url, tested_model_url):
+def test_all_apis():
     """测试所有三个API是否可用"""
+    from LLM_APIs.qwen_api import _qwen_client, _qwen_model_name
+    from LLM_APIs.qwen_coder_api import _qwen_coder_client, _qwen_coder_model_name
+    from LLM_APIs.tested_model_api import _tested_model_client, _tested_model_name
+    
     print("🧪 Testing API connections...")
     print("=" * 50)
 
     results = {}
-    results['qwen'] = test_single_api(qwen_url, "Qwen API")
-    results['qwen_coder'] = test_single_api(qwen_coder_url, "Qwen Coder API")
-    results['tested_model'] = test_single_api(tested_model_url, "Tested Model API")
+    
+    if _qwen_client:
+        results['qwen'] = test_single_api(_qwen_client, _qwen_model_name, "Qwen API")
+    else:
+        print("⚠️  Qwen API not configured")
+        results['qwen'] = False
+        
+    if _qwen_coder_client:
+        results['qwen_coder'] = test_single_api(_qwen_coder_client, _qwen_coder_model_name, "Qwen Coder API")
+    else:
+        print("⚠️  Qwen Coder API not configured")
+        results['qwen_coder'] = False
+        
+    if _tested_model_client:
+        results['tested_model'] = test_single_api(_tested_model_client, _tested_model_name, "Tested Model API")
+    else:
+        print("⚠️  Tested Model API not configured")
+        results['tested_model'] = False
 
     print("=" * 50)
 
@@ -103,23 +105,25 @@ def test_all_apis(qwen_url, qwen_coder_url, tested_model_url):
             print(f"   {status_icon} {api_name}: {'Working' if status else 'Failed'}")
 
         print("\n💡 Please check:")
-        print("   - API services are running")
-        print("   - URLs are correct")
+        print("   - API keys are correct")
+        print("   - Base URLs are correct")
+        print("   - Model names are correct")
         print("   - Network connectivity")
-        print("   - Firewall settings")
 
         user_input = input("\n❓ Continue anyway? (y/N): ").strip().lower()
         return user_input in ['y', 'yes']
 
+# 导入配置
+from config import (
+    QWEN_API_KEY, QWEN_BASE_URL, QWEN_MODEL,
+    QWEN_CODER_API_KEY, QWEN_CODER_BASE_URL, QWEN_CODER_MODEL,
+    TESTED_MODEL_API_KEY, TESTED_MODEL_BASE_URL, TESTED_MODEL_NAME
+)
+
 # 默认配置 - 基于原始evaluate.py
 BATCH_SIZE = 500
 ROUNDS = 2
-FILE_PATH = ""
-
-# API URLs - 基于原始evaluate.py
-QWEN_URL = "http://10.164.51.197:8080"
-QWEN_CODER_URL = "http://10.166.176.56:8080"
-TESTED_MODEL_URL = "http://10.164.51.197:8080"  # 默认使用相同的模型
+FILE_PATH = "/Users/chenhefei/Meeseeks/input_data/asia_data/raw_input/DATA[1.1]中文版.json"
 
 def process_in_batches(data, batch_size=BATCH_SIZE):
     """批量处理数据，调用被测模型获取响应"""
@@ -179,23 +183,37 @@ if __name__ == "__main__":
     print("🚀 OG_meeseeks 快速启动")
     print("=" * 50)
 
-    # 设置API URLs
-    set_qwen_url(QWEN_URL)
-    set_qwen_coder_url(QWEN_CODER_URL)
-    set_tested_model_url(TESTED_MODEL_URL)
+    # 设置API配置
+    set_qwen_config(
+        api_key=QWEN_API_KEY,
+        base_url=QWEN_BASE_URL,
+        model_name=QWEN_MODEL
+    )
+    set_qwen_coder_config(
+        api_key=QWEN_CODER_API_KEY,
+        base_url=QWEN_CODER_BASE_URL,
+        model_name=QWEN_CODER_MODEL
+    )
+    set_tested_model_config(
+        api_key=TESTED_MODEL_API_KEY,
+        base_url=TESTED_MODEL_BASE_URL,
+        model_name=TESTED_MODEL_NAME
+    )
 
     print(f"🔧 配置信息:")
-    print(f"   - Qwen URL: {QWEN_URL}")
-    print(f"   - Qwen Coder URL: {QWEN_CODER_URL}")
-    print(f"   - Tested Model URL: {TESTED_MODEL_URL}")
-    print(f"   - Collecting Batch Size: {COLLECTING_BATCH_SIZE}")
-    print(f"   - Processing Batch Size: {PROCESSING_BATCH_SIZE}")
+    print(f"   - Qwen Model: {QWEN_MODEL}")
+    print(f"   - Qwen Base URL: {QWEN_BASE_URL}")
+    print(f"   - Qwen Coder Model: {QWEN_CODER_MODEL}")
+    print(f"   - Qwen Coder Base URL: {QWEN_CODER_BASE_URL}")
+    print(f"   - Tested Model: {TESTED_MODEL_NAME}")
+    print(f"   - Tested Model Base URL: {TESTED_MODEL_BASE_URL}")
+    print(f"   - Batch Size: {BATCH_SIZE}")
     print(f"   - Rounds: {ROUNDS}")
     print(f"   - Data Path: {FILE_PATH}")
     print()
 
     # 测试API连接
-    if not test_all_apis(QWEN_URL, QWEN_CODER_URL, TESTED_MODEL_URL):
+    if not test_all_apis():
         print("🛑 API测试失败，程序退出")
         exit(1)
 

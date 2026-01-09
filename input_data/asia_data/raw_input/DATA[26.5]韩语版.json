@@ -1,0 +1,2242 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "당신은 여행 전문가입니다. 제목과 기사 내용을 포함한 여행 가이드 기사를 제공하겠습니다. 기사를 분석하여 여행 경로가 포함되어 있는지(containRoute), 몇 개의 여행 경로가 포함되어 있는지(routeCount), 시간 제한이 있는 프로젝트가 포함되어 있는지(containTimelinessProject)를 판단하고, 각 경로의 상세 정보(경로명, 일수, 여행 지점, 시간 제한이 있는 프로젝트 포함 여부, 관련된 시간 제한 프로젝트명 등)를 추출해 주세요. 마지막으로 지정된 JSON 형식으로 결과를 생성해 주세요.\n용어 정의:\n여행 경로: 시간순으로 여러 여행 지점을 가진 계획된 여행 경로로, 약 1-3일간 지속됩니다. 일반적으로 여행 경로 내의 여러 여행 지점은 시간 순서(오전 11시에 A지점으로, 오후 2시에 B지점으로 등) 또는 위치 순서(현재 A지점에 있고, 다음 정류장은 B지점 등)로 연결됩니다. 여러 독립적인 여행 지점을 단순히 소개하는 것만으로는 여행 경로를 구성할 수 없음에 주의하세요.\n여행 경로 포함 여부: 기사에 최소 하나의 완전한 여행 경로가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\n여행 경로 수: 기사에 포함된 완전한 여행 경로의 수, 없으면 0.\n시간 제한 프로젝트 포함 여부: 시간 제한 프로젝트는 콘서트, 전시, 회의, 스탠드업 코미디 쇼, 음악제 등의 기간 한정 활동과 같이 특정 시간에 진행되는 프로젝트를 의미합니다. 여행 경로에 시간 제한 프로젝트가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\nroutes 필드: 여행 경로가 포함되어 있으면 각 경로의 상세한 구조화된 정보를 생성해야 합니다. 여기에는 다음이 포함됩니다: routeName(경로명), days(일수), routePoints(여행 지점 목록), hasTimelinessProject(이 경로에 시간 제한 프로젝트가 포함되어 있는지), timelinessProjects(이 경로와 관련된 시간 제한 프로젝트 목록, 없으면 빈 배열, 각 프로젝트명은 9-150자(공백, 숫자 등 포함)).\n출력 형식 요구사항: 다음 JSON 형식으로 분석 결과를 엄격히 생성하고, 추가적인 텍스트 설명은 추가하지 마세요:{\"containRoute\": 0 또는 1,\"routeCount\": 숫자(0,1,2...),\"containTimelinessProject\": 0 또는 1, \"routes\": [{\"routeName\": \"경로명\", \"days\": 1-3, \"routePoints\": [\"여행지점A\", \"여행지점B\"], \"hasTimelinessProject\": 0 또는 1, \"timelinessProjects\": [\"시간 제한 프로젝트명\"]}]}\n기사 내용:\n【반일 투어】14:00 집합하여 백년 공장 견학(예약 필요) 15:30 인접한 창작 상점으로 이동 16:00 수공예 체험 교실 참가(매일 16:00-17:00)",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "기사에 여행 경로가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "기사에 포함된 여행 경로의 수",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "여행 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "모든 여행 경로의 세부 정보",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "경로명, 비워둘 수 없음",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "경로의 일수, 값 범위 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "여행 지점 목록, 최소 두 개의 지점을 포함해야 함",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "이 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "이 경로와 관련된 시간 제한이 있는 프로젝트, 각 프로젝트명은 2-30자",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 여행 전문가입니다. 제목과 기사 내용을 포함한 여행 가이드 기사를 제공하겠습니다. 기사를 분석하여 여행 경로가 포함되어 있는지(containRoute), 몇 개의 여행 경로가 포함되어 있는지(routeCount), 시간 제한이 있는 프로젝트가 포함되어 있는지(containTimelinessProject)를 판단하고, 각 경로의 상세 정보(경로명, 일수, 여행 지점, 시간 제한이 있는 프로젝트 포함 여부, 관련된 시간 제한 프로젝트명 등)를 추출해 주세요. 마지막으로 지정된 JSON 형식으로 결과를 생성해 주세요.\n용어 정의:\n여행 경로: 시간순으로 여러 여행 지점을 가진 계획된 여행 경로로, 약 1-3일간 지속됩니다. 일반적으로 여행 경로 내의 여러 여행 지점은 시간 순서(오전 11시에 A지점으로, 오후 2시에 B지점으로 등) 또는 위치 순서(현재 A지점에 있고, 다음 정류장은 B지점 등)로 연결됩니다. 여러 독립적인 여행 지점을 단순히 소개하는 것만으로는 여행 경로를 구성할 수 없음에 주의하세요.\n여행 경로 포함 여부: 기사에 최소 하나의 완전한 여행 경로가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\n여행 경로 수: 기사에 포함된 완전한 여행 경로의 수, 없으면 0.\n시간 제한 프로젝트 포함 여부: 시간 제한 프로젝트는 콘서트, 전시, 회의, 스탠드업 코미디 쇼, 음악제 등의 기간 한정 활동과 같이 특정 시간에 진행되는 프로젝트를 의미합니다. 여행 경로에 시간 제한 프로젝트가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\nroutes 필드: 여행 경로가 포함되어 있으면 각 경로의 상세한 구조화된 정보를 생성해야 합니다. 여기에는 다음이 포함됩니다: routeName(경로명), days(일수), routePoints(여행 지점 목록), hasTimelinessProject(이 경로에 시간 제한 프로젝트가 포함되어 있는지), timelinessProjects(이 경로와 관련된 시간 제한 프로젝트 목록, 없으면 빈 배열, 각 프로젝트명은 9-150자(공백, 숫자 등 포함)).\n출력 형식 요구사항: 다음 JSON 형식으로 분석 결과를 엄격히 생성하고, 추가적인 텍스트 설명은 추가하지 마세요:{\"containRoute\": 0 또는 1,\"routeCount\": 숫자(0,1,2...),\"containTimelinessProject\": 0 또는 1, \"routes\": [{\"routeName\": \"경로명\", \"days\": 1-3, \"routePoints\": [\"여행지점A\", \"여행지점B\"], \"hasTimelinessProject\": 0 또는 1, \"timelinessProjects\": [\"시간 제한 프로젝트명\"]}]}\n기사 내용:\n【1일 심화 투어】오전 10시에 박물관에서 집합, 이후 미술관까지 도보, 근처 레스토랑에서 점심, 오후에는 기간 한정 전시 참가, 저녁에는 음악제 공연 관람.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "기사에 여행 경로가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "기사에 포함된 여행 경로의 수",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "여행 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "모든 여행 경로의 세부 정보",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "경로명, 비워둘 수 없음",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "경로의 일수, 값 범위 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "여행 지점 목록, 최소 두 개의 지점을 포함해야 함",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "이 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "이 경로와 관련된 시간 제한이 있는 프로젝트, 각 프로젝트명은 2-30자",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 여행 전문가입니다. 제목과 기사 내용을 포함한 여행 가이드 기사를 제공하겠습니다. 기사를 분석하여 여행 경로가 포함되어 있는지(containRoute), 몇 개의 여행 경로가 포함되어 있는지(routeCount), 시간 제한이 있는 프로젝트가 포함되어 있는지(containTimelinessProject)를 판단하고, 각 경로의 상세 정보(경로명, 일수, 여행 지점, 시간 제한이 있는 프로젝트 포함 여부, 관련된 시간 제한 프로젝트명 등)를 추출해 주세요. 마지막으로 지정된 JSON 형식으로 결과를 생성해 주세요.\n용어 정의:\n여행 경로: 시간순으로 여러 여행 지점을 가진 계획된 여행 경로로, 약 1-3일간 지속됩니다. 일반적으로 여행 경로 내의 여러 여행 지점은 시간 순서(오전 11시에 A지점으로, 오후 2시에 B지점으로 등) 또는 위치 순서(현재 A지점에 있고, 다음 정류장은 B지점 등)로 연결됩니다. 여러 독립적인 여행 지점을 단순히 소개하는 것만으로는 여행 경로를 구성할 수 없음에 주의하세요.\n여행 경로 포함 여부: 기사에 최소 하나의 완전한 여행 경로가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\n여행 경로 수: 기사에 포함된 완전한 여행 경로의 수, 없으면 0.\n시간 제한 프로젝트 포함 여부: 시간 제한 프로젝트는 콘서트, 전시, 회의, 스탠드업 코미디 쇼, 음악제 등의 기간 한정 활동과 같이 특정 시간에 진행되는 프로젝트를 의미합니다. 여행 경로에 시간 제한 프로젝트가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\nroutes 필드: 여행 경로가 포함되어 있으면 각 경로의 상세한 구조화된 정보를 생성해야 합니다. 여기에는 다음이 포함됩니다: routeName(경로명), days(일수), routePoints(여행 지점 목록), hasTimelinessProject(이 경로에 시간 제한 프로젝트가 포함되어 있는지), timelinessProjects(이 경로와 관련된 시간 제한 프로젝트 목록, 없으면 빈 배열, 각 프로젝트명은 9-150자(공백, 숫자 등 포함)).\n출력 형식 요구사항: 다음 JSON 형식으로 분석 결과를 엄격히 생성하고, 추가적인 텍스트 설명은 추가하지 마세요:{\"containRoute\": 0 또는 1,\"routeCount\": 숫자(0,1,2...),\"containTimelinessProject\": 0 또는 1, \"routes\": [{\"routeName\": \"경로명\", \"days\": 1-3, \"routePoints\": [\"여행지점A\", \"여행지점B\"], \"hasTimelinessProject\": 0 또는 1, \"timelinessProjects\": [\"시간 제한 프로젝트명\"]}]}\n기사 내용:\n【맛집 추천】현지 간식 거리에는 여러 전통 브랜드가 있으며, 조식 가판대, 베이커리, 바비큐 가판대를 추천합니다. 시간 순서 없이 자유로운 방문에 적합합니다.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "기사에 여행 경로가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "기사에 포함된 여행 경로의 수",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "여행 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "모든 여행 경로의 세부 정보",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "경로명, 비워둘 수 없음",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "경로의 일수, 값 범위 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "여행 지점 목록, 최소 두 개의 지점을 포함해야 함",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "이 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "이 경로와 관련된 시간 제한이 있는 프로젝트, 각 프로젝트명은 2-30자",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 여행 전문가입니다. 제목과 기사 내용을 포함한 여행 가이드 기사를 제공하겠습니다. 기사를 분석하여 여행 경로가 포함되어 있는지(containRoute), 몇 개의 여행 경로가 포함되어 있는지(routeCount), 시간 제한이 있는 프로젝트가 포함되어 있는지(containTimelinessProject)를 판단하고, 각 경로의 상세 정보(경로명, 일수, 여행 지점, 시간 제한이 있는 프로젝트 포함 여부, 관련된 시간 제한 프로젝트명 등)를 추출해 주세요. 마지막으로 지정된 JSON 형식으로 결과를 생성해 주세요.\n용어 정의:\n여행 경로: 시간순으로 여러 여행 지점을 가진 계획된 여행 경로로, 약 1-3일간 지속됩니다. 일반적으로 여행 경로 내의 여러 여행 지점은 시간 순서(오전 11시에 A지점으로, 오후 2시에 B지점으로 등) 또는 위치 순서(현재 A지점에 있고, 다음 정류장은 B지점 등)로 연결됩니다. 여러 독립적인 여행 지점을 단순히 소개하는 것만으로는 여행 경로를 구성할 수 없음에 주의하세요.\n여행 경로 포함 여부: 기사에 최소 하나의 완전한 여행 경로가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\n여행 경로 수: 기사에 포함된 완전한 여행 경로의 수, 없으면 0.\n시간 제한 프로젝트 포함 여부: 시간 제한 프로젝트는 콘서트, 전시, 회의, 스탠드업 코미디 쇼, 음악제 등의 기간 한정 활동과 같이 특정 시간에 진행되는 프로젝트를 의미합니다. 여행 경로에 시간 제한 프로젝트가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\nroutes 필드: 여행 경로가 포함되어 있으면 각 경로의 상세한 구조화된 정보를 생성해야 합니다. 여기에는 다음이 포함됩니다: routeName(경로명), days(일수), routePoints(여행 지점 목록), hasTimelinessProject(이 경로에 시간 제한 프로젝트가 포함되어 있는지), timelinessProjects(이 경로와 관련된 시간 제한 프로젝트 목록, 없으면 빈 배열, 각 프로젝트명은 9-150자(공백, 숫자 등 포함)).\n출력 형식 요구사항: 다음 JSON 형식으로 분석 결과를 엄격히 생성하고, 추가적인 텍스트 설명은 추가하지 마세요:{\"containRoute\": 0 또는 1,\"routeCount\": 숫자(0,1,2...),\"containTimelinessProject\": 0 또는 1, \"routes\": [{\"routeName\": \"경로명\", \"days\": 1-3, \"routePoints\": [\"여행지점A\", \"여행지점B\"], \"hasTimelinessProject\": 0 또는 1, \"timelinessProjects\": [\"시간 제한 프로젝트명\"]}]}\n기사 내용:\n【2일 경로】1일차: 오전에 고진 방문, 오후에 도자기 박물관 견학, 저녁에 야시장 조명 쇼 참가. 2일차: 오전에 등산, 오후에 온천.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "기사에 여행 경로가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "기사에 포함된 여행 경로의 수",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "여행 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "모든 여행 경로의 세부 정보",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "경로명, 비워둘 수 없음",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "경로의 일수, 값 범위 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "여행 지점 목록, 최소 두 개의 지점을 포함해야 함",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "이 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "이 경로와 관련된 시간 제한이 있는 프로젝트, 각 프로젝트명은 2-30자",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 여행 전문가입니다. 제목과 기사 내용을 포함한 여행 가이드 기사를 제공하겠습니다. 기사를 분석하여 여행 경로가 포함되어 있는지(containRoute), 몇 개의 여행 경로가 포함되어 있는지(routeCount), 시간 제한이 있는 프로젝트가 포함되어 있는지(containTimelinessProject)를 판단하고, 각 경로의 상세 정보(경로명, 일수, 여행 지점, 시간 제한이 있는 프로젝트 포함 여부, 관련된 시간 제한 프로젝트명 등)를 추출해 주세요. 마지막으로 지정된 JSON 형식으로 결과를 생성해 주세요.\n용어 정의:\n여행 경로: 시간순으로 여러 여행 지점을 가진 계획된 여행 경로로, 약 1-3일간 지속됩니다. 일반적으로 여행 경로 내의 여러 여행 지점은 시간 순서(오전 11시에 A지점으로, 오후 2시에 B지점으로 등) 또는 위치 순서(현재 A지점에 있고, 다음 정류장은 B지점 등)로 연결됩니다. 여러 독립적인 여행 지점을 단순히 소개하는 것만으로는 여행 경로를 구성할 수 없음에 주의하세요.\n여행 경로 포함 여부: 기사에 최소 하나의 완전한 여행 경로가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\n여행 경로 수: 기사에 포함된 완전한 여행 경로의 수, 없으면 0.\n시간 제한 프로젝트 포함 여부: 시간 제한 프로젝트는 콘서트, 전시, 회의, 스탠드업 코미디 쇼, 음악제 등의 기간 한정 활동과 같이 특정 시간에 진행되는 프로젝트를 의미합니다. 여행 경로에 시간 제한 프로젝트가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\nroutes 필드: 여행 경로가 포함되어 있으면 각 경로의 상세한 구조화된 정보를 생성해야 합니다. 여기에는 다음이 포함됩니다: routeName(경로명), days(일수), routePoints(여행 지점 목록), hasTimelinessProject(이 경로에 시간 제한 프로젝트가 포함되어 있는지), timelinessProjects(이 경로와 관련된 시간 제한 프로젝트 목록, 없으면 빈 배열, 각 프로젝트명은 9-150자(공백, 숫자 등 포함)).\n출력 형식 요구사항: 다음 JSON 형식으로 분석 결과를 엄격히 생성하고, 추가적인 텍스트 설명은 추가하지 마세요:{\"containRoute\": 0 또는 1,\"routeCount\": 숫자(0,1,2...),\"containTimelinessProject\": 0 또는 1, \"routes\": [{\"routeName\": \"경로명\", \"days\": 1-3, \"routePoints\": [\"여행지점A\", \"여행지점B\"], \"hasTimelinessProject\": 0 또는 1, \"timelinessProjects\": [\"시간 제한 프로젝트명\"]}]}\n기사 내용:\n【주말 가족 투어】오전에 동물원에서 자이언트 판다 관람, 오후에 과학박물관에서 로봇 전시 체험, 저녁에 아동극장 공연 관람. 2일차 오전에 식물원 방문, 오후에 귀가.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "기사에 여행 경로가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "기사에 포함된 여행 경로의 수",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "여행 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "모든 여행 경로의 세부 정보",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "경로명, 비워둘 수 없음",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "경로의 일수, 값 범위 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "여행 지점 목록, 최소 두 개의 지점을 포함해야 함",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "이 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "이 경로와 관련된 시간 제한이 있는 프로젝트, 각 프로젝트명은 2-30자",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 여행 전문가입니다. 제목과 기사 내용을 포함한 여행 가이드 기사를 제공하겠습니다. 기사를 분석하여 여행 경로가 포함되어 있는지(containRoute), 몇 개의 여행 경로가 포함되어 있는지(routeCount), 시간 제한이 있는 프로젝트가 포함되어 있는지(containTimelinessProject)를 판단하고, 각 경로의 상세 정보(경로명, 일수, 여행 지점, 시간 제한이 있는 프로젝트 포함 여부, 관련된 시간 제한 프로젝트명 등)를 추출해 주세요. 마지막으로 지정된 JSON 형식으로 결과를 생성해 주세요.\n용어 정의:\n여행 경로: 시간순으로 여러 여행 지점을 가진 계획된 여행 경로로, 약 1-3일간 지속됩니다. 일반적으로 여행 경로 내의 여러 여행 지점은 시간 순서(오전 11시에 A지점으로, 오후 2시에 B지점으로 등) 또는 위치 순서(현재 A지점에 있고, 다음 정류장은 B지점 등)로 연결됩니다. 여러 독립적인 여행 지점을 단순히 소개하는 것만으로는 여행 경로를 구성할 수 없음에 주의하세요.\n여행 경로 포함 여부: 기사에 최소 하나의 완전한 여행 경로가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\n여행 경로 수: 기사에 포함된 완전한 여행 경로의 수, 없으면 0.\n시간 제한 프로젝트 포함 여부: 시간 제한 프로젝트는 콘서트, 전시, 회의, 스탠드업 코미디 쇼, 음악제 등의 기간 한정 활동과 같이 특정 시간에 진행되는 프로젝트를 의미합니다. 여행 경로에 시간 제한 프로젝트가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\nroutes 필드: 여행 경로가 포함되어 있으면 각 경로의 상세한 구조화된 정보를 생성해야 합니다. 여기에는 다음이 포함됩니다: routeName(경로명), days(일수), routePoints(여행 지점 목록), hasTimelinessProject(이 경로에 시간 제한 프로젝트가 포함되어 있는지), timelinessProjects(이 경로와 관련된 시간 제한 프로젝트 목록, 없으면 빈 배열, 각 프로젝트명은 9-150자(공백, 숫자 등 포함)).\n출력 형식 요구사항: 다음 JSON 형식으로 분석 결과를 엄격히 생성하고, 추가적인 텍스트 설명은 추가하지 마세요:{\"containRoute\": 0 또는 1,\"routeCount\": 숫자(0,1,2...),\"containTimelinessProject\": 0 또는 1, \"routes\": [{\"routeName\": \"경로명\", \"days\": 1-3, \"routePoints\": [\"여행지점A\", \"여행지점B\"], \"hasTimelinessProject\": 0 또는 1, \"timelinessProjects\": [\"시간 제한 프로젝트명\"]}]}\n기사 내용:\n【전시 체크인】미술관에서 이번 주말 신규 전시 개최, 토요일 오후 2시에 아티스트와의 만남, 저녁에 스탠드업 코미디 쇼, 사전 예약 필요.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "기사에 여행 경로가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "기사에 포함된 여행 경로의 수",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "여행 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "모든 여행 경로의 세부 정보",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "경로명, 비워둘 수 없음",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "경로의 일수, 값 범위 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "여행 지점 목록, 최소 두 개의 지점을 포함해야 함",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "이 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "이 경로와 관련된 시간 제한이 있는 프로젝트, 각 프로젝트명은 2-30자",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 여행 전문가입니다. 제목과 기사 내용을 포함한 여행 가이드 기사를 제공하겠습니다. 기사를 분석하여 여행 경로가 포함되어 있는지(containRoute), 몇 개의 여행 경로가 포함되어 있는지(routeCount), 시간 제한이 있는 프로젝트가 포함되어 있는지(containTimelinessProject)를 판단하고, 각 경로의 상세 정보(경로명, 일수, 여행 지점, 시간 제한이 있는 프로젝트 포함 여부, 관련된 시간 제한 프로젝트명 등)를 추출해 주세요. 마지막으로 지정된 JSON 형식으로 결과를 생성해 주세요.\n용어 정의:\n여행 경로: 시간순으로 여러 여행 지점을 가진 계획된 여행 경로로, 약 1-3일간 지속됩니다. 일반적으로 여행 경로 내의 여러 여행 지점은 시간 순서(오전 11시에 A지점으로, 오후 2시에 B지점으로 등) 또는 위치 순서(현재 A지점에 있고, 다음 정류장은 B지점 등)로 연결됩니다. 여러 독립적인 여행 지점을 단순히 소개하는 것만으로는 여행 경로를 구성할 수 없음에 주의하세요.\n여행 경로 포함 여부: 기사에 최소 하나의 완전한 여행 경로가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\n여행 경로 수: 기사에 포함된 완전한 여행 경로의 수, 없으면 0.\n시간 제한 프로젝트 포함 여부: 시간 제한 프로젝트는 콘서트, 전시, 회의, 스탠드업 코미디 쇼, 음악제 등의 기간 한정 활동과 같이 특정 시간에 진행되는 프로젝트를 의미합니다. 여행 경로에 시간 제한 프로젝트가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\nroutes 필드: 여행 경로가 포함되어 있으면 각 경로의 상세한 구조화된 정보를 생성해야 합니다. 여기에는 다음이 포함됩니다: routeName(경로명), days(일수), routePoints(여행 지점 목록), hasTimelinessProject(이 경로에 시간 제한 프로젝트가 포함되어 있는지), timelinessProjects(이 경로와 관련된 시간 제한 프로젝트 목록, 없으면 빈 배열, 각 프로젝트명은 9-150자(공백, 숫자 등 포함)).\n출력 형식 요구사항: 다음 JSON 형식으로 분석 결과를 엄격히 생성하고, 추가적인 텍스트 설명은 추가하지 마세요:{\"containRoute\": 0 또는 1,\"routeCount\": 숫자(0,1,2...),\"containTimelinessProject\": 0 또는 1, \"routes\": [{\"routeName\": \"경로명\", \"days\": 1-3, \"routePoints\": [\"여행지점A\", \"여행지점B\"], \"hasTimelinessProject\": 0 또는 1, \"timelinessProjects\": [\"시간 제한 프로젝트명\"]}]}\n기사 내용:\n【개인 여행 가이드】추천 관광지에는 공원, 고거리, 박물관, 야시장이 포함되며, 각각 독립적으로 방문 가능하고 고정 경로 없음.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "기사에 여행 경로가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "기사에 포함된 여행 경로의 수",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "여행 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "모든 여행 경로의 세부 정보",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "경로명, 비워둘 수 없음",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "경로의 일수, 값 범위 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "여행 지점 목록, 최소 두 개의 지점을 포함해야 함",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "이 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "이 경로와 관련된 시간 제한이 있는 프로젝트, 각 프로젝트명은 2-30자",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 여행 전문가입니다. 제목과 기사 내용을 포함한 여행 가이드 기사를 제공하겠습니다. 기사를 분석하여 여행 경로가 포함되어 있는지(containRoute), 몇 개의 여행 경로가 포함되어 있는지(routeCount), 시간 제한이 있는 프로젝트가 포함되어 있는지(containTimelinessProject)를 판단하고, 각 경로의 상세 정보(경로명, 일수, 여행 지점, 시간 제한이 있는 프로젝트 포함 여부, 관련된 시간 제한 프로젝트명 등)를 추출해 주세요. 마지막으로 지정된 JSON 형식으로 결과를 생성해 주세요.\n용어 정의:\n여행 경로: 시간순으로 여러 여행 지점을 가진 계획된 여행 경로로, 약 1-3일간 지속됩니다. 일반적으로 여행 경로 내의 여러 여행 지점은 시간 순서(오전 11시에 A지점으로, 오후 2시에 B지점으로 등) 또는 위치 순서(현재 A지점에 있고, 다음 정류장은 B지점 등)로 연결됩니다. 여러 독립적인 여행 지점을 단순히 소개하는 것만으로는 여행 경로를 구성할 수 없음에 주의하세요.\n여행 경로 포함 여부: 기사에 최소 하나의 완전한 여행 경로가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\n여행 경로 수: 기사에 포함된 완전한 여행 경로의 수, 없으면 0.\n시간 제한 프로젝트 포함 여부: 시간 제한 프로젝트는 콘서트, 전시, 회의, 스탠드업 코미디 쇼, 음악제 등의 기간 한정 활동과 같이 특정 시간에 진행되는 프로젝트를 의미합니다. 여행 경로에 시간 제한 프로젝트가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\nroutes 필드: 여행 경로가 포함되어 있으면 각 경로의 상세한 구조화된 정보를 생성해야 합니다. 여기에는 다음이 포함됩니다: routeName(경로명), days(일수), routePoints(여행 지점 목록), hasTimelinessProject(이 경로에 시간 제한 프로젝트가 포함되어 있는지), timelinessProjects(이 경로와 관련된 시간 제한 프로젝트 목록, 없으면 빈 배열, 각 프로젝트명은 9-150자(공백, 숫자 등 포함)).\n출력 형식 요구사항: 다음 JSON 형식으로 분석 결과를 엄격히 생성하고, 추가적인 텍스트 설명은 추가하지 마세요:{\"containRoute\": 0 또는 1,\"routeCount\": 숫자(0,1,2...),\"containTimelinessProject\": 0 또는 1, \"routes\": [{\"routeName\": \"경로명\", \"days\": 1-3, \"routePoints\": [\"여행지점A\", \"여행지점B\"], \"hasTimelinessProject\": 0 또는 1, \"timelinessProjects\": [\"시간 제한 프로젝트명\"]}]}\n기사 내용:\n【1일 투어】오전 8시에 기차역에서 집합, 오전 9시에 명승지 도착, 오전 10시에 산정상 산책, 오후 12시에 하산하여 점심, 오후에는 민속촌 견학, 오후 4시에 귀가.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "기사에 여행 경로가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "기사에 포함된 여행 경로의 수",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "여행 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "모든 여행 경로의 세부 정보",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "경로명, 비워둘 수 없음",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "경로의 일수, 값 범위 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "여행 지점 목록, 최소 두 개의 지점을 포함해야 함",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "이 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "이 경로와 관련된 시간 제한이 있는 프로젝트, 각 프로젝트명은 2-30자",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 여행 전문가입니다. 제목과 기사 내용을 포함한 여행 가이드 기사를 제공하겠습니다. 기사를 분석하여 여행 경로가 포함되어 있는지(containRoute), 몇 개의 여행 경로가 포함되어 있는지(routeCount), 시간 제한이 있는 프로젝트가 포함되어 있는지(containTimelinessProject)를 판단하고, 각 경로의 상세 정보(경로명, 일수, 여행 지점, 시간 제한이 있는 프로젝트 포함 여부, 관련된 시간 제한 프로젝트명 등)를 추출해 주세요. 마지막으로 지정된 JSON 형식으로 결과를 생성해 주세요.\n용어 정의:\n여행 경로: 시간순으로 여러 여행 지점을 가진 계획된 여행 경로로, 약 1-3일간 지속됩니다. 일반적으로 여행 경로 내의 여러 여행 지점은 시간 순서(오전 11시에 A지점으로, 오후 2시에 B지점으로 등) 또는 위치 순서(현재 A지점에 있고, 다음 정류장은 B지점 등)로 연결됩니다. 여러 독립적인 여행 지점을 단순히 소개하는 것만으로는 여행 경로를 구성할 수 없음에 주의하세요.\n여행 경로 포함 여부: 기사에 최소 하나의 완전한 여행 경로가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\n여행 경로 수: 기사에 포함된 완전한 여행 경로의 수, 없으면 0.\n시간 제한 프로젝트 포함 여부: 시간 제한 프로젝트는 콘서트, 전시, 회의, 스탠드업 코미디 쇼, 음악제 등의 기간 한정 활동과 같이 특정 시간에 진행되는 프로젝트를 의미합니다. 여행 경로에 시간 제한 프로젝트가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\nroutes 필드: 여행 경로가 포함되어 있으면 각 경로의 상세한 구조화된 정보를 생성해야 합니다. 여기에는 다음이 포함됩니다: routeName(경로명), days(일수), routePoints(여행 지점 목록), hasTimelinessProject(이 경로에 시간 제한 프로젝트가 포함되어 있는지), timelinessProjects(이 경로와 관련된 시간 제한 프로젝트 목록, 없으면 빈 배열, 각 프로젝트명은 9-150자(공백, 숫자 등 포함)).\n출력 형식 요구사항: 다음 JSON 형식으로 분석 결과를 엄격히 생성하고, 추가적인 텍스트 설명은 추가하지 마세요:{\"containRoute\": 0 또는 1,\"routeCount\": 숫자(0,1,2...),\"containTimelinessProject\": 0 또는 1, \"routes\": [{\"routeName\": \"경로명\", \"days\": 1-3, \"routePoints\": [\"여행지점A\", \"여행지점B\"], \"hasTimelinessProject\": 0 또는 1, \"timelinessProjects\": [\"시간 제한 프로젝트명\"]}]}\n기사 내용:\n【야간 투어 경로】18:00에 강변에서 집합, 18:30에 야간 보트 투어 탑승, 20:00에 하선 후 음악 광장까지 도보로 야외 콘서트 관람.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "기사에 여행 경로가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "기사에 포함된 여행 경로의 수",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "여행 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "모든 여행 경로의 세부 정보",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "경로명, 비워둘 수 없음",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "경로의 일수, 값 범위 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "여행 지점 목록, 최소 두 개의 지점을 포함해야 함",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "이 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "이 경로와 관련된 시간 제한이 있는 프로젝트, 각 프로젝트명은 2-30자",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 여행 전문가입니다. 제목과 기사 내용을 포함한 여행 가이드 기사를 제공하겠습니다. 기사를 분석하여 여행 경로가 포함되어 있는지(containRoute), 몇 개의 여행 경로가 포함되어 있는지(routeCount), 시간 제한이 있는 프로젝트가 포함되어 있는지(containTimelinessProject)를 판단하고, 각 경로의 상세 정보(경로명, 일수, 여행 지점, 시간 제한이 있는 프로젝트 포함 여부, 관련된 시간 제한 프로젝트명 등)를 추출해 주세요. 마지막으로 지정된 JSON 형식으로 결과를 생성해 주세요.\n용어 정의:\n여행 경로: 시간순으로 여러 여행 지점을 가진 계획된 여행 경로로, 약 1-3일간 지속됩니다. 일반적으로 여행 경로 내의 여러 여행 지점은 시간 순서(오전 11시에 A지점으로, 오후 2시에 B지점으로 등) 또는 위치 순서(현재 A지점에 있고, 다음 정류장은 B지점 등)로 연결됩니다. 여러 독립적인 여행 지점을 단순히 소개하는 것만으로는 여행 경로를 구성할 수 없음에 주의하세요.\n여행 경로 포함 여부: 기사에 최소 하나의 완전한 여행 경로가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\n여행 경로 수: 기사에 포함된 완전한 여행 경로의 수, 없으면 0.\n시간 제한 프로젝트 포함 여부: 시간 제한 프로젝트는 콘서트, 전시, 회의, 스탠드업 코미디 쇼, 음악제 등의 기간 한정 활동과 같이 특정 시간에 진행되는 프로젝트를 의미합니다. 여행 경로에 시간 제한 프로젝트가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\nroutes 필드: 여행 경로가 포함되어 있으면 각 경로의 상세한 구조화된 정보를 생성해야 합니다. 여기에는 다음이 포함됩니다: routeName(경로명), days(일수), routePoints(여행 지점 목록), hasTimelinessProject(이 경로에 시간 제한 프로젝트가 포함되어 있는지), timelinessProjects(이 경로와 관련된 시간 제한 프로젝트 목록, 없으면 빈 배열, 각 프로젝트명은 9-150자(공백, 숫자 등 포함)).\n출력 형식 요구사항: 다음 JSON 형식으로 분석 결과를 엄격히 생성하고, 추가적인 텍스트 설명은 추가하지 마세요:{\"containRoute\": 0 또는 1,\"routeCount\": 숫자(0,1,2...),\"containTimelinessProject\": 0 또는 1, \"routes\": [{\"routeName\": \"경로명\", \"days\": 1-3, \"routePoints\": [\"여행지점A\", \"여행지점B\"], \"hasTimelinessProject\": 0 또는 1, \"timelinessProjects\": [\"시간 제한 프로젝트명\"]}]}\n기사 내용:\n【가이드】주요 3곳을 추천합니다: 박물관, 미술관, 과학박물관, 각각 특색 있는 전시가 있어 가족 방문에 적합하며, 특정 경로 없음.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "기사에 여행 경로가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "기사에 포함된 여행 경로의 수",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "여행 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "모든 여행 경로의 세부 정보",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "경로명, 비워둘 수 없음",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "경로의 일수, 값 범위 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "여행 지점 목록, 최소 두 개의 지점을 포함해야 함",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "이 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "이 경로와 관련된 시간 제한이 있는 프로젝트, 각 프로젝트명은 2-30자",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 여행 전문가입니다. 제목과 기사 내용을 포함한 여행 가이드 기사를 제공하겠습니다. 기사를 분석하여 여행 경로가 포함되어 있는지(containRoute), 몇 개의 여행 경로가 포함되어 있는지(routeCount), 시간 제한이 있는 프로젝트가 포함되어 있는지(containTimelinessProject)를 판단하고, 각 경로의 상세 정보(경로명, 일수, 여행 지점, 시간 제한이 있는 프로젝트 포함 여부, 관련된 시간 제한 프로젝트명 등)를 추출해 주세요. 마지막으로 지정된 JSON 형식으로 결과를 생성해 주세요.\n용어 정의:\n여행 경로: 시간순으로 여러 여행 지점을 가진 계획된 여행 경로로, 약 1-3일간 지속됩니다. 일반적으로 여행 경로 내의 여러 여행 지점은 시간 순서(오전 11시에 A지점으로, 오후 2시에 B지점으로 등) 또는 위치 순서(현재 A지점에 있고, 다음 정류장은 B지점 등)로 연결됩니다. 여러 독립적인 여행 지점을 단순히 소개하는 것만으로는 여행 경로를 구성할 수 없음에 주의하세요.\n여행 경로 포함 여부: 기사에 최소 하나의 완전한 여행 경로가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\n여행 경로 수: 기사에 포함된 완전한 여행 경로의 수, 없으면 0.\n시간 제한 프로젝트 포함 여부: 시간 제한 프로젝트는 콘서트, 전시, 회의, 스탠드업 코미디 쇼, 음악제 등의 기간 한정 활동과 같이 특정 시간에 진행되는 프로젝트를 의미합니다. 여행 경로에 시간 제한 프로젝트가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\nroutes 필드: 여행 경로가 포함되어 있으면 각 경로의 상세한 구조화된 정보를 생성해야 합니다. 여기에는 다음이 포함됩니다: routeName(경로명), days(일수), routePoints(여행 지점 목록), hasTimelinessProject(이 경로에 시간 제한 프로젝트가 포함되어 있는지), timelinessProjects(이 경로와 관련된 시간 제한 프로젝트 목록, 없으면 빈 배열, 각 프로젝트명은 9-150자(공백, 숫자 등 포함)).\n출력 형식 요구사항: 다음 JSON 형식으로 분석 결과를 엄격히 생성하고, 추가적인 텍스트 설명은 추가하지 마세요:{\"containRoute\": 0 또는 1,\"routeCount\": 숫자(0,1,2...),\"containTimelinessProject\": 0 또는 1, \"routes\": [{\"routeName\": \"경로명\", \"days\": 1-3, \"routePoints\": [\"여행지점A\", \"여행지점B\"], \"hasTimelinessProject\": 0 또는 1, \"timelinessProjects\": [\"시간 제한 프로젝트명\"]}]}\n기사 내용:\n【3일 드라이브 투어】1일차: 오전에 고북수진으로 출발, 점심 후 수향 풍경 산책, 저녁에 수향 조명 쇼 참가. 2일차: 오전에 만리장성 기슭으로 향하고, 오후에 장성 등반, 저녁에 캠핑. 3일차: 오전에 만리장성 박물관 견학, 오후에 귀가.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "기사에 여행 경로가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "기사에 포함된 여행 경로의 수",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "여행 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "모든 여행 경로의 세부 정보",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "경로명, 비워둘 수 없음",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "경로의 일수, 값 범위 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "여행 지점 목록, 최소 두 개의 지점을 포함해야 함",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "이 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "이 경로와 관련된 시간 제한이 있는 프로젝트, 각 프로젝트명은 2-30자",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 여행 전문가입니다. 제목과 기사 내용을 포함한 여행 가이드 기사를 제공하겠습니다. 기사를 분석하여 여행 경로가 포함되어 있는지(containRoute), 몇 개의 여행 경로가 포함되어 있는지(routeCount), 시간 제한이 있는 프로젝트가 포함되어 있는지(containTimelinessProject)를 판단하고, 각 경로의 상세 정보(경로명, 일수, 여행 지점, 시간 제한이 있는 프로젝트 포함 여부, 관련된 시간 제한 프로젝트명 등)를 추출해 주세요. 마지막으로 지정된 JSON 형식으로 결과를 생성해 주세요.\n용어 정의:\n여행 경로: 시간순으로 여러 여행 지점을 가진 계획된 여행 경로로, 약 1-3일간 지속됩니다. 일반적으로 여행 경로 내의 여러 여행 지점은 시간 순서(오전 11시에 A지점으로, 오후 2시에 B지점으로 등) 또는 위치 순서(현재 A지점에 있고, 다음 정류장은 B지점 등)로 연결됩니다. 여러 독립적인 여행 지점을 단순히 소개하는 것만으로는 여행 경로를 구성할 수 없음에 주의하세요.\n여행 경로 포함 여부: 기사에 최소 하나의 완전한 여행 경로가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\n여행 경로 수: 기사에 포함된 완전한 여행 경로의 수, 없으면 0.\n시간 제한 프로젝트 포함 여부: 시간 제한 프로젝트는 콘서트, 전시, 회의, 스탠드업 코미디 쇼, 음악제 등의 기간 한정 활동과 같이 특정 시간에 진행되는 프로젝트를 의미합니다. 여행 경로에 시간 제한 프로젝트가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\nroutes 필드: 여행 경로가 포함되어 있으면 각 경로의 상세한 구조화된 정보를 생성해야 합니다. 여기에는 다음이 포함됩니다: routeName(경로명), days(일수), routePoints(여행 지점 목록), hasTimelinessProject(이 경로에 시간 제한 프로젝트가 포함되어 있는지), timelinessProjects(이 경로와 관련된 시간 제한 프로젝트 목록, 없으면 빈 배열, 각 프로젝트명은 9-150자(공백, 숫자 등 포함)).\n출력 형식 요구사항: 다음 JSON 형식으로 분석 결과를 엄격히 생성하고, 추가적인 텍스트 설명은 추가하지 마세요:{\"containRoute\": 0 또는 1,\"routeCount\": 숫자(0,1,2...),\"containTimelinessProject\": 0 또는 1, \"routes\": [{\"routeName\": \"경로명\", \"days\": 1-3, \"routePoints\": [\"여행지점A\", \"여행지점B\"], \"hasTimelinessProject\": 0 또는 1, \"timelinessProjects\": [\"시간 제한 프로젝트명\"]}]}\n기사 내용:\n【부모자녀 여름캠프】첫날 오전 집합, 과학박물관 견학, 오후 과학실험 체험, 저녁 과학 코미디 쇼. 2일차 종일 야외 개발, 3일차 오전 식물원 견학, 오후 폐회식.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "기사에 여행 경로가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "기사에 포함된 여행 경로의 수",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "여행 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "모든 여행 경로의 세부 정보",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "경로명, 비워둘 수 없음",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "경로의 일수, 값 범위 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "여행 지점 목록, 최소 두 개의 지점을 포함해야 함",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "이 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "이 경로와 관련된 시간 제한이 있는 프로젝트, 각 프로젝트명은 2-30자",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 여행 전문가입니다. 제목과 기사 내용을 포함한 여행 가이드 기사를 제공하겠습니다. 기사를 분석하여 여행 경로가 포함되어 있는지(containRoute), 몇 개의 여행 경로가 포함되어 있는지(routeCount), 시간 제한이 있는 프로젝트가 포함되어 있는지(containTimelinessProject)를 판단하고, 각 경로의 상세 정보(경로명, 일수, 여행 지점, 시간 제한이 있는 프로젝트 포함 여부, 관련된 시간 제한 프로젝트명 등)를 추출해 주세요. 마지막으로 지정된 JSON 형식으로 결과를 생성해 주세요.\n용어 정의:\n여행 경로: 시간순으로 여러 여행 지점을 가진 계획된 여행 경로로, 약 1-3일간 지속됩니다. 일반적으로 여행 경로 내의 여러 여행 지점은 시간 순서(오전 11시에 A지점으로, 오후 2시에 B지점으로 등) 또는 위치 순서(현재 A지점에 있고, 다음 정류장은 B지점 등)로 연결됩니다. 여러 독립적인 여행 지점을 단순히 소개하는 것만으로는 여행 경로를 구성할 수 없음에 주의하세요.\n여행 경로 포함 여부: 기사에 최소 하나의 완전한 여행 경로가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\n여행 경로 수: 기사에 포함된 완전한 여행 경로의 수, 없으면 0.\n시간 제한 프로젝트 포함 여부: 시간 제한 프로젝트는 콘서트, 전시, 회의, 스탠드업 코미디 쇼, 음악제 등의 기간 한정 활동과 같이 특정 시간에 진행되는 프로젝트를 의미합니다. 여행 경로에 시간 제한 프로젝트가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\nroutes 필드: 여행 경로가 포함되어 있으면 각 경로의 상세한 구조화된 정보를 생성해야 합니다. 여기에는 다음이 포함됩니다: routeName(경로명), days(일수), routePoints(여행 지점 목록), hasTimelinessProject(이 경로에 시간 제한 프로젝트가 포함되어 있는지), timelinessProjects(이 경로와 관련된 시간 제한 프로젝트 목록, 없으면 빈 배열, 각 프로젝트명은 9-150자(공백, 숫자 등 포함)).\n출력 형식 요구사항: 다음 JSON 형식으로 분석 결과를 엄격히 생성하고, 추가적인 텍스트 설명은 추가하지 마세요:{\"containRoute\": 0 또는 1,\"routeCount\": 숫자(0,1,2...),\"containTimelinessProject\": 0 또는 1, \"routes\": [{\"routeName\": \"경로명\", \"days\": 1-3, \"routePoints\": [\"여행지점A\", \"여행지점B\"], \"hasTimelinessProject\": 0 또는 1, \"timelinessProjects\": [\"시간 제한 프로젝트명\"]}]}\n기사 내용:\n【도시 야간 러닝 경로】오후 7시에 시내 스포츠 공원에서 집합, 강변 산책로를 따라 음악 분수와 조명 다리를 지나 야간 러닝, 시 중심부 광장에서 종료, 스포츠 애호가에게 적합.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "기사에 여행 경로가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "기사에 포함된 여행 경로의 수",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "여행 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "모든 여행 경로의 세부 정보",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "경로명, 비워둘 수 없음",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "경로의 일수, 값 범위 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "여행 지점 목록, 최소 두 개의 지점을 포함해야 함",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "이 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "이 경로와 관련된 시간 제한이 있는 프로젝트, 각 프로젝트명은 2-30자",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 여행 전문가입니다. 제목과 기사 내용을 포함한 여행 가이드 기사를 제공하겠습니다. 기사를 분석하여 여행 경로가 포함되어 있는지(containRoute), 몇 개의 여행 경로가 포함되어 있는지(routeCount), 시간 제한이 있는 프로젝트가 포함되어 있는지(containTimelinessProject)를 판단하고, 각 경로의 상세 정보(경로명, 일수, 여행 지점, 시간 제한이 있는 프로젝트 포함 여부, 관련된 시간 제한 프로젝트명 등)를 추출해 주세요. 마지막으로 지정된 JSON 형식으로 결과를 생성해 주세요.\n용어 정의:\n여행 경로: 시간순으로 여러 여행 지점을 가진 계획된 여행 경로로, 약 1-3일간 지속됩니다. 일반적으로 여행 경로 내의 여러 여행 지점은 시간 순서(오전 11시에 A지점으로, 오후 2시에 B지점으로 등) 또는 위치 순서(현재 A지점에 있고, 다음 정류장은 B지점 등)로 연결됩니다. 여러 독립적인 여행 지점을 단순히 소개하는 것만으로는 여행 경로를 구성할 수 없음에 주의하세요.\n여행 경로 포함 여부: 기사에 최소 하나의 완전한 여행 경로가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\n여행 경로 수: 기사에 포함된 완전한 여행 경로의 수, 없으면 0.\n시간 제한 프로젝트 포함 여부: 시간 제한 프로젝트는 콘서트, 전시, 회의, 스탠드업 코미디 쇼, 음악제 등의 기간 한정 활동과 같이 특정 시간에 진행되는 프로젝트를 의미합니다. 여행 경로에 시간 제한 프로젝트가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\nroutes 필드: 여행 경로가 포함되어 있으면 각 경로의 상세한 구조화된 정보를 생성해야 합니다. 여기에는 다음이 포함됩니다: routeName(경로명), days(일수), routePoints(여행 지점 목록), hasTimelinessProject(이 경로에 시간 제한 프로젝트가 포함되어 있는지), timelinessProjects(이 경로와 관련된 시간 제한 프로젝트 목록, 없으면 빈 배열, 각 프로젝트명은 9-150자(공백, 숫자 등 포함)).\n출력 형식 요구사항: 다음 JSON 형식으로 분석 결과를 엄격히 생성하고, 추가적인 텍스트 설명은 추가하지 마세요:{\"containRoute\": 0 또는 1,\"routeCount\": 숫자(0,1,2...),\"containTimelinessProject\": 0 또는 1, \"routes\": [{\"routeName\": \"경로명\", \"days\": 1-3, \"routePoints\": [\"여행지점A\", \"여행지점B\"], \"hasTimelinessProject\": 0 또는 1, \"timelinessProjects\": [\"시간 제한 프로젝트명\"]}]}\n기사 내용:\n【주말 커플 투어】오전에 장미원 견학, 오후에 미술관에서 회화전 관람, 저녁에 재즈 콘서트 관람. 2일차 오전에 도예 체험, 오후에 고거리 카페에서 휴식.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "기사에 여행 경로가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "기사에 포함된 여행 경로의 수",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "여행 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "모든 여행 경로의 세부 정보",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "경로명, 비워둘 수 없음",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "경로의 일수, 값 범위 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "여행 지점 목록, 최소 두 개의 지점을 포함해야 함",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "이 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "이 경로와 관련된 시간 제한이 있는 프로젝트, 각 프로젝트명은 2-30자",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 여행 전문가입니다. 제목과 기사 내용을 포함한 여행 가이드 기사를 제공하겠습니다. 기사를 분석하여 여행 경로가 포함되어 있는지(containRoute), 몇 개의 여행 경로가 포함되어 있는지(routeCount), 시간 제한이 있는 프로젝트가 포함되어 있는지(containTimelinessProject)를 판단하고, 각 경로의 상세 정보(경로명, 일수, 여행 지점, 시간 제한이 있는 프로젝트 포함 여부, 관련된 시간 제한 프로젝트명 등)를 추출해 주세요. 마지막으로 지정된 JSON 형식으로 결과를 생성해 주세요.\n용어 정의:\n여행 경로: 시간순으로 여러 여행 지점을 가진 계획된 여행 경로로, 약 1-3일간 지속됩니다. 일반적으로 여행 경로 내의 여러 여행 지점은 시간 순서(오전 11시에 A지점으로, 오후 2시에 B지점으로 등) 또는 위치 순서(현재 A지점에 있고, 다음 정류장은 B지점 등)로 연결됩니다. 여러 독립적인 여행 지점을 단순히 소개하는 것만으로는 여행 경로를 구성할 수 없음에 주의하세요.\n여행 경로 포함 여부: 기사에 최소 하나의 완전한 여행 경로가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\n여행 경로 수: 기사에 포함된 완전한 여행 경로의 수, 없으면 0.\n시간 제한 프로젝트 포함 여부: 시간 제한 프로젝트는 콘서트, 전시, 회의, 스탠드업 코미디 쇼, 음악제 등의 기간 한정 활동과 같이 특정 시간에 진행되는 프로젝트를 의미합니다. 여행 경로에 시간 제한 프로젝트가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\nroutes 필드: 여행 경로가 포함되어 있으면 각 경로의 상세한 구조화된 정보를 생성해야 합니다. 여기에는 다음이 포함됩니다: routeName(경로명), days(일수), routePoints(여행 지점 목록), hasTimelinessProject(이 경로에 시간 제한 프로젝트가 포함되어 있는지), timelinessProjects(이 경로와 관련된 시간 제한 프로젝트 목록, 없으면 빈 배열, 각 프로젝트명은 9-150자(공백, 숫자 등 포함)).\n출력 형식 요구사항: 다음 JSON 형식으로 분석 결과를 엄격히 생성하고, 추가적인 텍스트 설명은 추가하지 마세요:{\"containRoute\": 0 또는 1,\"routeCount\": 숫자(0,1,2...),\"containTimelinessProject\": 0 또는 1, \"routes\": [{\"routeName\": \"경로명\", \"days\": 1-3, \"routePoints\": [\"여행지점A\", \"여행지점B\"], \"hasTimelinessProject\": 0 또는 1, \"timelinessProjects\": [\"시간 제한 프로젝트명\"]}]}\n기사 내용:\n【전시+콘서트 이중 경로】오전에 미술관 신규 전시, 오후에 아티스트 강연회, 저녁에 기간 한정 콘서트 관람. 2일차 오전에 자유 활동.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "기사에 여행 경로가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "기사에 포함된 여행 경로의 수",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "여행 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "모든 여행 경로의 세부 정보",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "경로명, 비워둘 수 없음",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "경로의 일수, 값 범위 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "여행 지점 목록, 최소 두 개의 지점을 포함해야 함",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "이 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "이 경로와 관련된 시간 제한이 있는 프로젝트, 각 프로젝트명은 2-30자",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 여행 전문가입니다. 제목과 기사 내용을 포함한 여행 가이드 기사를 제공하겠습니다. 기사를 분석하여 여행 경로가 포함되어 있는지(containRoute), 몇 개의 여행 경로가 포함되어 있는지(routeCount), 시간 제한이 있는 프로젝트가 포함되어 있는지(containTimelinessProject)를 판단하고, 각 경로의 상세 정보(경로명, 일수, 여행 지점, 시간 제한이 있는 프로젝트 포함 여부, 관련된 시간 제한 프로젝트명 등)를 추출해 주세요. 마지막으로 지정된 JSON 형식으로 결과를 생성해 주세요.\n용어 정의:\n여행 경로: 시간순으로 여러 여행 지점을 가진 계획된 여행 경로로, 약 1-3일간 지속됩니다. 일반적으로 여행 경로 내의 여러 여행 지점은 시간 순서(오전 11시에 A지점으로, 오후 2시에 B지점으로 등) 또는 위치 순서(현재 A지점에 있고, 다음 정류장은 B지점 등)로 연결됩니다. 여러 독립적인 여행 지점을 단순히 소개하는 것만으로는 여행 경로를 구성할 수 없음에 주의하세요.\n여행 경로 포함 여부: 기사에 최소 하나의 완전한 여행 경로가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\n여행 경로 수: 기사에 포함된 완전한 여행 경로의 수, 없으면 0.\n시간 제한 프로젝트 포함 여부: 시간 제한 프로젝트는 콘서트, 전시, 회의, 스탠드업 코미디 쇼, 음악제 등의 기간 한정 활동과 같이 특정 시간에 진행되는 프로젝트를 의미합니다. 여행 경로에 시간 제한 프로젝트가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\nroutes 필드: 여행 경로가 포함되어 있으면 각 경로의 상세한 구조화된 정보를 생성해야 합니다. 여기에는 다음이 포함됩니다: routeName(경로명), days(일수), routePoints(여행 지점 목록), hasTimelinessProject(이 경로에 시간 제한 프로젝트가 포함되어 있는지), timelinessProjects(이 경로와 관련된 시간 제한 프로젝트 목록, 없으면 빈 배열, 각 프로젝트명은 9-150자(공백, 숫자 등 포함)).\n출력 형식 요구사항: 다음 JSON 형식으로 분석 결과를 엄격히 생성하고, 추가적인 텍스트 설명은 추가하지 마세요:{\"containRoute\": 0 또는 1,\"routeCount\": 숫자(0,1,2...),\"containTimelinessProject\": 0 또는 1, \"routes\": [{\"routeName\": \"경로명\", \"days\": 1-3, \"routePoints\": [\"여행지점A\", \"여행지점B\"], \"hasTimelinessProject\": 0 또는 1, \"timelinessProjects\": [\"시간 제한 프로젝트명\"]}]}\n기사 내용:\n【2일 사이클링 경로】1일차: 오전에 호수 공원으로 사이클링, 점심 후 호수 둘레 사이클링, 오후에 캠핑장 도착하여 캠핑. 2일차: 오전에 일출 관람, 오전에 고진으로 사이클링, 오후에 여행 종료.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "기사에 여행 경로가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "기사에 포함된 여행 경로의 수",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "여행 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "모든 여행 경로의 세부 정보",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "경로명, 비워둘 수 없음",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "경로의 일수, 값 범위 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "여행 지점 목록, 최소 두 개의 지점을 포함해야 함",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "이 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "이 경로와 관련된 시간 제한이 있는 프로젝트, 각 프로젝트명은 2-30자",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 여행 전문가입니다. 제목과 기사 내용을 포함한 여행 가이드 기사를 제공하겠습니다. 기사를 분석하여 여행 경로가 포함되어 있는지(containRoute), 몇 개의 여행 경로가 포함되어 있는지(routeCount), 시간 제한이 있는 프로젝트가 포함되어 있는지(containTimelinessProject)를 판단하고, 각 경로의 상세 정보(경로명, 일수, 여행 지점, 시간 제한이 있는 프로젝트 포함 여부, 관련된 시간 제한 프로젝트명 등)를 추출해 주세요. 마지막으로 지정된 JSON 형식으로 결과를 생성해 주세요.\n용어 정의:\n여행 경로: 시간순으로 여러 여행 지점을 가진 계획된 여행 경로로, 약 1-3일간 지속됩니다. 일반적으로 여행 경로 내의 여러 여행 지점은 시간 순서(오전 11시에 A지점으로, 오후 2시에 B지점으로 등) 또는 위치 순서(현재 A지점에 있고, 다음 정류장은 B지점 등)로 연결됩니다. 여러 독립적인 여행 지점을 단순히 소개하는 것만으로는 여행 경로를 구성할 수 없음에 주의하세요.\n여행 경로 포함 여부: 기사에 최소 하나의 완전한 여행 경로가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\n여행 경로 수: 기사에 포함된 완전한 여행 경로의 수, 없으면 0.\n시간 제한 프로젝트 포함 여부: 시간 제한 프로젝트는 콘서트, 전시, 회의, 스탠드업 코미디 쇼, 음악제 등의 기간 한정 활동과 같이 특정 시간에 진행되는 프로젝트를 의미합니다. 여행 경로에 시간 제한 프로젝트가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\nroutes 필드: 여행 경로가 포함되어 있으면 각 경로의 상세한 구조화된 정보를 생성해야 합니다. 여기에는 다음이 포함됩니다: routeName(경로명), days(일수), routePoints(여행 지점 목록), hasTimelinessProject(이 경로에 시간 제한 프로젝트가 포함되어 있는지), timelinessProjects(이 경로와 관련된 시간 제한 프로젝트 목록, 없으면 빈 배열, 각 프로젝트명은 9-150자(공백, 숫자 등 포함)).\n출력 형식 요구사항: 다음 JSON 형식으로 분석 결과를 엄격히 생성하고, 추가적인 텍스트 설명은 추가하지 마세요:{\"containRoute\": 0 또는 1,\"routeCount\": 숫자(0,1,2...),\"containTimelinessProject\": 0 또는 1, \"routes\": [{\"routeName\": \"경로명\", \"days\": 1-3, \"routePoints\": [\"여행지점A\", \"여행지점B\"], \"hasTimelinessProject\": 0 또는 1, \"timelinessProjects\": [\"시간 제한 프로젝트명\"]}]}\n기사 내용:\n【1일 부모자녀 과학 투어】오전에 동물원 견학, 수족관 쇼 관람, 오후에 아동 과학공원 체험, 저녁에 부모자녀 인터랙티브 드라마 관람.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "기사에 여행 경로가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "기사에 포함된 여행 경로의 수",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "여행 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "모든 여행 경로의 세부 정보",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "경로명, 비워둘 수 없음",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "경로의 일수, 값 범위 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "여행 지점 목록, 최소 두 개의 지점을 포함해야 함",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "이 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "이 경로와 관련된 시간 제한이 있는 프로젝트, 각 프로젝트명은 2-30자",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 여행 전문가입니다. 제목과 기사 내용을 포함한 여행 가이드 기사를 제공하겠습니다. 기사를 분석하여 여행 경로가 포함되어 있는지(containRoute), 몇 개의 여행 경로가 포함되어 있는지(routeCount), 시간 제한이 있는 프로젝트가 포함되어 있는지(containTimelinessProject)를 판단하고, 각 경로의 상세 정보(경로명, 일수, 여행 지점, 시간 제한이 있는 프로젝트 포함 여부, 관련된 시간 제한 프로젝트명 등)를 추출해 주세요. 마지막으로 지정된 JSON 형식으로 결과를 생성해 주세요.\n용어 정의:\n여행 경로: 시간순으로 여러 여행 지점을 가진 계획된 여행 경로로, 약 1-3일간 지속됩니다. 일반적으로 여행 경로 내의 여러 여행 지점은 시간 순서(오전 11시에 A지점으로, 오후 2시에 B지점으로 등) 또는 위치 순서(현재 A지점에 있고, 다음 정류장은 B지점 등)로 연결됩니다. 여러 독립적인 여행 지점을 단순히 소개하는 것만으로는 여행 경로를 구성할 수 없음에 주의하세요.\n여행 경로 포함 여부: 기사에 최소 하나의 완전한 여행 경로가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\n여행 경로 수: 기사에 포함된 완전한 여행 경로의 수, 없으면 0.\n시간 제한 프로젝트 포함 여부: 시간 제한 프로젝트는 콘서트, 전시, 회의, 스탠드업 코미디 쇼, 음악제 등의 기간 한정 활동과 같이 특정 시간에 진행되는 프로젝트를 의미합니다. 여행 경로에 시간 제한 프로젝트가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\nroutes 필드: 여행 경로가 포함되어 있으면 각 경로의 상세한 구조화된 정보를 생성해야 합니다. 여기에는 다음이 포함됩니다: routeName(경로명), days(일수), routePoints(여행 지점 목록), hasTimelinessProject(이 경로에 시간 제한 프로젝트가 포함되어 있는지), timelinessProjects(이 경로와 관련된 시간 제한 프로젝트 목록, 없으면 빈 배열, 각 프로젝트명은 9-150자(공백, 숫자 등 포함)).\n출력 형식 요구사항: 다음 JSON 형식으로 분석 결과를 엄격히 생성하고, 추가적인 텍스트 설명은 추가하지 마세요:{\"containRoute\": 0 또는 1,\"routeCount\": 숫자(0,1,2...),\"containTimelinessProject\": 0 또는 1, \"routes\": [{\"routeName\": \"경로명\", \"days\": 1-3, \"routePoints\": [\"여행지점A\", \"여행지점B\"], \"hasTimelinessProject\": 0 또는 1, \"timelinessProjects\": [\"시간 제한 프로젝트명\"]}]}\n기사 내용:\n【봄 꽃구경 경로】오전에 세기공원에서 벚꽃 관람, 오후에 식물원에서 튤립 감상, 저녁에 강변 산책로 산책.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "기사에 여행 경로가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "기사에 포함된 여행 경로의 수",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "여행 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "모든 여행 경로의 세부 정보",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "경로명, 비워둘 수 없음",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "경로의 일수, 값 범위 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "여행 지점 목록, 최소 두 개의 지점을 포함해야 함",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "이 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "이 경로와 관련된 시간 제한이 있는 프로젝트, 각 프로젝트명은 2-30자",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 여행 전문가입니다. 제목과 기사 내용을 포함한 여행 가이드 기사를 제공하겠습니다. 기사를 분석하여 여행 경로가 포함되어 있는지(containRoute), 몇 개의 여행 경로가 포함되어 있는지(routeCount), 시간 제한이 있는 프로젝트가 포함되어 있는지(containTimelinessProject)를 판단하고, 각 경로의 상세 정보(경로명, 일수, 여행 지점, 시간 제한이 있는 프로젝트 포함 여부, 관련된 시간 제한 프로젝트명 등)를 추출해 주세요. 마지막으로 지정된 JSON 형식으로 결과를 생성해 주세요.\n용어 정의:\n여행 경로: 시간순으로 여러 여행 지점을 가진 계획된 여행 경로로, 약 1-3일간 지속됩니다. 일반적으로 여행 경로 내의 여러 여행 지점은 시간 순서(오전 11시에 A지점으로, 오후 2시에 B지점으로 등) 또는 위치 순서(현재 A지점에 있고, 다음 정류장은 B지점 등)로 연결됩니다. 여러 독립적인 여행 지점을 단순히 소개하는 것만으로는 여행 경로를 구성할 수 없음에 주의하세요.\n여행 경로 포함 여부: 기사에 최소 하나의 완전한 여행 경로가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\n여행 경로 수: 기사에 포함된 완전한 여행 경로의 수, 없으면 0.\n시간 제한 프로젝트 포함 여부: 시간 제한 프로젝트는 콘서트, 전시, 회의, 스탠드업 코미디 쇼, 음악제 등의 기간 한정 활동과 같이 특정 시간에 진행되는 프로젝트를 의미합니다. 여행 경로에 시간 제한 프로젝트가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\nroutes 필드: 여행 경로가 포함되어 있으면 각 경로의 상세한 구조화된 정보를 생성해야 합니다. 여기에는 다음이 포함됩니다: routeName(경로명), days(일수), routePoints(여행 지점 목록), hasTimelinessProject(이 경로에 시간 제한 프로젝트가 포함되어 있는지), timelinessProjects(이 경로와 관련된 시간 제한 프로젝트 목록, 없으면 빈 배열, 각 프로젝트명은 9-150자(공백, 숫자 등 포함)).\n출력 형식 요구사항: 다음 JSON 형식으로 분석 결과를 엄격히 생성하고, 추가적인 텍스트 설명은 추가하지 마세요:{\"containRoute\": 0 또는 1,\"routeCount\": 숫자(0,1,2...),\"containTimelinessProject\": 0 또는 1, \"routes\": [{\"routeName\": \"경로명\", \"days\": 1-3, \"routePoints\": [\"여행지점A\", \"여행지점B\"], \"hasTimelinessProject\": 0 또는 1, \"timelinessProjects\": [\"시간 제한 프로젝트명\"]}]}\n기사 내용:\n【예술제 전체 체험】오전에 회화전 개막식, 오후에 조각 워크숍 참가, 저녁에 야외 연극제 공연, 다음날 음악제 폐막식 참석.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "기사에 여행 경로가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "기사에 포함된 여행 경로의 수",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "여행 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "모든 여행 경로의 세부 정보",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "경로명, 비워둘 수 없음",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "경로의 일수, 값 범위 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "여행 지점 목록, 최소 두 개의 지점을 포함해야 함",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "이 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "이 경로와 관련된 시간 제한이 있는 프로젝트, 각 프로젝트명은 2-30자",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 여행 전문가입니다. 제목과 기사 내용을 포함한 여행 가이드 기사를 제공하겠습니다. 기사를 분석하여 여행 경로가 포함되어 있는지(containRoute), 몇 개의 여행 경로가 포함되어 있는지(routeCount), 시간 제한이 있는 프로젝트가 포함되어 있는지(containTimelinessProject)를 판단하고, 각 경로의 상세 정보(경로명, 일수, 여행 지점, 시간 제한이 있는 프로젝트 포함 여부, 관련된 시간 제한 프로젝트명 등)를 추출해 주세요. 마지막으로 지정된 JSON 형식으로 결과를 생성해 주세요.\n용어 정의:\n여행 경로: 시간순으로 여러 여행 지점을 가진 계획된 여행 경로로, 약 1-3일간 지속됩니다. 일반적으로 여행 경로 내의 여러 여행 지점은 시간 순서(오전 11시에 A지점으로, 오후 2시에 B지점으로 등) 또는 위치 순서(현재 A지점에 있고, 다음 정류장은 B지점 등)로 연결됩니다. 여러 독립적인 여행 지점을 단순히 소개하는 것만으로는 여행 경로를 구성할 수 없음에 주의하세요.\n여행 경로 포함 여부: 기사에 최소 하나의 완전한 여행 경로가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\n여행 경로 수: 기사에 포함된 완전한 여행 경로의 수, 없으면 0.\n시간 제한 프로젝트 포함 여부: 시간 제한 프로젝트는 콘서트, 전시, 회의, 스탠드업 코미디 쇼, 음악제 등의 기간 한정 활동과 같이 특정 시간에 진행되는 프로젝트를 의미합니다. 여행 경로에 시간 제한 프로젝트가 포함되어 있으면 1을 반환하고, 그렇지 않으면 0을 반환합니다.\nroutes 필드: 여행 경로가 포함되어 있으면 각 경로의 상세한 구조화된 정보를 생성해야 합니다. 여기에는 다음이 포함됩니다: routeName(경로명), days(일수), routePoints(여행 지점 목록), hasTimelinessProject(이 경로에 시간 제한 프로젝트가 포함되어 있는지), timelinessProjects(이 경로와 관련된 시간 제한 프로젝트 목록, 없으면 빈 배열, 각 프로젝트명은 9-150자(공백, 숫자 등 포함)).\n출력 형식 요구사항: 다음 JSON 형식으로 분석 결과를 엄격히 생성하고, 추가적인 텍스트 설명은 추가하지 마세요:{\"containRoute\": 0 또는 1,\"routeCount\": 숫자(0,1,2...),\"containTimelinessProject\": 0 또는 1, \"routes\": [{\"routeName\": \"경로명\", \"days\": 1-3, \"routePoints\": [\"여행지점A\", \"여행지점B\"], \"hasTimelinessProject\": 0 또는 1, \"timelinessProjects\": [\"시간 제한 프로젝트명\"]}]}\n기사 내용:\n【야외 모험 경로】새벽 등산, 오전에 숲 하이킹, 오후에 계곡 트레킹, 저녁에 캠프파이어 파티, 밤에 캠핑하며 별 관측.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "기사에 여행 경로가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "기사에 포함된 여행 경로의 수",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "여행 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부, 1은 포함, 0은 미포함",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "모든 여행 경로의 세부 정보",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "경로명, 비워둘 수 없음",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "경로의 일수, 값 범위 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "여행 지점 목록, 최소 두 개의 지점을 포함해야 함",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "이 경로에 시간 제한이 있는 프로젝트가 포함되어 있는지 여부",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "이 경로와 관련된 시간 제한이 있는 프로젝트, 각 프로젝트명은 2-30자",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    }
+]

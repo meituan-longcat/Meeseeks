@@ -1,0 +1,2931 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "[[[Berat] Festival Kartun dan Animasi Internasional China 2024 akan diadakan di Pusat Konvensi dan Pameran Internasional Baimahu Binjiang Hangzhou dari 29 Mei hingga 2 Juni. Selama periode tersebut, lebih dari 100 aktivitas tema akan diadakan, dan banyak kartunis dan sutradara animasi terkenal internasional akan diundang untuk menandatangani di tempat. Beberapa aktivitas memerlukan reservasi tiket terlebih dahulu. Diperkirakan akan menarik ratusan ribu turis, dan reservasi hotel sekitar ketat.]\nAnda adalah seorang analis informasi yang perlu menyelesaikan ekstraksi informasi terstruktur acara berdasarkan konten berita hangat dan tanggal hari ini.\nAnda perlu mengidentifikasi informasi kunci acara, termasuk nama acara, jenis, skala, kepentingan, provinsi, kota, lokasi detail, waktu, dll.\nJenis acara meliputi: konser, topik hangat sosial, aktivitas tempat wisata, pameran, ujian regional, acara olahraga, pertunjukan, forum, festival, seminar, bursa kerja, roadshow, kegiatan amal, promosi komersial, dll. Jika tidak dapat diklasifikasikan, silakan kembali ke [Jenis lain]. \nSkala acara dibagi menjadi: 1-acara besar, 2-acara menengah, 3-acara kecil.\nKepentingan acara dibagi menjadi: 1-paling penting, 2-relatif penting, 3-umum.\nSilakan periksa dengan ketat apakah provinsi dan kota sesuai. Jika tidak dapat ditentukan, silakan kembali ke 'None'.\nAturan identifikasi waktu: Jika waktu telah berlalu dan tidak mempengaruhi layanan masa depan, kembalikan [Expired]; jika masih mempengaruhi, kembalikan [Current]; jika ada rentang waktu spesifik, silakan kembalikan format yyyyMMdd atau yyyyMMdd-yyyyMMdd, jika tidak kembalikan [None].\nSilakan tentukan apakah Anda akan memesan hotel untuk acara ini sebagai turis, robotIntention mengembalikan True/False, dan jelaskan alasannya.\nAnda perlu mengekstrak apakah diperlukan reservasi tiket terlebih dahulu (ticketReservation:yes/no), dan mengembalikan field ticketReservation dalam json.\nAnda perlu mengekstrak informasi penyelenggara (organizer), dan mengembalikan field organizer dalam json.\nSilakan kembalikan secara ketat dalam format JSON berikut:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\",\"organizer\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "nama acara",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "jenis acara",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "skala acara",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "tingkat kepentingan acara",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "provinsi",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "kota",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "lokasi spesifik",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "waktu acara",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "alasan penilaian waktu",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "alasan atribusi",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "apakah turis",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "alasan niat",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah perlu reservasi tiket terlebih dahulu",
+                    "能力项": "特定格式"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "penyelenggara",
+                    "能力项": "主题约束"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ticketReservation",
+                "organizer"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation",
+            "organizer": "#JSONSCHEMA#:organizer"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[[[Tur Malam] Tur Malam Musim Panas Huangshan 2024 akan dibuka dari 1 Juli hingga 31 Agustus. Turis dapat mendaki gunung di malam hari dan menonton pertunjukan cahaya. Layanan transportasi malam akan ditambahkan. Beberapa rute tur malam memerlukan reservasi terlebih dahulu. Penyelenggaranya adalah Komite Manajemen Area Wisata Huangshan.]\nAnda adalah seorang analis informasi yang perlu menyelesaikan ekstraksi informasi terstruktur acara berdasarkan konten berita hangat dan tanggal hari ini.\nAnda perlu mengidentifikasi informasi kunci acara, termasuk nama acara, jenis, skala, kepentingan, provinsi, kota, lokasi detail, waktu, dll.\nJenis acara meliputi: konser, topik hangat sosial, aktivitas tempat wisata, pameran, ujian regional, acara olahraga, pertunjukan, forum, festival, seminar, bursa kerja, roadshow, kegiatan amal, promosi komersial, dll. Jika tidak dapat diklasifikasikan, silakan kembali ke [Jenis lain]. \nSkala acara dibagi menjadi: 1-acara besar, 2-acara menengah, 3-acara kecil.\nKepentingan acara dibagi menjadi: 1-paling penting, 2-relatif penting, 3-umum.\nSilakan periksa dengan ketat apakah provinsi dan kota sesuai. Jika tidak dapat ditentukan, silakan kembali ke 'None'.\nAturan identifikasi waktu: Jika waktu telah berlalu dan tidak mempengaruhi layanan masa depan, kembalikan [Expired]; jika masih mempengaruhi, kembalikan [Current]; jika ada rentang waktu spesifik, silakan kembalikan format yyyyMMdd atau yyyyMMdd-yyyyMMdd, jika tidak kembalikan [None].\nSilakan tentukan apakah Anda akan memesan hotel untuk acara ini sebagai turis, robotIntention mengembalikan True/False, dan jelaskan alasannya.\nAnda perlu mengekstrak apakah diperlukan reservasi tiket terlebih dahulu (ticketReservation:yes/no), dan mengembalikan field ticketReservation dalam json.\nAnda perlu mengekstrak informasi penyelenggara (organizer), dan mengembalikan field organizer dalam json.\nAnda perlu mengekstrak apakah layanan transportasi malam tersedia (nightTransport:yes/no), dan mengembalikan field nightTransport dalam json.\nSilakan kembalikan secara ketat dalam format JSON berikut:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\",\"organizer\": \"(Format:string)\",\"nightTransport\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "nama acara",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "jenis acara",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "skala acara",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "tingkat kepentingan acara",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "provinsi",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "kota",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "lokasi spesifik",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "waktu acara",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "alasan penilaian waktu",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "alasan atribusi",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "apakah turis",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "alasan niat",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah perlu reservasi tiket terlebih dahulu",
+                    "能力项": "特定格式"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "penyelenggara",
+                    "能力项": "主题约束"
+                },
+                "nightTransport": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah ada layanan transportasi malam",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ticketReservation",
+                "organizer",
+                "nightTransport"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation",
+            "organizer": "#JSONSCHEMA#:organizer",
+            "nightTransport": "#JSONSCHEMA#:nightTransport"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[[[Berita Olahraga] Kejuaraan Atletik Mahasiswa Nasional 2024 akan diadakan di Pusat Olahraga Olimpiade Xi'an. Beberapa acara memerlukan reservasi nama asli. Penyelenggaranya adalah Asosiasi Olahraga Perguruan Tinggi.]\nAnda adalah seorang analis informasi yang perlu menyelesaikan ekstraksi informasi terstruktur acara berdasarkan konten berita hangat dan tanggal hari ini.\nAnda perlu mengidentifikasi informasi kunci acara, termasuk nama acara, jenis, skala, kepentingan, provinsi, kota, lokasi detail, waktu, dll.\nJenis acara meliputi: konser, topik hangat sosial, aktivitas tempat wisata, pameran, ujian regional, acara olahraga, pertunjukan, forum, festival, seminar, bursa kerja, roadshow, kegiatan amal, promosi komersial, dll. Jika tidak dapat diklasifikasikan, silakan kembali ke [Jenis lain]. \nSkala acara dibagi menjadi: 1-acara besar, 2-acara menengah, 3-acara kecil.\nKepentingan acara dibagi menjadi: 1-paling penting, 2-relatif penting, 3-umum.\nSilakan periksa dengan ketat apakah provinsi dan kota sesuai. Jika tidak dapat ditentukan, silakan kembali ke 'None'.\nAturan identifikasi waktu: Jika waktu telah berlalu dan tidak mempengaruhi layanan masa depan, kembalikan [Expired]; jika masih mempengaruhi, kembalikan [Current]; jika ada rentang waktu spesifik, silakan kembalikan format yyyyMMdd atau yyyyMMdd-yyyyMMdd, jika tidak kembalikan [None].\nSilakan tentukan apakah Anda akan memesan hotel untuk acara ini sebagai turis, robotIntention mengembalikan True/False, dan jelaskan alasannya.\nAnda perlu mengekstrak apakah diperlukan reservasi tiket terlebih dahulu (ticketReservation:yes/no), dan mengembalikan field ticketReservation dalam json.\nAnda perlu mengekstrak informasi penyelenggara (organizer), dan mengembalikan field organizer dalam json.\nSilakan kembalikan secara ketat dalam format JSON berikut:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\",\"organizer\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "nama acara",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "jenis acara",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "skala acara",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "tingkat kepentingan acara",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "provinsi",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "kota",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "lokasi spesifik",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "waktu acara",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "alasan penilaian waktu",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "alasan atribusi",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "apakah turis",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "alasan niat",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah perlu reservasi tiket terlebih dahulu",
+                    "能力项": "特定格式"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "penyelenggara",
+                    "能力项": "主题约束"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ticketReservation",
+                "organizer"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation",
+            "organizer": "#JSONSCHEMA#:organizer"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Informasi Pertunjukan】Konser Tur Mayday 2024 Stasiun Beijing akan diadakan di Stadion Nasional pada 20 Juli. Area VIP perlu dipesan terlebih dahulu, dan tamu misterius akan diundang untuk membantu.]\nAnda adalah seorang analis informasi yang perlu menyelesaikan ekstraksi informasi terstruktur acara berdasarkan konten berita hangat dan tanggal hari ini.\nAnda perlu mengidentifikasi informasi kunci acara, termasuk nama acara, jenis, skala, kepentingan, provinsi, kota, lokasi detail, waktu, dll.\nJenis acara meliputi: konser, topik hangat sosial, aktivitas tempat wisata, pameran, ujian regional, acara olahraga, pertunjukan, forum, festival, seminar, bursa kerja, roadshow, kegiatan amal, promosi komersial, dll. Jika tidak dapat diklasifikasikan, silakan kembali ke [Jenis lain]. \nSkala acara dibagi menjadi: 1-acara besar, 2-acara menengah, 3-acara kecil.\nKepentingan acara dibagi menjadi: 1-paling penting, 2-relatif penting, 3-umum.\nSilakan periksa dengan ketat apakah provinsi dan kota sesuai. Jika tidak dapat ditentukan, silakan kembali ke 'None'.\nAturan identifikasi waktu: Jika waktu telah berlalu dan tidak mempengaruhi layanan masa depan, kembalikan [Expired]; jika masih mempengaruhi, kembalikan [Current]; jika ada rentang waktu spesifik, silakan kembalikan format yyyyMMdd atau yyyyMMdd-yyyyMMdd, jika tidak kembalikan [None].\nSilakan tentukan apakah Anda akan memesan hotel untuk acara ini sebagai turis, robotIntention mengembalikan True/False, dan jelaskan alasannya.\nAnda perlu mengekstrak apakah area VIP memerlukan reservasi (vipArea:yes/no), dan mengembalikan field vipArea dalam json.\nAnda perlu mengekstrak informasi tamu khusus (specialGuest), dan mengembalikan field specialGuest dalam json.\nAnda perlu mengekstrak apakah diperlukan reservasi tiket terlebih dahulu (ticketReservation:yes/no), dan mengembalikan field ticketReservation dalam json.\nSilakan kembalikan secara ketat dalam format JSON berikut:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"specialGuest\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "nama acara",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "jenis acara",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "skala acara",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "tingkat kepentingan acara",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "provinsi",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "kota",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "lokasi spesifik",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "waktu acara",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "alasan penilaian waktu",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "alasan atribusi",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "apakah turis",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "alasan niat",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah area VIP perlu reservasi",
+                    "能力项": "特定格式"
+                },
+                "specialGuest": {
+                    "type": "string",
+                    "description": "informasi tamu misterius",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah perlu reservasi tiket terlebih dahulu",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "vipArea",
+                "specialGuest",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "specialGuest": "#JSONSCHEMA#:specialGuest",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Berita Pameran】Pameran Otomotif Internasional Shenzhen 2024 akan diadakan di Pusat Konvensi dan Pameran Shenzhen dari 20 Juni hingga 25 Juni. Penyelenggaranya adalah Asosiasi Industri Otomotif Shenzhen. Beberapa area pameran memerlukan reservasi.]\nAnda adalah seorang analis informasi yang perlu menyelesaikan ekstraksi informasi terstruktur acara berdasarkan konten berita hangat dan tanggal hari ini.\nAnda perlu mengidentifikasi informasi kunci acara, termasuk nama acara, jenis, skala, kepentingan, provinsi, kota, lokasi detail, waktu, dll.\nJenis acara meliputi: konser, topik hangat sosial, aktivitas tempat wisata, pameran, ujian regional, acara olahraga, pertunjukan, forum, festival, seminar, bursa kerja, roadshow, kegiatan amal, promosi komersial, dll. Jika tidak dapat diklasifikasikan, silakan kembali ke [Jenis lain]. \nSkala acara dibagi menjadi: 1-acara besar, 2-acara menengah, 3-acara kecil.\nKepentingan acara dibagi menjadi: 1-paling penting, 2-relatif penting, 3-umum.\nSilakan periksa dengan ketat apakah provinsi dan kota sesuai. Jika tidak dapat ditentukan, silakan kembali ke 'None'.\nAturan identifikasi waktu: Jika waktu telah berlalu dan tidak mempengaruhi layanan masa depan, kembalikan [Expired]; jika masih mempengaruhi, kembalikan [Current]; jika ada rentang waktu spesifik, silakan kembalikan format yyyyMMdd atau yyyyMMdd-yyyyMMdd, jika tidak kembalikan [None].\nSilakan tentukan apakah Anda akan memesan hotel untuk acara ini sebagai turis, robotIntention mengembalikan True/False, dan jelaskan alasannya.\nAnda perlu mengekstrak informasi penyelenggara (organizer), dan mengembalikan field organizer dalam json.\nAnda perlu mengekstrak apakah area VIP memerlukan reservasi (vipArea:yes/no), dan mengembalikan field vipArea dalam json.\nAnda perlu mengekstrak platform siaran langsung (broadcastPlatform), dan mengembalikan field broadcastPlatform dalam json.\nSilakan kembalikan secara ketat dalam format JSON berikut:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"organizer\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"broadcastPlatform\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "nama acara",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "jenis acara",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "skala acara",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "tingkat kepentingan acara",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "provinsi",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "kota",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "lokasi spesifik",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "waktu acara",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "alasan penilaian waktu",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "alasan atribusi",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "apakah turis",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "alasan niat",
+                    "能力项": "主题约束"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "penyelenggara",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah area VIP perlu reservasi",
+                    "能力项": "特定格式"
+                },
+                "broadcastPlatform": {
+                    "type": "string",
+                    "description": "platform siaran langsung",
+                    "能力项": "主题约束"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "organizer",
+                "vipArea",
+                "broadcastPlatform"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "organizer": "#JSONSCHEMA#:organizer",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "broadcastPlatform": "#JSONSCHEMA#:broadcastPlatform"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Festival Makanan】Festival Makanan Internasional Chengdu 2024 akan diadakan di Pusat Pameran Baru dari 1 Oktober hingga 7 Oktober. Beberapa area pameran akan dibatasi aliran, dan pertunjukan makanan malam memerlukan reservasi.]\nAnda adalah seorang analis informasi yang perlu menyelesaikan ekstraksi informasi terstruktur acara berdasarkan konten berita hangat dan tanggal hari ini.\nAnda perlu mengidentifikasi informasi kunci acara, termasuk nama acara, jenis, skala, kepentingan, provinsi, kota, lokasi detail, waktu, dll.\nJenis acara meliputi: konser, topik hangat sosial, aktivitas tempat wisata, pameran, ujian regional, acara olahraga, pertunjukan, forum, festival, seminar, bursa kerja, roadshow, kegiatan amal, promosi komersial, dll. Jika tidak dapat diklasifikasikan, silakan kembali ke [Jenis lain]. \nSkala acara dibagi menjadi: 1-acara besar, 2-acara menengah, 3-acara kecil.\nKepentingan acara dibagi menjadi: 1-paling penting, 2-relatif penting, 3-umum.\nSilakan periksa dengan ketat apakah provinsi dan kota sesuai. Jika tidak dapat ditentukan, silakan kembali ke 'None'.\nAturan identifikasi waktu: Jika waktu telah berlalu dan tidak mempengaruhi layanan masa depan, kembalikan [Expired]; jika masih mempengaruhi, kembalikan [Current]; jika ada rentang waktu spesifik, silakan kembalikan format yyyyMMdd atau yyyyMMdd-yyyyMMdd, jika tidak kembalikan [None].\nSilakan tentukan apakah Anda akan memesan hotel untuk acara ini sebagai turis, robotIntention mengembalikan True/False, dan jelaskan alasannya.\nAnda perlu mengekstrak apakah ini adalah pertunjukan makanan malam (foodFestival:yes/no), dan mengembalikan field foodFestival dalam json.\nAnda perlu mengekstrak apakah masuk dibatasi (entryLimit:yes/no), dan mengembalikan field entryLimit dalam json.\nAnda perlu mengekstrak apakah diperlukan reservasi tiket terlebih dahulu (ticketReservation:yes/no), dan mengembalikan field ticketReservation dalam json.\nSilakan kembalikan secara ketat dalam format JSON berikut:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"foodFestival\": \"(Format:string)\",\"entryLimit\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "nama acara",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "jenis acara",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "skala acara",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "tingkat kepentingan acara",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "provinsi",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "kota",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "lokasi spesifik",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "waktu acara",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "alasan penilaian waktu",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "alasan atribusi",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "apakah turis",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "alasan niat",
+                    "能力项": "主题约束"
+                },
+                "foodFestival": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah pertunjukan makanan malam",
+                    "能力项": "特定格式"
+                },
+                "entryLimit": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah ada pembatasan masuk",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah perlu reservasi tiket terlebih dahulu",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "foodFestival",
+                "entryLimit",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "foodFestival": "#JSONSCHEMA#:foodFestival",
+            "entryLimit": "#JSONSCHEMA#:entryLimit",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Perhatian Sosial】Ujian Masuk Perguruan Tinggi Nasional 2024 akan diadakan dari 7 Juni hingga 9 Juni, dan beberapa lokasi ujian akan menerapkan reservasi nama asli untuk masuk.]\nAnda adalah seorang analis informasi yang perlu menyelesaikan ekstraksi informasi terstruktur acara berdasarkan konten berita hangat dan tanggal hari ini.\nAnda perlu mengidentifikasi informasi kunci acara, termasuk nama acara, jenis, skala, kepentingan, provinsi, kota, lokasi detail, waktu, dll.\nJenis acara meliputi: konser, topik hangat sosial, aktivitas tempat wisata, pameran, ujian regional, acara olahraga, pertunjukan, forum, festival, seminar, bursa kerja, roadshow, kegiatan amal, promosi komersial, dll. Jika tidak dapat diklasifikasikan, silakan kembali ke [Jenis lain]. \nSkala acara dibagi menjadi: 1-acara besar, 2-acara menengah, 3-acara kecil.\nKepentingan acara dibagi menjadi: 1-paling penting, 2-relatif penting, 3-umum.\nSilakan periksa dengan ketat apakah provinsi dan kota sesuai. Jika tidak dapat ditentukan, silakan kembali ke 'None'.\nAturan identifikasi waktu: Jika waktu telah berlalu dan tidak mempengaruhi layanan masa depan, kembalikan [Expired]; jika masih mempengaruhi, kembalikan [Current]; jika ada rentang waktu spesifik, silakan kembalikan format yyyyMMdd atau yyyyMMdd-yyyyMMdd, jika tidak kembalikan [None].\nSilakan tentukan apakah Anda akan memesan hotel untuk acara ini sebagai turis, robotIntention mengembalikan True/False, dan jelaskan alasannya.\nAnda perlu mengekstrak apakah diperlukan reservasi tiket terlebih dahulu (ticketReservation:yes/no), dan mengembalikan field ticketReservation dalam json.\nSilakan kembalikan secara ketat dalam format JSON berikut:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "nama acara",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "jenis acara",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "skala acara",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "tingkat kepentingan acara",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "provinsi",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "kota",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "lokasi spesifik",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "waktu acara",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "alasan penilaian waktu",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "alasan atribusi",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "apakah turis",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "alasan niat",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah perlu reservasi tiket terlebih dahulu",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Acara Olahraga】Marathon Internasional Shanghai 2024 akan diadakan pada 17 November. Acara akan disiarkan langsung di beberapa platform sepanjang proses. Paket partisipasi VIP memerlukan reservasi.]\nAnda adalah seorang analis informasi yang perlu menyelesaikan ekstraksi informasi terstruktur acara berdasarkan konten berita hangat dan tanggal hari ini.\nAnda perlu mengidentifikasi informasi kunci acara, termasuk nama acara, jenis, skala, kepentingan, provinsi, kota, lokasi detail, waktu, dll.\nJenis acara meliputi: konser, topik hangat sosial, aktivitas tempat wisata, pameran, ujian regional, acara olahraga, pertunjukan, forum, festival, seminar, bursa kerja, roadshow, kegiatan amal, promosi komersial, dll. Jika tidak dapat diklasifikasikan, silakan kembali ke [Jenis lain]. \nSkala acara dibagi menjadi: 1-acara besar, 2-acara menengah, 3-acara kecil.\nKepentingan acara dibagi menjadi: 1-paling penting, 2-relatif penting, 3-umum.\nSilakan periksa dengan ketat apakah provinsi dan kota sesuai. Jika tidak dapat ditentukan, silakan kembali ke 'None'.\nAturan identifikasi waktu: Jika waktu telah berlalu dan tidak mempengaruhi layanan masa depan, kembalikan [Expired]; jika masih mempengaruhi, kembalikan [Current]; jika ada rentang waktu spesifik, silakan kembalikan format yyyyMMdd atau yyyyMMdd-yyyyMMdd, jika tidak kembalikan [None].\nSilakan tentukan apakah Anda akan memesan hotel untuk acara ini sebagai turis, robotIntention mengembalikan True/False, dan jelaskan alasannya.\nAnda perlu mengekstrak apakah area VIP memerlukan reservasi (vipArea:yes/no), dan mengembalikan field vipArea dalam json.\nAnda perlu mengekstrak platform siaran langsung (broadcastPlatform), dan mengembalikan field broadcastPlatform dalam json.\nAnda perlu mengekstrak apakah diperlukan reservasi tiket terlebih dahulu (ticketReservation:yes/no), dan mengembalikan field ticketReservation dalam json.\nSilakan kembalikan secara ketat dalam format JSON berikut:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"broadcastPlatform\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "nama acara",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "jenis acara",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "skala acara",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "tingkat kepentingan acara",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "provinsi",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "kota",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "lokasi spesifik",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "waktu acara",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "alasan penilaian waktu",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "alasan atribusi",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "apakah turis",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "alasan niat",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah area VIP perlu reservasi",
+                    "能力项": "特定格式"
+                },
+                "broadcastPlatform": {
+                    "type": "string",
+                    "description": "platform siaran langsung",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah perlu reservasi tiket terlebih dahulu",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "vipArea",
+                "broadcastPlatform",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "broadcastPlatform": "#JSONSCHEMA#:broadcastPlatform",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Pameran Animasi】Pameran Animasi dan Game Internasional Guangzhou 2024 akan diadakan dari 15 Agustus hingga 19 Agustus. Tiket VIP perlu dipesan dengan nama asli. Beberapa tanda tangan tamu perlu didaftarkan.]\nAnda adalah seorang analis informasi yang perlu menyelesaikan ekstraksi informasi terstruktur acara berdasarkan konten berita hangat dan tanggal hari ini.\nAnda perlu mengidentifikasi informasi kunci acara, termasuk nama acara, jenis, skala, kepentingan, provinsi, kota, lokasi detail, waktu, dll.\nJenis acara meliputi: konser, topik hangat sosial, aktivitas tempat wisata, pameran, ujian regional, acara olahraga, pertunjukan, forum, festival, seminar, bursa kerja, roadshow, kegiatan amal, promosi komersial, dll. Jika tidak dapat diklasifikasikan, silakan kembali ke [Jenis lain]. \nSkala acara dibagi menjadi: 1-acara besar, 2-acara menengah, 3-acara kecil.\nKepentingan acara dibagi menjadi: 1-paling penting, 2-relatif penting, 3-umum.\nSilakan periksa dengan ketat apakah provinsi dan kota sesuai. Jika tidak dapat ditentukan, silakan kembali ke 'None'.\nAturan identifikasi waktu: Jika waktu telah berlalu dan tidak mempengaruhi layanan masa depan, kembalikan [Expired]; jika masih mempengaruhi, kembalikan [Current]; jika ada rentang waktu spesifik, silakan kembalikan format yyyyMMdd atau yyyyMMdd-yyyyMMdd, jika tidak kembalikan [None].\nSilakan tentukan apakah Anda akan memesan hotel untuk acara ini sebagai turis, robotIntention mengembalikan True/False, dan jelaskan alasannya.\nAnda perlu mengekstrak apakah area VIP memerlukan reservasi (vipArea:yes/no), dan mengembalikan field vipArea dalam json.\nAnda perlu mengekstrak informasi tamu khusus (specialGuest), dan mengembalikan field specialGuest dalam json.\nAnda perlu mengekstrak apakah diperlukan reservasi tiket terlebih dahulu (ticketReservation:yes/no), dan mengembalikan field ticketReservation dalam json.\nSilakan kembalikan secara ketat dalam format JSON berikut:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"specialGuest\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "nama acara",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "jenis acara",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "skala acara",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "tingkat kepentingan acara",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "provinsi",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "kota",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "lokasi spesifik",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "waktu acara",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "alasan penilaian waktu",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "alasan atribusi",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "apakah turis",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "alasan niat",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah area VIP perlu reservasi",
+                    "能力项": "特定格式"
+                },
+                "specialGuest": {
+                    "type": "string",
+                    "description": "informasi tamu misterius",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah perlu reservasi tiket terlebih dahulu",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "vipArea",
+                "specialGuest",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "specialGuest": "#JSONSCHEMA#:specialGuest",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Pratinjau Pertunjukan】Konser Solo Piano Lang Lang 2024 akan diadakan di Pusat Seni Oriental Shanghai pada 28 September. Area VIP perlu dipesan terlebih dahulu. Acara akan disiarkan langsung di beberapa platform.]\nAnda adalah seorang analis informasi yang perlu menyelesaikan ekstraksi informasi terstruktur acara berdasarkan konten berita hangat dan tanggal hari ini.\nAnda perlu mengidentifikasi informasi kunci acara, termasuk nama acara, jenis, skala, kepentingan, provinsi, kota, lokasi detail, waktu, dll.\nJenis acara meliputi: konser, topik hangat sosial, aktivitas tempat wisata, pameran, ujian regional, acara olahraga, pertunjukan, forum, festival, seminar, bursa kerja, roadshow, kegiatan amal, promosi komersial, dll. Jika tidak dapat diklasifikasikan, silakan kembali ke [Jenis lain]. \nSkala acara dibagi menjadi: 1-acara besar, 2-acara menengah, 3-acara kecil.\nKepentingan acara dibagi menjadi: 1-paling penting, 2-relatif penting, 3-umum.\nSilakan periksa dengan ketat apakah provinsi dan kota sesuai. Jika tidak dapat ditentukan, silakan kembali ke 'None'.\nAturan identifikasi waktu: Jika waktu telah berlalu dan tidak mempengaruhi layanan masa depan, kembalikan [Expired]; jika masih mempengaruhi, kembalikan [Current]; jika ada rentang waktu spesifik, silakan kembalikan format yyyyMMdd atau yyyyMMdd-yyyyMMdd, jika tidak kembalikan [None].\nSilakan tentukan apakah Anda akan memesan hotel untuk acara ini sebagai turis, robotIntention mengembalikan True/False, dan jelaskan alasannya.\nAnda perlu mengekstrak apakah area VIP memerlukan reservasi (vipArea:yes/no), dan mengembalikan field vipArea dalam json.\nAnda perlu mengekstrak platform siaran langsung (broadcastPlatform), dan mengembalikan field broadcastPlatform dalam json.\nAnda perlu mengekstrak apakah diperlukan reservasi tiket terlebih dahulu (ticketReservation:yes/no), dan mengembalikan field ticketReservation dalam json.\nSilakan kembalikan secara ketat dalam format JSON berikut:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"broadcastPlatform\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "nama acara",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "jenis acara",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "skala acara",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "tingkat kepentingan acara",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "provinsi",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "kota",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "lokasi spesifik",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "waktu acara",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "alasan penilaian waktu",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "alasan atribusi",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "apakah turis",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "alasan niat",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah area VIP perlu reservasi",
+                    "能力项": "特定格式"
+                },
+                "broadcastPlatform": {
+                    "type": "string",
+                    "description": "platform siaran langsung",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah perlu reservasi tiket terlebih dahulu",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "vipArea",
+                "broadcastPlatform",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "broadcastPlatform": "#JSONSCHEMA#:broadcastPlatform",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Forum Summit】Forum Teknologi Frontier AI China 2024 akan diadakan di Taman Teknologi Shenzhen dari 5 Juli hingga 7 Juli. Forum akan diinterpretasikan sepanjang waktu. Sub-forum perlu dipesan. Penyelenggaranya adalah Masyarakat Kecerdasan Buatan China.]\nAnda adalah seorang analis informasi yang perlu menyelesaikan ekstraksi informasi terstruktur acara berdasarkan konten berita hangat dan tanggal hari ini.\nAnda perlu mengidentifikasi informasi kunci acara, termasuk nama acara, jenis, skala, kepentingan, provinsi, kota, lokasi detail, waktu, dll.\nJenis acara meliputi: konser, topik hangat sosial, aktivitas tempat wisata, pameran, ujian regional, acara olahraga, pertunjukan, forum, festival, seminar, bursa kerja, roadshow, kegiatan amal, promosi komersial, dll. Jika tidak dapat diklasifikasikan, silakan kembali ke [Jenis lain]. \nSkala acara dibagi menjadi: 1-acara besar, 2-acara menengah, 3-acara kecil.\nKepentingan acara dibagi menjadi: 1-paling penting, 2-relatif penting, 3-umum.\nSilakan periksa dengan ketat apakah provinsi dan kota sesuai. Jika tidak dapat ditentukan, silakan kembali ke 'None'.\nAturan identifikasi waktu: Jika waktu telah berlalu dan tidak mempengaruhi layanan masa depan, kembalikan [Expired]; jika masih mempengaruhi, kembalikan [Current]; jika ada rentang waktu spesifik, silakan kembalikan format yyyyMMdd atau yyyyMMdd-yyyyMMdd, jika tidak kembalikan [None].\nSilakan tentukan apakah Anda akan memesan hotel untuk acara ini sebagai turis, robotIntention mengembalikan True/False, dan jelaskan alasannya.\nAnda perlu mengekstrak informasi penyelenggara (organizer), dan mengembalikan field organizer dalam json.\nAnda perlu mengekstrak apakah interpretasi simultan disediakan (liveTranslation:yes/no), dan mengembalikan field liveTranslation dalam json.\nAnda perlu mengekstrak apakah diperlukan reservasi tiket terlebih dahulu (ticketReservation:yes/no), dan mengembalikan field ticketReservation dalam json.\nSilakan kembalikan secara ketat dalam format JSON berikut:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"organizer\": \"(Format:string)\",\"liveTranslation\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "nama acara",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "jenis acara",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "skala acara",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "tingkat kepentingan acara",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "provinsi",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "kota",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "lokasi spesifik",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "waktu acara",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "alasan penilaian waktu",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "alasan atribusi",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "apakah turis",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "alasan niat",
+                    "能力项": "主题约束"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "penyelenggara",
+                    "能力项": "主题约束"
+                },
+                "liveTranslation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah menyediakan interpretasi simultan",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah perlu reservasi tiket terlebih dahulu",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "organizer",
+                "liveTranslation",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "organizer": "#JSONSCHEMA#:organizer",
+            "liveTranslation": "#JSONSCHEMA#:liveTranslation",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Aktivitas orang tua-anak】Karnaval Anak Beijing 2024 akan diadakan di Taman Chaoyang dari 1 Juni hingga 3 Juni. Akan ada area interaktif orang tua-anak. Anak-anak dapat masuk gratis. Beberapa proyek perlu dipesan. Parkir gratis di taman.]\nAnda adalah seorang analis informasi yang perlu menyelesaikan ekstraksi informasi terstruktur acara berdasarkan konten berita hangat dan tanggal hari ini.\nAnda perlu mengidentifikasi informasi kunci acara, termasuk nama acara, jenis, skala, kepentingan, provinsi, kota, lokasi detail, waktu, dll.\nJenis acara meliputi: konser, topik hangat sosial, aktivitas tempat wisata, pameran, ujian regional, acara olahraga, pertunjukan, forum, festival, seminar, bursa kerja, roadshow, kegiatan amal, promosi komersial, dll. Jika tidak dapat diklasifikasikan, silakan kembali ke [Jenis lain]. \nSkala acara dibagi menjadi: 1-acara besar, 2-acara menengah, 3-acara kecil.\nKepentingan acara dibagi menjadi: 1-paling penting, 2-relatif penting, 3-umum.\nSilakan periksa dengan ketat apakah provinsi dan kota sesuai. Jika tidak dapat ditentukan, silakan kembali ke 'None'.\nAturan identifikasi waktu: Jika waktu telah berlalu dan tidak mempengaruhi layanan masa depan, kembalikan [Expired]; jika masih mempengaruhi, kembalikan [Current]; jika ada rentang waktu spesifik, silakan kembalikan format yyyyMMdd atau yyyyMMdd-yyyyMMdd, jika tidak kembalikan [None].\nSilakan tentukan apakah Anda akan memesan hotel untuk acara ini sebagai turis, robotIntention mengembalikan True/False, dan jelaskan alasannya.\nAnda perlu mengekstrak apakah ini adalah aktivitas ramah anak (childFriendly:yes/no), dan mengembalikan field childFriendly dalam json.\nAnda perlu mengekstrak apakah parkir gratis disediakan (parkingAvailable:yes/no), dan mengembalikan field parkingAvailable dalam json.\nAnda perlu mengekstrak apakah diperlukan reservasi tiket terlebih dahulu (ticketReservation:yes/no), dan mengembalikan field ticketReservation dalam json.\nSilakan kembalikan secara ketat dalam format JSON berikut:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"childFriendly\": \"(Format:string)\",\"parkingAvailable\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "nama acara",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "jenis acara",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "skala acara",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "tingkat kepentingan acara",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "provinsi",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "kota",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "lokasi spesifik",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "waktu acara",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "alasan penilaian waktu",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "alasan atribusi",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "apakah turis",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "alasan niat",
+                    "能力项": "主题约束"
+                },
+                "childFriendly": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah aktivitas ramah anak",
+                    "能力项": "特定格式"
+                },
+                "parkingAvailable": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah menyediakan parkir gratis",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah perlu reservasi tiket terlebih dahulu",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "childFriendly",
+                "parkingAvailable",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "childFriendly": "#JSONSCHEMA#:childFriendly",
+            "parkingAvailable": "#JSONSCHEMA#:parkingAvailable",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Aktivitas amal】Roadshow Amal Perlindungan Lingkungan Nasional 2024 akan berkeliling sepuluh kota dari 20 Mei hingga 10 Juni. Akan ada area pengalaman perlindungan lingkungan. Beberapa kota akan memiliki hadiah hijau.]\nAnda adalah seorang analis informasi yang perlu menyelesaikan ekstraksi informasi terstruktur acara berdasarkan konten berita hangat dan tanggal hari ini.\nAnda perlu mengidentifikasi informasi kunci acara, termasuk nama acara, jenis, skala, kepentingan, provinsi, kota, lokasi detail, waktu, dll.\nJenis acara meliputi: konser, topik hangat sosial, aktivitas tempat wisata, pameran, ujian regional, acara olahraga, pertunjukan, forum, festival, seminar, bursa kerja, roadshow, kegiatan amal, promosi komersial, dll. Jika tidak dapat diklasifikasikan, silakan kembali ke [Jenis lain]. \nSkala acara dibagi menjadi: 1-acara besar, 2-acara menengah, 3-acara kecil.\nKepentingan acara dibagi menjadi: 1-paling penting, 2-relatif penting, 3-umum.\nSilakan periksa dengan ketat apakah provinsi dan kota sesuai. Jika tidak dapat ditentukan, silakan kembali ke 'None'.\nAturan identifikasi waktu: Jika waktu telah berlalu dan tidak mempengaruhi layanan masa depan, kembalikan [Expired]; jika masih mempengaruhi, kembalikan [Current]; jika ada rentang waktu spesifik, silakan kembalikan format yyyyMMdd atau yyyyMMdd-yyyyMMdd, jika tidak kembalikan [None].\nSilakan tentukan apakah Anda akan memesan hotel untuk acara ini sebagai turis, robotIntention mengembalikan True/False, dan jelaskan alasannya.\nAnda perlu mengekstrak apakah memiliki label ramah lingkungan (ecoTag:yes/no), dan mengembalikan field ecoTag dalam json.\nAnda perlu mengekstrak apakah masuk dibatasi (entryLimit:yes/no), dan mengembalikan field entryLimit dalam json.\nAnda perlu mengekstrak apakah diperlukan reservasi tiket terlebih dahulu (ticketReservation:yes/no), dan mengembalikan field ticketReservation dalam json.\nSilakan kembalikan secara ketat dalam format JSON berikut:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ecoTag\": \"(Format:string)\",\"entryLimit\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "nama acara",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "jenis acara",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "skala acara",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "tingkat kepentingan acara",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "provinsi",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "kota",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "lokasi spesifik",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "waktu acara",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "alasan penilaian waktu",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "alasan atribusi",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "apakah turis",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "alasan niat",
+                    "能力项": "主题约束"
+                },
+                "ecoTag": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah memiliki label ramah lingkungan",
+                    "能力项": "特定格式"
+                },
+                "entryLimit": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah ada pembatasan masuk",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah perlu reservasi tiket terlebih dahulu",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ecoTag",
+                "entryLimit",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ecoTag": "#JSONSCHEMA#:ecoTag",
+            "entryLimit": "#JSONSCHEMA#:entryLimit",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Bursa Kerja】Bursa Kerja Perusahaan Terkenal Internasional Shanghai 2024 akan diadakan dari 15 Juli hingga 16 Juli. Beberapa posisi memerlukan janji untuk wawancara. Penyelenggaranya adalah Biro Sumber Daya Manusia dan Jaminan Sosial Kota Shanghai. Ada area kandidat VIP.]\nAnda adalah seorang analis informasi yang perlu menyelesaikan ekstraksi informasi terstruktur acara berdasarkan konten berita hangat dan tanggal hari ini.\nAnda perlu mengidentifikasi informasi kunci acara, termasuk nama acara, jenis, skala, kepentingan, provinsi, kota, lokasi detail, waktu, dll.\nJenis acara meliputi: konser, topik hangat sosial, aktivitas tempat wisata, pameran, ujian regional, acara olahraga, pertunjukan, forum, festival, seminar, bursa kerja, roadshow, kegiatan amal, promosi komersial, dll. Jika tidak dapat diklasifikasikan, silakan kembali ke [Jenis lain]. \nSkala acara dibagi menjadi: 1-acara besar, 2-acara menengah, 3-acara kecil.\nKepentingan acara dibagi menjadi: 1-paling penting, 2-relatif penting, 3-umum.\nSilakan periksa dengan ketat apakah provinsi dan kota sesuai. Jika tidak dapat ditentukan, silakan kembali ke 'None'.\nAturan identifikasi waktu: Jika waktu telah berlalu dan tidak mempengaruhi layanan masa depan, kembalikan [Expired]; jika masih mempengaruhi, kembalikan [Current]; jika ada rentang waktu spesifik, silakan kembalikan format yyyyMMdd atau yyyyMMdd-yyyyMMdd, jika tidak kembalikan [None].\nSilakan tentukan apakah Anda akan memesan hotel untuk acara ini sebagai turis, robotIntention mengembalikan True/False, dan jelaskan alasannya.\nAnda perlu mengekstrak informasi penyelenggara (organizer), dan mengembalikan field organizer dalam json.\nAnda perlu mengekstrak apakah area VIP memerlukan reservasi (vipArea:yes/no), dan mengembalikan field vipArea dalam json.\nAnda perlu mengekstrak apakah diperlukan reservasi tiket terlebih dahulu (ticketReservation:yes/no), dan mengembalikan field ticketReservation dalam json.\nSilakan kembalikan secara ketat dalam format JSON berikut:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"organizer\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "nama acara",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "jenis acara",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "skala acara",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "tingkat kepentingan acara",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "provinsi",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "kota",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "lokasi spesifik",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "waktu acara",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "alasan penilaian waktu",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "alasan atribusi",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "apakah turis",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "alasan niat",
+                    "能力项": "主题约束"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "penyelenggara",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah area VIP perlu reservasi",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah perlu reservasi tiket terlebih dahulu",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "organizer",
+                "vipArea",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "organizer": "#JSONSCHEMA#:organizer",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Promosi Komersial】Festival Belanja Musim Panas Guangzhou 2024 akan diadakan dari 1 Agustus hingga 15 Agustus. Area khusus anggota memerlukan janji. Pedagang yang ditunjuk memiliki diskon.]\nAnda adalah seorang analis informasi yang perlu menyelesaikan ekstraksi informasi terstruktur acara berdasarkan konten berita hangat dan tanggal hari ini.\nAnda perlu mengidentifikasi informasi kunci acara, termasuk nama acara, jenis, skala, kepentingan, provinsi, kota, lokasi detail, waktu, dll.\nJenis acara meliputi: konser, topik hangat sosial, aktivitas tempat wisata, pameran, ujian regional, acara olahraga, pertunjukan, forum, festival, seminar, bursa kerja, roadshow, kegiatan amal, promosi komersial, dll. Jika tidak dapat diklasifikasikan, silakan kembali ke [Jenis lain]. \nSkala acara dibagi menjadi: 1-acara besar, 2-acara menengah, 3-acara kecil.\nKepentingan acara dibagi menjadi: 1-paling penting, 2-relatif penting, 3-umum.\nSilakan periksa dengan ketat apakah provinsi dan kota sesuai. Jika tidak dapat ditentukan, silakan kembali ke 'None'.\nAturan identifikasi waktu: Jika waktu telah berlalu dan tidak mempengaruhi layanan masa depan, kembalikan [Expired]; jika masih mempengaruhi, kembalikan [Current]; jika ada rentang waktu spesifik, silakan kembalikan format yyyyMMdd atau yyyyMMdd-yyyyMMdd, jika tidak kembalikan [None].\nSilakan tentukan apakah Anda akan memesan hotel untuk acara ini sebagai turis, robotIntention mengembalikan True/False, dan jelaskan alasannya.\nAnda perlu mengekstrak apakah area VIP memerlukan reservasi (vipArea:yes/no), dan mengembalikan field vipArea dalam json.\nAnda perlu mengekstrak apakah ada diskon eksklusif (discountInfo:yes/no), dan mengembalikan field discountInfo dalam json.\nAnda perlu mengekstrak apakah diperlukan reservasi tiket terlebih dahulu (ticketReservation:yes/no), dan mengembalikan field ticketReservation dalam json.\nSilakan kembalikan secara ketat dalam format JSON berikut:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"discountInfo\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "nama acara",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "jenis acara",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "skala acara",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "tingkat kepentingan acara",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "provinsi",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "kota",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "lokasi spesifik",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "waktu acara",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "alasan penilaian waktu",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "alasan atribusi",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "apakah turis",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "alasan niat",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah area VIP perlu reservasi",
+                    "能力项": "特定格式"
+                },
+                "discountInfo": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah ada diskon eksklusif",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah perlu reservasi tiket terlebih dahulu",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "vipArea",
+                "discountInfo",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "discountInfo": "#JSONSCHEMA#:discountInfo",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Perayaan Festival】Festival Lentera Kota Kuno Xi'an 2024 akan diadakan dari 5 Februari hingga 19 Februari. Pertunjukan cahaya malam akan dipentaskan setiap hari. Tribun VIP memerlukan janji. Penyelenggaranya adalah Biro Budaya dan Pariwisata Kota Xi'an.]\nAnda adalah seorang analis informasi yang perlu menyelesaikan ekstraksi informasi terstruktur acara berdasarkan konten berita hangat dan tanggal hari ini.\nAnda perlu mengidentifikasi informasi kunci acara, termasuk nama acara, jenis, skala, kepentingan, provinsi, kota, lokasi detail, waktu, dll.\nJenis acara meliputi: konser, topik hangat sosial, aktivitas tempat wisata, pameran, ujian regional, acara olahraga, pertunjukan, forum, festival, seminar, bursa kerja, roadshow, kegiatan amal, promosi komersial, dll. Jika tidak dapat diklasifikasikan, silakan kembali ke [Jenis lain]. \nSkala acara dibagi menjadi: 1-acara besar, 2-acara menengah, 3-acara kecil.\nKepentingan acara dibagi menjadi: 1-paling penting, 2-relatif penting, 3-umum.\nSilakan periksa dengan ketat apakah provinsi dan kota sesuai. Jika tidak dapat ditentukan, silakan kembali ke 'None'.\nAturan identifikasi waktu: Jika waktu telah berlalu dan tidak mempengaruhi layanan masa depan, kembalikan [Expired]; jika masih mempengaruhi, kembalikan [Current]; jika ada rentang waktu spesifik, silakan kembalikan format yyyyMMdd atau yyyyMMdd-yyyyMMdd, jika tidak kembalikan [None].\nSilakan tentukan apakah Anda akan memesan hotel untuk acara ini sebagai turis, robotIntention mengembalikan True/False, dan jelaskan alasannya.\nAnda perlu mengekstrak informasi penyelenggara (organizer), dan mengembalikan field organizer dalam json.\nAnda perlu mengekstrak apakah area VIP memerlukan reservasi (vipArea:yes/no), dan mengembalikan field vipArea dalam json.\nAnda perlu mengekstrak apakah diperlukan reservasi tiket terlebih dahulu (ticketReservation:yes/no), dan mengembalikan field ticketReservation dalam json.\nSilakan kembalikan secara ketat dalam format JSON berikut:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"organizer\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "nama acara",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "jenis acara",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "skala acara",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "tingkat kepentingan acara",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "provinsi",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "kota",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "lokasi spesifik",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "waktu acara",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "alasan penilaian waktu",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "alasan atribusi",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "apakah turis",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "alasan niat",
+                    "能力项": "主题约束"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "penyelenggara",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah area VIP perlu reservasi",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah perlu reservasi tiket terlebih dahulu",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "organizer",
+                "vipArea",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "organizer": "#JSONSCHEMA#:organizer",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Seminar】Seminar Keamanan Internet China 2024 akan diadakan di Pusat Konvensi Nasional dari 10 September hingga 12 September. Interpretasi simultan dan siaran langsung online akan disediakan. Beberapa sub-venue akan memiliki area eksklusif untuk tamu.]\nAnda adalah seorang analis informasi yang perlu menyelesaikan ekstraksi informasi terstruktur acara berdasarkan konten berita hangat dan tanggal hari ini.\nAnda perlu mengidentifikasi informasi kunci acara, termasuk nama acara, jenis, skala, kepentingan, provinsi, kota, lokasi detail, waktu, dll.\nJenis acara meliputi: konser, topik hangat sosial, aktivitas tempat wisata, pameran, ujian regional, acara olahraga, pertunjukan, forum, festival, seminar, bursa kerja, roadshow, kegiatan amal, promosi komersial, dll. Jika tidak dapat diklasifikasikan, silakan kembali ke [Jenis lain]. \nSkala acara dibagi menjadi: 1-acara besar, 2-acara menengah, 3-acara kecil.\nKepentingan acara dibagi menjadi: 1-paling penting, 2-relatif penting, 3-umum.\nSilakan periksa dengan ketat apakah provinsi dan kota sesuai. Jika tidak dapat ditentukan, silakan kembali ke 'None'.\nAturan identifikasi waktu: Jika waktu telah berlalu dan tidak mempengaruhi layanan masa depan, kembalikan [Expired]; jika masih mempengaruhi, kembalikan [Current]; jika ada rentang waktu spesifik, silakan kembalikan format yyyyMMdd atau yyyyMMdd-yyyyMMdd, jika tidak kembalikan [None].\nSilakan tentukan apakah Anda akan memesan hotel untuk acara ini sebagai turis, robotIntention mengembalikan True/False, dan jelaskan alasannya.\nAnda perlu mengekstrak apakah interpretasi simultan disediakan (liveTranslation:yes/no), dan mengembalikan field liveTranslation dalam json.\nAnda perlu mengekstrak platform siaran langsung (broadcastPlatform), dan mengembalikan field broadcastPlatform dalam json.\nAnda perlu mengekstrak apakah area VIP memerlukan reservasi (vipArea:yes/no), dan mengembalikan field vipArea dalam json.\nAnda perlu mengekstrak apakah diperlukan reservasi tiket terlebih dahulu (ticketReservation:yes/no), dan mengembalikan field ticketReservation dalam json.\nSilakan kembalikan secara ketat dalam format JSON berikut:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"liveTranslation\": \"(Format:string)\",\"broadcastPlatform\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "nama acara",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "jenis acara",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "skala acara",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "tingkat kepentingan acara",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "provinsi",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "kota",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "lokasi spesifik",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "waktu acara",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "alasan penilaian waktu",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "alasan atribusi",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "apakah turis",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "alasan niat",
+                    "能力项": "主题约束"
+                },
+                "liveTranslation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah menyediakan interpretasi simultan",
+                    "能力项": "特定格式"
+                },
+                "broadcastPlatform": {
+                    "type": "string",
+                    "description": "platform siaran langsung",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah area VIP perlu reservasi",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah perlu reservasi tiket terlebih dahulu",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "liveTranslation",
+                "broadcastPlatform",
+                "vipArea",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "liveTranslation": "#JSONSCHEMA#:liveTranslation",
+            "broadcastPlatform": "#JSONSCHEMA#:broadcastPlatform",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Acara Roadshow】Roadshow Inovasi dan Kewirausahaan Shenzhen 2024 akan diadakan di Pabrik Mimpi Pemuda Shenzhen-Hong Kong Qianhai pada 18 Mei. Proyek perlu didaftarkan. Penyelenggaranya adalah Komisi Inovasi Teknologi Shenzhen. Acara memiliki label lingkungan.]\nAnda adalah seorang analis informasi yang perlu menyelesaikan ekstraksi informasi terstruktur acara berdasarkan konten berita hangat dan tanggal hari ini.\nAnda perlu mengidentifikasi informasi kunci acara, termasuk nama acara, jenis, skala, kepentingan, provinsi, kota, lokasi detail, waktu, dll.\nJenis acara meliputi: konser, topik hangat sosial, aktivitas tempat wisata, pameran, ujian regional, acara olahraga, pertunjukan, forum, festival, seminar, bursa kerja, roadshow, kegiatan amal, promosi komersial, dll. Jika tidak dapat diklasifikasikan, silakan kembali ke [Jenis lain]. \nSkala acara dibagi menjadi: 1-acara besar, 2-acara menengah, 3-acara kecil.\nKepentingan acara dibagi menjadi: 1-paling penting, 2-relatif penting, 3-umum.\nSilakan periksa dengan ketat apakah provinsi dan kota sesuai. Jika tidak dapat ditentukan, silakan kembali ke 'None'.\nAturan identifikasi waktu: Jika waktu telah berlalu dan tidak mempengaruhi layanan masa depan, kembalikan [Expired]; jika masih mempengaruhi, kembalikan [Current]; jika ada rentang waktu spesifik, silakan kembalikan format yyyyMMdd atau yyyyMMdd-yyyyMMdd, jika tidak kembalikan [None].\nSilakan tentukan apakah Anda akan memesan hotel untuk acara ini sebagai turis, robotIntention mengembalikan True/False, dan jelaskan alasannya.\nAnda perlu mengekstrak informasi penyelenggara (organizer), dan mengembalikan field organizer dalam json.\nAnda perlu mengekstrak apakah memiliki label ramah lingkungan (ecoTag:yes/no), dan mengembalikan field ecoTag dalam json.\nAnda perlu mengekstrak apakah diperlukan reservasi tiket terlebih dahulu (ticketReservation:yes/no), dan mengembalikan field ticketReservation dalam json.\nSilakan kembalikan secara ketat dalam format JSON berikut:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"organizer\": \"(Format:string)\",\"ecoTag\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "nama acara",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "jenis acara",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "skala acara",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "tingkat kepentingan acara",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "provinsi",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "kota",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "lokasi spesifik",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "waktu acara",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "alasan penilaian waktu",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "alasan atribusi",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "apakah turis",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "alasan niat",
+                    "能力项": "主题约束"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "penyelenggara",
+                    "能力项": "主题约束"
+                },
+                "ecoTag": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah memiliki label ramah lingkungan",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah perlu reservasi tiket terlebih dahulu",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "organizer",
+                "ecoTag",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "organizer": "#JSONSCHEMA#:organizer",
+            "ecoTag": "#JSONSCHEMA#:ecoTag",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Festival Perguruan Tinggi】Ulang Tahun Universitas Nanjing 2024 akan diadakan pada 18 Juni di Kampus Gulou. Beberapa aktivitas memerlukan reservasi dan alumni menikmati diskon.]\nAnda adalah seorang analis informasi yang perlu menyelesaikan ekstraksi informasi terstruktur acara berdasarkan konten berita hangat dan tanggal hari ini.\nAnda perlu mengidentifikasi informasi kunci acara, termasuk nama acara, jenis, skala, kepentingan, provinsi, kota, lokasi detail, waktu, dll.\nJenis acara meliputi: konser, topik hangat sosial, aktivitas tempat wisata, pameran, ujian regional, acara olahraga, pertunjukan, forum, festival, seminar, bursa kerja, roadshow, kegiatan amal, promosi komersial, dll. Jika tidak dapat diklasifikasikan, silakan kembali ke [Jenis lain]. \nSkala acara dibagi menjadi: 1-acara besar, 2-acara menengah, 3-acara kecil.\nKepentingan acara dibagi menjadi: 1-paling penting, 2-relatif penting, 3-umum.\nSilakan periksa dengan ketat apakah provinsi dan kota sesuai. Jika tidak dapat ditentukan, silakan kembali ke 'None'.\nAturan identifikasi waktu: Jika waktu telah berlalu dan tidak mempengaruhi layanan masa depan, kembalikan [Expired]; jika masih mempengaruhi, kembalikan [Current]; jika ada rentang waktu spesifik, silakan kembalikan format yyyyMMdd atau yyyyMMdd-yyyyMMdd, jika tidak kembalikan [None].\nSilakan tentukan apakah Anda akan memesan hotel untuk acara ini sebagai turis, robotIntention mengembalikan True/False, dan jelaskan alasannya.\nAnda perlu mengekstrak apakah diperlukan reservasi tiket terlebih dahulu (ticketReservation:yes/no), dan mengembalikan field ticketReservation dalam json.\nAnda perlu mengekstrak apakah ada diskon eksklusif (discountInfo:yes/no), dan mengembalikan field discountInfo dalam json.\nSilakan kembalikan secara ketat dalam format JSON berikut:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\",\"discountInfo\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "nama acara",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "jenis acara",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "skala acara",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "tingkat kepentingan acara",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "provinsi",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "kota",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "lokasi spesifik",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "waktu acara",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "alasan penilaian waktu",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "alasan atribusi",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "apakah turis",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "alasan niat",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah perlu reservasi tiket terlebih dahulu",
+                    "能力项": "特定格式"
+                },
+                "discountInfo": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah ada diskon eksklusif",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ticketReservation",
+                "discountInfo"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation",
+            "discountInfo": "#JSONSCHEMA#:discountInfo"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Pameran Seni】Pameran Seni Kontemporer Internasional Hangzhou 2024 akan diadakan di Museum Seni Danau Barat dari 20 Oktober hingga 30 Oktober. Beberapa area pameran memerlukan reservasi dan area VIP memiliki penjelasan eksklusif.]\nAnda adalah seorang analis informasi yang perlu menyelesaikan ekstraksi informasi terstruktur acara berdasarkan konten berita hangat dan tanggal hari ini.\nAnda perlu mengidentifikasi informasi kunci acara, termasuk nama acara, jenis, skala, kepentingan, provinsi, kota, lokasi detail, waktu, dll.\nJenis acara meliputi: konser, topik hangat sosial, aktivitas tempat wisata, pameran, ujian regional, acara olahraga, pertunjukan, forum, festival, seminar, bursa kerja, roadshow, kegiatan amal, promosi komersial, dll. Jika tidak dapat diklasifikasikan, silakan kembali ke [Jenis lain]. \nSkala acara dibagi menjadi: 1-acara besar, 2-acara menengah, 3-acara kecil.\nKepentingan acara dibagi menjadi: 1-paling penting, 2-relatif penting, 3-umum.\nSilakan periksa dengan ketat apakah provinsi dan kota sesuai. Jika tidak dapat ditentukan, silakan kembali ke 'None'.\nAturan identifikasi waktu: Jika waktu telah berlalu dan tidak mempengaruhi layanan masa depan, kembalikan [Expired]; jika masih mempengaruhi, kembalikan [Current]; jika ada rentang waktu spesifik, silakan kembalikan format yyyyMMdd atau yyyyMMdd-yyyyMMdd, jika tidak kembalikan [None].\nSilakan tentukan apakah Anda akan memesan hotel untuk acara ini sebagai turis, robotIntention mengembalikan True/False, dan jelaskan alasannya.\nAnda perlu mengekstrak apakah diperlukan reservasi tiket terlebih dahulu (ticketReservation:yes/no), dan mengembalikan field ticketReservation dalam json.\nAnda perlu mengekstrak apakah area VIP memerlukan reservasi (vipArea:yes/no), dan mengembalikan field vipArea dalam json.\nSilakan kembalikan secara ketat dalam format JSON berikut:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\",\"vipArea\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "nama acara",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "jenis acara",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "skala acara",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "tingkat kepentingan acara",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "provinsi",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "kota",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "lokasi spesifik",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "waktu acara",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "alasan penilaian waktu",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "alasan atribusi",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "apakah turis",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "alasan niat",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah perlu reservasi tiket terlebih dahulu",
+                    "能力项": "特定格式"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "apakah area VIP perlu reservasi",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ticketReservation",
+                "vipArea"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation",
+            "vipArea": "#JSONSCHEMA#:vipArea"
+        }
+    }
+]

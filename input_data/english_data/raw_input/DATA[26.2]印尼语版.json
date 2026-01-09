@@ -1,0 +1,2162 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Latar belakang: Anda adalah seorang analis artikel. Saya akan memberikan Anda sebuah artikel dan nama POI. Tugas Anda adalah menganalisis artikel ini, menentukan apakah artikel ini terkait dengan aktivitas rekreasi, dan apakah terkait dengan jenis acara populer, dan akhirnya memberikan dasar untuk penilaian.\nTanggal saat ini: 2024-06-01.\nPengetahuan: Apakah ini panduan rekreasi dinilai berdasarkan dimensi berikut, semua dimensi ini perlu lulus penilaian untuk dianggap terkait panduan rekreasi:\n1. Apakah artikel berisi informasi tentang panduan wisata, aktivitas rekreasi, proyek rekreasi, rute perjalanan, urutan perjalanan, titik check-in, atraksi, pengalaman perjalanan, dll. Frekuensi kemunculan yang tinggi membuatnya lebih mungkin menjadi artikel rekreasi (tetapi tidak wajib).\n2. Jika konten artikel tentang penjualan, iklan, sewa rumah, jual rumah, real estat, makan, catatan jenis akomodasi, itu tidak termasuk artikel rekreasi. Jika informasi artikel kosong, itu juga tidak termasuk artikel rekreasi.\n3. Berisi kata kunci seperti mata air panas, ski, dll., diklasifikasikan sebagai artikel rekreasi.\n4. Berisi hari libur seperti Natal, Halloween, Tahun Baru, dll., diklasifikasikan sebagai artikel rekreasi.\n5. Berisi aktivitas seperti pertunjukan cahaya, pertunjukan kembang api, dll., diklasifikasikan sebagai artikel rekreasi.\n6. Berisi aktivitas seperti pameran lentera Imlek, pasar malam Imlek, dll., diklasifikasikan sebagai artikel rekreasi.\nJika artikel berisi kata-kata seperti festival, perayaan, pasar malam, pameran lentera, dll., prioritaskan mengklasifikasikannya sebagai artikel rekreasi.\nJika artikel melibatkan atraksi beberapa kota dan semuanya untuk tujuan rekreasi, maka klasifikasikan sebagai terkait.\nFormat output: Gunakan format JSON untuk mengembalikan informasi yang diekstrak. Semua field hanya dapat mengembalikan ’Ya’ atau ’Tidak’ atau ’Terkait’ atau ’Tidak Terkait’. Contoh format sebagai berikut: {\"relate\":\"Terkait/Tidak Terkait\",\"reason\":\"Alasan\",\"isExpired\":\"Ya/Tidak\",\"isFestival\":\"Ya/Tidak\",\"isMultiPOI\":\"Ya/Tidak\",\"isParentChild\":\"Ya/Tidak\",\"isNightEvent\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\"}. relate mengembalikan Terkait atau Tidak Terkait; reason mengembalikan alasan untuk penilaian; isExpired menunjukkan apakah acara sudah kedaluwarsa, isFestival menunjukkan apakah terkait festival, isMultiPOI menunjukkan apakah melibatkan beberapa POI, isParentChild menunjukkan apakah terkait orang tua-anak, isNightEvent menunjukkan apakah acara malam, isOutdoor menunjukkan apakah aktivitas luar ruangan. Pastikan struktur data JSON yang dikembalikan benar dan mematuhi aturan di atas. Jangan mengembalikan karakter selain JSON.\nKonten artikel: '[Informasi Pariwisata] Festival Pariwisata Jakarta 2024 akan diadakan dari 20 September hingga 6 Oktober, dengan parade khusus Ancol yang baru tahun ini, diperkirakan akan menarik lebih dari 8 juta wisatawan. Venue utama ditetapkan di Taman Mini Indonesia Indah, dengan sub-venue di Jalan Malioboro, Monas dan lokasi lainnya.'",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Terkait",
+                        "Tidak Terkait"
+                    ],
+                    "description": "Apakah ini artikel jenis rekreasi",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Alasan untuk membuat penilaian",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara sudah kedaluwarsa",
+                    "能力项": "特定格式"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait festival",
+                    "能力项": "特定格式"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah melibatkan beberapa POI",
+                    "能力项": "特定格式"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait orang tua-anak",
+                    "能力项": "特定格式"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara malam",
+                    "能力项": "特定格式"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah aktivitas luar ruangan",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Latar belakang: Anda adalah seorang analis artikel. Saya akan memberikan Anda sebuah artikel dan nama POI. Tugas Anda adalah menganalisis artikel ini, menentukan apakah artikel ini terkait dengan aktivitas rekreasi, dan apakah terkait dengan jenis acara populer, dan akhirnya memberikan dasar untuk penilaian.\nTanggal saat ini: 2024-06-01.\nPengetahuan: Apakah ini panduan rekreasi dinilai berdasarkan dimensi berikut, semua dimensi ini perlu lulus penilaian untuk dianggap terkait panduan rekreasi:\n1. Apakah artikel berisi informasi tentang panduan wisata, aktivitas rekreasi, proyek rekreasi, rute perjalanan, urutan perjalanan, titik check-in, atraksi, pengalaman perjalanan, dll. Frekuensi kemunculan yang tinggi membuatnya lebih mungkin menjadi artikel rekreasi (tetapi tidak wajib).\n2. Jika konten artikel tentang penjualan, iklan, sewa rumah, jual rumah, real estat, makan, catatan jenis akomodasi, itu tidak termasuk artikel rekreasi. Jika informasi artikel kosong, itu juga tidak termasuk artikel rekreasi.\n3. Berisi kata kunci seperti mata air panas, ski, dll., diklasifikasikan sebagai artikel rekreasi.\n4. Berisi hari libur seperti Natal, Halloween, Tahun Baru, dll., diklasifikasikan sebagai artikel rekreasi.\n5. Berisi aktivitas seperti pertunjukan cahaya, pertunjukan kembang api, dll., diklasifikasikan sebagai artikel rekreasi.\n6. Berisi aktivitas seperti pameran lentera Imlek, pasar malam Imlek, dll., diklasifikasikan sebagai artikel rekreasi.\nJika artikel berisi tag seperti #check-in, #pariwisata, #eksplorasi-toko, dll., dan konten melibatkan pengalaman rekreasi, maka cenderung mengklasifikasikan sebagai terkait.\nJika artikel berisi kata-kata seperti festival, perayaan, pasar malam, pameran lentera, dll., prioritaskan mengklasifikasikannya sebagai artikel rekreasi.\nFormat output: Gunakan format JSON untuk mengembalikan informasi yang diekstrak. Semua field hanya dapat mengembalikan ’Ya’ atau ’Tidak’ atau ’Terkait’ atau ’Tidak Terkait’. Contoh format sebagai berikut: {\"relate\":\"Terkait/Tidak Terkait\",\"reason\":\"Alasan\",\"isExpired\":\"Ya/Tidak\",\"isFestival\":\"Ya/Tidak\",\"isMultiPOI\":\"Ya/Tidak\",\"isParentChild\":\"Ya/Tidak\",\"isNightEvent\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\"}. relate mengembalikan Terkait atau Tidak Terkait; reason mengembalikan alasan untuk penilaian; isExpired menunjukkan apakah acara sudah kedaluwarsa, isFestival menunjukkan apakah terkait festival, isMultiPOI menunjukkan apakah melibatkan beberapa POI, isParentChild menunjukkan apakah terkait orang tua-anak, isNightEvent menunjukkan apakah acara malam, isOutdoor menunjukkan apakah aktivitas luar ruangan. Pastikan struktur data JSON yang dikembalikan benar dan mematuhi aturan di atas. Jangan mengembalikan karakter selain JSON.\nKonten artikel: '[Blog Perjalanan] Check-in akhir pekan di pasar malam Malioboro dengan teman-teman, mengunjungi pameran lentera Sungai Kapuas, mengalami parade lentera dan makanan pasar malam, dan mengumpulkan beberapa stempel check-in.'",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Terkait",
+                        "Tidak Terkait"
+                    ],
+                    "description": "Apakah ini artikel jenis rekreasi",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Alasan untuk membuat penilaian",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara sudah kedaluwarsa",
+                    "能力项": "特定格式"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait festival",
+                    "能力项": "特定格式"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah melibatkan beberapa POI",
+                    "能力项": "特定格式"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait orang tua-anak",
+                    "能力项": "特定格式"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara malam",
+                    "能力项": "特定格式"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah aktivitas luar ruangan",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Latar belakang: Anda adalah seorang analis artikel. Saya akan memberikan Anda sebuah artikel dan nama POI. Tugas Anda adalah menganalisis artikel ini, menentukan apakah artikel ini terkait dengan aktivitas rekreasi, dan apakah terkait dengan jenis acara populer, dan akhirnya memberikan dasar untuk penilaian.\nTanggal saat ini: 2024-06-01.\nPengetahuan: Apakah ini panduan rekreasi dinilai berdasarkan dimensi berikut, semua dimensi ini perlu lulus penilaian untuk dianggap terkait panduan rekreasi:\n1. Apakah artikel berisi informasi tentang panduan wisata, aktivitas rekreasi, proyek rekreasi, rute perjalanan, urutan perjalanan, titik check-in, atraksi, pengalaman perjalanan, dll. Frekuensi kemunculan yang tinggi membuatnya lebih mungkin menjadi artikel rekreasi (tetapi tidak wajib).\n2. Jika konten artikel tentang penjualan, iklan, sewa rumah, jual rumah, real estat, makan, catatan jenis akomodasi, itu tidak termasuk artikel rekreasi. Jika informasi artikel kosong, itu juga tidak termasuk artikel rekreasi.\n3. Berisi kata kunci seperti mata air panas, ski, dll., diklasifikasikan sebagai artikel rekreasi.\n4. Berisi hari libur seperti Natal, Halloween, Tahun Baru, dll., diklasifikasikan sebagai artikel rekreasi.\n5. Berisi aktivitas seperti pertunjukan cahaya, pertunjukan kembang api, dll., diklasifikasikan sebagai artikel rekreasi.\n6. Berisi aktivitas seperti pameran lentera Imlek, pasar malam Imlek, dll., diklasifikasikan sebagai artikel rekreasi.\nJika konten artikel kosong, langsung klasifikasikan sebagai tidak terkait.\nJika konten artikel terutama tentang makanan dan tidak ada deskripsi aktivitas rekreasi, itu tidak dihitung sebagai rekreasi.\nFormat output: Gunakan format JSON untuk mengembalikan informasi yang diekstrak. Semua field hanya dapat mengembalikan ’Ya’ atau ’Tidak’ atau ’Terkait’ atau ’Tidak Terkait’. Contoh format sebagai berikut: {\"relate\":\"Terkait/Tidak Terkait\",\"reason\":\"Alasan\",\"isExpired\":\"Ya/Tidak\",\"isFestival\":\"Ya/Tidak\",\"isMultiPOI\":\"Ya/Tidak\",\"isParentChild\":\"Ya/Tidak\",\"isNightEvent\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\"}. relate mengembalikan Terkait atau Tidak Terkait; reason mengembalikan alasan untuk penilaian; isExpired menunjukkan apakah acara sudah kedaluwarsa, isFestival menunjukkan apakah terkait festival, isMultiPOI menunjukkan apakah melibatkan beberapa POI, isParentChild menunjukkan apakah terkait orang tua-anak, isNightEvent menunjukkan apakah acara malam, isOutdoor menunjukkan apakah aktivitas luar ruangan. Pastikan struktur data JSON yang dikembalikan benar dan mematuhi aturan di atas. Jangan mengembalikan karakter selain JSON.\nKonten artikel: '[Rekomendasi Real Estat] Komunitas ini dekat dengan kereta bawah tanah dengan fasilitas sekitar yang lengkap dan kehidupan yang nyaman. Beberapa unit sedang dalam penjualan panas, selamat datang untuk bertanya untuk melihat.'",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Terkait",
+                        "Tidak Terkait"
+                    ],
+                    "description": "Apakah ini artikel jenis rekreasi",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Alasan untuk membuat penilaian",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara sudah kedaluwarsa",
+                    "能力项": "特定格式"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait festival",
+                    "能力项": "特定格式"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah melibatkan beberapa POI",
+                    "能力项": "特定格式"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait orang tua-anak",
+                    "能力项": "特定格式"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara malam",
+                    "能力项": "特定格式"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah aktivitas luar ruangan",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Latar belakang: Anda adalah seorang analis artikel. Saya akan memberikan Anda sebuah artikel dan nama POI. Tugas Anda adalah menganalisis artikel ini, menentukan apakah artikel ini terkait dengan aktivitas rekreasi, dan apakah terkait dengan jenis acara populer, dan akhirnya memberikan dasar untuk penilaian.\nTanggal saat ini: 2024-06-01.\nPengetahuan: Apakah ini panduan rekreasi dinilai berdasarkan dimensi berikut, semua dimensi ini perlu lulus penilaian untuk dianggap terkait panduan rekreasi:\n1. Apakah artikel berisi informasi tentang panduan wisata, aktivitas rekreasi, proyek rekreasi, rute perjalanan, urutan perjalanan, titik check-in, atraksi, pengalaman perjalanan, dll. Frekuensi kemunculan yang tinggi membuatnya lebih mungkin menjadi artikel rekreasi (tetapi tidak wajib).\n2. Jika konten artikel tentang penjualan, iklan, sewa rumah, jual rumah, real estat, makan, catatan jenis akomodasi, itu tidak termasuk artikel rekreasi. Jika informasi artikel kosong, itu juga tidak termasuk artikel rekreasi.\n3. Berisi kata kunci seperti mata air panas, ski, dll., diklasifikasikan sebagai artikel rekreasi.\n4. Berisi hari libur seperti Natal, Halloween, Tahun Baru, dll., diklasifikasikan sebagai artikel rekreasi.\n5. Berisi aktivitas seperti pertunjukan cahaya, pertunjukan kembang api, dll., diklasifikasikan sebagai artikel rekreasi.\n6. Berisi aktivitas seperti pameran lentera Imlek, pasar malam Imlek, dll., diklasifikasikan sebagai artikel rekreasi.\nJika konten artikel terutama tentang makanan dan tidak ada deskripsi aktivitas rekreasi, itu tidak dihitung sebagai rekreasi.\nFormat output: Gunakan format JSON untuk mengembalikan informasi yang diekstrak. Semua field hanya dapat mengembalikan ’Ya’ atau ’Tidak’ atau ’Terkait’ atau ’Tidak Terkait’. Contoh format sebagai berikut: {\"relate\":\"Terkait/Tidak Terkait\",\"reason\":\"Alasan\",\"isExpired\":\"Ya/Tidak\",\"isFestival\":\"Ya/Tidak\",\"isMultiPOI\":\"Ya/Tidak\",\"isParentChild\":\"Ya/Tidak\",\"isNightEvent\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\"}. relate mengembalikan Terkait atau Tidak Terkait; reason mengembalikan alasan untuk penilaian; isExpired menunjukkan apakah acara sudah kedaluwarsa, isFestival menunjukkan apakah terkait festival, isMultiPOI menunjukkan apakah melibatkan beberapa POI, isParentChild menunjukkan apakah terkait orang tua-anak, isNightEvent menunjukkan apakah acara malam, isOutdoor menunjukkan apakah aktivitas luar ruangan. Pastikan struktur data JSON yang dikembalikan benar dan mematuhi aturan di atas. Jangan mengembalikan karakter selain JSON.\nKonten artikel: '[Eksplorasi Makanan] Mengunjungi restoran bersejarah Yogyakarta, mencicipi teh pagi dan berbagai dim sum, lingkungan yang nyaman, cocok untuk pertemuan keluarga.'",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Terkait",
+                        "Tidak Terkait"
+                    ],
+                    "description": "Apakah ini artikel jenis rekreasi",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Alasan untuk membuat penilaian",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara sudah kedaluwarsa",
+                    "能力项": "特定格式"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait festival",
+                    "能力项": "特定格式"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah melibatkan beberapa POI",
+                    "能力项": "特定格式"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait orang tua-anak",
+                    "能力项": "特定格式"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara malam",
+                    "能力项": "特定格式"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah aktivitas luar ruangan",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Latar belakang: Anda adalah seorang analis artikel. Saya akan memberikan Anda sebuah artikel dan nama POI. Tugas Anda adalah menganalisis artikel ini, menentukan apakah artikel ini terkait dengan aktivitas rekreasi, dan apakah terkait dengan jenis acara populer, dan akhirnya memberikan dasar untuk penilaian.\nTanggal saat ini: 2024-06-01.\nPengetahuan: Apakah ini panduan rekreasi dinilai berdasarkan dimensi berikut, semua dimensi ini perlu lulus penilaian untuk dianggap terkait panduan rekreasi:\n1. Apakah artikel berisi informasi tentang panduan wisata, aktivitas rekreasi, proyek rekreasi, rute perjalanan, urutan perjalanan, titik check-in, atraksi, pengalaman perjalanan, dll. Frekuensi kemunculan yang tinggi membuatnya lebih mungkin menjadi artikel rekreasi (tetapi tidak wajib).\n2. Jika konten artikel tentang penjualan, iklan, sewa rumah, jual rumah, real estat, makan, catatan jenis akomodasi, itu tidak termasuk artikel rekreasi. Jika informasi artikel kosong, itu juga tidak termasuk artikel rekreasi.\n3. Berisi kata kunci seperti mata air panas, ski, dll., diklasifikasikan sebagai artikel rekreasi.\n4. Berisi hari libur seperti Natal, Halloween, Tahun Baru, dll., diklasifikasikan sebagai artikel rekreasi.\n5. Berisi aktivitas seperti pertunjukan cahaya, pertunjukan kembang api, dll., diklasifikasikan sebagai artikel rekreasi.\n6. Berisi aktivitas seperti pameran lentera Imlek, pasar malam Imlek, dll., diklasifikasikan sebagai artikel rekreasi.\nJika konten artikel sangat terkait dengan nama POI yang diberikan dan menggambarkan pengalaman rekreasi, maka klasifikasikan sebagai terkait.\nFormat output: Gunakan format JSON untuk mengembalikan informasi yang diekstrak. Semua field hanya dapat mengembalikan ’Ya’ atau ’Tidak’ atau ’Terkait’ atau ’Tidak Terkait’. Contoh format sebagai berikut: {\"relate\":\"Terkait/Tidak Terkait\",\"reason\":\"Alasan\",\"isExpired\":\"Ya/Tidak\",\"isFestival\":\"Ya/Tidak\",\"isMultiPOI\":\"Ya/Tidak\",\"isParentChild\":\"Ya/Tidak\",\"isNightEvent\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\"}. relate mengembalikan Terkait atau Tidak Terkait; reason mengembalikan alasan untuk penilaian; isExpired menunjukkan apakah acara sudah kedaluwarsa, isFestival menunjukkan apakah terkait festival, isMultiPOI menunjukkan apakah melibatkan beberapa POI, isParentChild menunjukkan apakah terkait orang tua-anak, isNightEvent menunjukkan apakah acara malam, isOutdoor menunjukkan apakah aktivitas luar ruangan. Pastikan struktur data JSON yang dikembalikan benar dan mematuhi aturan di atas. Jangan mengembalikan karakter selain JSON.\nKonten artikel: '[Panduan Ski] Resor Ski Puncak dibuka pada bulan Desember, termasuk beberapa lereng pemula, menengah dan lanjutan, layanan pelatihan profesional, penyewaan peralatan ski tersedia, cocok untuk pemula dan pemain lanjutan.'",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Terkait",
+                        "Tidak Terkait"
+                    ],
+                    "description": "Apakah ini artikel jenis rekreasi",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Alasan untuk membuat penilaian",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara sudah kedaluwarsa",
+                    "能力项": "特定格式"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait festival",
+                    "能力项": "特定格式"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah melibatkan beberapa POI",
+                    "能力项": "特定格式"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait orang tua-anak",
+                    "能力项": "特定格式"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara malam",
+                    "能力项": "特定格式"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah aktivitas luar ruangan",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Latar belakang: Anda adalah seorang analis artikel. Saya akan memberikan Anda sebuah artikel dan nama POI. Tugas Anda adalah menganalisis artikel ini, menentukan apakah artikel ini terkait dengan aktivitas rekreasi, dan apakah terkait dengan jenis acara populer, dan akhirnya memberikan dasar untuk penilaian.\nTanggal saat ini: 2024-06-01.\nPengetahuan: Apakah ini panduan rekreasi dinilai berdasarkan dimensi berikut, semua dimensi ini perlu lulus penilaian untuk dianggap terkait panduan rekreasi:\n1. Apakah artikel berisi informasi tentang panduan wisata, aktivitas rekreasi, proyek rekreasi, rute perjalanan, urutan perjalanan, titik check-in, atraksi, pengalaman perjalanan, dll. Frekuensi kemunculan yang tinggi membuatnya lebih mungkin menjadi artikel rekreasi (tetapi tidak wajib).\n2. Jika konten artikel tentang penjualan, iklan, sewa rumah, jual rumah, real estat, makan, catatan jenis akomodasi, itu tidak termasuk artikel rekreasi. Jika informasi artikel kosong, itu juga tidak termasuk artikel rekreasi.\n3. Berisi kata kunci seperti mata air panas, ski, dll., diklasifikasikan sebagai artikel rekreasi.\n4. Berisi hari libur seperti Natal, Halloween, Tahun Baru, dll., diklasifikasikan sebagai artikel rekreasi.\n5. Berisi aktivitas seperti pertunjukan cahaya, pertunjukan kembang api, dll., diklasifikasikan sebagai artikel rekreasi.\n6. Berisi aktivitas seperti pameran lentera Imlek, pasar malam Imlek, dll., diklasifikasikan sebagai artikel rekreasi.\nJika artikel berisi kata-kata seperti festival, perayaan, pasar malam, pameran lentera, dll., prioritaskan mengklasifikasikannya sebagai artikel rekreasi.\nFormat output: Gunakan format JSON untuk mengembalikan informasi yang diekstrak. Semua field hanya dapat mengembalikan ’Ya’ atau ’Tidak’ atau ’Terkait’ atau ’Tidak Terkait’. Contoh format sebagai berikut: {\"relate\":\"Terkait/Tidak Terkait\",\"reason\":\"Alasan\",\"isExpired\":\"Ya/Tidak\",\"isFestival\":\"Ya/Tidak\",\"isMultiPOI\":\"Ya/Tidak\",\"isParentChild\":\"Ya/Tidak\",\"isNightEvent\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\"}. relate mengembalikan Terkait atau Tidak Terkait; reason mengembalikan alasan untuk penilaian; isExpired menunjukkan apakah acara sudah kedaluwarsa, isFestival menunjukkan apakah terkait festival, isMultiPOI menunjukkan apakah melibatkan beberapa POI, isParentChild menunjukkan apakah terkait orang tua-anak, isNightEvent menunjukkan apakah acara malam, isOutdoor menunjukkan apakah aktivitas luar ruangan. Pastikan struktur data JSON yang dikembalikan benar dan mematuhi aturan di atas. Jangan mengembalikan karakter selain JSON.\nKonten artikel: '[Pratinjau Pertunjukan Cahaya] Pertunjukan cahaya Malam Tahun Baru Teluk Jakarta 2024 akan diadakan pada 31 Desember, menampilkan pertunjukan drone dan pertunjukan kembang api, reservasi awal untuk titik pandang direkomendasikan.'",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Terkait",
+                        "Tidak Terkait"
+                    ],
+                    "description": "Apakah ini artikel jenis rekreasi",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Alasan untuk membuat penilaian",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara sudah kedaluwarsa",
+                    "能力项": "特定格式"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait festival",
+                    "能力项": "特定格式"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah melibatkan beberapa POI",
+                    "能力项": "特定格式"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait orang tua-anak",
+                    "能力项": "特定格式"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara malam",
+                    "能力项": "特定格式"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah aktivitas luar ruangan",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Latar belakang: Anda adalah seorang analis artikel. Saya akan memberikan Anda sebuah artikel dan nama POI. Tugas Anda adalah menganalisis artikel ini, menentukan apakah artikel ini terkait dengan aktivitas rekreasi, dan apakah terkait dengan jenis acara populer, dan akhirnya memberikan dasar untuk penilaian.\nTanggal saat ini: 2024-06-01.\nPengetahuan: Apakah ini panduan rekreasi dinilai berdasarkan dimensi berikut, semua dimensi ini perlu lulus penilaian untuk dianggap terkait panduan rekreasi:\n1. Apakah artikel berisi informasi tentang panduan wisata, aktivitas rekreasi, proyek rekreasi, rute perjalanan, urutan perjalanan, titik check-in, atraksi, pengalaman perjalanan, dll. Frekuensi kemunculan yang tinggi membuatnya lebih mungkin menjadi artikel rekreasi (tetapi tidak wajib).\n2. Jika konten artikel tentang penjualan, iklan, sewa rumah, jual rumah, real estat, makan, catatan jenis akomodasi, itu tidak termasuk artikel rekreasi. Jika informasi artikel kosong, itu juga tidak termasuk artikel rekreasi.\n3. Berisi kata kunci seperti mata air panas, ski, dll., diklasifikasikan sebagai artikel rekreasi.\n4. Berisi hari libur seperti Natal, Halloween, Tahun Baru, dll., diklasifikasikan sebagai artikel rekreasi.\n5. Berisi aktivitas seperti pertunjukan cahaya, pertunjukan kembang api, dll., diklasifikasikan sebagai artikel rekreasi.\n6. Berisi aktivitas seperti pameran lentera Imlek, pasar malam Imlek, dll., diklasifikasikan sebagai artikel rekreasi.\nJika artikel berisi kata-kata seperti festival, perayaan, pasar malam, pameran lentera, dll., prioritaskan mengklasifikasikannya sebagai artikel rekreasi.\nJika kata-kata seperti orang tua-anak, taman bermain anak-anak muncul dan ada deskripsi rekreasi, maka klasifikasikan sebagai terkait.\nFormat output: Gunakan format JSON untuk mengembalikan informasi yang diekstrak. Semua field hanya dapat mengembalikan ’Ya’ atau ’Tidak’ atau ’Terkait’ atau ’Tidak Terkait’. Contoh format sebagai berikut: {\"relate\":\"Terkait/Tidak Terkait\",\"reason\":\"Alasan\",\"isExpired\":\"Ya/Tidak\",\"isFestival\":\"Ya/Tidak\",\"isMultiPOI\":\"Ya/Tidak\",\"isParentChild\":\"Ya/Tidak\",\"isNightEvent\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\"}. relate mengembalikan Terkait atau Tidak Terkait; reason mengembalikan alasan untuk penilaian; isExpired menunjukkan apakah acara sudah kedaluwarsa, isFestival menunjukkan apakah terkait festival, isMultiPOI menunjukkan apakah melibatkan beberapa POI, isParentChild menunjukkan apakah terkait orang tua-anak, isNightEvent menunjukkan apakah acara malam, isOutdoor menunjukkan apakah aktivitas luar ruangan. Pastikan struktur data JSON yang dikembalikan benar dan mematuhi aturan di atas. Jangan mengembalikan karakter selain JSON.\nKonten artikel: '[Pasar Malam Tahun Baru] Pasar Malam Monas Jakarta 2025 akan diadakan dari 1 Januari hingga 5 Januari, termasuk pertunjukan rakyat, pengalaman kerajinan tangan, warung makanan, dll., cocok untuk kunjungan keluarga orang tua-anak.'",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Terkait",
+                        "Tidak Terkait"
+                    ],
+                    "description": "Apakah ini artikel jenis rekreasi",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Alasan untuk membuat penilaian",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara sudah kedaluwarsa",
+                    "能力项": "特定格式"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait festival",
+                    "能力项": "特定格式"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah melibatkan beberapa POI",
+                    "能力项": "特定格式"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait orang tua-anak",
+                    "能力项": "特定格式"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara malam",
+                    "能力项": "特定格式"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah aktivitas luar ruangan",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Latar belakang: Anda adalah seorang analis artikel. Saya akan memberikan Anda sebuah artikel dan nama POI. Tugas Anda adalah menganalisis artikel ini, menentukan apakah artikel ini terkait dengan aktivitas rekreasi, dan apakah terkait dengan jenis acara populer, dan akhirnya memberikan dasar untuk penilaian.\nTanggal saat ini: 2024-06-01.\nPengetahuan: Apakah ini panduan rekreasi dinilai berdasarkan dimensi berikut, semua dimensi ini perlu lulus penilaian untuk dianggap terkait panduan rekreasi:\n1. Apakah artikel berisi informasi tentang panduan wisata, aktivitas rekreasi, proyek rekreasi, rute perjalanan, urutan perjalanan, titik check-in, atraksi, pengalaman perjalanan, dll. Frekuensi kemunculan yang tinggi membuatnya lebih mungkin menjadi artikel rekreasi (tetapi tidak wajib).\n2. Jika konten artikel tentang penjualan, iklan, sewa rumah, jual rumah, real estat, makan, catatan jenis akomodasi, itu tidak termasuk artikel rekreasi. Jika informasi artikel kosong, itu juga tidak termasuk artikel rekreasi.\n3. Berisi kata kunci seperti mata air panas, ski, dll., diklasifikasikan sebagai artikel rekreasi.\n4. Berisi hari libur seperti Natal, Halloween, Tahun Baru, dll., diklasifikasikan sebagai artikel rekreasi.\n5. Berisi aktivitas seperti pertunjukan cahaya, pertunjukan kembang api, dll., diklasifikasikan sebagai artikel rekreasi.\n6. Berisi aktivitas seperti pameran lentera Imlek, pasar malam Imlek, dll., diklasifikasikan sebagai artikel rekreasi.\nJika konten artikel kosong, langsung klasifikasikan sebagai tidak terkait.\nFormat output: Gunakan format JSON untuk mengembalikan informasi yang diekstrak. Semua field hanya dapat mengembalikan ’Ya’ atau ’Tidak’ atau ’Terkait’ atau ’Tidak Terkait’. Contoh format sebagai berikut: {\"relate\":\"Terkait/Tidak Terkait\",\"reason\":\"Alasan\",\"isExpired\":\"Ya/Tidak\",\"isFestival\":\"Ya/Tidak\",\"isMultiPOI\":\"Ya/Tidak\",\"isParentChild\":\"Ya/Tidak\",\"isNightEvent\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\"}. relate mengembalikan Terkait atau Tidak Terkait; reason mengembalikan alasan untuk penilaian; isExpired menunjukkan apakah acara sudah kedaluwarsa, isFestival menunjukkan apakah terkait festival, isMultiPOI menunjukkan apakah melibatkan beberapa POI, isParentChild menunjukkan apakah terkait orang tua-anak, isNightEvent menunjukkan apakah acara malam, isOutdoor menunjukkan apakah aktivitas luar ruangan. Pastikan struktur data JSON yang dikembalikan benar dan mematuhi aturan di atas. Jangan mengembalikan karakter selain JSON.\nKonten artikel: '[Informasi Sewa] Apartemen mewah pusat kota untuk disewa, transportasi nyaman, siap huni, selamat datang untuk menelepon untuk janji melihat.'",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Terkait",
+                        "Tidak Terkait"
+                    ],
+                    "description": "Apakah ini artikel jenis rekreasi",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Alasan untuk membuat penilaian",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara sudah kedaluwarsa",
+                    "能力项": "特定格式"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait festival",
+                    "能力项": "特定格式"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah melibatkan beberapa POI",
+                    "能力项": "特定格式"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait orang tua-anak",
+                    "能力项": "特定格式"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara malam",
+                    "能力项": "特定格式"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah aktivitas luar ruangan",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Latar belakang: Anda adalah seorang analis artikel. Saya akan memberikan Anda sebuah artikel dan nama POI. Tugas Anda adalah menganalisis artikel ini, menentukan apakah artikel ini terkait dengan aktivitas rekreasi, dan apakah terkait dengan jenis acara populer, dan akhirnya memberikan dasar untuk penilaian.\nTanggal saat ini: 2024-06-01.\nPengetahuan: Apakah ini panduan rekreasi dinilai berdasarkan dimensi berikut, semua dimensi ini perlu lulus penilaian untuk dianggap terkait panduan rekreasi:\n1. Apakah artikel berisi informasi tentang panduan wisata, aktivitas rekreasi, proyek rekreasi, rute perjalanan, urutan perjalanan, titik check-in, atraksi, pengalaman perjalanan, dll. Frekuensi kemunculan yang tinggi membuatnya lebih mungkin menjadi artikel rekreasi (tetapi tidak wajib).\n2. Jika konten artikel tentang penjualan, iklan, sewa rumah, jual rumah, real estat, makan, catatan jenis akomodasi, itu tidak termasuk artikel rekreasi. Jika informasi artikel kosong, itu juga tidak termasuk artikel rekreasi.\n3. Berisi kata kunci seperti mata air panas, ski, dll., diklasifikasikan sebagai artikel rekreasi.\n4. Berisi hari libur seperti Natal, Halloween, Tahun Baru, dll., diklasifikasikan sebagai artikel rekreasi.\n5. Berisi aktivitas seperti pertunjukan cahaya, pertunjukan kembang api, dll., diklasifikasikan sebagai artikel rekreasi.\n6. Berisi aktivitas seperti pameran lentera Imlek, pasar malam Imlek, dll., diklasifikasikan sebagai artikel rekreasi.\nJika artikel berisi kata-kata seperti festival, perayaan, pasar malam, pameran lentera, dll., prioritaskan mengklasifikasikannya sebagai artikel rekreasi.\nFormat output: Gunakan format JSON untuk mengembalikan informasi yang diekstrak. Semua field hanya dapat mengembalikan ’Ya’ atau ’Tidak’ atau ’Terkait’ atau ’Tidak Terkait’. Contoh format sebagai berikut: {\"relate\":\"Terkait/Tidak Terkait\",\"reason\":\"Alasan\",\"isExpired\":\"Ya/Tidak\",\"isFestival\":\"Ya/Tidak\",\"isMultiPOI\":\"Ya/Tidak\",\"isParentChild\":\"Ya/Tidak\",\"isNightEvent\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\"}. relate mengembalikan Terkait atau Tidak Terkait; reason mengembalikan alasan untuk penilaian; isExpired menunjukkan apakah acara sudah kedaluwarsa, isFestival menunjukkan apakah terkait festival, isMultiPOI menunjukkan apakah melibatkan beberapa POI, isParentChild menunjukkan apakah terkait orang tua-anak, isNightEvent menunjukkan apakah acara malam, isOutdoor menunjukkan apakah aktivitas luar ruangan. Pastikan struktur data JSON yang dikembalikan benar dan mematuhi aturan di atas. Jangan mengembalikan karakter selain JSON.\nKonten artikel: '[Pameran Lentera Imlek] Pameran Lentera Imlek Semarang 2025 akan diadakan dari 2 Februari hingga 20 Februari, penyelenggara akan mengadakan parade lentera, pertunjukan warisan budaya takbenda dan aktivitas lainnya, dengan pertunjukan cahaya malam yang spektakuler.'",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Terkait",
+                        "Tidak Terkait"
+                    ],
+                    "description": "Apakah ini artikel jenis rekreasi",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Alasan untuk membuat penilaian",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara sudah kedaluwarsa",
+                    "能力项": "特定格式"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait festival",
+                    "能力项": "特定格式"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah melibatkan beberapa POI",
+                    "能力项": "特定格式"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait orang tua-anak",
+                    "能力项": "特定格式"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara malam",
+                    "能力项": "特定格式"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah aktivitas luar ruangan",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Latar belakang: Anda adalah seorang analis artikel. Saya akan memberikan Anda sebuah artikel dan nama POI. Tugas Anda adalah menganalisis artikel ini, menentukan apakah artikel ini terkait dengan aktivitas rekreasi, dan apakah terkait dengan jenis acara populer, dan akhirnya memberikan dasar untuk penilaian.\nTanggal saat ini: 2024-06-01.\nPengetahuan: Apakah ini panduan rekreasi dinilai berdasarkan dimensi berikut, semua dimensi ini perlu lulus penilaian untuk dianggap terkait panduan rekreasi:\n1. Apakah artikel berisi informasi tentang panduan wisata, aktivitas rekreasi, proyek rekreasi, rute perjalanan, urutan perjalanan, titik check-in, atraksi, pengalaman perjalanan, dll. Frekuensi kemunculan yang tinggi membuatnya lebih mungkin menjadi artikel rekreasi (tetapi tidak wajib).\n2. Jika konten artikel tentang penjualan, iklan, sewa rumah, jual rumah, real estat, makan, catatan jenis akomodasi, itu tidak termasuk artikel rekreasi. Jika informasi artikel kosong, itu juga tidak termasuk artikel rekreasi.\n3. Berisi kata kunci seperti mata air panas, ski, dll., diklasifikasikan sebagai artikel rekreasi.\n4. Berisi hari libur seperti Natal, Halloween, Tahun Baru, dll., diklasifikasikan sebagai artikel rekreasi.\n5. Berisi aktivitas seperti pertunjukan cahaya, pertunjukan kembang api, dll., diklasifikasikan sebagai artikel rekreasi.\n6. Berisi aktivitas seperti pameran lentera Imlek, pasar malam Imlek, dll., diklasifikasikan sebagai artikel rekreasi.\nJika konten artikel sangat terkait dengan nama POI yang diberikan dan menggambarkan pengalaman rekreasi, maka klasifikasikan sebagai terkait.\nJika kata-kata seperti orang tua-anak, taman bermain anak-anak muncul dan ada deskripsi rekreasi, maka klasifikasikan sebagai terkait.\nFormat output: Gunakan format JSON untuk mengembalikan informasi yang diekstrak. Semua field hanya dapat mengembalikan ’Ya’ atau ’Tidak’ atau ’Terkait’ atau ’Tidak Terkait’. Contoh format sebagai berikut: {\"relate\":\"Terkait/Tidak Terkait\",\"reason\":\"Alasan\",\"isExpired\":\"Ya/Tidak\",\"isFestival\":\"Ya/Tidak\",\"isMultiPOI\":\"Ya/Tidak\",\"isParentChild\":\"Ya/Tidak\",\"isNightEvent\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\"}. relate mengembalikan Terkait atau Tidak Terkait; reason mengembalikan alasan untuk penilaian; isExpired menunjukkan apakah acara sudah kedaluwarsa, isFestival menunjukkan apakah terkait festival, isMultiPOI menunjukkan apakah melibatkan beberapa POI, isParentChild menunjukkan apakah terkait orang tua-anak, isNightEvent menunjukkan apakah acara malam, isOutdoor menunjukkan apakah aktivitas luar ruangan. Pastikan struktur data JSON yang dikembalikan benar dan mematuhi aturan di atas. Jangan mengembalikan karakter selain JSON.\nKonten artikel: '[Pengalaman Mata Air Panas] Resor Mata Air Panas Ciater Bandung baru dibuka, termasuk berbagai kolam bertema, taman bermain orang tua-anak, area pijat SPA, cocok untuk rekreasi santai musim dingin.'",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Terkait",
+                        "Tidak Terkait"
+                    ],
+                    "description": "Apakah ini artikel jenis rekreasi",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Alasan untuk membuat penilaian",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara sudah kedaluwarsa",
+                    "能力项": "特定格式"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait festival",
+                    "能力项": "特定格式"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah melibatkan beberapa POI",
+                    "能力项": "特定格式"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait orang tua-anak",
+                    "能力项": "特定格式"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara malam",
+                    "能力项": "特定格式"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah aktivitas luar ruangan",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Latar belakang: Anda adalah seorang analis artikel. Saya akan memberikan Anda sebuah artikel dan nama POI. Tugas Anda adalah menganalisis artikel ini, menentukan apakah artikel ini terkait dengan aktivitas rekreasi, dan apakah terkait dengan jenis acara populer, dan akhirnya memberikan dasar untuk penilaian.\nTanggal saat ini: 2024-06-01.\nPengetahuan: Apakah ini panduan rekreasi dinilai berdasarkan dimensi berikut, semua dimensi ini perlu lulus penilaian untuk dianggap terkait panduan rekreasi:\n1. Apakah artikel berisi informasi tentang panduan wisata, aktivitas rekreasi, proyek rekreasi, rute perjalanan, urutan perjalanan, titik check-in, atraksi, pengalaman perjalanan, dll. Frekuensi kemunculan yang tinggi membuatnya lebih mungkin menjadi artikel rekreasi (tetapi tidak wajib).\n2. Jika konten artikel tentang penjualan, iklan, sewa rumah, jual rumah, real estat, makan, catatan jenis akomodasi, itu tidak termasuk artikel rekreasi. Jika informasi artikel kosong, itu juga tidak termasuk artikel rekreasi.\n3. Berisi kata kunci seperti mata air panas, ski, dll., diklasifikasikan sebagai artikel rekreasi.\n4. Berisi hari libur seperti Natal, Halloween, Tahun Baru, dll., diklasifikasikan sebagai artikel rekreasi.\n5. Berisi aktivitas seperti pertunjukan cahaya, pertunjukan kembang api, dll., diklasifikasikan sebagai artikel rekreasi.\n6. Berisi aktivitas seperti pameran lentera Imlek, pasar malam Imlek, dll., diklasifikasikan sebagai artikel rekreasi.\nJika artikel melibatkan atraksi beberapa kota dan semuanya untuk tujuan rekreasi, maka klasifikasikan sebagai terkait.\nJika aktivitas luar ruangan seperti maraton, hiking, bersepeda muncul dan ada pengalaman rekreasi, maka klasifikasikan sebagai terkait.\nFormat output: Gunakan format JSON untuk mengembalikan informasi yang diekstrak. Semua field hanya dapat mengembalikan ’Ya’ atau ’Tidak’ atau ’Terkait’ atau ’Tidak Terkait’. Contoh format sebagai berikut: {\"relate\":\"Terkait/Tidak Terkait\",\"reason\":\"Alasan\",\"isExpired\":\"Ya/Tidak\",\"isFestival\":\"Ya/Tidak\",\"isMultiPOI\":\"Ya/Tidak\",\"isParentChild\":\"Ya/Tidak\",\"isNightEvent\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\"}. relate mengembalikan Terkait atau Tidak Terkait; reason mengembalikan alasan untuk penilaian; isExpired menunjukkan apakah acara sudah kedaluwarsa, isFestival menunjukkan apakah terkait festival, isMultiPOI menunjukkan apakah melibatkan beberapa POI, isParentChild menunjukkan apakah terkait orang tua-anak, isNightEvent menunjukkan apakah acara malam, isOutdoor menunjukkan apakah aktivitas luar ruangan. Pastikan struktur data JSON yang dikembalikan benar dan mematuhi aturan di atas. Jangan mengembalikan karakter selain JSON.\nKonten artikel: '[Iklan] Batch baru peralatan rumah tangga impor tiba di toko kami, diskon promosi, selamat datang untuk mengunjungi dan berbelanja.'",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Terkait",
+                        "Tidak Terkait"
+                    ],
+                    "description": "Apakah ini artikel jenis rekreasi",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Alasan untuk membuat penilaian",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara sudah kedaluwarsa",
+                    "能力项": "特定格式"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait festival",
+                    "能力项": "特定格式"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah melibatkan beberapa POI",
+                    "能力项": "特定格式"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait orang tua-anak",
+                    "能力项": "特定格式"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara malam",
+                    "能力项": "特定格式"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah aktivitas luar ruangan",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Latar belakang: Anda adalah seorang analis artikel. Saya akan memberikan Anda sebuah artikel dan nama POI. Tugas Anda adalah menganalisis artikel ini, menentukan apakah artikel ini terkait dengan aktivitas rekreasi, dan apakah terkait dengan jenis acara populer, dan akhirnya memberikan dasar untuk penilaian.\nTanggal saat ini: 2024-06-01.\nPengetahuan: Apakah ini panduan rekreasi dinilai berdasarkan dimensi berikut, semua dimensi ini perlu lulus penilaian untuk dianggap terkait panduan rekreasi:\n1. Apakah artikel berisi informasi tentang panduan wisata, aktivitas rekreasi, proyek rekreasi, rute perjalanan, urutan perjalanan, titik check-in, atraksi, pengalaman perjalanan, dll. Frekuensi kemunculan yang tinggi membuatnya lebih mungkin menjadi artikel rekreasi (tetapi tidak wajib).\n2. Jika konten artikel tentang penjualan, iklan, sewa rumah, jual rumah, real estat, makan, catatan jenis akomodasi, itu tidak termasuk artikel rekreasi. Jika informasi artikel kosong, itu juga tidak termasuk artikel rekreasi.\n3. Berisi kata kunci seperti mata air panas, ski, dll., diklasifikasikan sebagai artikel rekreasi.\n4. Berisi hari libur seperti Natal, Halloween, Tahun Baru, dll., diklasifikasikan sebagai artikel rekreasi.\n5. Berisi aktivitas seperti pertunjukan cahaya, pertunjukan kembang api, dll., diklasifikasikan sebagai artikel rekreasi.\n6. Berisi aktivitas seperti pameran lentera Imlek, pasar malam Imlek, dll., diklasifikasikan sebagai artikel rekreasi.\nJika kata-kata seperti orang tua-anak, taman bermain anak-anak muncul dan ada deskripsi rekreasi, maka klasifikasikan sebagai terkait.\nJika artikel berisi tag seperti #check-in, #pariwisata, #eksplorasi-toko, dll., dan konten melibatkan pengalaman rekreasi, maka cenderung mengklasifikasikan sebagai terkait.\nFormat output: Gunakan format JSON untuk mengembalikan informasi yang diekstrak. Semua field hanya dapat mengembalikan ’Ya’ atau ’Tidak’ atau ’Terkait’ atau ’Tidak Terkait’. Contoh format sebagai berikut: {\"relate\":\"Terkait/Tidak Terkait\",\"reason\":\"Alasan\",\"isExpired\":\"Ya/Tidak\",\"isFestival\":\"Ya/Tidak\",\"isMultiPOI\":\"Ya/Tidak\",\"isParentChild\":\"Ya/Tidak\",\"isNightEvent\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\"}. relate mengembalikan Terkait atau Tidak Terkait; reason mengembalikan alasan untuk penilaian; isExpired menunjukkan apakah acara sudah kedaluwarsa, isFestival menunjukkan apakah terkait festival, isMultiPOI menunjukkan apakah melibatkan beberapa POI, isParentChild menunjukkan apakah terkait orang tua-anak, isNightEvent menunjukkan apakah acara malam, isOutdoor menunjukkan apakah aktivitas luar ruangan. Pastikan struktur data JSON yang dikembalikan benar dan mematuhi aturan di atas. Jangan mengembalikan karakter selain JSON.\nKonten artikel: '[Panduan] Rekomendasi urutan kunjungan Candi Borobudur: pertama kunjungi pasar malam Malioboro, kemudian kunjungi arsitektur kuno Candi Borobudur, akhirnya cicipi makanan ringan di jalan makanan.'",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Terkait",
+                        "Tidak Terkait"
+                    ],
+                    "description": "Apakah ini artikel jenis rekreasi",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Alasan untuk membuat penilaian",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara sudah kedaluwarsa",
+                    "能力项": "特定格式"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait festival",
+                    "能力项": "特定格式"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah melibatkan beberapa POI",
+                    "能力项": "特定格式"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait orang tua-anak",
+                    "能力项": "特定格式"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara malam",
+                    "能力项": "特定格式"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah aktivitas luar ruangan",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Latar belakang: Anda adalah seorang analis artikel. Saya akan memberikan Anda sebuah artikel dan nama POI. Tugas Anda adalah menganalisis artikel ini, menentukan apakah artikel ini terkait dengan aktivitas rekreasi, dan apakah terkait dengan jenis acara populer, dan akhirnya memberikan dasar untuk penilaian.\nTanggal saat ini: 2024-06-01.\nPengetahuan: Apakah ini panduan rekreasi dinilai berdasarkan dimensi berikut, semua dimensi ini perlu lulus penilaian untuk dianggap terkait panduan rekreasi:\n1. Apakah artikel berisi informasi tentang panduan wisata, aktivitas rekreasi, proyek rekreasi, rute perjalanan, urutan perjalanan, titik check-in, atraksi, pengalaman perjalanan, dll. Frekuensi kemunculan yang tinggi membuatnya lebih mungkin menjadi artikel rekreasi (tetapi tidak wajib).\n2. Jika konten artikel tentang penjualan, iklan, sewa rumah, jual rumah, real estat, makan, catatan jenis akomodasi, itu tidak termasuk artikel rekreasi. Jika informasi artikel kosong, itu juga tidak termasuk artikel rekreasi.\n3. Berisi kata kunci seperti mata air panas, ski, dll., diklasifikasikan sebagai artikel rekreasi.\n4. Berisi hari libur seperti Natal, Halloween, Tahun Baru, dll., diklasifikasikan sebagai artikel rekreasi.\n5. Berisi aktivitas seperti pertunjukan cahaya, pertunjukan kembang api, dll., diklasifikasikan sebagai artikel rekreasi.\n6. Berisi aktivitas seperti pameran lentera Imlek, pasar malam Imlek, dll., diklasifikasikan sebagai artikel rekreasi.\n\nJika artikel berisi tag seperti #check-in, #pariwisata, #eksplorasi-toko, dll., dan konten melibatkan pengalaman rekreasi, maka cenderung mengklasifikasikan sebagai terkait.\nFormat output: Gunakan format JSON untuk mengembalikan informasi yang diekstrak. Semua field hanya dapat mengembalikan ’Ya’ atau ’Tidak’ atau ’Terkait’ atau ’Tidak Terkait’. Contoh format sebagai berikut: {\"relate\":\"Terkait/Tidak Terkait\",\"reason\":\"Alasan\",\"isExpired\":\"Ya/Tidak\",\"isFestival\":\"Ya/Tidak\",\"isMultiPOI\":\"Ya/Tidak\",\"isParentChild\":\"Ya/Tidak\",\"isNightEvent\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\"}. relate mengembalikan Terkait atau Tidak Terkait; reason mengembalikan alasan untuk penilaian; isExpired menunjukkan apakah acara sudah kedaluwarsa, isFestival menunjukkan apakah terkait festival, isMultiPOI menunjukkan apakah melibatkan beberapa POI, isParentChild menunjukkan apakah terkait orang tua-anak, isNightEvent menunjukkan apakah acara malam, isOutdoor menunjukkan apakah aktivitas luar ruangan. Pastikan struktur data JSON yang dikembalikan benar dan mematuhi aturan di atas. Jangan mengembalikan karakter selain JSON.\nKonten artikel: '[Aktivitas Pariwisata] Festival Komodo Indonesia 2024 akan diadakan pada bulan Oktober, area pameran utama di Taman Nasional Komodo, aktivitas termasuk interaksi orang tua-anak, parade bertema komodo, pengumpulan stempel titik check-in, dll.'",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Terkait",
+                        "Tidak Terkait"
+                    ],
+                    "description": "Apakah ini artikel jenis rekreasi",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Alasan untuk membuat penilaian",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara sudah kedaluwarsa",
+                    "能力项": "特定格式"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait festival",
+                    "能力项": "特定格式"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah melibatkan beberapa POI",
+                    "能力项": "特定格式"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait orang tua-anak",
+                    "能力项": "特定格式"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara malam",
+                    "能力项": "特定格式"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah aktivitas luar ruangan",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Latar belakang: Anda adalah seorang analis artikel. Saya akan memberikan Anda sebuah artikel dan nama POI. Tugas Anda adalah menganalisis artikel ini, menentukan apakah artikel ini terkait dengan aktivitas rekreasi, dan apakah terkait dengan jenis acara populer, dan akhirnya memberikan dasar untuk penilaian.\nTanggal saat ini: 2024-06-01.\nPengetahuan: Apakah ini panduan rekreasi dinilai berdasarkan dimensi berikut, semua dimensi ini perlu lulus penilaian untuk dianggap terkait panduan rekreasi:\n1. Apakah artikel berisi informasi tentang panduan wisata, aktivitas rekreasi, proyek rekreasi, rute perjalanan, urutan perjalanan, titik check-in, atraksi, pengalaman perjalanan, dll. Frekuensi kemunculan yang tinggi membuatnya lebih mungkin menjadi artikel rekreasi (tetapi tidak wajib).\n2. Jika konten artikel tentang penjualan, iklan, sewa rumah, jual rumah, real estat, makan, catatan jenis akomodasi, itu tidak termasuk artikel rekreasi. Jika informasi artikel kosong, itu juga tidak termasuk artikel rekreasi.\n3. Berisi kata kunci seperti mata air panas, ski, dll., diklasifikasikan sebagai artikel rekreasi.\n4. Berisi hari libur seperti Natal, Halloween, Tahun Baru, dll., diklasifikasikan sebagai artikel rekreasi.\n5. Berisi aktivitas seperti pertunjukan cahaya, pertunjukan kembang api, dll., diklasifikasikan sebagai artikel rekreasi.\n6. Berisi aktivitas seperti pameran lentera Imlek, pasar malam Imlek, dll., diklasifikasikan sebagai artikel rekreasi.\nJika konten artikel sangat terkait dengan nama POI yang diberikan dan menggambarkan pengalaman rekreasi, maka klasifikasikan sebagai terkait.\nJika konten artikel kosong, langsung klasifikasikan sebagai tidak terkait.\nFormat output: Gunakan format JSON untuk mengembalikan informasi yang diekstrak. Semua field hanya dapat mengembalikan ’Ya’ atau ’Tidak’ atau ’Terkait’ atau ’Tidak Terkait’. Contoh format sebagai berikut: {\"relate\":\"Terkait/Tidak Terkait\",\"reason\":\"Alasan\",\"isExpired\":\"Ya/Tidak\",\"isFestival\":\"Ya/Tidak\",\"isMultiPOI\":\"Ya/Tidak\",\"isParentChild\":\"Ya/Tidak\",\"isNightEvent\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\"}. relate mengembalikan Terkait atau Tidak Terkait; reason mengembalikan alasan untuk penilaian; isExpired menunjukkan apakah acara sudah kedaluwarsa, isFestival menunjukkan apakah terkait festival, isMultiPOI menunjukkan apakah melibatkan beberapa POI, isParentChild menunjukkan apakah terkait orang tua-anak, isNightEvent menunjukkan apakah acara malam, isOutdoor menunjukkan apakah aktivitas luar ruangan. Pastikan struktur data JSON yang dikembalikan benar dan mematuhi aturan di atas. Jangan mengembalikan karakter selain JSON.\nKonten artikel: '[Rekomendasi Hotel] Hotel pemandangan laut Bali, jarak berjalan kaki ke pantai, dilengkapi dengan kolam infinity dan taman bermain anak-anak, cocok untuk liburan keluarga.'",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Terkait",
+                        "Tidak Terkait"
+                    ],
+                    "description": "Apakah ini artikel jenis rekreasi",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Alasan untuk membuat penilaian",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara sudah kedaluwarsa",
+                    "能力项": "特定格式"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait festival",
+                    "能力项": "特定格式"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah melibatkan beberapa POI",
+                    "能力项": "特定格式"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait orang tua-anak",
+                    "能力项": "特定格式"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara malam",
+                    "能力项": "特定格式"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah aktivitas luar ruangan",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Latar belakang: Anda adalah seorang analis artikel. Saya akan memberikan Anda sebuah artikel dan nama POI. Tugas Anda adalah menganalisis artikel ini, menentukan apakah artikel ini terkait dengan aktivitas rekreasi, dan apakah terkait dengan jenis acara populer, dan akhirnya memberikan dasar untuk penilaian.\nTanggal saat ini: 2024-06-01.\nPengetahuan: Apakah ini panduan rekreasi dinilai berdasarkan dimensi berikut, semua dimensi ini perlu lulus penilaian untuk dianggap terkait panduan rekreasi:\n1. Apakah artikel berisi informasi tentang panduan wisata, aktivitas rekreasi, proyek rekreasi, rute perjalanan, urutan perjalanan, titik check-in, atraksi, pengalaman perjalanan, dll. Frekuensi kemunculan yang tinggi membuatnya lebih mungkin menjadi artikel rekreasi (tetapi tidak wajib).\n2. Jika konten artikel tentang penjualan, iklan, sewa rumah, jual rumah, real estat, makan, catatan jenis akomodasi, itu tidak termasuk artikel rekreasi. Jika informasi artikel kosong, itu juga tidak termasuk artikel rekreasi.\n3. Berisi kata kunci seperti mata air panas, ski, dll., diklasifikasikan sebagai artikel rekreasi.\n4. Berisi hari libur seperti Natal, Halloween, Tahun Baru, dll., diklasifikasikan sebagai artikel rekreasi.\n5. Berisi aktivitas seperti pertunjukan cahaya, pertunjukan kembang api, dll., diklasifikasikan sebagai artikel rekreasi.\n6. Berisi aktivitas seperti pameran lentera Imlek, pasar malam Imlek, dll., diklasifikasikan sebagai artikel rekreasi.\nFormat output: Gunakan format JSON untuk mengembalikan informasi yang diekstrak. Semua field hanya dapat mengembalikan ’Ya’ atau ’Tidak’ atau ’Terkait’ atau ’Tidak Terkait’. Contoh format sebagai berikut: {\"relate\":\"Terkait/Tidak Terkait\",\"reason\":\"Alasan\",\"isExpired\":\"Ya/Tidak\",\"isFestival\":\"Ya/Tidak\",\"isMultiPOI\":\"Ya/Tidak\",\"isParentChild\":\"Ya/Tidak\",\"isNightEvent\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\"}. relate mengembalikan Terkait atau Tidak Terkait; reason mengembalikan alasan untuk penilaian; isExpired menunjukkan apakah acara sudah kedaluwarsa, isFestival menunjukkan apakah terkait festival, isMultiPOI menunjukkan apakah melibatkan beberapa POI, isParentChild menunjukkan apakah terkait orang tua-anak, isNightEvent menunjukkan apakah acara malam, isOutdoor menunjukkan apakah aktivitas luar ruangan. Pastikan struktur data JSON yang dikembalikan benar dan mematuhi aturan di atas. Jangan mengembalikan karakter selain JSON.\nKonten artikel: '[Aktivitas Halloween] Sesi malam Halloween Dufan Jakarta 2024 dibuka pada 31 Oktober, taman didekorasi dengan rumah hantu dan lentera labu, mengadakan pertunjukan parade dan pesta bertema.'",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Terkait",
+                        "Tidak Terkait"
+                    ],
+                    "description": "Apakah ini artikel jenis rekreasi",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Alasan untuk membuat penilaian",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara sudah kedaluwarsa",
+                    "能力项": "特定格式"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait festival",
+                    "能力项": "特定格式"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah melibatkan beberapa POI",
+                    "能力项": "特定格式"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait orang tua-anak",
+                    "能力项": "特定格式"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara malam",
+                    "能力项": "特定格式"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah aktivitas luar ruangan",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Latar belakang: Anda adalah seorang analis artikel. Saya akan memberikan Anda sebuah artikel dan nama POI. Tugas Anda adalah menganalisis artikel ini, menentukan apakah artikel ini terkait dengan aktivitas rekreasi, dan apakah terkait dengan jenis acara populer, dan akhirnya memberikan dasar untuk penilaian.\nTanggal saat ini: 2024-06-01.\nPengetahuan: Apakah ini panduan rekreasi dinilai berdasarkan dimensi berikut, semua dimensi ini perlu lulus penilaian untuk dianggap terkait panduan rekreasi:\n1. Apakah artikel berisi informasi tentang panduan wisata, aktivitas rekreasi, proyek rekreasi, rute perjalanan, urutan perjalanan, titik check-in, atraksi, pengalaman perjalanan, dll. Frekuensi kemunculan yang tinggi membuatnya lebih mungkin menjadi artikel rekreasi (tetapi tidak wajib).\n2. Jika konten artikel tentang penjualan, iklan, sewa rumah, jual rumah, real estat, makan, catatan jenis akomodasi, itu tidak termasuk artikel rekreasi. Jika informasi artikel kosong, itu juga tidak termasuk artikel rekreasi.\n3. Berisi kata kunci seperti mata air panas, ski, dll., diklasifikasikan sebagai artikel rekreasi.\n4. Berisi hari libur seperti Natal, Halloween, Tahun Baru, dll., diklasifikasikan sebagai artikel rekreasi.\n5. Berisi aktivitas seperti pertunjukan cahaya, pertunjukan kembang api, dll., diklasifikasikan sebagai artikel rekreasi.\n6. Berisi aktivitas seperti pameran lentera Imlek, pasar malam Imlek, dll., diklasifikasikan sebagai artikel rekreasi.\nJika artikel berisi kata-kata seperti festival, perayaan, pasar malam, pameran lentera, dll., prioritaskan mengklasifikasikannya sebagai artikel rekreasi.\nFormat output: Gunakan format JSON untuk mengembalikan informasi yang diekstrak. Semua field hanya dapat mengembalikan ’Ya’ atau ’Tidak’ atau ’Terkait’ atau ’Tidak Terkait’. Contoh format sebagai berikut: {\"relate\":\"Terkait/Tidak Terkait\",\"reason\":\"Alasan\",\"isExpired\":\"Ya/Tidak\",\"isFestival\":\"Ya/Tidak\",\"isMultiPOI\":\"Ya/Tidak\",\"isParentChild\":\"Ya/Tidak\",\"isNightEvent\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\"}. relate mengembalikan Terkait atau Tidak Terkait; reason mengembalikan alasan untuk penilaian; isExpired menunjukkan apakah acara sudah kedaluwarsa, isFestival menunjukkan apakah terkait festival, isMultiPOI menunjukkan apakah melibatkan beberapa POI, isParentChild menunjukkan apakah terkait orang tua-anak, isNightEvent menunjukkan apakah acara malam, isOutdoor menunjukkan apakah aktivitas luar ruangan. Pastikan struktur data JSON yang dikembalikan benar dan mematuhi aturan di atas. Jangan mengembalikan karakter selain JSON.\nKonten artikel: '[Pengalaman Rekreasi] Pemandangan malam Kota Tua Jakarta sangat indah, direkomendasikan untuk check-in malam, berjalan di sepanjang sungai untuk menikmati pertunjukan cahaya, pilihan makanan terdekat yang kaya.'",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Terkait",
+                        "Tidak Terkait"
+                    ],
+                    "description": "Apakah ini artikel jenis rekreasi",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Alasan untuk membuat penilaian",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara sudah kedaluwarsa",
+                    "能力项": "特定格式"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait festival",
+                    "能力项": "特定格式"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah melibatkan beberapa POI",
+                    "能力项": "特定格式"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait orang tua-anak",
+                    "能力项": "特定格式"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara malam",
+                    "能力项": "特定格式"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah aktivitas luar ruangan",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Latar belakang: Anda adalah seorang analis artikel. Saya akan memberikan Anda sebuah artikel dan nama POI. Tugas Anda adalah menganalisis artikel ini, menentukan apakah artikel ini terkait dengan aktivitas rekreasi, dan apakah terkait dengan jenis acara populer, dan akhirnya memberikan dasar untuk penilaian.\nTanggal saat ini: 2024-06-01.\nPengetahuan: Apakah ini panduan rekreasi dinilai berdasarkan dimensi berikut, semua dimensi ini perlu lulus penilaian untuk dianggap terkait panduan rekreasi:\n1. Apakah artikel berisi informasi tentang panduan wisata, aktivitas rekreasi, proyek rekreasi, rute perjalanan, urutan perjalanan, titik check-in, atraksi, pengalaman perjalanan, dll. Frekuensi kemunculan yang tinggi membuatnya lebih mungkin menjadi artikel rekreasi (tetapi tidak wajib).\n2. Jika konten artikel tentang penjualan, iklan, sewa rumah, jual rumah, real estat, makan, catatan jenis akomodasi, itu tidak termasuk artikel rekreasi. Jika informasi artikel kosong, itu juga tidak termasuk artikel rekreasi.\n3. Berisi kata kunci seperti mata air panas, ski, dll., diklasifikasikan sebagai artikel rekreasi.\n4. Berisi hari libur seperti Natal, Halloween, Tahun Baru, dll., diklasifikasikan sebagai artikel rekreasi.\n5. Berisi aktivitas seperti pertunjukan cahaya, pertunjukan kembang api, dll., diklasifikasikan sebagai artikel rekreasi.\n6. Berisi aktivitas seperti pameran lentera Imlek, pasar malam Imlek, dll., diklasifikasikan sebagai artikel rekreasi.\nJika artikel melibatkan atraksi beberapa kota dan semuanya untuk tujuan rekreasi, maka klasifikasikan sebagai terkait.\n\nFormat output: Gunakan format JSON untuk mengembalikan informasi yang diekstrak. Semua field hanya dapat mengembalikan ’Ya’ atau ’Tidak’ atau ’Terkait’ atau ’Tidak Terkait’. Contoh format sebagai berikut: {\"relate\":\"Terkait/Tidak Terkait\",\"reason\":\"Alasan\",\"isExpired\":\"Ya/Tidak\",\"isFestival\":\"Ya/Tidak\",\"isMultiPOI\":\"Ya/Tidak\",\"isParentChild\":\"Ya/Tidak\",\"isNightEvent\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\"}. relate mengembalikan Terkait atau Tidak Terkait; reason mengembalikan alasan untuk penilaian; isExpired menunjukkan apakah acara sudah kedaluwarsa, isFestival menunjukkan apakah terkait festival, isMultiPOI menunjukkan apakah melibatkan beberapa POI, isParentChild menunjukkan apakah terkait orang tua-anak, isNightEvent menunjukkan apakah acara malam, isOutdoor menunjukkan apakah aktivitas luar ruangan. Pastikan struktur data JSON yang dikembalikan benar dan mematuhi aturan di atas. Jangan mengembalikan karakter selain JSON.\nKonten artikel: '[Kosong]'",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Terkait",
+                        "Tidak Terkait"
+                    ],
+                    "description": "Apakah ini artikel jenis rekreasi",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Alasan untuk membuat penilaian",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara sudah kedaluwarsa",
+                    "能力项": "特定格式"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait festival",
+                    "能力项": "特定格式"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah melibatkan beberapa POI",
+                    "能力项": "特定格式"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait orang tua-anak",
+                    "能力项": "特定格式"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara malam",
+                    "能力项": "特定格式"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah aktivitas luar ruangan",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Latar belakang: Anda adalah seorang analis artikel. Saya akan memberikan Anda sebuah artikel dan nama POI. Tugas Anda adalah menganalisis artikel ini, menentukan apakah artikel ini terkait dengan aktivitas rekreasi, dan apakah terkait dengan jenis acara populer, dan akhirnya memberikan dasar untuk penilaian.\nTanggal saat ini: 2024-06-01.\nPengetahuan: Apakah ini panduan rekreasi dinilai berdasarkan dimensi berikut, semua dimensi ini perlu lulus penilaian untuk dianggap terkait panduan rekreasi:\n1. Apakah artikel berisi informasi tentang panduan wisata, aktivitas rekreasi, proyek rekreasi, rute perjalanan, urutan perjalanan, titik check-in, atraksi, pengalaman perjalanan, dll. Frekuensi kemunculan yang tinggi membuatnya lebih mungkin menjadi artikel rekreasi (tetapi tidak wajib).\n2. Jika konten artikel tentang penjualan, iklan, sewa rumah, jual rumah, real estat, makan, catatan jenis akomodasi, itu tidak termasuk artikel rekreasi. Jika informasi artikel kosong, itu juga tidak termasuk artikel rekreasi.\n3. Berisi kata kunci seperti mata air panas, ski, dll., diklasifikasikan sebagai artikel rekreasi.\n4. Berisi hari libur seperti Natal, Halloween, Tahun Baru, dll., diklasifikasikan sebagai artikel rekreasi.\n5. Berisi aktivitas seperti pertunjukan cahaya, pertunjukan kembang api, dll., diklasifikasikan sebagai artikel rekreasi.\n6. Berisi aktivitas seperti pameran lentera Imlek, pasar malam Imlek, dll., diklasifikasikan sebagai artikel rekreasi.\n\nJika konten artikel sangat terkait dengan nama POI yang diberikan dan menggambarkan pengalaman rekreasi, maka klasifikasikan sebagai terkait.\nFormat output: Gunakan format JSON untuk mengembalikan informasi yang diekstrak. Semua field hanya dapat mengembalikan ’Ya’ atau ’Tidak’ atau ’Terkait’ atau ’Tidak Terkait’. Contoh format sebagai berikut: {\"relate\":\"Terkait/Tidak Terkait\",\"reason\":\"Alasan\",\"isExpired\":\"Ya/Tidak\",\"isFestival\":\"Ya/Tidak\",\"isMultiPOI\":\"Ya/Tidak\",\"isParentChild\":\"Ya/Tidak\",\"isNightEvent\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\"}. relate mengembalikan Terkait atau Tidak Terkait; reason mengembalikan alasan untuk penilaian; isExpired menunjukkan apakah acara sudah kedaluwarsa, isFestival menunjukkan apakah terkait festival, isMultiPOI menunjukkan apakah melibatkan beberapa POI, isParentChild menunjukkan apakah terkait orang tua-anak, isNightEvent menunjukkan apakah acara malam, isOutdoor menunjukkan apakah aktivitas luar ruangan. Pastikan struktur data JSON yang dikembalikan benar dan mematuhi aturan di atas. Jangan mengembalikan karakter selain JSON.\nKonten artikel: '[Panduan Rekreasi] Panduan lengkap rute Maraton Tembok Kota Yogyakarta, melewati beberapa atraksi bersejarah, dengan pertunjukan cahaya dan pertunjukan budaya selama acara.'",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Terkait",
+                        "Tidak Terkait"
+                    ],
+                    "description": "Apakah ini artikel jenis rekreasi",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Alasan untuk membuat penilaian",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara sudah kedaluwarsa",
+                    "能力项": "特定格式"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait festival",
+                    "能力项": "特定格式"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah melibatkan beberapa POI",
+                    "能力项": "特定格式"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait orang tua-anak",
+                    "能力项": "特定格式"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara malam",
+                    "能力项": "特定格式"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah aktivitas luar ruangan",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Latar belakang: Anda adalah seorang analis artikel. Saya akan memberikan Anda sebuah artikel dan nama POI. Tugas Anda adalah menganalisis artikel ini, menentukan apakah artikel ini terkait dengan aktivitas rekreasi, dan apakah terkait dengan jenis acara populer, dan akhirnya memberikan dasar untuk penilaian.\nTanggal saat ini: 2024-06-01.\nPengetahuan: Apakah ini panduan rekreasi dinilai berdasarkan dimensi berikut, semua dimensi ini perlu lulus penilaian untuk dianggap terkait panduan rekreasi:\n1. Apakah artikel berisi informasi tentang panduan wisata, aktivitas rekreasi, proyek rekreasi, rute perjalanan, urutan perjalanan, titik check-in, atraksi, pengalaman perjalanan, dll. Frekuensi kemunculan yang tinggi membuatnya lebih mungkin menjadi artikel rekreasi (tetapi tidak wajib).\n2. Jika konten artikel tentang penjualan, iklan, sewa rumah, jual rumah, real estat, makan, catatan jenis akomodasi, itu tidak termasuk artikel rekreasi. Jika informasi artikel kosong, itu juga tidak termasuk artikel rekreasi.\n3. Berisi kata kunci seperti mata air panas, ski, dll., diklasifikasikan sebagai artikel rekreasi.\n4. Berisi hari libur seperti Natal, Halloween, Tahun Baru, dll., diklasifikasikan sebagai artikel rekreasi.\n5. Berisi aktivitas seperti pertunjukan cahaya, pertunjukan kembang api, dll., diklasifikasikan sebagai artikel rekreasi.\n6. Berisi aktivitas seperti pameran lentera Imlek, pasar malam Imlek, dll., diklasifikasikan sebagai artikel rekreasi.\n\nJika konten artikel sangat terkait dengan nama POI yang diberikan dan menggambarkan pengalaman rekreasi, maka klasifikasikan sebagai terkait.\nFormat output: Gunakan format JSON untuk mengembalikan informasi yang diekstrak. Semua field hanya dapat mengembalikan ’Ya’ atau ’Tidak’ atau ’Terkait’ atau ’Tidak Terkait’. Contoh format sebagai berikut: {\"relate\":\"Terkait/Tidak Terkait\",\"reason\":\"Alasan\",\"isExpired\":\"Ya/Tidak\",\"isFestival\":\"Ya/Tidak\",\"isMultiPOI\":\"Ya/Tidak\",\"isParentChild\":\"Ya/Tidak\",\"isNightEvent\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\"}. relate mengembalikan Terkait atau Tidak Terkait; reason mengembalikan alasan untuk penilaian; isExpired menunjukkan apakah acara sudah kedaluwarsa, isFestival menunjukkan apakah terkait festival, isMultiPOI menunjukkan apakah melibatkan beberapa POI, isParentChild menunjukkan apakah terkait orang tua-anak, isNightEvent menunjukkan apakah acara malam, isOutdoor menunjukkan apakah aktivitas luar ruangan. Pastikan struktur data JSON yang dikembalikan benar dan mematuhi aturan di atas. Jangan mengembalikan karakter selain JSON.\nKonten artikel: '[Pratinjau Pertunjukan Kembang Api] Pertunjukan kembang api Danau Toba Medan 2024 akan dilakukan pada 1 Mei, titik pandang terbaik adalah Area Wisata Samosir, perencanaan awal rute rekreasi direkomendasikan.'",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Terkait",
+                        "Tidak Terkait"
+                    ],
+                    "description": "Apakah ini artikel jenis rekreasi",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Alasan untuk membuat penilaian",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara sudah kedaluwarsa",
+                    "能力项": "特定格式"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait festival",
+                    "能力项": "特定格式"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah melibatkan beberapa POI",
+                    "能力项": "特定格式"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait orang tua-anak",
+                    "能力项": "特定格式"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara malam",
+                    "能力项": "特定格式"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah aktivitas luar ruangan",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Latar belakang: Anda adalah seorang analis artikel. Saya akan memberikan Anda sebuah artikel dan nama POI. Tugas Anda adalah menganalisis artikel ini, menentukan apakah artikel ini terkait dengan aktivitas rekreasi, dan apakah terkait dengan jenis acara populer, dan akhirnya memberikan dasar untuk penilaian.\nTanggal saat ini: 2024-06-01.\nPengetahuan: Apakah ini panduan rekreasi dinilai berdasarkan dimensi berikut, semua dimensi ini perlu lulus penilaian untuk dianggap terkait panduan rekreasi:\n1. Apakah artikel berisi informasi tentang panduan wisata, aktivitas rekreasi, proyek rekreasi, rute perjalanan, urutan perjalanan, titik check-in, atraksi, pengalaman perjalanan, dll. Frekuensi kemunculan yang tinggi membuatnya lebih mungkin menjadi artikel rekreasi (tetapi tidak wajib).\n2. Jika konten artikel tentang penjualan, iklan, sewa rumah, jual rumah, real estat, makan, catatan jenis akomodasi, itu tidak termasuk artikel rekreasi. Jika informasi artikel kosong, itu juga tidak termasuk artikel rekreasi.\n3. Berisi kata kunci seperti mata air panas, ski, dll., diklasifikasikan sebagai artikel rekreasi.\n4. Berisi hari libur seperti Natal, Halloween, Tahun Baru, dll., diklasifikasikan sebagai artikel rekreasi.\n5. Berisi aktivitas seperti pertunjukan cahaya, pertunjukan kembang api, dll., diklasifikasikan sebagai artikel rekreasi.\n6. Berisi aktivitas seperti pameran lentera Imlek, pasar malam Imlek, dll., diklasifikasikan sebagai artikel rekreasi.\nJika artikel berisi kata-kata seperti festival, perayaan, pasar malam, pameran lentera, dll., prioritaskan mengklasifikasikannya sebagai artikel rekreasi.\nJika konten artikel sangat terkait dengan nama POI yang diberikan dan menggambarkan pengalaman rekreasi, maka klasifikasikan sebagai terkait.\nFormat output: Gunakan format JSON untuk mengembalikan informasi yang diekstrak. Semua field hanya dapat mengembalikan ’Ya’ atau ’Tidak’ atau ’Terkait’ atau ’Tidak Terkait’. Contoh format sebagai berikut: {\"relate\":\"Terkait/Tidak Terkait\",\"reason\":\"Alasan\",\"isExpired\":\"Ya/Tidak\",\"isFestival\":\"Ya/Tidak\",\"isMultiPOI\":\"Ya/Tidak\",\"isParentChild\":\"Ya/Tidak\",\"isNightEvent\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\"}. relate mengembalikan Terkait atau Tidak Terkait; reason mengembalikan alasan untuk penilaian; isExpired menunjukkan apakah acara sudah kedaluwarsa, isFestival menunjukkan apakah terkait festival, isMultiPOI menunjukkan apakah melibatkan beberapa POI, isParentChild menunjukkan apakah terkait orang tua-anak, isNightEvent menunjukkan apakah acara malam, isOutdoor menunjukkan apakah aktivitas luar ruangan. Pastikan struktur data JSON yang dikembalikan benar dan mematuhi aturan di atas. Jangan mengembalikan karakter selain JSON.\nKonten artikel: '[Aktivitas Natal] Pertunjukan cahaya Natal Mall Taman Anggrek Jakarta 2024 dibuka pada 24 Desember, pasar Natal, warung makanan, pertunjukan parade, interaksi orang tua-anak semuanya tersedia.'",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Terkait",
+                        "Tidak Terkait"
+                    ],
+                    "description": "Apakah ini artikel jenis rekreasi",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Alasan untuk membuat penilaian",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara sudah kedaluwarsa",
+                    "能力项": "特定格式"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait festival",
+                    "能力项": "特定格式"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah melibatkan beberapa POI",
+                    "能力项": "特定格式"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah terkait orang tua-anak",
+                    "能力项": "特定格式"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah acara malam",
+                    "能力项": "特定格式"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Ya",
+                        "Tidak"
+                    ],
+                    "description": "Apakah aktivitas luar ruangan",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    }
+]

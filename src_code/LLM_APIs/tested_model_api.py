@@ -1,58 +1,62 @@
-import requests
+from openai import OpenAI
 
-# 全局变量存储URL
-_tested_model_url = None
+# 全局变量存储OpenAI客户端
+_tested_model_client = None
+_tested_model_name = "default-model"
 
-def set_tested_model_url(url):
-    """设置被测模型API的URL"""
-    global _tested_model_url
-    _tested_model_url = url
+def set_tested_model_config(api_key, base_url=None, model_name="default-model"):
+    """
+    设置被测模型API配置
+    
+    Args:
+        api_key: OpenAI API密钥
+        base_url: API基础URL（可选，用于自定义端点）
+        model_name: 模型名称（可选，默认为"default-model"）
+    """
+    global _tested_model_client, _tested_model_name
+    
+    if base_url:
+        _tested_model_client = OpenAI(api_key=api_key, base_url=base_url)
+    else:
+        _tested_model_client = OpenAI(api_key=api_key)
+    
+    _tested_model_name = model_name
 
 def call_tested_model(prompt):
     """调用被测模型API"""
-    if _tested_model_url is None:
-        raise ValueError("Tested model URL not set. Please call set_tested_model_url() first.")
-
-    payload = {
-        "prompt": prompt,
-        "max_new_tokens": 8096,
-        "temperature": 0.00,
-        "top_k": 1
-    }
-    headers = {
-        "Content-Type": "application/json"
-    }
+    if _tested_model_client is None:
+        raise ValueError("Tested model not configured. Please call set_tested_model_config() first.")
 
     try:
-        # print(f"🔗 Calling API: {_tested_model_url}")
-        # print(f"📝 Payload: {payload}")
+        # 如果prompt是列表，批量处理
+        if isinstance(prompt, list):
+            results = []
+            for single_prompt in prompt:
+                response = _tested_model_client.chat.completions.create(
+                    model=_tested_model_name,
+                    messages=[
+                        {"role": "system", "content": ""},
+                        {"role": "user", "content": single_prompt},
+                    ],
+                    max_tokens=8096,
+                    temperature=0.00,
+                    timeout=1800
+                )
+                results.append(response.choices[0].message.content.strip())
+            return results
+        else:
+            # 单个prompt
+            response = _tested_model_client.chat.completions.create(
+                model=_tested_model_name,
+                messages=[
+                    {"role": "system", "content": ""},
+                    {"role": "user", "content": prompt},
+                ],
+                max_tokens=8096,
+                temperature=0.00,
+                timeout=1800
+            )
+            return [response.choices[0].message.content.strip()]
 
-        response = requests.request("POST", _tested_model_url, headers=headers, json=payload, timeout=1800)
-
-        # print(f"📊 Response status: {response.status_code}")
-        # print(f"📄 Response headers: {dict(response.headers)}")
-        # print(f"📝 Raw response text: {response.text[:500]}...")  # 只显示前500个字符
-
-        # 检查HTTP状态码
-        if response.status_code != 200:
-            raise Exception(f"HTTP {response.status_code}: {response.text}")
-
-        # 检查响应是否为空
-        if not response.text.strip():
-            raise Exception("Empty response from API")
-
-        # 尝试解析JSON
-        response_json = response.json()
-
-        # 检查响应格式
-        if 'completions' not in response_json:
-            raise Exception(f"Invalid response format. Expected 'completions' key. Got: {response_json}")
-
-        return [item['text'] for item in response_json['completions']]
-
-    except requests.exceptions.RequestException as e:
-        raise Exception(f"Network error: {e}")
-    except ValueError as e:
-        raise Exception(f"JSON parsing error: {e}. Response text: {response.text}")
     except Exception as e:
         raise Exception(f"API call failed: {e}")

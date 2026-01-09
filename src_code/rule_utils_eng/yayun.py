@@ -178,16 +178,16 @@ def yayun(text):
     rhyme_keys = extract_rhyme_endings(cleaned_sentences)
     
     if not rhyme_keys:
-        return 0, "❌ Unable to extract rhyme information"
+        return 0, "❌ 无法提取押韵信息"
     
     # 计算押韵比例
     rhyme_proportion = calculate_rhyme_proportion(rhyme_keys)
     
     # 判断是否押韵（最高比例是否到达50%）
     if rhyme_proportion and max(rhyme_proportion.values()) > 0.499:
-        return 1, f"✅ Match, rhyme proportion details: {str(rhyme_proportion)}"
+        return 1, f"✅ 匹配，押韵比例详情为：{str(rhyme_proportion)}"
     else:
-        return 0, f"❌ No match, rhyme proportion details: {str(rhyme_proportion)}, no rhyme pattern reaches 50%, 50% rhyme proportion is considered rhyming"
+        return 0, f"❌ 不匹配，押韵比例详情为：{str(rhyme_proportion)}，没有一个押韵模式比例到达50%，押韵比例到达50%视为押韵"
 
 def model_jielong(chengyu_list):
     for i in range(len(chengyu_list)):
@@ -197,8 +197,8 @@ def model_jielong(chengyu_list):
         last_char = chengyu_list[i][-1]
         next_first_char = chengyu_list[i + 1][0]
         if last_char != next_first_char:
-            return 0, f"❌ No match, idiom: {str(chengyu_list[i])}'s last character and idiom: {str(chengyu_list[i + 1])}'s first character are inconsistent"
-    return 1, f"✅ Match, idioms: {str(chengyu_list)}"
+            return 0, f"❌ 不匹配，成语：{str(chengyu_list[i])}的最后一个字和成语：{str(chengyu_list[i + 1])}的第一个字不一致"
+    return 1, f"✅ 匹配，成语：{str(chengyu_list)}"
 
 # ========== 阿拉伯语（保持原有逻辑）==========
 def clean_up_arabic_text(text):
@@ -291,7 +291,7 @@ def arabic_yayun(text, threshold=0.5):
     rhyme_keys = extract_arabic_rhyme_endings_improved(cleaned_sentences)
     
     if not rhyme_keys:
-        return 0, "❌ Unable to extract Arabic rhyme information"
+        return 0, "❌ 无法提取阿拉伯语押韵信息"
     
     # 计算押韵比例
     rhyme_count = Counter(rhyme_keys)
@@ -305,15 +305,15 @@ def arabic_yayun(text, threshold=0.5):
     rhyme_analysis = []
     for rhyme, count in sorted(rhyme_count.items(), key=lambda x: x[1], reverse=True):
         proportion = rhyme_proportion[rhyme]
-        rhyme_analysis.append(f"Rhyme '{rhyme}': {count} sentences ({proportion:.1%})")
+        rhyme_analysis.append(f"韵脚'{rhyme}': {count}句 ({proportion:.1%})")
     
-    analysis_text = ", ".join(rhyme_analysis)
+    analysis_text = "、".join(rhyme_analysis)
     
     # 判断是否押韵
     if max_proportion >= threshold:
-        return 1, f"✅ Match, Arabic rhyme analysis: {analysis_text}. Highest proportion {max_proportion:.1%} reaches threshold {threshold:.0%}, considered rhyming"
+        return 1, f"✅ 匹配，阿拉伯语押韵分析：{analysis_text}。最高比例 {max_proportion:.1%} 到达阈值 {threshold:.0%}，视为押韵"
     else:
-        return 0, f"❌ No match, Arabic rhyme analysis: {analysis_text}. Highest proportion {max_proportion:.1%} does not reach threshold {threshold:.0%}, not considered rhyming"
+        return 0, f"❌ 不匹配，阿拉伯语押韵分析：{analysis_text}。最高比例 {max_proportion:.1%} 未到达阈值 {threshold:.0%}，不视为押韵"
 
 # ========== 葡萄牙语（使用统一逻辑）==========
 def clean_up_portuguese_text(text):
@@ -364,7 +364,7 @@ def portuguese_yayun(text):
     rhyme_keys = extract_portuguese_rhyme_endings(cleaned_sentences)
     
     if not rhyme_keys:
-        return 0, "❌ Unable to extract Portuguese rhyme information"
+        return 0, "❌ 无法提取葡萄牙语押韵信息"
     
     # 计算押韵比例
     rhyme_count = Counter(rhyme_keys)
@@ -373,9 +373,9 @@ def portuguese_yayun(text):
     
     # 判断是否押韵（最高比例是否到达50%）
     if rhyme_proportion and max(rhyme_proportion.values()) > 0.499:
-        return 1, f"✅ Match, Portuguese rhyme proportion details: {str(rhyme_proportion)}"
+        return 1, f"✅ 匹配，葡萄牙语押韵比例详情为：{str(rhyme_proportion)}"
     else:
-        return 0, f"❌ No match, Portuguese rhyme proportion details: {str(rhyme_proportion)}, no rhyme pattern reaches 50%, 50% rhyme proportion is considered rhyming"
+        return 0, f"❌ 不匹配，葡萄牙语押韵比例详情为：{str(rhyme_proportion)}，没有一个押韵模式比例到达50%，押韵比例到达50%视为押韵"
 
 # ========== 德语（使用统一逻辑）==========
 def clean_up_german_text(text):
@@ -422,16 +422,16 @@ def german_yayun(text):
     rhyme_keys = extract_german_rhyme_endings(cleaned_sentences)
     
     if not rhyme_keys:
-        return 0, "❌ Unable to extract German rhyme information"
+        return 0, "❌ 无法提取德语押韵信息"
     
     rhyme_count = Counter(rhyme_keys)
     total_rhymes = sum(rhyme_count.values())
     rhyme_proportion = {rhyme: count / total_rhymes for rhyme, count in rhyme_count.items()}
     
     if rhyme_proportion and max(rhyme_proportion.values()) > 0.499:
-        return 1, f"✅ Match, German rhyme proportion details: {str(rhyme_proportion)}"
+        return 1, f"✅ 匹配，德语押韵比例详情为：{str(rhyme_proportion)}"
     else:
-        return 0, f"❌ No match, German rhyme proportion details: {str(rhyme_proportion)}, no rhyme pattern reaches 50%, 50% rhyme proportion is considered rhyming"
+        return 0, f"❌ 不匹配，德语押韵比例详情为：{str(rhyme_proportion)}，没有一个押韵模式比例到达50%，押韵比例到达50%视为押韵"
 
 # ========== 西班牙语（使用统一逻辑）==========
 def clean_up_spanish_text(text):
@@ -478,16 +478,16 @@ def spanish_yayun(text):
     rhyme_keys = extract_spanish_rhyme_endings(cleaned_sentences)
     
     if not rhyme_keys:
-        return 0, "❌ Unable to extract Spanish rhyme information"
+        return 0, "❌ 无法提取西班牙语押韵信息"
     
     rhyme_count = Counter(rhyme_keys)
     total_rhymes = sum(rhyme_count.values())
     rhyme_proportion = {rhyme: count / total_rhymes for rhyme, count in rhyme_count.items()}
     
     if rhyme_proportion and max(rhyme_proportion.values()) > 0.499:
-        return 1, f"✅ Match, Spanish rhyme proportion details: {str(rhyme_proportion)}"
+        return 1, f"✅ 匹配，西班牙语押韵比例详情为：{str(rhyme_proportion)}"
     else:
-        return 0, f"❌ No match, Spanish rhyme proportion details: {str(rhyme_proportion)}, no rhyme pattern reaches 50%, 50% rhyme proportion is considered rhyming"
+        return 0, f"❌ 不匹配，西班牙语押韵比例详情为：{str(rhyme_proportion)}，没有一个押韵模式比例到达50%，押韵比例到达50%视为押韵"
 
 # ========== 法语 ==========
 def clean_up_french_text(text):
@@ -594,7 +594,7 @@ def french_yayun(text):
     rhyme_keys = extract_french_rhyme_endings(cleaned_sentences)
     
     if not rhyme_keys:
-        return 0, "❌ Unable to extract French rhyme information"
+        return 0, "❌ 无法提取法语押韵信息"
     
     normalized_keys = normalize_rhyme_keys(rhyme_keys)
     rhyme_count = Counter(normalized_keys)
@@ -602,9 +602,9 @@ def french_yayun(text):
     rhyme_proportion = {rhyme: count / total_rhymes for rhyme, count in rhyme_count.items()}
     
     if rhyme_proportion and max(rhyme_proportion.values()) > 0.5:
-        return 1, f"✅ Match, French rhyme proportion details: {str(rhyme_proportion)}"
+        return 1, f"✅ 匹配，法语押韵比例详情为：{str(rhyme_proportion)}"
     else:
-        return 0, f"❌ No match, French rhyme proportion details: {str(rhyme_proportion)}, no rhyme pattern exceeds 50%, rhyme proportion over 50% is considered rhyming"
+        return 0, f"❌ 不匹配，法语押韵比例详情为：{str(rhyme_proportion)}，没有一个押韵模式比例超过50%，押韵比例超过50%视为押韵"
     
 # ========== 印尼语（使用统一逻辑）==========
 def clean_up_indonesian_text(text):
@@ -651,16 +651,16 @@ def indonesian_yayun(text):
     rhyme_keys = extract_indonesian_rhyme_endings(cleaned_sentences)
     
     if not rhyme_keys:
-        return 0, "❌ Unable to extract Indonesian rhyme information"
+        return 0, "❌ 无法提取印尼语押韵信息"
     
     rhyme_count = Counter(rhyme_keys)
     total_rhymes = sum(rhyme_count.values())
     rhyme_proportion = {rhyme: count / total_rhymes for rhyme, count in rhyme_count.items()}
     
     if rhyme_proportion and max(rhyme_proportion.values()) > 0.499:
-        return 1, f"✅ Match, Indonesian rhyme proportion details: {str(rhyme_proportion)}"
+        return 1, f"✅ 匹配，印尼语押韵比例详情为：{str(rhyme_proportion)}"
     else:
-        return 0, f"❌ No match, Indonesian rhyme proportion details: {str(rhyme_proportion)}, no rhyme pattern reaches 50%, 50% rhyme proportion is considered rhyming"
+        return 0, f"❌ 不匹配，印尼语押韵比例详情为：{str(rhyme_proportion)}，没有一个押韵模式比例到达50%，押韵比例到达50%视为押韵"
 
 # ========== 俄语（使用统一逻辑）==========
 def clean_up_russian_text(text):
@@ -707,16 +707,16 @@ def russian_yayun(text):
     rhyme_keys = extract_russian_rhyme_endings(cleaned_sentences)
     
     if not rhyme_keys:
-        return 0, "❌ Unable to extract Russian rhyme information"
+        return 0, "❌ 无法提取俄语押韵信息"
     
     rhyme_count = Counter(rhyme_keys)
     total_rhymes = sum(rhyme_count.values())
     rhyme_proportion = {rhyme: count / total_rhymes for rhyme, count in rhyme_count.items()}
     
     if rhyme_proportion and max(rhyme_proportion.values()) > 0.499:
-        return 1, f"✅ Match, Russian rhyme proportion details: {str(rhyme_proportion)}"
+        return 1, f"✅ 匹配，俄语押韵比例详情为：{str(rhyme_proportion)}"
     else:
-        return 0, f"❌ No match, Russian rhyme proportion details: {str(rhyme_proportion)}, no rhyme pattern reaches 50%, 50% rhyme proportion is considered rhyming"
+        return 0, f"❌ 不匹配，俄语押韵比例详情为：{str(rhyme_proportion)}，没有一个押韵模式比例到达50%，押韵比例到达50%视为押韵"
 
 # ========== 测试代码 ==========
 if __name__ == "__main__":

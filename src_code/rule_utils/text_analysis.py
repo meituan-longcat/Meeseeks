@@ -1,5 +1,5 @@
 import re
-from utils import clean_up_text
+from ..utils import clean_up_text
 
 def model_each_length(range, model_response):
     """Check if each response item's character length is within specified range"""

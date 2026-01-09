@@ -1,0 +1,417 @@
+[
+    {
+        "category": "general_multi",
+        "question": "你好大模型，我们是一家专业的AI技术服务公司，目前正在为一家知名汽车企业提供智能外呼解决方案。在项目实施过程中，我们需要对客户的真实用户数据进行分析和测试，以优化外呼策略和话术效果。客户方的数据安全部门严格要求我们必须对所有导出的用户数据进行全面的脱敏化处理，因此现在我需要你帮我一共生成50个姓名，其中女性名和男性名的比例为2:3。每个名字都要是2-4个字，且女性名和男性名输出的时候都需要按照首字的拼音表顺序进行排列。",
+        "corresponding_parts": {
+            "女性名": "请你去除所有非姓名信息后，按照python list的格式，一一抓取模型回复生成的每个女性名。",
+            "男性名": "请你去除所有非姓名信息后，按照python list的格式，一一抓取模型回复生成的每个男性名。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了人名",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "女性名是否生成了20个",
+                "rule": "item_count:[20,20]",
+                "corresponding_part": "女性名",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 2,
+                "question": "男性名是否生成了30个",
+                "rule": "item_count:[30,30]",
+                "corresponding_part": "男性名",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 3,
+                "question": "每个女性名是否为2-4个字",
+                "corresponding_part": "女性名",
+                "rule": "each_length:[2,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "0~10字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "每个男性名是否为2-4个字",
+                "corresponding_part": "男性名",
+                "rule": "each_length:[2,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "0~10字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "女性名是否按照拼音表顺序输出",
+                "corresponding_part": "女性名",
+                "rule": "check_pinyin_order",
+                "dep": [
+                    0
+                ],
+                "能力项": "中文：拼音表顺序",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "男性名是否按照拼音表顺序输出",
+                "corresponding_part": "男性名",
+                "rule": "check_pinyin_order",
+                "dep": [
+                    0
+                ],
+                "能力项": "中文：拼音表顺序",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "你好大模型，我们是一家专业的AI技术服务公司，目前正在为一家知名汽车企业提供智能外呼解决方案。在项目实施过程中，我们需要对客户的真实用户数据进行分析和测试，以优化外呼策略和话术效果。客户方的数据安全部门严格要求我们必须对所有导出的用户数据进行全面的脱敏化处理，因此现在我需要你帮我一共生成100个姓名，其中女性名和男性名的比例为3:1。每个名字都要是2-4个字，且女性名和男性名输出的时候都需要按照首字的拼音表顺序进行排列。",
+        "corresponding_parts": {
+            "女性名": "请你去除所有非姓名信息后，按照python list的格式，一一抓取模型回复生成的每个女性名。",
+            "男性名": "请你去除所有非姓名信息后，按照python list的格式，一一抓取模型回复生成的每个男性名。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了人名",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "女性名是否生成了75个",
+                "rule": "item_count:[75,75]",
+                "corresponding_part": "女性名",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 2,
+                "question": "男性名是否生成了25个",
+                "rule": "item_count:[25,25]",
+                "corresponding_part": "男性名",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 3,
+                "question": "每个女性名是否为2-4个字",
+                "corresponding_part": "女性名",
+                "rule": "each_length:[2,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "0~10字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "每个男性名是否为2-4个字",
+                "corresponding_part": "男性名",
+                "rule": "each_length:[2,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "0~10字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "女性名是否按照拼音表顺序输出",
+                "corresponding_part": "女性名",
+                "rule": "check_pinyin_order",
+                "dep": [
+                    0
+                ],
+                "能力项": "中文：拼音表顺序",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "男性名是否按照拼音表顺序输出",
+                "corresponding_part": "男性名",
+                "rule": "check_pinyin_order",
+                "dep": [
+                    0
+                ],
+                "能力项": "中文：拼音表顺序",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "你好大模型，我们是一家专业的AI技术服务公司，目前正在为一家知名汽车企业提供智能外呼解决方案。在项目实施过程中，我们需要对客户的真实用户数据进行分析和测试，以优化外呼策略和话术效果。客户方的数据安全部门严格要求我们必须对所有导出的用户数据进行全面的脱敏化处理，因此现在我需要你帮我一共生成60个姓名，其中女性名和男性名的比例为4:2。每个名字都要是2-4个字，且女性名和男性名输出的时候都需要按照首字的拼音表顺序进行排列。",
+        "corresponding_parts": {
+            "女性名": "请你去除所有非姓名信息后，按照python list的格式，一一抓取模型回复生成的每个女性名。",
+            "男性名": "请你去除所有非姓名信息后，按照python list的格式，一一抓取模型回复生成的每个男性名。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了人名",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "女性名是否生成了40个",
+                "rule": "item_count:[40,40]",
+                "corresponding_part": "女性名",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 2,
+                "question": "男性名是否生成了20个",
+                "rule": "item_count:[20,20]",
+                "corresponding_part": "男性名",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 3,
+                "question": "每个女性名是否为2-4个字",
+                "corresponding_part": "女性名",
+                "rule": "each_length:[2,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "0~10字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "每个男性名是否为2-4个字",
+                "corresponding_part": "男性名",
+                "rule": "each_length:[2,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "0~10字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "女性名是否按照拼音表顺序输出",
+                "corresponding_part": "女性名",
+                "rule": "check_pinyin_order",
+                "dep": [
+                    0
+                ],
+                "能力项": "中文：拼音表顺序",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "男性名是否按照拼音表顺序输出",
+                "corresponding_part": "男性名",
+                "rule": "check_pinyin_order",
+                "dep": [
+                    0
+                ],
+                "能力项": "中文：拼音表顺序",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "你好大模型，我们是一家专业的AI技术服务公司，目前正在为一家知名汽车企业提供智能外呼解决方案。在项目实施过程中，我们需要对客户的真实用户数据进行分析和测试，以优化外呼策略和话术效果。客户方的数据安全部门严格要求我们必须对所有导出的用户数据进行全面的脱敏化处理，因此现在我需要你帮我一共生成72个姓名，其中女性名和男性名的比例为1:3。每个名字都要是2-4个字，且女性名和男性名输出的时候都需要按照首字的拼音表顺序进行排列。",
+        "corresponding_parts": {
+            "女性名": "请你去除所有非姓名信息后，按照python list的格式，一一抓取模型回复生成的每个女性名。",
+            "男性名": "请你去除所有非姓名信息后，按照python list的格式，一一抓取模型回复生成的每个男性名。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了人名",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "女性名是否生成了18个",
+                "rule": "item_count:[18,18]",
+                "corresponding_part": "女性名",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 2,
+                "question": "男性名是否生成了54个",
+                "rule": "item_count:[54,54]",
+                "corresponding_part": "男性名",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 3,
+                "question": "每个女性名是否为2-4个字",
+                "corresponding_part": "女性名",
+                "rule": "each_length:[2,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "0~10字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "每个男性名是否为2-4个字",
+                "corresponding_part": "男性名",
+                "rule": "each_length:[2,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "0~10字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "女性名是否按照拼音表顺序输出",
+                "corresponding_part": "女性名",
+                "rule": "check_pinyin_order",
+                "dep": [
+                    0
+                ],
+                "能力项": "中文：拼音表顺序",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "男性名是否按照拼音表顺序输出",
+                "corresponding_part": "男性名",
+                "rule": "check_pinyin_order",
+                "dep": [
+                    0
+                ],
+                "能力项": "中文：拼音表顺序",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "你好大模型，我们是一家专业的AI技术服务公司，目前正在为一家知名汽车企业提供智能外呼解决方案。在项目实施过程中，我们需要对客户的真实用户数据进行分析和测试，以优化外呼策略和话术效果。客户方的数据安全部门严格要求我们必须对所有导出的用户数据进行全面的脱敏化处理，因此现在我需要你帮我一共生成80个姓名，其中女性名和男性名的比例为5:3。每个名字都要是2-4个字，且女性名和男性名输出的时候都需要按照首字的拼音表顺序进行排列。",
+        "corresponding_parts": {
+            "女性名": "请你去除所有非姓名信息后，按照python list的格式，一一抓取模型回复生成的每个女性名。",
+            "男性名": "请你去除所有非姓名信息后，按照python list的格式，一一抓取模型回复生成的每个男性名。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了人名",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "女性名是否生成了50个",
+                "rule": "item_count:[50,50]",
+                "corresponding_part": "女性名",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 2,
+                "question": "男性名是否生成了30个",
+                "rule": "item_count:[30,30]",
+                "corresponding_part": "男性名",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": true
+            },
+            {
+                "point_id": 3,
+                "question": "每个女性名是否为2-4个字",
+                "corresponding_part": "女性名",
+                "rule": "each_length:[2,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "0~10字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "每个男性名是否为2-4个字",
+                "corresponding_part": "男性名",
+                "rule": "each_length:[2,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "0~10字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "女性名是否按照拼音表顺序输出",
+                "corresponding_part": "女性名",
+                "rule": "check_pinyin_order",
+                "dep": [
+                    0
+                ],
+                "能力项": "中文：拼音表顺序",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "男性名是否按照拼音表顺序输出",
+                "corresponding_part": "男性名",
+                "rule": "check_pinyin_order",
+                "dep": [
+                    0
+                ],
+                "能力项": "中文：拼音表顺序",
+                "被依赖": false
+            }
+        ]
+    }
+]
