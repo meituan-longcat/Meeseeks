@@ -1,0 +1,2931 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "[[[ثقيل الوزن] سيقام مهرجان الصين الدولي للرسوم المتحركة والأنيميشن 2024 في مركز هانغتشو بينجيانغ بايماهو الدولي للمؤتمرات والمعارض من 29 مايو إلى 2 يونيو. خلال هذه الفترة، ستقام أكثر من 100 نشاط موضوعي، وسيتم دعوة العديد من رسامي الكاريكاتير ومخرجي الأنيميشن المشهورين دولياً للتوقيع في الموقع. بعض الأنشطة تتطلب حجز تذاكر مسبق. من المتوقع أن يجذب مئات الآلاف من السياح، وحجوزات الفنادق المحيطة مكتظة.]\nأنت محلل معلومات يحتاج لإكمال استخراج المعلومات المنظمة للأحداث بناءً على محتوى الأخبار الساخنة وتاريخ اليوم.\nتحتاج لتحديد المعلومات الأساسية للحدث، بما في ذلك اسم الحدث، النوع، النطاق، الأهمية، المحافظة، المدينة، الموقع المفصل، الوقت، إلخ.\nأنواع الأحداث تشمل: الحفلات الموسيقية، النقاط الساخنة الاجتماعية، أنشطة المناطق السياحية، المعارض، الامتحانات الإقليمية، الأحداث الرياضية، العروض، المنتديات، المهرجانات، الندوات، معارض التوظيف، العروض الترويجية، الأنشطة الخيرية، الترويج التجاري، إلخ. إذا لم تتمكن من التصنيف، يرجى إرجاع [أنواع أخرى].\nنطاق الحدث مقسم إلى: 1-أحداث كبيرة، 2-أحداث متوسطة، 3-أحداث صغيرة.\nأهمية الحدث مقسمة إلى: 1-الأكثر أهمية، 2-مهم نسبياً، 3-عام.\nيرجى التحقق بدقة من تطابق المحافظة والمدينة. إذا لم تتمكن من التحديد، يرجى إرجاع 'None'.\nقواعد تحديد الوقت: إذا انقضى الوقت ولا يؤثر على الخدمات المستقبلية، أرجع [Expired]؛ إذا كان لا يزال يؤثر، أرجع [Current]؛ إذا كان هناك نطاق زمني محدد، يرجى إرجاع تنسيق yyyyMMdd أو yyyyMMdd-yyyyMMdd، وإلا أرجع [None].\nيرجى تحديد ما إذا كنت ستحجز فندقاً لهذا الحدث كسائح، robotIntention يرجع True/False، واشرح السبب.\nتحتاج لاستخراج ما إذا كان يتطلب حجز تذاكر مسبق (ticketReservation:yes/no)، وإرجاع حقل ticketReservation في json.\nتحتاج لاستخراج معلومات الجهة المنظمة (organizer)، وإرجاع حقل organizer في json.\nيرجى الإرجاع بدقة في تنسيق JSON التالي:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\",\"organizer\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "اسم الحدث",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "نوع الحدث",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "نطاق الحدث",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "درجة أهمية الحدث",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "المحافظة",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "المدينة",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "الموقع المحدد",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "وقت الحدث",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "سبب تحديد الوقت",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "سبب التصنيف",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "هل هو سائح",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "سبب النية",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل يحتاج حجز تذاكر مسبق",
+                    "能力项": "特定格式"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "الجهة المنظمة",
+                    "能力项": "主题约束"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ticketReservation",
+                "organizer"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "هل يتوافق مع المخطط",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation",
+            "organizer": "#JSONSCHEMA#:organizer"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[[[جولة ليلية] ستفتح جولة هوانغشان الصيفية الليلية 2024 من 1 يوليو إلى 31 أغسطس. يمكن للسياح تسلق الجبل ليلاً ومشاهدة عرض الأضواء. ستضاف خدمات النقل الليلي. بعض طرق الجولة الليلية تتطلب حجوزات مسبقة. الجهة المنظمة هي لجنة إدارة منطقة هوانغشان السياحية.]\nأنت محلل معلومات يحتاج لإكمال استخراج المعلومات المنظمة للأحداث بناءً على محتوى الأخبار الساخنة وتاريخ اليوم.\nتحتاج لتحديد المعلومات الأساسية للحدث، بما في ذلك اسم الحدث، النوع، النطاق، الأهمية، المحافظة، المدينة، الموقع المفصل، الوقت، إلخ.\nأنواع الأحداث تشمل: الحفلات الموسيقية، النقاط الساخنة الاجتماعية، أنشطة المناطق السياحية، المعارض، الامتحانات الإقليمية، الأحداث الرياضية، العروض، المنتديات، المهرجانات، الندوات، معارض التوظيف، العروض الترويجية، الأنشطة الخيرية، الترويج التجاري، إلخ. إذا لم تتمكن من التصنيف، يرجى إرجاع [أنواع أخرى].\nنطاق الحدث مقسم إلى: 1-أحداث كبيرة، 2-أحداث متوسطة، 3-أحداث صغيرة.\nأهمية الحدث مقسمة إلى: 1-الأكثر أهمية، 2-مهم نسبياً، 3-عام.\nيرجى التحقق بدقة من تطابق المحافظة والمدينة. إذا لم تتمكن من التحديد، يرجى إرجاع 'None'.\nقواعد تحديد الوقت: إذا انقضى الوقت ولا يؤثر على الخدمات المستقبلية، أرجع [Expired]؛ إذا كان لا يزال يؤثر، أرجع [Current]؛ إذا كان هناك نطاق زمني محدد، يرجى إرجاع تنسيق yyyyMMdd أو yyyyMMdd-yyyyMMdd، وإلا أرجع [None].\nيرجى تحديد ما إذا كنت ستحجز فندقاً لهذا الحدث كسائح، robotIntention يرجع True/False، واشرح السبب.\nتحتاج لاستخراج ما إذا كان يتطلب حجز تذاكر مسبق (ticketReservation:yes/no)، وإرجاع حقل ticketReservation في json.\nتحتاج لاستخراج معلومات الجهة المنظمة (organizer)، وإرجاع حقل organizer في json.\nتحتاج لاستخراج ما إذا كانت خدمة النقل الليلي متوفرة (nightTransport:yes/no)، وإرجاع حقل nightTransport في json.\nيرجى الإرجاع بدقة في تنسيق JSON التالي:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\",\"organizer\": \"(Format:string)\",\"nightTransport\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "اسم الحدث",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "نوع الحدث",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "نطاق الحدث",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "درجة أهمية الحدث",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "المحافظة",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "المدينة",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "الموقع المحدد",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "وقت الحدث",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "سبب تحديد الوقت",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "سبب التصنيف",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "هل هو سائح",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "سبب النية",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل يحتاج حجز تذاكر مسبق",
+                    "能力项": "特定格式"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "الجهة المنظمة",
+                    "能力项": "主题约束"
+                },
+                "nightTransport": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل تتوفر خدمة النقل الليلي",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ticketReservation",
+                "organizer",
+                "nightTransport"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "هل يتوافق مع المخطط",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation",
+            "organizer": "#JSONSCHEMA#:organizer",
+            "nightTransport": "#JSONSCHEMA#:nightTransport"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[[[أخبار رياضية] ستقام بطولة الصين الوطنية لألعاب القوى للطلاب الجامعيين 2024 في مركز شيان الأولمبي الرياضي. بعض الأحداث تتطلب حجوزات بالاسم الحقيقي. الجهة المنظمة هي جمعية الرياضة الجامعية.]\nأنت محلل معلومات يحتاج لإكمال استخراج المعلومات المنظمة للأحداث بناءً على محتوى الأخبار الساخنة وتاريخ اليوم.\nتحتاج لتحديد المعلومات الأساسية للحدث، بما في ذلك اسم الحدث، النوع، النطاق، الأهمية، المحافظة، المدينة، الموقع المفصل، الوقت، إلخ.\nأنواع الأحداث تشمل: الحفلات الموسيقية، النقاط الساخنة الاجتماعية، أنشطة المناطق السياحية، المعارض، الامتحانات الإقليمية، الأحداث الرياضية، العروض، المنتديات، المهرجانات، الندوات، معارض التوظيف، العروض الترويجية، الأنشطة الخيرية، الترويج التجاري، إلخ. إذا لم تتمكن من التصنيف، يرجى إرجاع [أنواع أخرى].\nنطاق الحدث مقسم إلى: 1-أحداث كبيرة، 2-أحداث متوسطة، 3-أحداث صغيرة.\nأهمية الحدث مقسمة إلى: 1-الأكثر أهمية، 2-مهم نسبياً، 3-عام.\nيرجى التحقق بدقة من تطابق المحافظة والمدينة. إذا لم تتمكن من التحديد، يرجى إرجاع 'None'.\nقواعد تحديد الوقت: إذا انقضى الوقت ولا يؤثر على الخدمات المستقبلية، أرجع [Expired]؛ إذا كان لا يزال يؤثر، أرجع [Current]؛ إذا كان هناك نطاق زمني محدد، يرجى إرجاع تنسيق yyyyMMdd أو yyyyMMdd-yyyyMMdd، وإلا أرجع [None].\nيرجى تحديد ما إذا كنت ستحجز فندقاً لهذا الحدث كسائح، robotIntention يرجع True/False، واشرح السبب.\nتحتاج لاستخراج ما إذا كان يتطلب حجز تذاكر مسبق (ticketReservation:yes/no)، وإرجاع حقل ticketReservation في json.\nتحتاج لاستخراج معلومات الجهة المنظمة (organizer)، وإرجاع حقل organizer في json.\nيرجى الإرجاع بدقة في تنسيق JSON التالي:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\",\"organizer\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "اسم الحدث",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "نوع الحدث",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "نطاق الحدث",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "درجة أهمية الحدث",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "المحافظة",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "المدينة",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "الموقع المحدد",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "وقت الحدث",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "سبب تحديد الوقت",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "سبب التصنيف",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "هل هو سائح",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "سبب النية",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل يحتاج حجز تذاكر مسبق",
+                    "能力项": "特定格式"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "الجهة المنظمة",
+                    "能力项": "主题约束"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ticketReservation",
+                "organizer"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "هل يتوافق مع المخطط",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation",
+            "organizer": "#JSONSCHEMA#:organizer"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【معلومات العرض】ستقام حفلة جولة مايداي 2024 في محطة بكين في الاستاد الوطني في 20 يوليو. منطقة VIP تحتاج حجز مسبق، وسيتم دعوة ضيوف مميزين للمساعدة.]\nأنت محلل معلومات يحتاج لإكمال استخراج المعلومات المنظمة للأحداث بناءً على محتوى الأخبار الساخنة وتاريخ اليوم.\nتحتاج لتحديد المعلومات الأساسية للحدث، بما في ذلك اسم الحدث، النوع، النطاق، الأهمية، المحافظة، المدينة، الموقع المفصل، الوقت، إلخ.\nأنواع الأحداث تشمل: الحفلات الموسيقية، النقاط الساخنة الاجتماعية، أنشطة المناطق السياحية، المعارض، الامتحانات الإقليمية، الأحداث الرياضية، العروض، المنتديات، المهرجانات، الندوات، معارض التوظيف، العروض الترويجية، الأنشطة الخيرية، الترويج التجاري، إلخ. إذا لم تتمكن من التصنيف، يرجى إرجاع [أنواع أخرى].\nنطاق الحدث مقسم إلى: 1-أحداث كبيرة، 2-أحداث متوسطة، 3-أحداث صغيرة.\nأهمية الحدث مقسمة إلى: 1-الأكثر أهمية، 2-مهم نسبياً، 3-عام.\nيرجى التحقق بدقة من تطابق المحافظة والمدينة. إذا لم تتمكن من التحديد، يرجى إرجاع 'None'.\nقواعد تحديد الوقت: إذا انقضى الوقت ولا يؤثر على الخدمات المستقبلية، أرجع [Expired]؛ إذا كان لا يزال يؤثر، أرجع [Current]؛ إذا كان هناك نطاق زمني محدد، يرجى إرجاع تنسيق yyyyMMdd أو yyyyMMdd-yyyyMMdd، وإلا أرجع [None].\nيرجى تحديد ما إذا كنت ستحجز فندقاً لهذا الحدث كسائح، robotIntention يرجع True/False، واشرح السبب.\nتحتاج لاستخراج ما إذا كانت منطقة VIP تحتاج حجز (vipArea:yes/no)، وإرجاع حقل vipArea في json.\nتحتاج لاستخراج معلومات الضيف المميز (specialGuest)، وإرجاع حقل specialGuest في json.\nتحتاج لاستخراج ما إذا كان يتطلب حجز تذاكر مسبق (ticketReservation:yes/no)، وإرجاع حقل ticketReservation في json.\nيرجى الإرجاع بدقة في تنسيق JSON التالي:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"specialGuest\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "اسم الحدث",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "نوع الحدث",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "نطاق الحدث",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "درجة أهمية الحدث",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "المحافظة",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "المدينة",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "الموقع المحدد",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "وقت الحدث",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "سبب تحديد الوقت",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "سبب التصنيف",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "هل هو سائح",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "سبب النية",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل منطقة VIP تحتاج حجز",
+                    "能力项": "特定格式"
+                },
+                "specialGuest": {
+                    "type": "string",
+                    "description": "معلومات الضيف المميز",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل يحتاج حجز تذاكر مسبق",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "vipArea",
+                "specialGuest",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "هل يتوافق مع المخطط",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "specialGuest": "#JSONSCHEMA#:specialGuest",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【أخبار المعرض】سيقام معرض شنتشن الدولي للسيارات 2024 في مركز شنتشن للمؤتمرات والمعارض من 20 يونيو إلى 25 يونيو. الجهة المنظمة هي جمعية صناعة السيارات في شنتشن. بعض مناطق المعرض تتطلب حجوزات.]\nأنت محلل معلومات يحتاج لإكمال استخراج المعلومات المنظمة للأحداث بناءً على محتوى الأخبار الساخنة وتاريخ اليوم.\nتحتاج لتحديد المعلومات الأساسية للحدث، بما في ذلك اسم الحدث، النوع، النطاق، الأهمية، المحافظة، المدينة، الموقع المفصل، الوقت، إلخ.\nأنواع الأحداث تشمل: الحفلات الموسيقية، النقاط الساخنة الاجتماعية، أنشطة المناطق السياحية، المعارض، الامتحانات الإقليمية، الأحداث الرياضية، العروض، المنتديات، المهرجانات، الندوات، معارض التوظيف، العروض الترويجية، الأنشطة الخيرية، الترويج التجاري، إلخ. إذا لم تتمكن من التصنيف، يرجى إرجاع [أنواع أخرى].\nنطاق الحدث مقسم إلى: 1-أحداث كبيرة، 2-أحداث متوسطة، 3-أحداث صغيرة.\nأهمية الحدث مقسمة إلى: 1-الأكثر أهمية، 2-مهم نسبياً، 3-عام.\nيرجى التحقق بدقة من تطابق المحافظة والمدينة. إذا لم تتمكن من التحديد، يرجى إرجاع 'None'.\nقواعد تحديد الوقت: إذا انقضى الوقت ولا يؤثر على الخدمات المستقبلية، أرجع [Expired]؛ إذا كان لا يزال يؤثر، أرجع [Current]؛ إذا كان هناك نطاق زمني محدد، يرجى إرجاع تنسيق yyyyMMdd أو yyyyMMdd-yyyyMMdd، وإلا أرجع [None].\nيرجى تحديد ما إذا كنت ستحجز فندقاً لهذا الحدث كسائح، robotIntention يرجع True/False، واشرح السبب.\nتحتاج لاستخراج معلومات الجهة المنظمة (organizer)، وإرجاع حقل organizer في json.\nتحتاج لاستخراج ما إذا كانت منطقة VIP تحتاج حجز (vipArea:yes/no)، وإرجاع حقل vipArea في json.\nتحتاج لاستخراج منصة البث المباشر (broadcastPlatform)، وإرجاع حقل broadcastPlatform في json.\nيرجى الإرجاع بدقة في تنسيق JSON التالي:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"organizer\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"broadcastPlatform\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "اسم الحدث",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "نوع الحدث",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "نطاق الحدث",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "درجة أهمية الحدث",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "المحافظة",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "المدينة",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "الموقع المحدد",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "وقت الحدث",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "سبب تحديد الوقت",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "سبب التصنيف",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "هل هو سائح",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "سبب النية",
+                    "能力项": "主题约束"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "الجهة المنظمة",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل منطقة VIP تحتاج حجز",
+                    "能力项": "特定格式"
+                },
+                "broadcastPlatform": {
+                    "type": "string",
+                    "description": "منصة البث المباشر",
+                    "能力项": "主题约束"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "organizer",
+                "vipArea",
+                "broadcastPlatform"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "هل يتوافق مع المخطط",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "organizer": "#JSONSCHEMA#:organizer",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "broadcastPlatform": "#JSONSCHEMA#:broadcastPlatform"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【مهرجان الطعام】سيقام مهرجان تشنغدو الدولي للطعام 2024 في مركز المعارض الجديد من 1 أكتوبر إلى 7 أكتوبر. بعض مناطق المعرض ستكون محدودة التدفق، وعروض الطعام الليلية تتطلب حجوزات.]\nأنت محلل معلومات يحتاج لإكمال استخراج المعلومات المنظمة للأحداث بناءً على محتوى الأخبار الساخنة وتاريخ اليوم.\nتحتاج لتحديد المعلومات الأساسية للحدث، بما في ذلك اسم الحدث، النوع، النطاق، الأهمية، المحافظة، المدينة، الموقع المفصل، الوقت، إلخ.\nأنواع الأحداث تشمل: الحفلات الموسيقية، النقاط الساخنة الاجتماعية، أنشطة المناطق السياحية، المعارض، الامتحانات الإقليمية، الأحداث الرياضية، العروض، المنتديات، المهرجانات، الندوات، معارض التوظيف، العروض الترويجية، الأنشطة الخيرية، الترويج التجاري، إلخ. إذا لم تتمكن من التصنيف، يرجى إرجاع [أنواع أخرى].\nنطاق الحدث مقسم إلى: 1-أحداث كبيرة، 2-أحداث متوسطة، 3-أحداث صغيرة.\nأهمية الحدث مقسمة إلى: 1-الأكثر أهمية، 2-مهم نسبياً، 3-عام.\nيرجى التحقق بدقة من تطابق المحافظة والمدينة. إذا لم تتمكن من التحديد، يرجى إرجاع 'None'.\nقواعد تحديد الوقت: إذا انقضى الوقت ولا يؤثر على الخدمات المستقبلية، أرجع [Expired]؛ إذا كان لا يزال يؤثر، أرجع [Current]؛ إذا كان هناك نطاق زمني محدد، يرجى إرجاع تنسيق yyyyMMdd أو yyyyMMdd-yyyyMMdd، وإلا أرجع [None].\nيرجى تحديد ما إذا كنت ستحجز فندقاً لهذا الحدث كسائح، robotIntention يرجع True/False، واشرح السبب.\nتحتاج لاستخراج ما إذا كان عرض طعام ليلي (foodFestival:yes/no)، وإرجاع حقل foodFestival في json.\nتحتاج لاستخراج ما إذا كان الدخول محدود (entryLimit:yes/no)، وإرجاع حقل entryLimit في json.\nتحتاج لاستخراج ما إذا كان يتطلب حجز تذاكر مسبق (ticketReservation:yes/no)، وإرجاع حقل ticketReservation في json.\nيرجى الإرجاع بدقة في تنسيق JSON التالي:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"foodFestival\": \"(Format:string)\",\"entryLimit\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "اسم الحدث",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "نوع الحدث",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "نطاق الحدث",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "درجة أهمية الحدث",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "المحافظة",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "المدينة",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "الموقع المحدد",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "وقت الحدث",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "سبب تحديد الوقت",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "سبب التصنيف",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "هل هو سائح",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "سبب النية",
+                    "能力项": "主题约束"
+                },
+                "foodFestival": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل هو عرض طعام ليلي",
+                    "能力项": "特定格式"
+                },
+                "entryLimit": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل يوجد تحديد للدخول",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل يحتاج حجز تذاكر مسبق",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "foodFestival",
+                "entryLimit",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "هل يتوافق مع المخطط",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "foodFestival": "#JSONSCHEMA#:foodFestival",
+            "entryLimit": "#JSONSCHEMA#:entryLimit",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【اهتمام اجتماعي】ستقام امتحانات القبول الجامعي الوطنية 2024 من 7 يونيو إلى 9 يونيو، وبعض مواقع الاختبار ستطبق حجوزات بالاسم الحقيقي للدخول.]\nأنت محلل معلومات يحتاج لإكمال استخراج المعلومات المنظمة للأحداث بناءً على محتوى الأخبار الساخنة وتاريخ اليوم.\nتحتاج لتحديد المعلومات الأساسية للحدث، بما في ذلك اسم الحدث، النوع، النطاق، الأهمية، المحافظة، المدينة، الموقع المفصل، الوقت، إلخ.\nأنواع الأحداث تشمل: الحفلات الموسيقية، النقاط الساخنة الاجتماعية، أنشطة المناطق السياحية، المعارض، الامتحانات الإقليمية، الأحداث الرياضية، العروض، المنتديات، المهرجانات، الندوات، معارض التوظيف، العروض الترويجية، الأنشطة الخيرية، الترويج التجاري، إلخ. إذا لم تتمكن من التصنيف، يرجى إرجاع [أنواع أخرى].\nنطاق الحدث مقسم إلى: 1-أحداث كبيرة، 2-أحداث متوسطة، 3-أحداث صغيرة.\nأهمية الحدث مقسمة إلى: 1-الأكثر أهمية، 2-مهم نسبياً، 3-عام.\nيرجى التحقق بدقة من تطابق المحافظة والمدينة. إذا لم تتمكن من التحديد، يرجى إرجاع 'None'.\nقواعد تحديد الوقت: إذا انقضى الوقت ولا يؤثر على الخدمات المستقبلية، أرجع [Expired]؛ إذا كان لا يزال يؤثر، أرجع [Current]؛ إذا كان هناك نطاق زمني محدد، يرجى إرجاع تنسيق yyyyMMdd أو yyyyMMdd-yyyyMMdd، وإلا أرجع [None].\nيرجى تحديد ما إذا كنت ستحجز فندقاً لهذا الحدث كسائح، robotIntention يرجع True/False، واشرح السبب.\nتحتاج لاستخراج ما إذا كان يتطلب حجز تذاكر مسبق (ticketReservation:yes/no)، وإرجاع حقل ticketReservation في json.\nيرجى الإرجاع بدقة في تنسيق JSON التالي:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "اسم الحدث",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "نوع الحدث",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "نطاق الحدث",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "درجة أهمية الحدث",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "المحافظة",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "المدينة",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "الموقع المحدد",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "وقت الحدث",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "سبب تحديد الوقت",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "سبب التصنيف",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "هل هو سائح",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "سبب النية",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل يحتاج حجز تذاكر مسبق",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "هل يتوافق مع المخطط",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【أحداث رياضية】سيقام ماراثون شنغهاي الدولي 2024 في 17 نوفمبر. سيتم بث الحدث مباشرة على منصات متعددة طوال العملية. حزم المشاركة VIP تتطلب حجوزات.]\nأنت محلل معلومات يحتاج لإكمال استخراج المعلومات المنظمة للأحداث بناءً على محتوى الأخبار الساخنة وتاريخ اليوم.\nتحتاج لتحديد المعلومات الأساسية للحدث، بما في ذلك اسم الحدث، النوع، النطاق، الأهمية، المحافظة، المدينة، الموقع المفصل، الوقت، إلخ.\nأنواع الأحداث تشمل: الحفلات الموسيقية، النقاط الساخنة الاجتماعية، أنشطة المناطق السياحية، المعارض، الامتحانات الإقليمية، الأحداث الرياضية، العروض، المنتديات، المهرجانات، الندوات، معارض التوظيف، العروض الترويجية، الأنشطة الخيرية، الترويج التجاري، إلخ. إذا لم تتمكن من التصنيف، يرجى إرجاع [أنواع أخرى].\nنطاق الحدث مقسم إلى: 1-أحداث كبيرة، 2-أحداث متوسطة، 3-أحداث صغيرة.\nأهمية الحدث مقسمة إلى: 1-الأكثر أهمية، 2-مهم نسبياً، 3-عام.\nيرجى التحقق بدقة من تطابق المحافظة والمدينة. إذا لم تتمكن من التحديد، يرجى إرجاع 'None'.\nقواعد تحديد الوقت: إذا انقضى الوقت ولا يؤثر على الخدمات المستقبلية، أرجع [Expired]؛ إذا كان لا يزال يؤثر، أرجع [Current]؛ إذا كان هناك نطاق زمني محدد، يرجى إرجاع تنسيق yyyyMMdd أو yyyyMMdd-yyyyMMdd، وإلا أرجع [None].\nيرجى تحديد ما إذا كنت ستحجز فندقاً لهذا الحدث كسائح، robotIntention يرجع True/False، واشرح السبب.\nتحتاج لاستخراج ما إذا كانت منطقة VIP تحتاج حجز (vipArea:yes/no)، وإرجاع حقل vipArea في json.\nتحتاج لاستخراج منصة البث المباشر (broadcastPlatform)، وإرجاع حقل broadcastPlatform في json.\nتحتاج لاستخراج ما إذا كان يتطلب حجز تذاكر مسبق (ticketReservation:yes/no)، وإرجاع حقل ticketReservation في json.\nيرجى الإرجاع بدقة في تنسيق JSON التالي:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"broadcastPlatform\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "اسم الحدث",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "نوع الحدث",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "نطاق الحدث",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "درجة أهمية الحدث",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "المحافظة",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "المدينة",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "الموقع المحدد",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "وقت الحدث",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "سبب تحديد الوقت",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "سبب التصنيف",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "هل هو سائح",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "سبب النية",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل منطقة VIP تحتاج حجز",
+                    "能力项": "特定格式"
+                },
+                "broadcastPlatform": {
+                    "type": "string",
+                    "description": "منصة البث المباشر",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل يحتاج حجز تذاكر مسبق",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "vipArea",
+                "broadcastPlatform",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "هل يتوافق مع المخطط",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "broadcastPlatform": "#JSONSCHEMA#:broadcastPlatform",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【معرض الأنيميشن】سيقام معرض قوانغتشو الدولي للأنيميشن والألعاب 2024 من 15 أغسطس إلى 19 أغسطس. تذاكر VIP تحتاج حجز بالاسم الحقيقي. بعض توقيعات الضيوف تحتاج تسجيل.]\nأنت محلل معلومات يحتاج لإكمال استخراج المعلومات المنظمة للأحداث بناءً على محتوى الأخبار الساخنة وتاريخ اليوم.\nتحتاج لتحديد المعلومات الأساسية للحدث، بما في ذلك اسم الحدث، النوع، النطاق، الأهمية، المحافظة، المدينة، الموقع المفصل، الوقت، إلخ.\nأنواع الأحداث تشمل: الحفلات الموسيقية، النقاط الساخنة الاجتماعية، أنشطة المناطق السياحية، المعارض، الامتحانات الإقليمية، الأحداث الرياضية، العروض، المنتديات، المهرجانات، الندوات، معارض التوظيف، العروض الترويجية، الأنشطة الخيرية، الترويج التجاري، إلخ. إذا لم تتمكن من التصنيف، يرجى إرجاع [أنواع أخرى].\nنطاق الحدث مقسم إلى: 1-أحداث كبيرة، 2-أحداث متوسطة، 3-أحداث صغيرة.\nأهمية الحدث مقسمة إلى: 1-الأكثر أهمية، 2-مهم نسبياً، 3-عام.\nيرجى التحقق بدقة من تطابق المحافظة والمدينة. إذا لم تتمكن من التحديد، يرجى إرجاع 'None'.\nقواعد تحديد الوقت: إذا انقضى الوقت ولا يؤثر على الخدمات المستقبلية، أرجع [Expired]؛ إذا كان لا يزال يؤثر، أرجع [Current]؛ إذا كان هناك نطاق زمني محدد، يرجى إرجاع تنسيق yyyyMMdd أو yyyyMMdd-yyyyMMdd، وإلا أرجع [None].\nيرجى تحديد ما إذا كنت ستحجز فندقاً لهذا الحدث كسائح، robotIntention يرجع True/False، واشرح السبب.\nتحتاج لاستخراج ما إذا كانت منطقة VIP تحتاج حجز (vipArea:yes/no)، وإرجاع حقل vipArea في json.\nتحتاج لاستخراج معلومات الضيف المميز (specialGuest)، وإرجاع حقل specialGuest في json.\nتحتاج لاستخراج ما إذا كان يتطلب حجز تذاكر مسبق (ticketReservation:yes/no)، وإرجاع حقل ticketReservation في json.\nيرجى الإرجاع بدقة في تنسيق JSON التالي:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"specialGuest\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "اسم الحدث",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "نوع الحدث",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "نطاق الحدث",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "درجة أهمية الحدث",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "المحافظة",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "المدينة",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "الموقع المحدد",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "وقت الحدث",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "سبب تحديد الوقت",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "سبب التصنيف",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "هل هو سائح",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "سبب النية",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل منطقة VIP تحتاج حجز",
+                    "能力项": "特定格式"
+                },
+                "specialGuest": {
+                    "type": "string",
+                    "description": "معلومات الضيف المميز",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل يحتاج حجز تذاكر مسبق",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "vipArea",
+                "specialGuest",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "هل يتوافق مع المخطط",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "specialGuest": "#JSONSCHEMA#:specialGuest",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【معاينة العرض】ستقام حفلة لانغ لانغ للبيانو المنفرد 2024 في مركز شنغهاي الشرقي للفنون في 28 سبتمبر. منطقة VIP تحتاج حجز مسبق. سيتم بث الحدث مباشرة على منصات متعددة.]\nأنت محلل معلومات يحتاج لإكمال استخراج المعلومات المنظمة للأحداث بناءً على محتوى الأخبار الساخنة وتاريخ اليوم.\nتحتاج لتحديد المعلومات الأساسية للحدث، بما في ذلك اسم الحدث، النوع، النطاق، الأهمية، المحافظة، المدينة، الموقع المفصل، الوقت، إلخ.\nأنواع الأحداث تشمل: الحفلات الموسيقية، النقاط الساخنة الاجتماعية، أنشطة المناطق السياحية، المعارض، الامتحانات الإقليمية، الأحداث الرياضية، العروض، المنتديات، المهرجانات، الندوات، معارض التوظيف، العروض الترويجية، الأنشطة الخيرية، الترويج التجاري، إلخ. إذا لم تتمكن من التصنيف، يرجى إرجاع [أنواع أخرى].\nنطاق الحدث مقسم إلى: 1-أحداث كبيرة، 2-أحداث متوسطة، 3-أحداث صغيرة.\nأهمية الحدث مقسمة إلى: 1-الأكثر أهمية، 2-مهم نسبياً، 3-عام.\nيرجى التحقق بدقة من تطابق المحافظة والمدينة. إذا لم تتمكن من التحديد، يرجى إرجاع 'None'.\nقواعد تحديد الوقت: إذا انقضى الوقت ولا يؤثر على الخدمات المستقبلية، أرجع [Expired]؛ إذا كان لا يزال يؤثر، أرجع [Current]؛ إذا كان هناك نطاق زمني محدد، يرجى إرجاع تنسيق yyyyMMdd أو yyyyMMdd-yyyyMMdd، وإلا أرجع [None].\nيرجى تحديد ما إذا كنت ستحجز فندقاً لهذا الحدث كسائح، robotIntention يرجع True/False، واشرح السبب.\nتحتاج لاستخراج ما إذا كانت منطقة VIP تحتاج حجز (vipArea:yes/no)، وإرجاع حقل vipArea في json.\nتحتاج لاستخراج منصة البث المباشر (broadcastPlatform)، وإرجاع حقل broadcastPlatform في json.\nتحتاج لاستخراج ما إذا كان يتطلب حجز تذاكر مسبق (ticketReservation:yes/no)، وإرجاع حقل ticketReservation في json.\nيرجى الإرجاع بدقة في تنسيق JSON التالي:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"broadcastPlatform\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "اسم الحدث",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "نوع الحدث",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "نطاق الحدث",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "درجة أهمية الحدث",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "المحافظة",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "المدينة",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "الموقع المحدد",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "وقت الحدث",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "سبب تحديد الوقت",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "سبب التصنيف",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "هل هو سائح",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "سبب النية",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل منطقة VIP تحتاج حجز",
+                    "能力项": "特定格式"
+                },
+                "broadcastPlatform": {
+                    "type": "string",
+                    "description": "منصة البث المباشر",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل يحتاج حجز تذاكر مسبق",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "vipArea",
+                "broadcastPlatform",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "هل يتوافق مع المخطط",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "broadcastPlatform": "#JSONSCHEMA#:broadcastPlatform",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【قمة المنتدى】سيقام منتدى الصين لتكنولوجيا الذكاء الاصطناعي المتقدمة 2024 في حديقة شنتشن للعلوم والتكنولوجيا من 5 يوليو إلى 7. سيتم تفسير المنتدى بالكامل. المنتديات الفرعية تحتاج حجز. الجهة المنظمة هي جمعية الذكاء الاصطناعي الصينية.]\nأنت محلل معلومات يحتاج لإكمال استخراج المعلومات المنظمة للأحداث بناءً على محتوى الأخبار الساخنة وتاريخ اليوم.\nتحتاج لتحديد المعلومات الأساسية للحدث، بما في ذلك اسم الحدث، النوع، النطاق، الأهمية، المحافظة، المدينة، الموقع المفصل، الوقت، إلخ.\nأنواع الأحداث تشمل: الحفلات الموسيقية، النقاط الساخنة الاجتماعية، أنشطة المناطق السياحية، المعارض، الامتحانات الإقليمية، الأحداث الرياضية، العروض، المنتديات، المهرجانات، الندوات، معارض التوظيف، العروض الترويجية، الأنشطة الخيرية، الترويج التجاري، إلخ. إذا لم تتمكن من التصنيف، يرجى إرجاع [أنواع أخرى].\nنطاق الحدث مقسم إلى: 1-أحداث كبيرة، 2-أحداث متوسطة، 3-أحداث صغيرة.\nأهمية الحدث مقسمة إلى: 1-الأكثر أهمية، 2-مهم نسبياً، 3-عام.\nيرجى التحقق بدقة من تطابق المحافظة والمدينة. إذا لم تتمكن من التحديد، يرجى إرجاع 'None'.\nقواعد تحديد الوقت: إذا انقضى الوقت ولا يؤثر على الخدمات المستقبلية، أرجع [Expired]؛ إذا كان لا يزال يؤثر، أرجع [Current]؛ إذا كان هناك نطاق زمني محدد، يرجى إرجاع تنسيق yyyyMMdd أو yyyyMMdd-yyyyMMdd، وإلا أرجع [None].\nيرجى تحديد ما إذا كنت ستحجز فندقاً لهذا الحدث كسائح، robotIntention يرجع True/False، واشرح السبب.\nتحتاج لاستخراج معلومات الجهة المنظمة (organizer)، وإرجاع حقل organizer في json.\nتحتاج لاستخراج ما إذا كانت الترجمة الفورية متوفرة (liveTranslation:yes/no)، وإرجاع حقل liveTranslation في json.\nتحتاج لاستخراج ما إذا كان يتطلب حجز تذاكر مسبق (ticketReservation:yes/no)، وإرجاع حقل ticketReservation في json.\nيرجى الإرجاع بدقة في تنسيق JSON التالي:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"organizer\": \"(Format:string)\",\"liveTranslation\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "اسم الحدث",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "نوع الحدث",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "نطاق الحدث",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "درجة أهمية الحدث",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "المحافظة",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "المدينة",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "الموقع المحدد",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "وقت الحدث",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "سبب تحديد الوقت",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "سبب التصنيف",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "هل هو سائح",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "سبب النية",
+                    "能力项": "主题约束"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "الجهة المنظمة",
+                    "能力项": "主题约束"
+                },
+                "liveTranslation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل تتوفر ترجمة فورية",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل يحتاج حجز تذاكر مسبق",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "organizer",
+                "liveTranslation",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "هل يتوافق مع المخطط",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "organizer": "#JSONSCHEMA#:organizer",
+            "liveTranslation": "#JSONSCHEMA#:liveTranslation",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【أنشطة الوالدين والأطفال】سيقام كرنفال بكين للأطفال 2024 في حديقة تشاويانغ من 1 يونيو إلى 3 يونيو. ستكون هناك منطقة تفاعلية للوالدين والأطفال. الأطفال يدخلون مجاناً. بعض المشاريع تحتاج حجز. الموقف مجاني في الحديقة.]\nأنت محلل معلومات يحتاج لإكمال استخراج المعلومات المنظمة للأحداث بناءً على محتوى الأخبار الساخنة وتاريخ اليوم.\nتحتاج لتحديد المعلومات الأساسية للحدث، بما في ذلك اسم الحدث، النوع، النطاق، الأهمية، المحافظة، المدينة، الموقع المفصل، الوقت، إلخ.\nأنواع الأحداث تشمل: الحفلات الموسيقية، النقاط الساخنة الاجتماعية، أنشطة المناطق السياحية، المعارض، الامتحانات الإقليمية، الأحداث الرياضية، العروض، المنتديات، المهرجانات، الندوات، معارض التوظيف، العروض الترويجية، الأنشطة الخيرية، الترويج التجاري، إلخ. إذا لم تتمكن من التصنيف، يرجى إرجاع [أنواع أخرى].\nنطاق الحدث مقسم إلى: 1-أحداث كبيرة، 2-أحداث متوسطة، 3-أحداث صغيرة.\nأهمية الحدث مقسمة إلى: 1-الأكثر أهمية، 2-مهم نسبياً، 3-عام.\nيرجى التحقق بدقة من تطابق المحافظة والمدينة. إذا لم تتمكن من التحديد، يرجى إرجاع 'None'.\nقواعد تحديد الوقت: إذا انقضى الوقت ولا يؤثر على الخدمات المستقبلية، أرجع [Expired]؛ إذا كان لا يزال يؤثر، أرجع [Current]؛ إذا كان هناك نطاق زمني محدد، يرجى إرجاع تنسيق yyyyMMdd أو yyyyMMdd-yyyyMMdd، وإلا أرجع [None].\nيرجى تحديد ما إذا كنت ستحجز فندقاً لهذا الحدث كسائح، robotIntention يرجع True/False، واشرح السبب.\nتحتاج لاستخراج ما إذا كان نشاط مناسب للأطفال (childFriendly:yes/no)، وإرجاع حقل childFriendly في json.\nتحتاج لاستخراج ما إذا كان الموقف المجاني متوفر (parkingAvailable:yes/no)، وإرجاع حقل parkingAvailable في json.\nتحتاج لاستخراج ما إذا كان يتطلب حجز تذاكر مسبق (ticketReservation:yes/no)، وإرجاع حقل ticketReservation في json.\nيرجى الإرجاع بدقة في تنسيق JSON التالي:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"childFriendly\": \"(Format:string)\",\"parkingAvailable\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "اسم الحدث",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "نوع الحدث",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "نطاق الحدث",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "درجة أهمية الحدث",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "المحافظة",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "المدينة",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "الموقع المحدد",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "وقت الحدث",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "سبب تحديد الوقت",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "سبب التصنيف",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "هل هو سائح",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "سبب النية",
+                    "能力项": "主题约束"
+                },
+                "childFriendly": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل هو نشاط مناسب للأطفال",
+                    "能力项": "特定格式"
+                },
+                "parkingAvailable": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل يتوفر موقف مجاني",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل يحتاج حجز تذاكر مسبق",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "childFriendly",
+                "parkingAvailable",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "هل يتوافق مع المخطط",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "childFriendly": "#JSONSCHEMA#:childFriendly",
+            "parkingAvailable": "#JSONSCHEMA#:parkingAvailable",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【أنشطة خيرية】ستجول العروض الخيرية الوطنية لحماية البيئة 2024 في عشر مدن من 20 مايو إلى 10 يونيو. ستكون هناك منطقة تجربة حماية البيئة. بعض المدن ستحصل على مكافآت خضراء.]\nأنت محلل معلومات يحتاج لإكمال استخراج المعلومات المنظمة للأحداث بناءً على محتوى الأخبار الساخنة وتاريخ اليوم.\nتحتاج لتحديد المعلومات الأساسية للحدث، بما في ذلك اسم الحدث، النوع، النطاق، الأهمية، المحافظة، المدينة، الموقع المفصل، الوقت، إلخ.\nأنواع الأحداث تشمل: الحفلات الموسيقية، النقاط الساخنة الاجتماعية، أنشطة المناطق السياحية، المعارض، الامتحانات الإقليمية، الأحداث الرياضية، العروض، المنتديات، المهرجانات، الندوات، معارض التوظيف، العروض الترويجية، الأنشطة الخيرية، الترويج التجاري، إلخ. إذا لم تتمكن من التصنيف، يرجى إرجاع [أنواع أخرى].\nنطاق الحدث مقسم إلى: 1-أحداث كبيرة، 2-أحداث متوسطة، 3-أحداث صغيرة.\nأهمية الحدث مقسمة إلى: 1-الأكثر أهمية، 2-مهم نسبياً، 3-عام.\nيرجى التحقق بدقة من تطابق المحافظة والمدينة. إذا لم تتمكن من التحديد، يرجى إرجاع 'None'.\nقواعد تحديد الوقت: إذا انقضى الوقت ولا يؤثر على الخدمات المستقبلية، أرجع [Expired]؛ إذا كان لا يزال يؤثر، أرجع [Current]؛ إذا كان هناك نطاق زمني محدد، يرجى إرجاع تنسيق yyyyMMdd أو yyyyMMdd-yyyyMMdd، وإلا أرجع [None].\nيرجى تحديد ما إذا كنت ستحجز فندقاً لهذا الحدث كسائح، robotIntention يرجع True/False، واشرح السبب.\nتحتاج لاستخراج ما إذا كان يحمل علامة بيئية خضراء (ecoTag:yes/no)، وإرجاع حقل ecoTag في json.\nتحتاج لاستخراج ما إذا كان الدخول محدود (entryLimit:yes/no)، وإرجاع حقل entryLimit في json.\nتحتاج لاستخراج ما إذا كان يتطلب حجز تذاكر مسبق (ticketReservation:yes/no)، وإرجاع حقل ticketReservation في json.\nيرجى الإرجاع بدقة في تنسيق JSON التالي:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ecoTag\": \"(Format:string)\",\"entryLimit\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "اسم الحدث",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "نوع الحدث",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "نطاق الحدث",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "درجة أهمية الحدث",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "المحافظة",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "المدينة",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "الموقع المحدد",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "وقت الحدث",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "سبب تحديد الوقت",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "سبب التصنيف",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "هل هو سائح",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "سبب النية",
+                    "能力项": "主题约束"
+                },
+                "ecoTag": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل يحمل علامة بيئية خضراء",
+                    "能力项": "特定格式"
+                },
+                "entryLimit": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل يوجد تحديد للدخول",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل يحتاج حجز تذاكر مسبق",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ecoTag",
+                "entryLimit",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "هل يتوافق مع المخطط",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ecoTag": "#JSONSCHEMA#:ecoTag",
+            "entryLimit": "#JSONSCHEMA#:entryLimit",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【معرض التوظيف】سيقام معرض شنغهاي الدولي للشركات المشهورة للتوظيف 2024 من 15 يوليو إلى 16. بعض المناصب تتطلب مواعيد للمقابلات. الجهة المنظمة هي مكتب شنغهاي البلدي للموارد البشرية والضمان الاجتماعي. توجد منطقة VIP للمرشحين.]\nأنت محلل معلومات يحتاج لإكمال استخراج المعلومات المنظمة للأحداث بناءً على محتوى الأخبار الساخنة وتاريخ اليوم.\nتحتاج لتحديد المعلومات الأساسية للحدث، بما في ذلك اسم الحدث، النوع، النطاق، الأهمية، المحافظة، المدينة، الموقع المفصل، الوقت، إلخ.\nأنواع الأحداث تشمل: الحفلات الموسيقية، النقاط الساخنة الاجتماعية، أنشطة المناطق السياحية، المعارض، الامتحانات الإقليمية، الأحداث الرياضية، العروض، المنتديات، المهرجانات، الندوات، معارض التوظيف، العروض الترويجية، الأنشطة الخيرية، الترويج التجاري، إلخ. إذا لم تتمكن من التصنيف، يرجى إرجاع [أنواع أخرى].\nنطاق الحدث مقسم إلى: 1-أحداث كبيرة، 2-أحداث متوسطة، 3-أحداث صغيرة.\nأهمية الحدث مقسمة إلى: 1-الأكثر أهمية، 2-مهم نسبياً، 3-عام.\nيرجى التحقق بدقة من تطابق المحافظة والمدينة. إذا لم تتمكن من التحديد، يرجى إرجاع 'None'.\nقواعد تحديد الوقت: إذا انقضى الوقت ولا يؤثر على الخدمات المستقبلية، أرجع [Expired]؛ إذا كان لا يزال يؤثر، أرجع [Current]؛ إذا كان هناك نطاق زمني محدد، يرجى إرجاع تنسيق yyyyMMdd أو yyyyMMdd-yyyyMMdd، وإلا أرجع [None].\nيرجى تحديد ما إذا كنت ستحجز فندقاً لهذا الحدث كسائح، robotIntention يرجع True/False، واشرح السبب.\nتحتاج لاستخراج معلومات الجهة المنظمة (organizer)، وإرجاع حقل organizer في json.\nتحتاج لاستخراج ما إذا كانت منطقة VIP تحتاج حجز (vipArea:yes/no)، وإرجاع حقل vipArea في json.\nتحتاج لاستخراج ما إذا كان يتطلب حجز تذاكر مسبق (ticketReservation:yes/no)، وإرجاع حقل ticketReservation في json.\nيرجى الإرجاع بدقة في تنسيق JSON التالي:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"organizer\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "اسم الحدث",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "نوع الحدث",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "نطاق الحدث",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "درجة أهمية الحدث",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "المحافظة",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "المدينة",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "الموقع المحدد",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "وقت الحدث",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "سبب تحديد الوقت",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "سبب التصنيف",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "هل هو سائح",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "سبب النية",
+                    "能力项": "主题约束"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "الجهة المنظمة",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل منطقة VIP تحتاج حجز",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل يحتاج حجز تذاكر مسبق",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "organizer",
+                "vipArea",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "هل يتوافق مع المخطط",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "organizer": "#JSONSCHEMA#:organizer",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【ترويج تجاري】سيقام مهرجان قوانغتشو الصيفي للتسوق 2024 من 1 أغسطس إلى 15 أغسطس. مناطق الأعضاء الحصرية تتطلب مواعيد. التجار المحددون لديهم خصومات.]\nأنت محلل معلومات يحتاج لإكمال استخراج المعلومات المنظمة للأحداث بناءً على محتوى الأخبار الساخنة وتاريخ اليوم.\nتحتاج لتحديد المعلومات الأساسية للحدث، بما في ذلك اسم الحدث، النوع، النطاق، الأهمية، المحافظة، المدينة، الموقع المفصل، الوقت، إلخ.\nأنواع الأحداث تشمل: الحفلات الموسيقية، النقاط الساخنة الاجتماعية، أنشطة المناطق السياحية، المعارض، الامتحانات الإقليمية، الأحداث الرياضية، العروض، المنتديات، المهرجانات، الندوات، معارض التوظيف، العروض الترويجية، الأنشطة الخيرية، الترويج التجاري، إلخ. إذا لم تتمكن من التصنيف، يرجى إرجاع [أنواع أخرى].\nنطاق الحدث مقسم إلى: 1-أحداث كبيرة، 2-أحداث متوسطة، 3-أحداث صغيرة.\nأهمية الحدث مقسمة إلى: 1-الأكثر أهمية، 2-مهم نسبياً، 3-عام.\nيرجى التحقق بدقة من تطابق المحافظة والمدينة. إذا لم تتمكن من التحديد، يرجى إرجاع 'None'.\nقواعد تحديد الوقت: إذا انقضى الوقت ولا يؤثر على الخدمات المستقبلية، أرجع [Expired]؛ إذا كان لا يزال يؤثر، أرجع [Current]؛ إذا كان هناك نطاق زمني محدد، يرجى إرجاع تنسيق yyyyMMdd أو yyyyMMdd-yyyyMMdd، وإلا أرجع [None].\nيرجى تحديد ما إذا كنت ستحجز فندقاً لهذا الحدث كسائح، robotIntention يرجع True/False، واشرح السبب.\nتحتاج لاستخراج ما إذا كانت منطقة VIP تحتاج حجز (vipArea:yes/no)، وإرجاع حقل vipArea في json.\nتحتاج لاستخراج ما إذا كانت توجد خصومات حصرية (discountInfo:yes/no)، وإرجاع حقل discountInfo في json.\nتحتاج لاستخراج ما إذا كان يتطلب حجز تذاكر مسبق (ticketReservation:yes/no)، وإرجاع حقل ticketReservation في json.\nيرجى الإرجاع بدقة في تنسيق JSON التالي:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"discountInfo\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "اسم الحدث",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "نوع الحدث",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "نطاق الحدث",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "درجة أهمية الحدث",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "المحافظة",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "المدينة",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "الموقع المحدد",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "وقت الحدث",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "سبب تحديد الوقت",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "سبب التصنيف",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "هل هو سائح",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "سبب النية",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل منطقة VIP تحتاج حجز",
+                    "能力项": "特定格式"
+                },
+                "discountInfo": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل توجد خصومات حصرية",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل يحتاج حجز تذاكر مسبق",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "vipArea",
+                "discountInfo",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "هل يتوافق مع المخطط",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "discountInfo": "#JSONSCHEMA#:discountInfo",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【احتفال المهرجان】سيقام مهرجان شيان للمدينة القديمة للفوانيس 2024 من 5 فبراير إلى 19 فبراير. عروض الأضواء الليلية ستقام كل يوم. منصات VIP تتطلب مواعيد. الجهة المنظمة هي مكتب شيان البلدي للثقافة والسياحة.]\nأنت محلل معلومات يحتاج لإكمال استخراج المعلومات المنظمة للأحداث بناءً على محتوى الأخبار الساخنة وتاريخ اليوم.\nتحتاج لتحديد المعلومات الأساسية للحدث، بما في ذلك اسم الحدث، النوع، النطاق، الأهمية، المحافظة، المدينة، الموقع المفصل، الوقت، إلخ.\nأنواع الأحداث تشمل: الحفلات الموسيقية، النقاط الساخنة الاجتماعية، أنشطة المناطق السياحية، المعارض، الامتحانات الإقليمية، الأحداث الرياضية، العروض، المنتديات، المهرجانات، الندوات، معارض التوظيف، العروض الترويجية، الأنشطة الخيرية، الترويج التجاري، إلخ. إذا لم تتمكن من التصنيف، يرجى إرجاع [أنواع أخرى].\nنطاق الحدث مقسم إلى: 1-أحداث كبيرة، 2-أحداث متوسطة، 3-أحداث صغيرة.\nأهمية الحدث مقسمة إلى: 1-الأكثر أهمية، 2-مهم نسبياً، 3-عام.\nيرجى التحقق بدقة من تطابق المحافظة والمدينة. إذا لم تتمكن من التحديد، يرجى إرجاع 'None'.\nقواعد تحديد الوقت: إذا انقضى الوقت ولا يؤثر على الخدمات المستقبلية، أرجع [Expired]؛ إذا كان لا يزال يؤثر، أرجع [Current]؛ إذا كان هناك نطاق زمني محدد، يرجى إرجاع تنسيق yyyyMMdd أو yyyyMMdd-yyyyMMdd، وإلا أرجع [None].\nيرجى تحديد ما إذا كنت ستحجز فندقاً لهذا الحدث كسائح، robotIntention يرجع True/False، واشرح السبب.\nتحتاج لاستخراج معلومات الجهة المنظمة (organizer)، وإرجاع حقل organizer في json.\nتحتاج لاستخراج ما إذا كانت منطقة VIP تحتاج حجز (vipArea:yes/no)، وإرجاع حقل vipArea في json.\nتحتاج لاستخراج ما إذا كان يتطلب حجز تذاكر مسبق (ticketReservation:yes/no)، وإرجاع حقل ticketReservation في json.\nيرجى الإرجاع بدقة في تنسيق JSON التالي:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"organizer\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "اسم الحدث",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "نوع الحدث",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "نطاق الحدث",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "درجة أهمية الحدث",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "المحافظة",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "المدينة",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "الموقع المحدد",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "وقت الحدث",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "سبب تحديد الوقت",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "سبب التصنيف",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "هل هو سائح",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "سبب النية",
+                    "能力项": "主题约束"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "الجهة المنظمة",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل منطقة VIP تحتاج حجز",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل يحتاج حجز تذاكر مسبق",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "organizer",
+                "vipArea",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "هل يتوافق مع المخطط",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "organizer": "#JSONSCHEMA#:organizer",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【ندوة】ستقام ندوة الصين لأمن الإنترنت 2024 في المركز الوطني للمؤتمرات من 10 سبتمبر إلى 12. ستتوفر ترجمة فورية وبث مباشر عبر الإنترنت. بعض الأماكن الفرعية ستحصل على مناطق حصرية للضيوف.]\nأنت محلل معلومات يحتاج لإكمال استخراج المعلومات المنظمة للأحداث بناءً على محتوى الأخبار الساخنة وتاريخ اليوم.\nتحتاج لتحديد المعلومات الأساسية للحدث، بما في ذلك اسم الحدث، النوع، النطاق، الأهمية، المحافظة، المدينة، الموقع المفصل، الوقت، إلخ.\nأنواع الأحداث تشمل: الحفلات الموسيقية، النقاط الساخنة الاجتماعية، أنشطة المناطق السياحية، المعارض، الامتحانات الإقليمية، الأحداث الرياضية، العروض، المنتديات، المهرجانات، الندوات، معارض التوظيف، العروض الترويجية، الأنشطة الخيرية، الترويج التجاري، إلخ. إذا لم تتمكن من التصنيف، يرجى إرجاع [أنواع أخرى].\nنطاق الحدث مقسم إلى: 1-أحداث كبيرة، 2-أحداث متوسطة، 3-أحداث صغيرة.\nأهمية الحدث مقسمة إلى: 1-الأكثر أهمية، 2-مهم نسبياً، 3-عام.\nيرجى التحقق بدقة من تطابق المحافظة والمدينة. إذا لم تتمكن من التحديد، يرجى إرجاع 'None'.\nقواعد تحديد الوقت: إذا انقضى الوقت ولا يؤثر على الخدمات المستقبلية، أرجع [Expired]؛ إذا كان لا يزال يؤثر، أرجع [Current]؛ إذا كان هناك نطاق زمني محدد، يرجى إرجاع تنسيق yyyyMMdd أو yyyyMMdd-yyyyMMdd، وإلا أرجع [None].\nيرجى تحديد ما إذا كنت ستحجز فندقاً لهذا الحدث كسائح، robotIntention يرجع True/False، واشرح السبب.\nتحتاج لاستخراج ما إذا كانت الترجمة الفورية متوفرة (liveTranslation:yes/no)، وإرجاع حقل liveTranslation في json.\nتحتاج لاستخراج منصة البث المباشر (broadcastPlatform)، وإرجاع حقل broadcastPlatform في json.\nتحتاج لاستخراج ما إذا كانت منطقة VIP تحتاج حجز (vipArea:yes/no)، وإرجاع حقل vipArea في json.\nتحتاج لاستخراج ما إذا كان يتطلب حجز تذاكر مسبق (ticketReservation:yes/no)، وإرجاع حقل ticketReservation في json.\nيرجى الإرجاع بدقة في تنسيق JSON التالي:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"liveTranslation\": \"(Format:string)\",\"broadcastPlatform\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "اسم الحدث",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "نوع الحدث",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "نطاق الحدث",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "درجة أهمية الحدث",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "المحافظة",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "المدينة",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "الموقع المحدد",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "وقت الحدث",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "سبب تحديد الوقت",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "سبب التصنيف",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "هل هو سائح",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "سبب النية",
+                    "能力项": "主题约束"
+                },
+                "liveTranslation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل تتوفر ترجمة فورية",
+                    "能力项": "特定格式"
+                },
+                "broadcastPlatform": {
+                    "type": "string",
+                    "description": "منصة البث المباشر",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل منطقة VIP تحتاج حجز",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل يحتاج حجز تذاكر مسبق",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "liveTranslation",
+                "broadcastPlatform",
+                "vipArea",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "هل يتوافق مع المخطط",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "liveTranslation": "#JSONSCHEMA#:liveTranslation",
+            "broadcastPlatform": "#JSONSCHEMA#:broadcastPlatform",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【حدث العرض الترويجي】سيقام العرض الترويجي للابتكار وريادة الأعمال في شنتشن 2024 في مصنع أحلام الشباب في تشيانهاي شنتشن-هونغ كونغ في 18 مايو. المشاريع تحتاج تسجيل. الجهة المنظمة هي لجنة شنتشن للابتكار العلمي والتكنولوجي. الحدث يحمل علامة بيئية.]\nأنت محلل معلومات يحتاج لإكمال استخراج المعلومات المنظمة للأحداث بناءً على محتوى الأخبار الساخنة وتاريخ اليوم.\nتحتاج لتحديد المعلومات الأساسية للحدث، بما في ذلك اسم الحدث، النوع، النطاق، الأهمية، المحافظة، المدينة، الموقع المفصل، الوقت، إلخ.\nأنواع الأحداث تشمل: الحفلات الموسيقية، النقاط الساخنة الاجتماعية، أنشطة المناطق السياحية، المعارض، الامتحانات الإقليمية، الأحداث الرياضية، العروض، المنتديات، المهرجانات، الندوات، معارض التوظيف، العروض الترويجية، الأنشطة الخيرية، الترويج التجاري، إلخ. إذا لم تتمكن من التصنيف، يرجى إرجاع [أنواع أخرى].\nنطاق الحدث مقسم إلى: 1-أحداث كبيرة، 2-أحداث متوسطة، 3-أحداث صغيرة.\nأهمية الحدث مقسمة إلى: 1-الأكثر أهمية، 2-مهم نسبياً، 3-عام.\nيرجى التحقق بدقة من تطابق المحافظة والمدينة. إذا لم تتمكن من التحديد، يرجى إرجاع 'None'.\nقواعد تحديد الوقت: إذا انقضى الوقت ولا يؤثر على الخدمات المستقبلية، أرجع [Expired]؛ إذا كان لا يزال يؤثر، أرجع [Current]؛ إذا كان هناك نطاق زمني محدد، يرجى إرجاع تنسيق yyyyMMdd أو yyyyMMdd-yyyyMMdd، وإلا أرجع [None].\nيرجى تحديد ما إذا كنت ستحجز فندقاً لهذا الحدث كسائح، robotIntention يرجع True/False، واشرح السبب.\nتحتاج لاستخراج معلومات الجهة المنظمة (organizer)، وإرجاع حقل organizer في json.\nتحتاج لاستخراج ما إذا كان يحمل علامة بيئية خضراء (ecoTag:yes/no)، وإرجاع حقل ecoTag في json.\nتحتاج لاستخراج ما إذا كان يتطلب حجز تذاكر مسبق (ticketReservation:yes/no)، وإرجاع حقل ticketReservation في json.\nيرجى الإرجاع بدقة في تنسيق JSON التالي:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"organizer\": \"(Format:string)\",\"ecoTag\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "اسم الحدث",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "نوع الحدث",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "نطاق الحدث",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "درجة أهمية الحدث",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "المحافظة",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "المدينة",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "الموقع المحدد",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "وقت الحدث",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "سبب تحديد الوقت",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "سبب التصنيف",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "هل هو سائح",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "سبب النية",
+                    "能力项": "主题约束"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "الجهة المنظمة",
+                    "能力项": "主题约束"
+                },
+                "ecoTag": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل يحمل علامة بيئية خضراء",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل يحتاج حجز تذاكر مسبق",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "organizer",
+                "ecoTag",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "هل يتوافق مع المخطط",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "organizer": "#JSONSCHEMA#:organizer",
+            "ecoTag": "#JSONSCHEMA#:ecoTag",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【مهرجان الكلية】ستقام ذكرى جامعة نانجينغ 2024 في 18 يونيو في حرم قولو. بعض الأنشطة تتطلب حجوزات والخريجون يحصلون على خصومات.]\nأنت محلل معلومات يحتاج لإكمال استخراج المعلومات المنظمة للأحداث بناءً على محتوى الأخبار الساخنة وتاريخ اليوم.\nتحتاج لتحديد المعلومات الأساسية للحدث، بما في ذلك اسم الحدث، النوع، النطاق، الأهمية، المحافظة، المدينة، الموقع المفصل، الوقت، إلخ.\nأنواع الأحداث تشمل: الحفلات الموسيقية، النقاط الساخنة الاجتماعية، أنشطة المناطق السياحية، المعارض، الامتحانات الإقليمية، الأحداث الرياضية، العروض، المنتديات، المهرجانات، الندوات، معارض التوظيف، العروض الترويجية، الأنشطة الخيرية، الترويج التجاري، إلخ. إذا لم تتمكن من التصنيف، يرجى إرجاع [أنواع أخرى].\nنطاق الحدث مقسم إلى: 1-أحداث كبيرة، 2-أحداث متوسطة، 3-أحداث صغيرة.\nأهمية الحدث مقسمة إلى: 1-الأكثر أهمية، 2-مهم نسبياً، 3-عام.\nيرجى التحقق بدقة من تطابق المحافظة والمدينة. إذا لم تتمكن من التحديد، يرجى إرجاع 'None'.\nقواعد تحديد الوقت: إذا انقضى الوقت ولا يؤثر على الخدمات المستقبلية، أرجع [Expired]؛ إذا كان لا يزال يؤثر، أرجع [Current]؛ إذا كان هناك نطاق زمني محدد، يرجى إرجاع تنسيق yyyyMMdd أو yyyyMMdd-yyyyMMdd، وإلا أرجع [None].\nيرجى تحديد ما إذا كنت ستحجز فندقاً لهذا الحدث كسائح، robotIntention يرجع True/False، واشرح السبب.\nتحتاج لاستخراج ما إذا كان يتطلب حجز تذاكر مسبق (ticketReservation:yes/no)، وإرجاع حقل ticketReservation في json.\nتحتاج لاستخراج ما إذا كانت توجد خصومات حصرية (discountInfo:yes/no)، وإرجاع حقل discountInfo في json.\nيرجى الإرجاع بدقة في تنسيق JSON التالي:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\",\"discountInfo\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "اسم الحدث",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "نوع الحدث",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "نطاق الحدث",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "درجة أهمية الحدث",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "المحافظة",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "المدينة",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "الموقع المحدد",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "وقت الحدث",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "سبب تحديد الوقت",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "سبب التصنيف",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "هل هو سائح",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "سبب النية",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل يحتاج حجز تذاكر مسبق",
+                    "能力项": "特定格式"
+                },
+                "discountInfo": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل توجد خصومات حصرية",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ticketReservation",
+                "discountInfo"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "هل يتوافق مع المخطط",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation",
+            "discountInfo": "#JSONSCHEMA#:discountInfo"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【معرض فني】سيقام معرض هانغتشو الدولي للفن المعاصر 2024 في متحف الفن في البحيرة الغربية من 20 أكتوبر إلى 30. بعض مناطق المعرض تتطلب حجوزات ومناطق VIP لها شروحات حصرية.]\nأنت محلل معلومات يحتاج لإكمال استخراج المعلومات المنظمة للأحداث بناءً على محتوى الأخبار الساخنة وتاريخ اليوم.\nتحتاج لتحديد المعلومات الأساسية للحدث، بما في ذلك اسم الحدث، النوع، النطاق، الأهمية، المحافظة، المدينة، الموقع المفصل، الوقت، إلخ.\nأنواع الأحداث تشمل: الحفلات الموسيقية، النقاط الساخنة الاجتماعية، أنشطة المناطق السياحية، المعارض، الامتحانات الإقليمية، الأحداث الرياضية، العروض، المنتديات، المهرجانات، الندوات، معارض التوظيف، العروض الترويجية، الأنشطة الخيرية، الترويج التجاري، إلخ. إذا لم تتمكن من التصنيف، يرجى إرجاع [أنواع أخرى].\nنطاق الحدث مقسم إلى: 1-أحداث كبيرة، 2-أحداث متوسطة، 3-أحداث صغيرة.\nأهمية الحدث مقسمة إلى: 1-الأكثر أهمية، 2-مهم نسبياً، 3-عام.\nيرجى التحقق بدقة من تطابق المحافظة والمدينة. إذا لم تتمكن من التحديد، يرجى إرجاع 'None'.\nقواعد تحديد الوقت: إذا انقضى الوقت ولا يؤثر على الخدمات المستقبلية، أرجع [Expired]؛ إذا كان لا يزال يؤثر، أرجع [Current]؛ إذا كان هناك نطاق زمني محدد، يرجى إرجاع تنسيق yyyyMMdd أو yyyyMMdd-yyyyMMdd، وإلا أرجع [None].\nيرجى تحديد ما إذا كنت ستحجز فندقاً لهذا الحدث كسائح، robotIntention يرجع True/False، واشرح السبب.\nتحتاج لاستخراج ما إذا كان يتطلب حجز تذاكر مسبق (ticketReservation:yes/no)، وإرجاع حقل ticketReservation في json.\nتحتاج لاستخراج ما إذا كانت منطقة VIP تحتاج حجز (vipArea:yes/no)، وإرجاع حقل vipArea في json.\nيرجى الإرجاع بدقة في تنسيق JSON التالي:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\",\"vipArea\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "اسم الحدث",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "نوع الحدث",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "نطاق الحدث",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "درجة أهمية الحدث",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "المحافظة",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "المدينة",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "الموقع المحدد",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "وقت الحدث",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "سبب تحديد الوقت",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "سبب التصنيف",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "هل هو سائح",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "سبب النية",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل يحتاج حجز تذاكر مسبق",
+                    "能力项": "特定格式"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "هل منطقة VIP تحتاج حجز",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ticketReservation",
+                "vipArea"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "هل يتوافق مع المخطط",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation",
+            "vipArea": "#JSONSCHEMA#:vipArea"
+        }
+    }
+]

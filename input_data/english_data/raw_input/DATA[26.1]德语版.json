@@ -1,0 +1,2931 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "[[[Schwergewicht] Das 2024 China International Cartoon and Animation Festival findet vom 29. Mai bis 2. Juni im Hangzhou Binjiang Baimahu International Convention and Exhibition Center statt. Während dieser Zeit werden mehr als 100 Themenaktivitäten abgehalten, und viele international renommierte Cartoonisten und Animationsregisseure werden zur Vor-Ort-Signierung eingeladen. Einige Aktivitäten erfordern eine Ticketreservierung im Voraus. Es wird erwartet, dass Hunderttausende von Touristen angezogen werden, und die Hotelreservierungen in der Umgebung sind knapp.]\nSie sind ein Informationsanalyst, der die strukturierte Informationsextraktion von Veranstaltungen basierend auf aktuellen Nachrichten und dem heutigen Datum durchführen muss.\nSie müssen die wichtigsten Informationen der Veranstaltung identifizieren, einschließlich Veranstaltungsname, Typ, Umfang, Wichtigkeit, Bundesland, Stadt, detaillierter Ort, Zeit usw.\nVeranstaltungstypen umfassen: Konzerte, gesellschaftliche Hotspots, Sehenswürdigkeitsaktivitäten, Ausstellungen, regionale Prüfungen, Sportveranstaltungen, Aufführungen, Foren, Festivals, Seminare, Jobmessen, Roadshows, Wohltätigkeitsaktivitäten, kommerzielle Promotionen usw. Wenn Sie nicht klassifizieren können, geben Sie bitte [Andere Typen] zurück.\nVeranstaltungsumfang ist unterteilt in: 1-große Veranstaltungen, 2-mittlere Veranstaltungen, 3-kleine Veranstaltungen.\nVeranstaltungswichtigkeit ist unterteilt in: 1-am wichtigsten, 2-relativ wichtig, 3-allgemein.\nBitte überprüfen Sie streng, ob Bundesland und Stadt übereinstimmen. Wenn Sie nicht bestimmen können, geben Sie bitte 'None' zurück.\nZeitidentifikationsregeln: Wenn die Zeit vergangen ist und zukünftige Dienste nicht beeinflusst, geben Sie [Expired] zurück; wenn sie noch beeinflusst, geben Sie [Current] zurück; wenn es einen spezifischen Zeitraum gibt, geben Sie bitte das Format yyyyMMdd oder yyyyMMdd-yyyyMMdd zurück, andernfalls geben Sie [None] zurück.\nBitte bestimmen Sie, ob Sie als Tourist ein Hotel für diese Veranstaltung buchen würden, robotIntention gibt True/False zurück und erklären Sie den Grund.\nSie müssen extrahieren, ob eine Ticketreservierung im Voraus erforderlich ist (ticketReservation:yes/no), und das ticketReservation-Feld im JSON zurückgeben.\nSie müssen die Veranstalterinformationen extrahieren (organizer) und das organizer-Feld im JSON zurückgeben.\nBitte geben Sie streng im folgenden JSON-Format zurück:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\",\"organizer\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Veranstaltungsname",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Veranstaltungstyp",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Veranstaltungsumfang",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Wichtigkeitsgrad der Veranstaltung",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "Bundesland",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "Stadt",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "Spezifischer Ort",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "Veranstaltungszeit",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "Zeitbewertungsgrund",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Begründung",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "Ob Tourist",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "Absichtsgrund",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Ticketreservierung im Voraus erforderlich",
+                    "能力项": "特定格式"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "Veranstalter",
+                    "能力项": "主题约束"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ticketReservation",
+                "organizer"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否满足schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation",
+            "organizer": "#JSONSCHEMA#:organizer"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[[[Nachttour] Die 2024 Huangshan Sommer-Nachttour wird vom 1. Juli bis 31. August geöffnet sein. Touristen können nachts den Berg besteigen und die Lichtshow ansehen. Nachtverkehrsdienste werden hinzugefügt. Einige Nachttour-Routen erfordern Voranmeldungen. Der Veranstalter ist das Huangshan Scenic Area Management Committee.]\nSie sind ein Informationsanalyst, der die strukturierte Informationsextraktion von Veranstaltungen basierend auf aktuellen Nachrichten und dem heutigen Datum durchführen muss.\nSie müssen die wichtigsten Informationen der Veranstaltung identifizieren, einschließlich Veranstaltungsname, Typ, Umfang, Wichtigkeit, Bundesland, Stadt, detaillierter Ort, Zeit usw.\nVeranstaltungstypen umfassen: Konzerte, gesellschaftliche Hotspots, Sehenswürdigkeitsaktivitäten, Ausstellungen, regionale Prüfungen, Sportveranstaltungen, Aufführungen, Foren, Festivals, Seminare, Jobmessen, Roadshows, Wohltätigkeitsaktivitäten, kommerzielle Promotionen usw. Wenn Sie nicht klassifizieren können, geben Sie bitte [Andere Typen] zurück.\nVeranstaltungsumfang ist unterteilt in: 1-große Veranstaltungen, 2-mittlere Veranstaltungen, 3-kleine Veranstaltungen.\nVeranstaltungswichtigkeit ist unterteilt in: 1-am wichtigsten, 2-relativ wichtig, 3-allgemein.\nBitte überprüfen Sie streng, ob Bundesland und Stadt übereinstimmen. Wenn Sie nicht bestimmen können, geben Sie bitte 'None' zurück.\nZeitidentifikationsregeln: Wenn die Zeit vergangen ist und zukünftige Dienste nicht beeinflusst, geben Sie [Expired] zurück; wenn sie noch beeinflusst, geben Sie [Current] zurück; wenn es einen spezifischen Zeitraum gibt, geben Sie bitte das Format yyyyMMdd oder yyyyMMdd-yyyyMMdd zurück, andernfalls geben Sie [None] zurück.\nBitte bestimmen Sie, ob Sie als Tourist ein Hotel für diese Veranstaltung buchen würden, robotIntention gibt True/False zurück und erklären Sie den Grund.\nSie müssen extrahieren, ob eine Ticketreservierung im Voraus erforderlich ist (ticketReservation:yes/no), und das ticketReservation-Feld im JSON zurückgeben.\nSie müssen die Veranstalterinformationen extrahieren (organizer) und das organizer-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob Nachtverkehrsdienst verfügbar ist (nightTransport:yes/no), und das nightTransport-Feld im JSON zurückgeben.\nBitte geben Sie streng im folgenden JSON-Format zurück:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\",\"organizer\": \"(Format:string)\",\"nightTransport\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Veranstaltungsname",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Veranstaltungstyp",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Veranstaltungsumfang",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Wichtigkeitsgrad der Veranstaltung",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "Bundesland",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "Stadt",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "Spezifischer Ort",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "Veranstaltungszeit",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "Zeitbewertungsgrund",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Begründung",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "Ob Tourist",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "Absichtsgrund",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Ticketreservierung im Voraus erforderlich",
+                    "能力项": "特定格式"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "Veranstalter",
+                    "能力项": "主题约束"
+                },
+                "nightTransport": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Nachtverkehrsdienst verfügbar",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ticketReservation",
+                "organizer",
+                "nightTransport"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否满足schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation",
+            "organizer": "#JSONSCHEMA#:organizer",
+            "nightTransport": "#JSONSCHEMA#:nightTransport"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[[[Sportnachrichten] Die 2024 National College Student Track and Field Championships finden im Xi'an Olympic Sports Center statt. Einige Veranstaltungen erfordern Reservierungen mit echtem Namen. Der Veranstalter ist die College Sports Association.]\nSie sind ein Informationsanalyst, der die strukturierte Informationsextraktion von Veranstaltungen basierend auf aktuellen Nachrichten und dem heutigen Datum durchführen muss.\nSie müssen die wichtigsten Informationen der Veranstaltung identifizieren, einschließlich Veranstaltungsname, Typ, Umfang, Wichtigkeit, Bundesland, Stadt, detaillierter Ort, Zeit usw.\nVeranstaltungstypen umfassen: Konzerte, gesellschaftliche Hotspots, Sehenswürdigkeitsaktivitäten, Ausstellungen, regionale Prüfungen, Sportveranstaltungen, Aufführungen, Foren, Festivals, Seminare, Jobmessen, Roadshows, Wohltätigkeitsaktivitäten, kommerzielle Promotionen usw. Wenn Sie nicht klassifizieren können, geben Sie bitte [Andere Typen] zurück.\nVeranstaltungsumfang ist unterteilt in: 1-große Veranstaltungen, 2-mittlere Veranstaltungen, 3-kleine Veranstaltungen.\nVeranstaltungswichtigkeit ist unterteilt in: 1-am wichtigsten, 2-relativ wichtig, 3-allgemein.\nBitte überprüfen Sie streng, ob Bundesland und Stadt übereinstimmen. Wenn Sie nicht bestimmen können, geben Sie bitte 'None' zurück.\nZeitidentifikationsregeln: Wenn die Zeit vergangen ist und zukünftige Dienste nicht beeinflusst, geben Sie [Expired] zurück; wenn sie noch beeinflusst, geben Sie [Current] zurück; wenn es einen spezifischen Zeitraum gibt, geben Sie bitte das Format yyyyMMdd oder yyyyMMdd-yyyyMMdd zurück, andernfalls geben Sie [None] zurück.\nBitte bestimmen Sie, ob Sie als Tourist ein Hotel für diese Veranstaltung buchen würden, robotIntention gibt True/False zurück und erklären Sie den Grund.\nSie müssen extrahieren, ob eine Ticketreservierung im Voraus erforderlich ist (ticketReservation:yes/no), und das ticketReservation-Feld im JSON zurückgeben.\nSie müssen die Veranstalterinformationen extrahieren (organizer) und das organizer-Feld im JSON zurückgeben.\nBitte geben Sie streng im folgenden JSON-Format zurück:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\",\"organizer\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Veranstaltungsname",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Veranstaltungstyp",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Veranstaltungsumfang",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Wichtigkeitsgrad der Veranstaltung",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "Bundesland",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "Stadt",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "Spezifischer Ort",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "Veranstaltungszeit",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "Zeitbewertungsgrund",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Begründung",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "Ob Tourist",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "Absichtsgrund",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Ticketreservierung im Voraus erforderlich",
+                    "能力项": "特定格式"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "Veranstalter",
+                    "能力项": "主题约束"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ticketReservation",
+                "organizer"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否满足schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation",
+            "organizer": "#JSONSCHEMA#:organizer"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Aufführungsinformationen】Mayday's 2024 Tour Concert Beijing Station findet am 20. Juli im National Stadium statt. VIP-Bereich muss im Voraus gebucht werden, und Überraschungsgäste werden zur Unterstützung eingeladen.]\nSie sind ein Informationsanalyst, der die strukturierte Informationsextraktion von Veranstaltungen basierend auf aktuellen Nachrichten und dem heutigen Datum durchführen muss.\nSie müssen die wichtigsten Informationen der Veranstaltung identifizieren, einschließlich Veranstaltungsname, Typ, Umfang, Wichtigkeit, Bundesland, Stadt, detaillierter Ort, Zeit usw.\nVeranstaltungstypen umfassen: Konzerte, gesellschaftliche Hotspots, Sehenswürdigkeitsaktivitäten, Ausstellungen, regionale Prüfungen, Sportveranstaltungen, Aufführungen, Foren, Festivals, Seminare, Jobmessen, Roadshows, Wohltätigkeitsaktivitäten, kommerzielle Promotionen usw. Wenn Sie nicht klassifizieren können, geben Sie bitte [Andere Typen] zurück.\nVeranstaltungsumfang ist unterteilt in: 1-große Veranstaltungen, 2-mittlere Veranstaltungen, 3-kleine Veranstaltungen.\nVeranstaltungswichtigkeit ist unterteilt in: 1-am wichtigsten, 2-relativ wichtig, 3-allgemein.\nBitte überprüfen Sie streng, ob Bundesland und Stadt übereinstimmen. Wenn Sie nicht bestimmen können, geben Sie bitte 'None' zurück.\nZeitidentifikationsregeln: Wenn die Zeit vergangen ist und zukünftige Dienste nicht beeinflusst, geben Sie [Expired] zurück; wenn sie noch beeinflusst, geben Sie [Current] zurück; wenn es einen spezifischen Zeitraum gibt, geben Sie bitte das Format yyyyMMdd oder yyyyMMdd-yyyyMMdd zurück, andernfalls geben Sie [None] zurück.\nBitte bestimmen Sie, ob Sie als Tourist ein Hotel für diese Veranstaltung buchen würden, robotIntention gibt True/False zurück und erklären Sie den Grund.\nSie müssen extrahieren, ob der VIP-Bereich eine Reservierung benötigt (vipArea:yes/no), und das vipArea-Feld im JSON zurückgeben.\nSie müssen Informationen zu Überraschungsgästen extrahieren (specialGuest) und das specialGuest-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob eine Ticketreservierung im Voraus erforderlich ist (ticketReservation:yes/no), und das ticketReservation-Feld im JSON zurückgeben.\nBitte geben Sie streng im folgenden JSON-Format zurück:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"specialGuest\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Veranstaltungsname",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Veranstaltungstyp",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Veranstaltungsumfang",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Wichtigkeitsgrad der Veranstaltung",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "Bundesland",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "Stadt",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "Spezifischer Ort",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "Veranstaltungszeit",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "Zeitbewertungsgrund",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Begründung",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "Ob Tourist",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "Absichtsgrund",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob VIP-Bereich Reservierung benötigt",
+                    "能力项": "特定格式"
+                },
+                "specialGuest": {
+                    "type": "string",
+                    "description": "Informationen zu Überraschungsgästen",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Ticketreservierung im Voraus erforderlich",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "vipArea",
+                "specialGuest",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否满足schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "specialGuest": "#JSONSCHEMA#:specialGuest",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Ausstellungsnachrichten】Die 2024 Shenzhen International Auto Show findet vom 20. bis 25. Juni im Shenzhen Convention and Exhibition Center statt. Der Veranstalter ist die Shenzhen Automobile Industry Association. Einige Ausstellungsbereiche erfordern Reservierungen.]\nSie sind ein Informationsanalyst, der die strukturierte Informationsextraktion von Veranstaltungen basierend auf aktuellen Nachrichten und dem heutigen Datum durchführen muss.\nSie müssen die wichtigsten Informationen der Veranstaltung identifizieren, einschließlich Veranstaltungsname, Typ, Umfang, Wichtigkeit, Bundesland, Stadt, detaillierter Ort, Zeit usw.\nVeranstaltungstypen umfassen: Konzerte, gesellschaftliche Hotspots, Sehenswürdigkeitsaktivitäten, Ausstellungen, regionale Prüfungen, Sportveranstaltungen, Aufführungen, Foren, Festivals, Seminare, Jobmessen, Roadshows, Wohltätigkeitsaktivitäten, kommerzielle Promotionen usw. Wenn Sie nicht klassifizieren können, geben Sie bitte [Andere Typen] zurück.\nVeranstaltungsumfang ist unterteilt in: 1-große Veranstaltungen, 2-mittlere Veranstaltungen, 3-kleine Veranstaltungen.\nVeranstaltungswichtigkeit ist unterteilt in: 1-am wichtigsten, 2-relativ wichtig, 3-allgemein.\nBitte überprüfen Sie streng, ob Bundesland und Stadt übereinstimmen. Wenn Sie nicht bestimmen können, geben Sie bitte 'None' zurück.\nZeitidentifikationsregeln: Wenn die Zeit vergangen ist und zukünftige Dienste nicht beeinflusst, geben Sie [Expired] zurück; wenn sie noch beeinflusst, geben Sie [Current] zurück; wenn es einen spezifischen Zeitraum gibt, geben Sie bitte das Format yyyyMMdd oder yyyyMMdd-yyyyMMdd zurück, andernfalls geben Sie [None] zurück.\nBitte bestimmen Sie, ob Sie als Tourist ein Hotel für diese Veranstaltung buchen würden, robotIntention gibt True/False zurück und erklären Sie den Grund.\nSie müssen die Veranstalterinformationen extrahieren (organizer) und das organizer-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob der VIP-Bereich eine Reservierung benötigt (vipArea:yes/no), und das vipArea-Feld im JSON zurückgeben.\nSie müssen die Live-Streaming-Plattform extrahieren (broadcastPlatform) und das broadcastPlatform-Feld im JSON zurückgeben.\nBitte geben Sie streng im folgenden JSON-Format zurück:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"organizer\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"broadcastPlatform\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Veranstaltungsname",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Veranstaltungstyp",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Veranstaltungsumfang",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Wichtigkeitsgrad der Veranstaltung",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "Bundesland",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "Stadt",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "Spezifischer Ort",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "Veranstaltungszeit",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "Zeitbewertungsgrund",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Begründung",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "Ob Tourist",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "Absichtsgrund",
+                    "能力项": "主题约束"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "Veranstalter",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob VIP-Bereich Reservierung benötigt",
+                    "能力项": "特定格式"
+                },
+                "broadcastPlatform": {
+                    "type": "string",
+                    "description": "Live-Streaming-Plattform",
+                    "能力项": "主题约束"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "organizer",
+                "vipArea",
+                "broadcastPlatform"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否满足schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "organizer": "#JSONSCHEMA#:organizer",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "broadcastPlatform": "#JSONSCHEMA#:broadcastPlatform"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Food Festival】Das 2024 Chengdu International Food Festival findet vom 1. bis 7. Oktober im New Exhibition Center statt. Einige Ausstellungsbereiche werden im Zugang beschränkt, und Nacht-Food-Shows erfordern Reservierungen.]\nSie sind ein Informationsanalyst, der die strukturierte Informationsextraktion von Veranstaltungen basierend auf aktuellen Nachrichten und dem heutigen Datum durchführen muss.\nSie müssen die wichtigsten Informationen der Veranstaltung identifizieren, einschließlich Veranstaltungsname, Typ, Umfang, Wichtigkeit, Bundesland, Stadt, detaillierter Ort, Zeit usw.\nVeranstaltungstypen umfassen: Konzerte, gesellschaftliche Hotspots, Sehenswürdigkeitsaktivitäten, Ausstellungen, regionale Prüfungen, Sportveranstaltungen, Aufführungen, Foren, Festivals, Seminare, Jobmessen, Roadshows, Wohltätigkeitsaktivitäten, kommerzielle Promotionen usw. Wenn Sie nicht klassifizieren können, geben Sie bitte [Andere Typen] zurück.\nVeranstaltungsumfang ist unterteilt in: 1-große Veranstaltungen, 2-mittlere Veranstaltungen, 3-kleine Veranstaltungen.\nVeranstaltungswichtigkeit ist unterteilt in: 1-am wichtigsten, 2-relativ wichtig, 3-allgemein.\nBitte überprüfen Sie streng, ob Bundesland und Stadt übereinstimmen. Wenn Sie nicht bestimmen können, geben Sie bitte 'None' zurück.\nZeitidentifikationsregeln: Wenn die Zeit vergangen ist und zukünftige Dienste nicht beeinflusst, geben Sie [Expired] zurück; wenn sie noch beeinflusst, geben Sie [Current] zurück; wenn es einen spezifischen Zeitraum gibt, geben Sie bitte das Format yyyyMMdd oder yyyyMMdd-yyyyMMdd zurück, andernfalls geben Sie [None] zurück.\nBitte bestimmen Sie, ob Sie als Tourist ein Hotel für diese Veranstaltung buchen würden, robotIntention gibt True/False zurück und erklären Sie den Grund.\nSie müssen extrahieren, ob es eine Nacht-Food-Show ist (foodFestival:yes/no), und das foodFestival-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob der Einlass beschränkt ist (entryLimit:yes/no), und das entryLimit-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob eine Ticketreservierung im Voraus erforderlich ist (ticketReservation:yes/no), und das ticketReservation-Feld im JSON zurückgeben.\nBitte geben Sie streng im folgenden JSON-Format zurück:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"foodFestival\": \"(Format:string)\",\"entryLimit\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Veranstaltungsname",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Veranstaltungstyp",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Veranstaltungsumfang",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Wichtigkeitsgrad der Veranstaltung",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "Bundesland",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "Stadt",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "Spezifischer Ort",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "Veranstaltungszeit",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "Zeitbewertungsgrund",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Begründung",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "Ob Tourist",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "Absichtsgrund",
+                    "能力项": "主题约束"
+                },
+                "foodFestival": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Nacht-Food-Show",
+                    "能力项": "特定格式"
+                },
+                "entryLimit": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Einlassbeschränkung",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Ticketreservierung im Voraus erforderlich",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "foodFestival",
+                "entryLimit",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否满足schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "foodFestival": "#JSONSCHEMA#:foodFestival",
+            "entryLimit": "#JSONSCHEMA#:entryLimit",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Gesellschaftliche Sorge】Die 2024 National College Entrance Examination findet vom 7. bis 9. Juni statt, und einige Prüfungsstätten werden Reservierungen mit echtem Namen für den Einlass implementieren.]\nSie sind ein Informationsanalyst, der die strukturierte Informationsextraktion von Veranstaltungen basierend auf aktuellen Nachrichten und dem heutigen Datum durchführen muss.\nSie müssen die wichtigsten Informationen der Veranstaltung identifizieren, einschließlich Veranstaltungsname, Typ, Umfang, Wichtigkeit, Bundesland, Stadt, detaillierter Ort, Zeit usw.\nVeranstaltungstypen umfassen: Konzerte, gesellschaftliche Hotspots, Sehenswürdigkeitsaktivitäten, Ausstellungen, regionale Prüfungen, Sportveranstaltungen, Aufführungen, Foren, Festivals, Seminare, Jobmessen, Roadshows, Wohltätigkeitsaktivitäten, kommerzielle Promotionen usw. Wenn Sie nicht klassifizieren können, geben Sie bitte [Andere Typen] zurück.\nVeranstaltungsumfang ist unterteilt in: 1-große Veranstaltungen, 2-mittlere Veranstaltungen, 3-kleine Veranstaltungen.\nVeranstaltungswichtigkeit ist unterteilt in: 1-am wichtigsten, 2-relativ wichtig, 3-allgemein.\nBitte überprüfen Sie streng, ob Bundesland und Stadt übereinstimmen. Wenn Sie nicht bestimmen können, geben Sie bitte 'None' zurück.\nZeitidentifikationsregeln: Wenn die Zeit vergangen ist und zukünftige Dienste nicht beeinflusst, geben Sie [Expired] zurück; wenn sie noch beeinflusst, geben Sie [Current] zurück; wenn es einen spezifischen Zeitraum gibt, geben Sie bitte das Format yyyyMMdd oder yyyyMMdd-yyyyMMdd zurück, andernfalls geben Sie [None] zurück.\nBitte bestimmen Sie, ob Sie als Tourist ein Hotel für diese Veranstaltung buchen würden, robotIntention gibt True/False zurück und erklären Sie den Grund.\nSie müssen extrahieren, ob eine Ticketreservierung im Voraus erforderlich ist (ticketReservation:yes/no), und das ticketReservation-Feld im JSON zurückgeben.\nBitte geben Sie streng im folgenden JSON-Format zurück:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Veranstaltungsname",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Veranstaltungstyp",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Veranstaltungsumfang",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Wichtigkeitsgrad der Veranstaltung",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "Bundesland",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "Stadt",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "Spezifischer Ort",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "Veranstaltungszeit",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "Zeitbewertungsgrund",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Begründung",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "Ob Tourist",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "Absichtsgrund",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Ticketreservierung im Voraus erforderlich",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否满足schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Sportveranstaltungen】Der 2024 Shanghai International Marathon findet am 17. November statt. Die Veranstaltung wird live auf mehreren Plattformen während des gesamten Prozesses übertragen. VIP-Teilnahmepakete erfordern Reservierungen.]\nSie sind ein Informationsanalyst, der die strukturierte Informationsextraktion von Veranstaltungen basierend auf aktuellen Nachrichten und dem heutigen Datum durchführen muss.\nSie müssen die wichtigsten Informationen der Veranstaltung identifizieren, einschließlich Veranstaltungsname, Typ, Umfang, Wichtigkeit, Bundesland, Stadt, detaillierter Ort, Zeit usw.\nVeranstaltungstypen umfassen: Konzerte, gesellschaftliche Hotspots, Sehenswürdigkeitsaktivitäten, Ausstellungen, regionale Prüfungen, Sportveranstaltungen, Aufführungen, Foren, Festivals, Seminare, Jobmessen, Roadshows, Wohltätigkeitsaktivitäten, kommerzielle Promotionen usw. Wenn Sie nicht klassifizieren können, geben Sie bitte [Andere Typen] zurück.\nVeranstaltungsumfang ist unterteilt in: 1-große Veranstaltungen, 2-mittlere Veranstaltungen, 3-kleine Veranstaltungen.\nVeranstaltungswichtigkeit ist unterteilt in: 1-am wichtigsten, 2-relativ wichtig, 3-allgemein.\nBitte überprüfen Sie streng, ob Bundesland und Stadt übereinstimmen. Wenn Sie nicht bestimmen können, geben Sie bitte 'None' zurück.\nZeitidentifikationsregeln: Wenn die Zeit vergangen ist und zukünftige Dienste nicht beeinflusst, geben Sie [Expired] zurück; wenn sie noch beeinflusst, geben Sie [Current] zurück; wenn es einen spezifischen Zeitraum gibt, geben Sie bitte das Format yyyyMMdd oder yyyyMMdd-yyyyMMdd zurück, andernfalls geben Sie [None] zurück.\nBitte bestimmen Sie, ob Sie als Tourist ein Hotel für diese Veranstaltung buchen würden, robotIntention gibt True/False zurück und erklären Sie den Grund.\nSie müssen extrahieren, ob der VIP-Bereich eine Reservierung benötigt (vipArea:yes/no), und das vipArea-Feld im JSON zurückgeben.\nSie müssen die Live-Streaming-Plattform extrahieren (broadcastPlatform) und das broadcastPlatform-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob eine Ticketreservierung im Voraus erforderlich ist (ticketReservation:yes/no), und das ticketReservation-Feld im JSON zurückgeben.\nBitte geben Sie streng im folgenden JSON-Format zurück:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"broadcastPlatform\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Veranstaltungsname",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Veranstaltungstyp",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Veranstaltungsumfang",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Wichtigkeitsgrad der Veranstaltung",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "Bundesland",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "Stadt",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "Spezifischer Ort",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "Veranstaltungszeit",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "Zeitbewertungsgrund",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Begründung",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "Ob Tourist",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "Absichtsgrund",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob VIP-Bereich Reservierung benötigt",
+                    "能力项": "特定格式"
+                },
+                "broadcastPlatform": {
+                    "type": "string",
+                    "description": "Live-Streaming-Plattform",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Ticketreservierung im Voraus erforderlich",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "vipArea",
+                "broadcastPlatform",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否满足schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "broadcastPlatform": "#JSONSCHEMA#:broadcastPlatform",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Animationsausstellung】2024 Guangzhou International Animation and Game Exhibition findet vom 15. bis 19. August statt. VIP-Tickets müssen mit echtem Namen gebucht werden. Einige Gast-Signaturen müssen registriert werden.]\nSie sind ein Informationsanalyst, der die strukturierte Informationsextraktion von Veranstaltungen basierend auf aktuellen Nachrichten und dem heutigen Datum durchführen muss.\nSie müssen die wichtigsten Informationen der Veranstaltung identifizieren, einschließlich Veranstaltungsname, Typ, Umfang, Wichtigkeit, Bundesland, Stadt, detaillierter Ort, Zeit usw.\nVeranstaltungstypen umfassen: Konzerte, gesellschaftliche Hotspots, Sehenswürdigkeitsaktivitäten, Ausstellungen, regionale Prüfungen, Sportveranstaltungen, Aufführungen, Foren, Festivals, Seminare, Jobmessen, Roadshows, Wohltätigkeitsaktivitäten, kommerzielle Promotionen usw. Wenn Sie nicht klassifizieren können, geben Sie bitte [Andere Typen] zurück.\nVeranstaltungsumfang ist unterteilt in: 1-große Veranstaltungen, 2-mittlere Veranstaltungen, 3-kleine Veranstaltungen.\nVeranstaltungswichtigkeit ist unterteilt in: 1-am wichtigsten, 2-relativ wichtig, 3-allgemein.\nBitte überprüfen Sie streng, ob Bundesland und Stadt übereinstimmen. Wenn Sie nicht bestimmen können, geben Sie bitte 'None' zurück.\nZeitidentifikationsregeln: Wenn die Zeit vergangen ist und zukünftige Dienste nicht beeinflusst, geben Sie [Expired] zurück; wenn sie noch beeinflusst, geben Sie [Current] zurück; wenn es einen spezifischen Zeitraum gibt, geben Sie bitte das Format yyyyMMdd oder yyyyMMdd-yyyyMMdd zurück, andernfalls geben Sie [None] zurück.\nBitte bestimmen Sie, ob Sie als Tourist ein Hotel für diese Veranstaltung buchen würden, robotIntention gibt True/False zurück und erklären Sie den Grund.\nSie müssen extrahieren, ob der VIP-Bereich eine Reservierung benötigt (vipArea:yes/no), und das vipArea-Feld im JSON zurückgeben.\nSie müssen Informationen zu Überraschungsgästen extrahieren (specialGuest) und das specialGuest-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob eine Ticketreservierung im Voraus erforderlich ist (ticketReservation:yes/no), und das ticketReservation-Feld im JSON zurückgeben.\nBitte geben Sie streng im folgenden JSON-Format zurück:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"specialGuest\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Veranstaltungsname",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Veranstaltungstyp",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Veranstaltungsumfang",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Wichtigkeitsgrad der Veranstaltung",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "Bundesland",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "Stadt",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "Spezifischer Ort",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "Veranstaltungszeit",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "Zeitbewertungsgrund",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Begründung",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "Ob Tourist",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "Absichtsgrund",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob VIP-Bereich Reservierung benötigt",
+                    "能力项": "特定格式"
+                },
+                "specialGuest": {
+                    "type": "string",
+                    "description": "Informationen zu Überraschungsgästen",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Ticketreservierung im Voraus erforderlich",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "vipArea",
+                "specialGuest",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否满足schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "specialGuest": "#JSONSCHEMA#:specialGuest",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Aufführungsvorschau】2024 Lang Lang Piano Solo Concert findet am 28. September im Shanghai Oriental Art Center statt. VIP-Bereich muss im Voraus gebucht werden. Die Veranstaltung wird live auf mehreren Plattformen gestreamt.]\nSie sind ein Informationsanalyst, der die strukturierte Informationsextraktion von Veranstaltungen basierend auf aktuellen Nachrichten und dem heutigen Datum durchführen muss.\nSie müssen die wichtigsten Informationen der Veranstaltung identifizieren, einschließlich Veranstaltungsname, Typ, Umfang, Wichtigkeit, Bundesland, Stadt, detaillierter Ort, Zeit usw.\nVeranstaltungstypen umfassen: Konzerte, gesellschaftliche Hotspots, Sehenswürdigkeitsaktivitäten, Ausstellungen, regionale Prüfungen, Sportveranstaltungen, Aufführungen, Foren, Festivals, Seminare, Jobmessen, Roadshows, Wohltätigkeitsaktivitäten, kommerzielle Promotionen usw. Wenn Sie nicht klassifizieren können, geben Sie bitte [Andere Typen] zurück.\nVeranstaltungsumfang ist unterteilt in: 1-große Veranstaltungen, 2-mittlere Veranstaltungen, 3-kleine Veranstaltungen.\nVeranstaltungswichtigkeit ist unterteilt in: 1-am wichtigsten, 2-relativ wichtig, 3-allgemein.\nBitte überprüfen Sie streng, ob Bundesland und Stadt übereinstimmen. Wenn Sie nicht bestimmen können, geben Sie bitte 'None' zurück.\nZeitidentifikationsregeln: Wenn die Zeit vergangen ist und zukünftige Dienste nicht beeinflusst, geben Sie [Expired] zurück; wenn sie noch beeinflusst, geben Sie [Current] zurück; wenn es einen spezifischen Zeitraum gibt, geben Sie bitte das Format yyyyMMdd oder yyyyMMdd-yyyyMMdd zurück, andernfalls geben Sie [None] zurück.\nBitte bestimmen Sie, ob Sie als Tourist ein Hotel für diese Veranstaltung buchen würden, robotIntention gibt True/False zurück und erklären Sie den Grund.\nSie müssen extrahieren, ob der VIP-Bereich eine Reservierung benötigt (vipArea:yes/no), und das vipArea-Feld im JSON zurückgeben.\nSie müssen die Live-Streaming-Plattform extrahieren (broadcastPlatform) und das broadcastPlatform-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob eine Ticketreservierung im Voraus erforderlich ist (ticketReservation:yes/no), und das ticketReservation-Feld im JSON zurückgeben.\nBitte geben Sie streng im folgenden JSON-Format zurück:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"broadcastPlatform\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Veranstaltungsname",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Veranstaltungstyp",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Veranstaltungsumfang",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Wichtigkeitsgrad der Veranstaltung",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "Bundesland",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "Stadt",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "Spezifischer Ort",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "Veranstaltungszeit",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "Zeitbewertungsgrund",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Begründung",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "Ob Tourist",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "Absichtsgrund",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob VIP-Bereich Reservierung benötigt",
+                    "能力项": "特定格式"
+                },
+                "broadcastPlatform": {
+                    "type": "string",
+                    "description": "Live-Streaming-Plattform",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Ticketreservierung im Voraus erforderlich",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "vipArea",
+                "broadcastPlatform",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否满足schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "broadcastPlatform": "#JSONSCHEMA#:broadcastPlatform",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Forum-Gipfel】2024 China AI Frontier Technology Forum findet vom 5. bis 7. Juli im Shenzhen Science and Technology Park statt. Das Forum wird durchgehend übersetzt. Sub-Foren müssen gebucht werden. Der Veranstalter ist die China Artificial Intelligence Society.]\nSie sind ein Informationsanalyst, der die strukturierte Informationsextraktion von Veranstaltungen basierend auf aktuellen Nachrichten und dem heutigen Datum durchführen muss.\nSie müssen die wichtigsten Informationen der Veranstaltung identifizieren, einschließlich Veranstaltungsname, Typ, Umfang, Wichtigkeit, Bundesland, Stadt, detaillierter Ort, Zeit usw.\nVeranstaltungstypen umfassen: Konzerte, gesellschaftliche Hotspots, Sehenswürdigkeitsaktivitäten, Ausstellungen, regionale Prüfungen, Sportveranstaltungen, Aufführungen, Foren, Festivals, Seminare, Jobmessen, Roadshows, Wohltätigkeitsaktivitäten, kommerzielle Promotionen usw. Wenn Sie nicht klassifizieren können, geben Sie bitte [Andere Typen] zurück.\nVeranstaltungsumfang ist unterteilt in: 1-große Veranstaltungen, 2-mittlere Veranstaltungen, 3-kleine Veranstaltungen.\nVeranstaltungswichtigkeit ist unterteilt in: 1-am wichtigsten, 2-relativ wichtig, 3-allgemein.\nBitte überprüfen Sie streng, ob Bundesland und Stadt übereinstimmen. Wenn Sie nicht bestimmen können, geben Sie bitte 'None' zurück.\nZeitidentifikationsregeln: Wenn die Zeit vergangen ist und zukünftige Dienste nicht beeinflusst, geben Sie [Expired] zurück; wenn sie noch beeinflusst, geben Sie [Current] zurück; wenn es einen spezifischen Zeitraum gibt, geben Sie bitte das Format yyyyMMdd oder yyyyMMdd-yyyyMMdd zurück, andernfalls geben Sie [None] zurück.\nBitte bestimmen Sie, ob Sie als Tourist ein Hotel für diese Veranstaltung buchen würden, robotIntention gibt True/False zurück und erklären Sie den Grund.\nSie müssen die Veranstalterinformationen extrahieren (organizer) und das organizer-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob Simultanübersetzung angeboten wird (liveTranslation:yes/no), und das liveTranslation-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob eine Ticketreservierung im Voraus erforderlich ist (ticketReservation:yes/no), und das ticketReservation-Feld im JSON zurückgeben.\nBitte geben Sie streng im folgenden JSON-Format zurück:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"organizer\": \"(Format:string)\",\"liveTranslation\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Veranstaltungsname",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Veranstaltungstyp",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Veranstaltungsumfang",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Wichtigkeitsgrad der Veranstaltung",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "Bundesland",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "Stadt",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "Spezifischer Ort",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "Veranstaltungszeit",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "Zeitbewertungsgrund",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Begründung",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "Ob Tourist",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "Absichtsgrund",
+                    "能力项": "主题约束"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "Veranstalter",
+                    "能力项": "主题约束"
+                },
+                "liveTranslation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Simultanübersetzung angeboten",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Ticketreservierung im Voraus erforderlich",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "organizer",
+                "liveTranslation",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否满足schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "organizer": "#JSONSCHEMA#:organizer",
+            "liveTranslation": "#JSONSCHEMA#:liveTranslation",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Eltern-Kind-Aktivitäten】2024 Beijing Children's Carnival findet vom 1. bis 3. Juni im Chaoyang Park statt. Es wird einen Eltern-Kind-Interaktionsbereich geben. Kinder können kostenlos eintreten. Einige Projekte müssen gebucht werden. Parken ist im Park kostenlos.]\nSie sind ein Informationsanalyst, der die strukturierte Informationsextraktion von Veranstaltungen basierend auf aktuellen Nachrichten und dem heutigen Datum durchführen muss.\nSie müssen die wichtigsten Informationen der Veranstaltung identifizieren, einschließlich Veranstaltungsname, Typ, Umfang, Wichtigkeit, Bundesland, Stadt, detaillierter Ort, Zeit usw.\nVeranstaltungstypen umfassen: Konzerte, gesellschaftliche Hotspots, Sehenswürdigkeitsaktivitäten, Ausstellungen, regionale Prüfungen, Sportveranstaltungen, Aufführungen, Foren, Festivals, Seminare, Jobmessen, Roadshows, Wohltätigkeitsaktivitäten, kommerzielle Promotionen usw. Wenn Sie nicht klassifizieren können, geben Sie bitte [Andere Typen] zurück.\nVeranstaltungsumfang ist unterteilt in: 1-große Veranstaltungen, 2-mittlere Veranstaltungen, 3-kleine Veranstaltungen.\nVeranstaltungswichtigkeit ist unterteilt in: 1-am wichtigsten, 2-relativ wichtig, 3-allgemein.\nBitte überprüfen Sie streng, ob Bundesland und Stadt übereinstimmen. Wenn Sie nicht bestimmen können, geben Sie bitte 'None' zurück.\nZeitidentifikationsregeln: Wenn die Zeit vergangen ist und zukünftige Dienste nicht beeinflusst, geben Sie [Expired] zurück; wenn sie noch beeinflusst, geben Sie [Current] zurück; wenn es einen spezifischen Zeitraum gibt, geben Sie bitte das Format yyyyMMdd oder yyyyMMdd-yyyyMMdd zurück, andernfalls geben Sie [None] zurück.\nBitte bestimmen Sie, ob Sie als Tourist ein Hotel für diese Veranstaltung buchen würden, robotIntention gibt True/False zurück und erklären Sie den Grund.\nSie müssen extrahieren, ob es eine kinderfreundliche Aktivität ist (childFriendly:yes/no), und das childFriendly-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob kostenlose Parkplätze verfügbar sind (parkingAvailable:yes/no), und das parkingAvailable-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob eine Ticketreservierung im Voraus erforderlich ist (ticketReservation:yes/no), und das ticketReservation-Feld im JSON zurückgeben.\nBitte geben Sie streng im folgenden JSON-Format zurück:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"childFriendly\": \"(Format:string)\",\"parkingAvailable\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Veranstaltungsname",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Veranstaltungstyp",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Veranstaltungsumfang",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Wichtigkeitsgrad der Veranstaltung",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "Bundesland",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "Stadt",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "Spezifischer Ort",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "Veranstaltungszeit",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "Zeitbewertungsgrund",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Begründung",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "Ob Tourist",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "Absichtsgrund",
+                    "能力项": "主题约束"
+                },
+                "childFriendly": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob kinderfreundliche Aktivität",
+                    "能力项": "特定格式"
+                },
+                "parkingAvailable": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob kostenlose Parkplätze verfügbar",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Ticketreservierung im Voraus erforderlich",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "childFriendly",
+                "parkingAvailable",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否满足schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "childFriendly": "#JSONSCHEMA#:childFriendly",
+            "parkingAvailable": "#JSONSCHEMA#:parkingAvailable",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Wohltätigkeitsaktivitäten】2024 National Environmental Protection Charity Roadshow wird vom 20. Mai bis 10. Juni zehn Städte bereisen. Es wird einen Umweltschutz-Erlebnisbereich geben. Einige Städte werden grüne Belohnungen haben.]\nSie sind ein Informationsanalyst, der die strukturierte Informationsextraktion von Veranstaltungen basierend auf aktuellen Nachrichten und dem heutigen Datum durchführen muss.\nSie müssen die wichtigsten Informationen der Veranstaltung identifizieren, einschließlich Veranstaltungsname, Typ, Umfang, Wichtigkeit, Bundesland, Stadt, detaillierter Ort, Zeit usw.\nVeranstaltungstypen umfassen: Konzerte, gesellschaftliche Hotspots, Sehenswürdigkeitsaktivitäten, Ausstellungen, regionale Prüfungen, Sportveranstaltungen, Aufführungen, Foren, Festivals, Seminare, Jobmessen, Roadshows, Wohltätigkeitsaktivitäten, kommerzielle Promotionen usw. Wenn Sie nicht klassifizieren können, geben Sie bitte [Andere Typen] zurück.\nVeranstaltungsumfang ist unterteilt in: 1-große Veranstaltungen, 2-mittlere Veranstaltungen, 3-kleine Veranstaltungen.\nVeranstaltungswichtigkeit ist unterteilt in: 1-am wichtigsten, 2-relativ wichtig, 3-allgemein.\nBitte überprüfen Sie streng, ob Bundesland und Stadt übereinstimmen. Wenn Sie nicht bestimmen können, geben Sie bitte 'None' zurück.\nZeitidentifikationsregeln: Wenn die Zeit vergangen ist und zukünftige Dienste nicht beeinflusst, geben Sie [Expired] zurück; wenn sie noch beeinflusst, geben Sie [Current] zurück; wenn es einen spezifischen Zeitraum gibt, geben Sie bitte das Format yyyyMMdd oder yyyyMMdd-yyyyMMdd zurück, andernfalls geben Sie [None] zurück.\nBitte bestimmen Sie, ob Sie als Tourist ein Hotel für diese Veranstaltung buchen würden, robotIntention gibt True/False zurück und erklären Sie den Grund.\nSie müssen extrahieren, ob ein grünes Umweltlabel vorhanden ist (ecoTag:yes/no), und das ecoTag-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob der Einlass beschränkt ist (entryLimit:yes/no), und das entryLimit-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob eine Ticketreservierung im Voraus erforderlich ist (ticketReservation:yes/no), und das ticketReservation-Feld im JSON zurückgeben.\nBitte geben Sie streng im folgenden JSON-Format zurück:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ecoTag\": \"(Format:string)\",\"entryLimit\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Veranstaltungsname",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Veranstaltungstyp",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Veranstaltungsumfang",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Wichtigkeitsgrad der Veranstaltung",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "Bundesland",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "Stadt",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "Spezifischer Ort",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "Veranstaltungszeit",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "Zeitbewertungsgrund",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Begründung",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "Ob Tourist",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "Absichtsgrund",
+                    "能力项": "主题约束"
+                },
+                "ecoTag": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob grünes Umweltlabel vorhanden",
+                    "能力项": "特定格式"
+                },
+                "entryLimit": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Einlassbeschränkung",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Ticketreservierung im Voraus erforderlich",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ecoTag",
+                "entryLimit",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否满足schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ecoTag": "#JSONSCHEMA#:ecoTag",
+            "entryLimit": "#JSONSCHEMA#:entryLimit",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Jobmesse】2024 Shanghai International Famous Enterprise Job Fair findet vom 15. bis 16. Juli statt. Einige Positionen erfordern Termine für Interviews. Der Veranstalter ist das Shanghai Municipal Human Resources and Social Security Bureau. Es gibt einen VIP-Kandidatenbereich.]\nSie sind ein Informationsanalyst, der die strukturierte Informationsextraktion von Veranstaltungen basierend auf aktuellen Nachrichten und dem heutigen Datum durchführen muss.\nSie müssen die wichtigsten Informationen der Veranstaltung identifizieren, einschließlich Veranstaltungsname, Typ, Umfang, Wichtigkeit, Bundesland, Stadt, detaillierter Ort, Zeit usw.\nVeranstaltungstypen umfassen: Konzerte, gesellschaftliche Hotspots, Sehenswürdigkeitsaktivitäten, Ausstellungen, regionale Prüfungen, Sportveranstaltungen, Aufführungen, Foren, Festivals, Seminare, Jobmessen, Roadshows, Wohltätigkeitsaktivitäten, kommerzielle Promotionen usw. Wenn Sie nicht klassifizieren können, geben Sie bitte [Andere Typen] zurück.\nVeranstaltungsumfang ist unterteilt in: 1-große Veranstaltungen, 2-mittlere Veranstaltungen, 3-kleine Veranstaltungen.\nVeranstaltungswichtigkeit ist unterteilt in: 1-am wichtigsten, 2-relativ wichtig, 3-allgemein.\nBitte überprüfen Sie streng, ob Bundesland und Stadt übereinstimmen. Wenn Sie nicht bestimmen können, geben Sie bitte 'None' zurück.\nZeitidentifikationsregeln: Wenn die Zeit vergangen ist und zukünftige Dienste nicht beeinflusst, geben Sie [Expired] zurück; wenn sie noch beeinflusst, geben Sie [Current] zurück; wenn es einen spezifischen Zeitraum gibt, geben Sie bitte das Format yyyyMMdd oder yyyyMMdd-yyyyMMdd zurück, andernfalls geben Sie [None] zurück.\nBitte bestimmen Sie, ob Sie als Tourist ein Hotel für diese Veranstaltung buchen würden, robotIntention gibt True/False zurück und erklären Sie den Grund.\nSie müssen die Veranstalterinformationen extrahieren (organizer) und das organizer-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob der VIP-Bereich eine Reservierung benötigt (vipArea:yes/no), und das vipArea-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob eine Ticketreservierung im Voraus erforderlich ist (ticketReservation:yes/no), und das ticketReservation-Feld im JSON zurückgeben.\nBitte geben Sie streng im folgenden JSON-Format zurück:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"organizer\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Veranstaltungsname",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Veranstaltungstyp",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Veranstaltungsumfang",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Wichtigkeitsgrad der Veranstaltung",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "Bundesland",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "Stadt",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "Spezifischer Ort",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "Veranstaltungszeit",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "Zeitbewertungsgrund",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Begründung",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "Ob Tourist",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "Absichtsgrund",
+                    "能力项": "主题约束"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "Veranstalter",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob VIP-Bereich Reservierung benötigt",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Ticketreservierung im Voraus erforderlich",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "organizer",
+                "vipArea",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否满足schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "organizer": "#JSONSCHEMA#:organizer",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Kommerzielle Promotion】2024 Guangzhou Summer Shopping Festival findet vom 1. bis 15. August statt. Nur-Mitglieder-Bereiche erfordern Termine. Designierte Händler haben Rabatte.]\nSie sind ein Informationsanalyst, der die strukturierte Informationsextraktion von Veranstaltungen basierend auf aktuellen Nachrichten und dem heutigen Datum durchführen muss.\nSie müssen die wichtigsten Informationen der Veranstaltung identifizieren, einschließlich Veranstaltungsname, Typ, Umfang, Wichtigkeit, Bundesland, Stadt, detaillierter Ort, Zeit usw.\nVeranstaltungstypen umfassen: Konzerte, gesellschaftliche Hotspots, Sehenswürdigkeitsaktivitäten, Ausstellungen, regionale Prüfungen, Sportveranstaltungen, Aufführungen, Foren, Festivals, Seminare, Jobmessen, Roadshows, Wohltätigkeitsaktivitäten, kommerzielle Promotionen usw. Wenn Sie nicht klassifizieren können, geben Sie bitte [Andere Typen] zurück.\nVeranstaltungsumfang ist unterteilt in: 1-große Veranstaltungen, 2-mittlere Veranstaltungen, 3-kleine Veranstaltungen.\nVeranstaltungswichtigkeit ist unterteilt in: 1-am wichtigsten, 2-relativ wichtig, 3-allgemein.\nBitte überprüfen Sie streng, ob Bundesland und Stadt übereinstimmen. Wenn Sie nicht bestimmen können, geben Sie bitte 'None' zurück.\nZeitidentifikationsregeln: Wenn die Zeit vergangen ist und zukünftige Dienste nicht beeinflusst, geben Sie [Expired] zurück; wenn sie noch beeinflusst, geben Sie [Current] zurück; wenn es einen spezifischen Zeitraum gibt, geben Sie bitte das Format yyyyMMdd oder yyyyMMdd-yyyyMMdd zurück, andernfalls geben Sie [None] zurück.\nBitte bestimmen Sie, ob Sie als Tourist ein Hotel für diese Veranstaltung buchen würden, robotIntention gibt True/False zurück und erklären Sie den Grund.\nSie müssen extrahieren, ob der VIP-Bereich eine Reservierung benötigt (vipArea:yes/no), und das vipArea-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob exklusive Rabatte verfügbar sind (discountInfo:yes/no), und das discountInfo-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob eine Ticketreservierung im Voraus erforderlich ist (ticketReservation:yes/no), und das ticketReservation-Feld im JSON zurückgeben.\nBitte geben Sie streng im folgenden JSON-Format zurück:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"discountInfo\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Veranstaltungsname",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Veranstaltungstyp",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Veranstaltungsumfang",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Wichtigkeitsgrad der Veranstaltung",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "Bundesland",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "Stadt",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "Spezifischer Ort",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "Veranstaltungszeit",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "Zeitbewertungsgrund",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Begründung",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "Ob Tourist",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "Absichtsgrund",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob VIP-Bereich Reservierung benötigt",
+                    "能力项": "特定格式"
+                },
+                "discountInfo": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob exklusive Rabatte verfügbar",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Ticketreservierung im Voraus erforderlich",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "vipArea",
+                "discountInfo",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否满足schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "discountInfo": "#JSONSCHEMA#:discountInfo",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Festival-Feier】2024 Xi'an Ancient City Lantern Festival findet vom 5. bis 19. Februar statt. Nacht-Lichtshows werden jeden Tag aufgeführt. VIP-Tribünen erfordern Termine. Der Veranstalter ist das Xi'an Municipal Bureau of Culture and Tourism.]\nSie sind ein Informationsanalyst, der die strukturierte Informationsextraktion von Veranstaltungen basierend auf aktuellen Nachrichten und dem heutigen Datum durchführen muss.\nSie müssen die wichtigsten Informationen der Veranstaltung identifizieren, einschließlich Veranstaltungsname, Typ, Umfang, Wichtigkeit, Bundesland, Stadt, detaillierter Ort, Zeit usw.\nVeranstaltungstypen umfassen: Konzerte, gesellschaftliche Hotspots, Sehenswürdigkeitsaktivitäten, Ausstellungen, regionale Prüfungen, Sportveranstaltungen, Aufführungen, Foren, Festivals, Seminare, Jobmessen, Roadshows, Wohltätigkeitsaktivitäten, kommerzielle Promotionen usw. Wenn Sie nicht klassifizieren können, geben Sie bitte [Andere Typen] zurück.\nVeranstaltungsumfang ist unterteilt in: 1-große Veranstaltungen, 2-mittlere Veranstaltungen, 3-kleine Veranstaltungen.\nVeranstaltungswichtigkeit ist unterteilt in: 1-am wichtigsten, 2-relativ wichtig, 3-allgemein.\nBitte überprüfen Sie streng, ob Bundesland und Stadt übereinstimmen. Wenn Sie nicht bestimmen können, geben Sie bitte 'None' zurück.\nZeitidentifikationsregeln: Wenn die Zeit vergangen ist und zukünftige Dienste nicht beeinflusst, geben Sie [Expired] zurück; wenn sie noch beeinflusst, geben Sie [Current] zurück; wenn es einen spezifischen Zeitraum gibt, geben Sie bitte das Format yyyyMMdd oder yyyyMMdd-yyyyMMdd zurück, andernfalls geben Sie [None] zurück.\nBitte bestimmen Sie, ob Sie als Tourist ein Hotel für diese Veranstaltung buchen würden, robotIntention gibt True/False zurück und erklären Sie den Grund.\nSie müssen die Veranstalterinformationen extrahieren (organizer) und das organizer-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob der VIP-Bereich eine Reservierung benötigt (vipArea:yes/no), und das vipArea-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob eine Ticketreservierung im Voraus erforderlich ist (ticketReservation:yes/no), und das ticketReservation-Feld im JSON zurückgeben.\nBitte geben Sie streng im folgenden JSON-Format zurück:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"organizer\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Veranstaltungsname",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Veranstaltungstyp",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Veranstaltungsumfang",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Wichtigkeitsgrad der Veranstaltung",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "Bundesland",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "Stadt",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "Spezifischer Ort",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "Veranstaltungszeit",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "Zeitbewertungsgrund",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Begründung",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "Ob Tourist",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "Absichtsgrund",
+                    "能力项": "主题约束"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "Veranstalter",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob VIP-Bereich Reservierung benötigt",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Ticketreservierung im Voraus erforderlich",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "organizer",
+                "vipArea",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否满足schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "organizer": "#JSONSCHEMA#:organizer",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Seminar】2024 China Internet Security Seminar findet vom 10. bis 12. September im National Convention Center statt. Simultanübersetzung und Online-Live-Übertragung werden bereitgestellt. Einige Sub-Veranstaltungsorte werden exklusive Bereiche für Gäste haben.]\nSie sind ein Informationsanalyst, der die strukturierte Informationsextraktion von Veranstaltungen basierend auf aktuellen Nachrichten und dem heutigen Datum durchführen muss.\nSie müssen die wichtigsten Informationen der Veranstaltung identifizieren, einschließlich Veranstaltungsname, Typ, Umfang, Wichtigkeit, Bundesland, Stadt, detaillierter Ort, Zeit usw.\nVeranstaltungstypen umfassen: Konzerte, gesellschaftliche Hotspots, Sehenswürdigkeitsaktivitäten, Ausstellungen, regionale Prüfungen, Sportveranstaltungen, Aufführungen, Foren, Festivals, Seminare, Jobmessen, Roadshows, Wohltätigkeitsaktivitäten, kommerzielle Promotionen usw. Wenn Sie nicht klassifizieren können, geben Sie bitte [Andere Typen] zurück.\nVeranstaltungsumfang ist unterteilt in: 1-große Veranstaltungen, 2-mittlere Veranstaltungen, 3-kleine Veranstaltungen.\nVeranstaltungswichtigkeit ist unterteilt in: 1-am wichtigsten, 2-relativ wichtig, 3-allgemein.\nBitte überprüfen Sie streng, ob Bundesland und Stadt übereinstimmen. Wenn Sie nicht bestimmen können, geben Sie bitte 'None' zurück.\nZeitidentifikationsregeln: Wenn die Zeit vergangen ist und zukünftige Dienste nicht beeinflusst, geben Sie [Expired] zurück; wenn sie noch beeinflusst, geben Sie [Current] zurück; wenn es einen spezifischen Zeitraum gibt, geben Sie bitte das Format yyyyMMdd oder yyyyMMdd-yyyyMMdd zurück, andernfalls geben Sie [None] zurück.\nBitte bestimmen Sie, ob Sie als Tourist ein Hotel für diese Veranstaltung buchen würden, robotIntention gibt True/False zurück und erklären Sie den Grund.\nSie müssen extrahieren, ob Simultanübersetzung angeboten wird (liveTranslation:yes/no), und das liveTranslation-Feld im JSON zurückgeben.\nSie müssen die Live-Streaming-Plattform extrahieren (broadcastPlatform) und das broadcastPlatform-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob der VIP-Bereich eine Reservierung benötigt (vipArea:yes/no), und das vipArea-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob eine Ticketreservierung im Voraus erforderlich ist (ticketReservation:yes/no), und das ticketReservation-Feld im JSON zurückgeben.\nBitte geben Sie streng im folgenden JSON-Format zurück:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"liveTranslation\": \"(Format:string)\",\"broadcastPlatform\": \"(Format:string)\",\"vipArea\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Veranstaltungsname",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Veranstaltungstyp",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Veranstaltungsumfang",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Wichtigkeitsgrad der Veranstaltung",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "Bundesland",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "Stadt",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "Spezifischer Ort",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "Veranstaltungszeit",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "Zeitbewertungsgrund",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Begründung",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "Ob Tourist",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "Absichtsgrund",
+                    "能力项": "主题约束"
+                },
+                "liveTranslation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Simultanübersetzung angeboten",
+                    "能力项": "特定格式"
+                },
+                "broadcastPlatform": {
+                    "type": "string",
+                    "description": "Live-Streaming-Plattform",
+                    "能力项": "主题约束"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob VIP-Bereich Reservierung benötigt",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Ticketreservierung im Voraus erforderlich",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "liveTranslation",
+                "broadcastPlatform",
+                "vipArea",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否满足schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "liveTranslation": "#JSONSCHEMA#:liveTranslation",
+            "broadcastPlatform": "#JSONSCHEMA#:broadcastPlatform",
+            "vipArea": "#JSONSCHEMA#:vipArea",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Roadshow-Veranstaltung】2024 Shenzhen Innovation and Entrepreneurship Roadshow findet am 18. Mai in der Qianhai Shenzhen-Hong Kong Youth Dream Factory statt. Projekte müssen registriert werden. Der Veranstalter ist die Shenzhen Science and Technology Innovation Commission. Die Veranstaltung hat ein Umweltlabel.]\nSie sind ein Informationsanalyst, der die strukturierte Informationsextraktion von Veranstaltungen basierend auf aktuellen Nachrichten und dem heutigen Datum durchführen muss.\nSie müssen die wichtigsten Informationen der Veranstaltung identifizieren, einschließlich Veranstaltungsname, Typ, Umfang, Wichtigkeit, Bundesland, Stadt, detaillierter Ort, Zeit usw.\nVeranstaltungstypen umfassen: Konzerte, gesellschaftliche Hotspots, Sehenswürdigkeitsaktivitäten, Ausstellungen, regionale Prüfungen, Sportveranstaltungen, Aufführungen, Foren, Festivals, Seminare, Jobmessen, Roadshows, Wohltätigkeitsaktivitäten, kommerzielle Promotionen usw. Wenn Sie nicht klassifizieren können, geben Sie bitte [Andere Typen] zurück.\nVeranstaltungsumfang ist unterteilt in: 1-große Veranstaltungen, 2-mittlere Veranstaltungen, 3-kleine Veranstaltungen.\nVeranstaltungswichtigkeit ist unterteilt in: 1-am wichtigsten, 2-relativ wichtig, 3-allgemein.\nBitte überprüfen Sie streng, ob Bundesland und Stadt übereinstimmen. Wenn Sie nicht bestimmen können, geben Sie bitte 'None' zurück.\nZeitidentifikationsregeln: Wenn die Zeit vergangen ist und zukünftige Dienste nicht beeinflusst, geben Sie [Expired] zurück; wenn sie noch beeinflusst, geben Sie [Current] zurück; wenn es einen spezifischen Zeitraum gibt, geben Sie bitte das Format yyyyMMdd oder yyyyMMdd-yyyyMMdd zurück, andernfalls geben Sie [None] zurück.\nBitte bestimmen Sie, ob Sie als Tourist ein Hotel für diese Veranstaltung buchen würden, robotIntention gibt True/False zurück und erklären Sie den Grund.\nSie müssen die Veranstalterinformationen extrahieren (organizer) und das organizer-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob ein grünes Umweltlabel vorhanden ist (ecoTag:yes/no), und das ecoTag-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob eine Ticketreservierung im Voraus erforderlich ist (ticketReservation:yes/no), und das ticketReservation-Feld im JSON zurückgeben.\nBitte geben Sie streng im folgenden JSON-Format zurück:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"organizer\": \"(Format:string)\",\"ecoTag\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Veranstaltungsname",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Veranstaltungstyp",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Veranstaltungsumfang",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Wichtigkeitsgrad der Veranstaltung",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "Bundesland",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "Stadt",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "Spezifischer Ort",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "Veranstaltungszeit",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "Zeitbewertungsgrund",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Begründung",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "Ob Tourist",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "Absichtsgrund",
+                    "能力项": "主题约束"
+                },
+                "organizer": {
+                    "type": "string",
+                    "description": "Veranstalter",
+                    "能力项": "主题约束"
+                },
+                "ecoTag": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob grünes Umweltlabel vorhanden",
+                    "能力项": "特定格式"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Ticketreservierung im Voraus erforderlich",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "organizer",
+                "ecoTag",
+                "ticketReservation"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否满足schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "organizer": "#JSONSCHEMA#:organizer",
+            "ecoTag": "#JSONSCHEMA#:ecoTag",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【College-Festival】2024 Nanjing University Anniversary findet am 18. Juni auf dem Gulou Campus statt. Einige Aktivitäten erfordern Reservierungen und Alumni genießen Rabatte.]\nSie sind ein Informationsanalyst, der die strukturierte Informationsextraktion von Veranstaltungen basierend auf aktuellen Nachrichten und dem heutigen Datum durchführen muss.\nSie müssen die wichtigsten Informationen der Veranstaltung identifizieren, einschließlich Veranstaltungsname, Typ, Umfang, Wichtigkeit, Bundesland, Stadt, detaillierter Ort, Zeit usw.\nVeranstaltungstypen umfassen: Konzerte, gesellschaftliche Hotspots, Sehenswürdigkeitsaktivitäten, Ausstellungen, regionale Prüfungen, Sportveranstaltungen, Aufführungen, Foren, Festivals, Seminare, Jobmessen, Roadshows, Wohltätigkeitsaktivitäten, kommerzielle Promotionen usw. Wenn Sie nicht klassifizieren können, geben Sie bitte [Andere Typen] zurück.\nVeranstaltungsumfang ist unterteilt in: 1-große Veranstaltungen, 2-mittlere Veranstaltungen, 3-kleine Veranstaltungen.\nVeranstaltungswichtigkeit ist unterteilt in: 1-am wichtigsten, 2-relativ wichtig, 3-allgemein.\nBitte überprüfen Sie streng, ob Bundesland und Stadt übereinstimmen. Wenn Sie nicht bestimmen können, geben Sie bitte 'None' zurück.\nZeitidentifikationsregeln: Wenn die Zeit vergangen ist und zukünftige Dienste nicht beeinflusst, geben Sie [Expired] zurück; wenn sie noch beeinflusst, geben Sie [Current] zurück; wenn es einen spezifischen Zeitraum gibt, geben Sie bitte das Format yyyyMMdd oder yyyyMMdd-yyyyMMdd zurück, andernfalls geben Sie [None] zurück.\nBitte bestimmen Sie, ob Sie als Tourist ein Hotel für diese Veranstaltung buchen würden, robotIntention gibt True/False zurück und erklären Sie den Grund.\nSie müssen extrahieren, ob eine Ticketreservierung im Voraus erforderlich ist (ticketReservation:yes/no), und das ticketReservation-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob exklusive Rabatte verfügbar sind (discountInfo:yes/no), und das discountInfo-Feld im JSON zurückgeben.\nBitte geben Sie streng im folgenden JSON-Format zurück:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\",\"discountInfo\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Veranstaltungsname",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Veranstaltungstyp",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Veranstaltungsumfang",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Wichtigkeitsgrad der Veranstaltung",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "Bundesland",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "Stadt",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "Spezifischer Ort",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "Veranstaltungszeit",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "Zeitbewertungsgrund",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Begründung",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "Ob Tourist",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "Absichtsgrund",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Ticketreservierung im Voraus erforderlich",
+                    "能力项": "特定格式"
+                },
+                "discountInfo": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob exklusive Rabatte verfügbar",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ticketReservation",
+                "discountInfo"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否满足schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation",
+            "discountInfo": "#JSONSCHEMA#:discountInfo"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "[【Kunstausstellung】2024 Hangzhou International Contemporary Art Exhibition findet vom 20. bis 30. Oktober im West Lake Art Museum statt. Einige Ausstellungsbereiche erfordern Reservierungen und VIP-Bereiche haben exklusive Erklärungen.]\nSie sind ein Informationsanalyst, der die strukturierte Informationsextraktion von Veranstaltungen basierend auf aktuellen Nachrichten und dem heutigen Datum durchführen muss.\nSie müssen die wichtigsten Informationen der Veranstaltung identifizieren, einschließlich Veranstaltungsname, Typ, Umfang, Wichtigkeit, Bundesland, Stadt, detaillierter Ort, Zeit usw.\nVeranstaltungstypen umfassen: Konzerte, gesellschaftliche Hotspots, Sehenswürdigkeitsaktivitäten, Ausstellungen, regionale Prüfungen, Sportveranstaltungen, Aufführungen, Foren, Festivals, Seminare, Jobmessen, Roadshows, Wohltätigkeitsaktivitäten, kommerzielle Promotionen usw. Wenn Sie nicht klassifizieren können, geben Sie bitte [Andere Typen] zurück.\nVeranstaltungsumfang ist unterteilt in: 1-große Veranstaltungen, 2-mittlere Veranstaltungen, 3-kleine Veranstaltungen.\nVeranstaltungswichtigkeit ist unterteilt in: 1-am wichtigsten, 2-relativ wichtig, 3-allgemein.\nBitte überprüfen Sie streng, ob Bundesland und Stadt übereinstimmen. Wenn Sie nicht bestimmen können, geben Sie bitte 'None' zurück.\nZeitidentifikationsregeln: Wenn die Zeit vergangen ist und zukünftige Dienste nicht beeinflusst, geben Sie [Expired] zurück; wenn sie noch beeinflusst, geben Sie [Current] zurück; wenn es einen spezifischen Zeitraum gibt, geben Sie bitte das Format yyyyMMdd oder yyyyMMdd-yyyyMMdd zurück, andernfalls geben Sie [None] zurück.\nBitte bestimmen Sie, ob Sie als Tourist ein Hotel für diese Veranstaltung buchen würden, robotIntention gibt True/False zurück und erklären Sie den Grund.\nSie müssen extrahieren, ob eine Ticketreservierung im Voraus erforderlich ist (ticketReservation:yes/no), und das ticketReservation-Feld im JSON zurückgeben.\nSie müssen extrahieren, ob der VIP-Bereich eine Reservierung benötigt (vipArea:yes/no), und das vipArea-Feld im JSON zurückgeben.\nBitte geben Sie streng im folgenden JSON-Format zurück:{\"name\": \"(Format:string)\",\"type\": \"(Format:string)\",\"scope\": \"(Format:int)\",\"weight\": \"(Format:int)\",\"province\": \"(Format:string)\",\"city\": \"(Format:string)\",\"locationDetail\": \"(Format:string)\",\"time\": \"(Format:string)\",\"timeReason\": \"(Format:string)\",\"reason\": \"(Format:string)\",\"robotIntention\": \"(Format:boolean)\",\"intentionReason\": \"(Format:string)\",\"ticketReservation\": \"(Format:string)\",\"vipArea\": \"(Format:string)\"}",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Veranstaltungsname",
+                    "能力项": "主题约束"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Veranstaltungstyp",
+                    "能力项": "主题约束"
+                },
+                "scope": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Veranstaltungsumfang",
+                    "能力项": "特定格式"
+                },
+                "weight": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": "Wichtigkeitsgrad der Veranstaltung",
+                    "能力项": "特定格式"
+                },
+                "province": {
+                    "type": "string",
+                    "description": "Bundesland",
+                    "能力项": "特定格式"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "Stadt",
+                    "能力项": "特定格式"
+                },
+                "locationDetail": {
+                    "type": "string",
+                    "description": "Spezifischer Ort",
+                    "能力项": "主题约束"
+                },
+                "time": {
+                    "type": "string",
+                    "pattern": "^(\\d{8}-\\d{8}|Expired|None|Current|\\d{8})$",
+                    "description": "Veranstaltungszeit",
+                    "能力项": "日期格式"
+                },
+                "timeReason": {
+                    "type": "string",
+                    "description": "Zeitbewertungsgrund",
+                    "能力项": "主题约束"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Begründung",
+                    "能力项": "主题约束"
+                },
+                "robotIntention": {
+                    "type": "boolean",
+                    "description": "Ob Tourist",
+                    "能力项": "特定格式"
+                },
+                "intentionReason": {
+                    "type": "string",
+                    "description": "Absichtsgrund",
+                    "能力项": "主题约束"
+                },
+                "ticketReservation": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob Ticketreservierung im Voraus erforderlich",
+                    "能力项": "特定格式"
+                },
+                "vipArea": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no"
+                    ],
+                    "description": "Ob VIP-Bereich Reservierung benötigt",
+                    "能力项": "特定格式"
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "scope",
+                "weight",
+                "province",
+                "city",
+                "locationDetail",
+                "time",
+                "timeReason",
+                "reason",
+                "robotIntention",
+                "intentionReason",
+                "ticketReservation",
+                "vipArea"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否满足schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "name": "#JSONSCHEMA#:name",
+            "type": "#JSONSCHEMA#:type",
+            "scope": "#JSONSCHEMA#:scope",
+            "weight": "#JSONSCHEMA#:weight",
+            "province": "#JSONSCHEMA#:province",
+            "city": "#JSONSCHEMA#:city",
+            "locationDetail": "#JSONSCHEMA#:locationDetail",
+            "time": "#JSONSCHEMA#:time",
+            "timeReason": "#JSONSCHEMA#:timeReason",
+            "reason": "#JSONSCHEMA#:reason",
+            "robotIntention": "#JSONSCHEMA#:robotIntention",
+            "intentionReason": "#JSONSCHEMA#:intentionReason",
+            "ticketReservation": "#JSONSCHEMA#:ticketReservation",
+            "vipArea": "#JSONSCHEMA#:vipArea"
+        }
+    }
+]

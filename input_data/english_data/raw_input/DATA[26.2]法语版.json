@@ -1,0 +1,2162 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Contexte : Vous êtes un analyste d’articles. Je vais vous fournir un article et un nom de POI. Votre tâche est d’analyser cet article, de déterminer si cet article est lié aux activités récréatives, et s’il est lié aux types d’événements populaires, et enfin de fournir la base du jugement.\nDate actuelle : 2024-06-01.\nConnaissance : Si c’est un guide de loisirs, jugez selon les dimensions suivantes, tous ces jugements de dimensions doivent passer pour être considérés comme un guide lié aux loisirs :\n1. Si l’article contient des informations sur les guides de voyage, les activités récréatives, les projets récréatifs, les itinéraires de voyage, les séquences de voyage, les points de check-in, les attractions, les expériences de voyage, etc. Une fréquence élevée d’occurrence rend plus probable qu’il s’agisse d’un article récréatif (mais pas obligatoire).\n2. Si le contenu de l’article concerne les ventes, la publicité, la location de maisons, la vente de maisons, l’immobilier, la restauration, les notes de type hébergement, il n’appartient pas aux articles récréatifs. Si les informations de l’article sont vides, elles n’appartiennent pas non plus aux articles récréatifs.\n3. Contient des mots-clés comme sources chaudes, ski, etc., classés comme articles récréatifs.\n4. Contient des fêtes comme Noël, Halloween, Nouvel An, etc., classés comme articles récréatifs.\n5. Contient des activités comme spectacles de lumières, spectacles de feux d’artifice, etc., classés comme articles récréatifs.\n6. Contient des activités comme foires aux lanternes du Nouvel An chinois, foires aux temples du Nouvel An chinois, etc., classés comme articles récréatifs.\nSi l’article contient des mots comme festivals, célébrations, foires aux temples, foires aux lanternes, etc., priorisez sa classification comme article récréatif.\nSi l’article implique plusieurs attractions de ville et toutes sont à des fins récréatives, alors classez comme lié.\nFormat de sortie : Utilisez le format JSON pour retourner les informations extraites. Tous les champs ne peuvent retourner que ’Oui’ ou ’Non’ ou ’Lié’ ou ’Non lié’. Format d’exemple comme suit : {\"relate\":\"Lié/Non lié\",\"reason\":\"Raison\",\"isExpired\":\"Oui/Non\",\"isFestival\":\"Oui/Non\",\"isMultiPOI\":\"Oui/Non\",\"isParentChild\":\"Oui/Non\",\"isNightEvent\":\"Oui/Non\",\"isOutdoor\":\"Oui/Non\"}. relate retourne Lié ou Non lié ; reason retourne le raisonnement pour le jugement ; isExpired indique si l’événement est expiré, isFestival indique s’il est lié aux festivals, isMultiPOI indique s’il implique plusieurs POI, isParentChild indique s’il est lié parent-enfant, isNightEvent indique s’il s’agit d’un événement nocturne, isOutdoor indique s’il s’agit d’une activité de plein air. Veuillez vous assurer que la structure de données JSON retournée est correcte et conforme aux règles ci-dessus. Ne retournez pas de caractères autres que JSON.\nContenu de l’article : [[Information Touristique] Le Festival du Tourisme de Shanghai 2024 se déroulera du 20 septembre au 6 octobre, avec un nouveau défilé spécial Disney cette année, attendu pour attirer plus de 8 millions de touristes. Le lieu principal est fixé au Parc de l’Expo Mondiale de Pudong, avec des sous-lieux à la Route de Nanjing, le Bund et autres emplacements.]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Lié",
+                        "Non lié"
+                    ],
+                    "description": "Si c'est un article de loisirs",
+                    "能力项": "contrainte de sujet"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Raison du jugement",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si l'événement est expiré",
+                    "能力项": "format spécifique"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié aux festivals",
+                    "能力项": "format spécifique"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si implique plusieurs POI",
+                    "能力项": "format spécifique"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié parent-enfant",
+                    "能力项": "format spécifique"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité nocturne",
+                    "能力项": "format spécifique"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité de plein air",
+                    "能力项": "format spécifique"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Contexte : Vous êtes un analyste d’articles. Je vais vous fournir un article et un nom de POI. Votre tâche est d’analyser cet article, de déterminer si cet article est lié aux activités récréatives, et s’il est lié aux types d’événements populaires, et enfin de fournir la base du jugement.\nDate actuelle : 2024-06-01.\nConnaissance : Si c’est un guide de loisirs, jugez selon les dimensions suivantes, tous ces jugements de dimensions doivent passer pour être considérés comme un guide lié aux loisirs :\n1. Si l’article contient des informations sur les guides de voyage, les activités récréatives, les projets récréatifs, les itinéraires de voyage, les séquences de voyage, les points de check-in, les attractions, les expériences de voyage, etc. Une fréquence élevée d’occurrence rend plus probable qu’il s’agisse d’un article récréatif (mais pas obligatoire).\n2. Si le contenu de l’article concerne les ventes, la publicité, la location de maisons, la vente de maisons, l’immobilier, la restauration, les notes de type hébergement, il n’appartient pas aux articles récréatifs. Si les informations de l’article sont vides, elles n’appartiennent pas non plus aux articles récréatifs.\n3. Contient des mots-clés comme sources chaudes, ski, etc., classés comme articles récréatifs.\n4. Contient des fêtes comme Noël, Halloween, Nouvel An, etc., classés comme articles récréatifs.\n5. Contient des activités comme spectacles de lumières, spectacles de feux d’artifice, etc., classés comme articles récréatifs.\n6. Contient des activités comme foires aux lanternes du Nouvel An chinois, foires aux temples du Nouvel An chinois, etc., classés comme articles récréatifs.\nSi l’article contient des tags comme #check-in, #tourisme, #exploration-magasin, etc., et le contenu implique des expériences récréatives, alors tendez à classer comme lié.\nSi l’article contient des mots comme festivals, célébrations, foires aux temples, foires aux lanternes, etc., priorisez sa classification comme article récréatif.\nFormat de sortie : Utilisez le format JSON pour retourner les informations extraites. Tous les champs ne peuvent retourner que ’Oui’ ou ’Non’ ou ’Lié’ ou ’Non lié’. Format d’exemple comme suit : {\"relate\":\"Lié/Non lié\",\"reason\":\"Raison\",\"isExpired\":\"Oui/Non\",\"isFestival\":\"Oui/Non\",\"isMultiPOI\":\"Oui/Non\",\"isParentChild\":\"Oui/Non\",\"isNightEvent\":\"Oui/Non\",\"isOutdoor\":\"Oui/Non\"}. relate retourne Lié ou Non lié ; reason retourne le raisonnement pour le jugement ; isExpired indique si l’événement est expiré, isFestival indique s’il est lié aux festivals, isMultiPOI indique s’il implique plusieurs POI, isParentChild indique s’il est lié parent-enfant, isNightEvent indique s’il s’agit d’un événement nocturne, isOutdoor indique s’il s’agit d’une activité de plein air. Veuillez vous assurer que la structure de données JSON retournée est correcte et conforme aux règles ci-dessus. Ne retournez pas de caractères autres que JSON.\nContenu de l’article : [[Blog de Voyage] Check-in de week-end au marché nocturne du Temple de Confucius de Nanjing avec des amis, visité la foire aux lanternes de la Rivière Qinhuai, expérimenté le défilé de lanternes et la nourriture du marché nocturne, et collecté plusieurs tampons de check-in.]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Lié",
+                        "Non lié"
+                    ],
+                    "description": "Si c'est un article de loisirs",
+                    "能力项": "contrainte de sujet"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Raison du jugement",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si l'événement est expiré",
+                    "能力项": "format spécifique"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié aux festivals",
+                    "能力项": "format spécifique"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si implique plusieurs POI",
+                    "能力项": "format spécifique"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié parent-enfant",
+                    "能力项": "format spécifique"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité nocturne",
+                    "能力项": "format spécifique"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité de plein air",
+                    "能力项": "format spécifique"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Contexte : Vous êtes un analyste d’articles. Je vais vous fournir un article et un nom de POI. Votre tâche est d’analyser cet article, de déterminer si cet article est lié aux activités récréatives, et s’il est lié aux types d’événements populaires, et enfin de fournir la base du jugement.\nDate actuelle : 2024-06-01.\nConnaissance : Si c’est un guide de loisirs, jugez selon les dimensions suivantes, tous ces jugements de dimensions doivent passer pour être considérés comme un guide lié aux loisirs :\n1. Si l’article contient des informations sur les guides de voyage, les activités récréatives, les projets récréatifs, les itinéraires de voyage, les séquences de voyage, les points de check-in, les attractions, les expériences de voyage, etc. Une fréquence élevée d’occurrence rend plus probable qu’il s’agisse d’un article récréatif (mais pas obligatoire).\n2. Si le contenu de l’article concerne les ventes, la publicité, la location de maisons, la vente de maisons, l’immobilier, la restauration, les notes de type hébergement, il n’appartient pas aux articles récréatifs. Si les informations de l’article sont vides, elles n’appartiennent pas non plus aux articles récréatifs.\n3. Contient des mots-clés comme sources chaudes, ski, etc., classés comme articles récréatifs.\n4. Contient des fêtes comme Noël, Halloween, Nouvel An, etc., classés comme articles récréatifs.\n5. Contient des activités comme spectacles de lumières, spectacles de feux d’artifice, etc., classés comme articles récréatifs.\n6. Contient des activités comme foires aux lanternes du Nouvel An chinois, foires aux temples du Nouvel An chinois, etc., classés comme articles récréatifs.\nSi le contenu de l’article est vide, classez directement comme non lié.\nSi le contenu de l’article concerne principalement la nourriture et n’a pas de descriptions d’activités récréatives, cela ne compte pas comme récréatif.\nFormat de sortie : Utilisez le format JSON pour retourner les informations extraites. Tous les champs ne peuvent retourner que ’Oui’ ou ’Non’ ou ’Lié’ ou ’Non lié’. Format d’exemple comme suit : {\"relate\":\"Lié/Non lié\",\"reason\":\"Raison\",\"isExpired\":\"Oui/Non\",\"isFestival\":\"Oui/Non\",\"isMultiPOI\":\"Oui/Non\",\"isParentChild\":\"Oui/Non\",\"isNightEvent\":\"Oui/Non\",\"isOutdoor\":\"Oui/Non\"}. relate retourne Lié ou Non lié ; reason retourne le raisonnement pour le jugement ; isExpired indique si l’événement est expiré, isFestival indique s’il est lié aux festivals, isMultiPOI indique s’il implique plusieurs POI, isParentChild indique s’il est lié parent-enfant, isNightEvent indique s’il s’agit d’un événement nocturne, isOutdoor indique s’il s’agit d’une activité de plein air. Veuillez vous assurer que la structure de données JSON retournée est correcte et conforme aux règles ci-dessus. Ne retournez pas de caractères autres que JSON.\nContenu de l’article : [[Recommandation Immobilière] Cette communauté est proche du métro avec des installations environnantes complètes et une vie pratique. Certaines unités sont actuellement en vente chaude, bienvenue pour vous renseigner pour une visite.]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Lié",
+                        "Non lié"
+                    ],
+                    "description": "Si c'est un article de loisirs",
+                    "能力项": "contrainte de sujet"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Raison du jugement",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si l'événement est expiré",
+                    "能力项": "format spécifique"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié aux festivals",
+                    "能力项": "format spécifique"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si implique plusieurs POI",
+                    "能力项": "format spécifique"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié parent-enfant",
+                    "能力项": "format spécifique"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité nocturne",
+                    "能力项": "format spécifique"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité de plein air",
+                    "能力项": "format spécifique"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Contexte : Vous êtes un analyste d’articles. Je vais vous fournir un article et un nom de POI. Votre tâche est d’analyser cet article, de déterminer si cet article est lié aux activités récréatives, et s’il est lié aux types d’événements populaires, et enfin de fournir la base du jugement.\nDate actuelle : 2024-06-01.\nConnaissance : Si c’est un guide de loisirs, jugez selon les dimensions suivantes, tous ces jugements de dimensions doivent passer pour être considérés comme un guide lié aux loisirs :\n1. Si l’article contient des informations sur les guides de voyage, les activités récréatives, les projets récréatifs, les itinéraires de voyage, les séquences de voyage, les points de check-in, les attractions, les expériences de voyage, etc. Une fréquence élevée d’occurrence rend plus probable qu’il s’agisse d’un article récréatif (mais pas obligatoire).\n2. Si le contenu de l’article concerne les ventes, la publicité, la location de maisons, la vente de maisons, l’immobilier, la restauration, les notes de type hébergement, il n’appartient pas aux articles récréatifs. Si les informations de l’article sont vides, elles n’appartiennent pas non plus aux articles récréatifs.\n3. Contient des mots-clés comme sources chaudes, ski, etc., classés comme articles récréatifs.\n4. Contient des fêtes comme Noël, Halloween, Nouvel An, etc., classés comme articles récréatifs.\n5. Contient des activités comme spectacles de lumières, spectacles de feux d’artifice, etc., classés comme articles récréatifs.\n6. Contient des activités comme foires aux lanternes du Nouvel An chinois, foires aux temples du Nouvel An chinois, etc., classés comme articles récréatifs.\nSi le contenu de l’article concerne principalement la nourriture et n’a pas de descriptions d’activités récréatives, cela ne compte pas comme récréatif.\nFormat de sortie : Utilisez le format JSON pour retourner les informations extraites. Tous les champs ne peuvent retourner que ’Oui’ ou ’Non’ ou ’Lié’ ou ’Non lié’. Format d’exemple comme suit : {\"relate\":\"Lié/Non lié\",\"reason\":\"Raison\",\"isExpired\":\"Oui/Non\",\"isFestival\":\"Oui/Non\",\"isMultiPOI\":\"Oui/Non\",\"isParentChild\":\"Oui/Non\",\"isNightEvent\":\"Oui/Non\",\"isOutdoor\":\"Oui/Non\"}. relate retourne Lié ou Non lié ; reason retourne le raisonnement pour le jugement ; isExpired indique si l’événement est expiré, isFestival indique s’il est lié aux festivals, isMultiPOI indique s’il implique plusieurs POI, isParentChild indique s’il est lié parent-enfant, isNightEvent indique s’il s’agit d’un événement nocturne, isOutdoor indique s’il s’agit d’une activité de plein air. Veuillez vous assurer que la structure de données JSON retournée est correcte et conforme aux règles ci-dessus. Ne retournez pas de caractères autres que JSON.\nContenu de l’article : [[Exploration Culinaire] Visité un restaurant traditionnel de Guangzhou, goûté le thé du matin et divers dim sum, environnement confortable, adapté aux réunions de famille.]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Lié",
+                        "Non lié"
+                    ],
+                    "description": "Si c'est un article de loisirs",
+                    "能力项": "contrainte de sujet"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Raison du jugement",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si l'événement est expiré",
+                    "能力项": "format spécifique"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié aux festivals",
+                    "能力项": "format spécifique"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si implique plusieurs POI",
+                    "能力项": "format spécifique"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié parent-enfant",
+                    "能力项": "format spécifique"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité nocturne",
+                    "能力项": "format spécifique"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité de plein air",
+                    "能力项": "format spécifique"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Contexte : Vous êtes un analyste d’articles. Je vais vous fournir un article et un nom de POI. Votre tâche est d’analyser cet article, de déterminer si cet article est lié aux activités récréatives, et s’il est lié aux types d’événements populaires, et enfin de fournir la base du jugement.\nDate actuelle : 2024-06-01.\nConnaissance : Si c’est un guide de loisirs, jugez selon les dimensions suivantes, tous ces jugements de dimensions doivent passer pour être considérés comme un guide lié aux loisirs :\n1. Si l’article contient des informations sur les guides de voyage, les activités récréatives, les projets récréatifs, les itinéraires de voyage, les séquences de voyage, les points de check-in, les attractions, les expériences de voyage, etc. Une fréquence élevée d’occurrence rend plus probable qu’il s’agisse d’un article récréatif (mais pas obligatoire).\n2. Si le contenu de l’article concerne les ventes, la publicité, la location de maisons, la vente de maisons, l’immobilier, la restauration, les notes de type hébergement, il n’appartient pas aux articles récréatifs. Si les informations de l’article sont vides, elles n’appartiennent pas non plus aux articles récréatifs.\n3. Contient des mots-clés comme sources chaudes, ski, etc., classés comme articles récréatifs.\n4. Contient des fêtes comme Noël, Halloween, Nouvel An, etc., classés comme articles récréatifs.\n5. Contient des activités comme spectacles de lumières, spectacles de feux d’artifice, etc., classés comme articles récréatifs.\n6. Contient des activités comme foires aux lanternes du Nouvel An chinois, foires aux temples du Nouvel An chinois, etc., classés comme articles récréatifs.\nSi le contenu de l’article est hautement lié au nom POI donné et décrit des expériences récréatives, alors classez comme lié.\nFormat de sortie : Utilisez le format JSON pour retourner les informations extraites. Tous les champs ne peuvent retourner que ’Oui’ ou ’Non’ ou ’Lié’ ou ’Non lié’. Format d’exemple comme suit : {\"relate\":\"Lié/Non lié\",\"reason\":\"Raison\",\"isExpired\":\"Oui/Non\",\"isFestival\":\"Oui/Non\",\"isMultiPOI\":\"Oui/Non\",\"isParentChild\":\"Oui/Non\",\"isNightEvent\":\"Oui/Non\",\"isOutdoor\":\"Oui/Non\"}. relate retourne Lié ou Non lié ; reason retourne le raisonnement pour le jugement ; isExpired indique si l’événement est expiré, isFestival indique s’il est lié aux festivals, isMultiPOI indique s’il implique plusieurs POI, isParentChild indique s’il est lié parent-enfant, isNightEvent indique s’il s’agit d’un événement nocturne, isOutdoor indique s’il s’agit d’une activité de plein air. Veuillez vous assurer que la structure de données JSON retournée est correcte et conforme aux règles ci-dessus. Ne retournez pas de caractères autres que JSON.\nContenu de l’article : [[Guide de Ski] La Station de Ski de Chongli a ouvert en décembre, incluant plusieurs pistes débutant, intermédiaire et avancé, services de coaching professionnel, location d’équipement de ski disponible, adapté aux débutants et joueurs avancés.]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Lié",
+                        "Non lié"
+                    ],
+                    "description": "Si c'est un article de loisirs",
+                    "能力项": "contrainte de sujet"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Raison du jugement",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si l'événement est expiré",
+                    "能力项": "format spécifique"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié aux festivals",
+                    "能力项": "format spécifique"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si implique plusieurs POI",
+                    "能力项": "format spécifique"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié parent-enfant",
+                    "能力项": "format spécifique"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité nocturne",
+                    "能力项": "format spécifique"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité de plein air",
+                    "能力项": "format spécifique"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Contexte : Vous êtes un analyste d’articles. Je vais vous fournir un article et un nom de POI. Votre tâche est d’analyser cet article, de déterminer si cet article est lié aux activités récréatives, et s’il est lié aux types d’événements populaires, et enfin de fournir la base du jugement.\nDate actuelle : 2024-06-01.\nConnaissance : Si c’est un guide de loisirs, jugez selon les dimensions suivantes, tous ces jugements de dimensions doivent passer pour être considérés comme un guide lié aux loisirs :\n1. Si l’article contient des informations sur les guides de voyage, les activités récréatives, les projets récréatifs, les itinéraires de voyage, les séquences de voyage, les points de check-in, les attractions, les expériences de voyage, etc. Une fréquence élevée d’occurrence rend plus probable qu’il s’agisse d’un article récréatif (mais pas obligatoire).\n2. Si le contenu de l’article concerne les ventes, la publicité, la location de maisons, la vente de maisons, l’immobilier, la restauration, les notes de type hébergement, il n’appartient pas aux articles récréatifs. Si les informations de l’article sont vides, elles n’appartiennent pas non plus aux articles récréatifs.\n3. Contient des mots-clés comme sources chaudes, ski, etc., classés comme articles récréatifs.\n4. Contient des fêtes comme Noël, Halloween, Nouvel An, etc., classés comme articles récréatifs.\n5. Contient des activités comme spectacles de lumières, spectacles de feux d’artifice, etc., classés comme articles récréatifs.\n6. Contient des activités comme foires aux lanternes du Nouvel An chinois, foires aux temples du Nouvel An chinois, etc., classés comme articles récréatifs.\nSi l’article contient des mots comme festivals, célébrations, foires aux temples, foires aux lanternes, etc., priorisez sa classification comme article récréatif.\nFormat de sortie : Utilisez le format JSON pour retourner les informations extraites. Tous les champs ne peuvent retourner que ’Oui’ ou ’Non’ ou ’Lié’ ou ’Non lié’. Format d’exemple comme suit : {\"relate\":\"Lié/Non lié\",\"reason\":\"Raison\",\"isExpired\":\"Oui/Non\",\"isFestival\":\"Oui/Non\",\"isMultiPOI\":\"Oui/Non\",\"isParentChild\":\"Oui/Non\",\"isNightEvent\":\"Oui/Non\",\"isOutdoor\":\"Oui/Non\"}. relate retourne Lié ou Non lié ; reason retourne le raisonnement pour le jugement ; isExpired indique si l’événement est expiré, isFestival indique s’il est lié aux festivals, isMultiPOI indique s’il implique plusieurs POI, isParentChild indique s’il est lié parent-enfant, isNightEvent indique s’il s’agit d’un événement nocturne, isOutdoor indique s’il s’agit d’une activité de plein air. Veuillez vous assurer que la structure de données JSON retournée est correcte et conforme aux règles ci-dessus. Ne retournez pas de caractères autres que JSON.\nContenu de l’article : [[Aperçu du Spectacle de Lumières] Le spectacle de lumières du Nouvel An 2024 de la Baie de Shenzhen aura lieu le 31 décembre, avec des performances de drones et des spectacles de feux d’artifice, réservation à l’avance pour les points de vue recommandée.]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Lié",
+                        "Non lié"
+                    ],
+                    "description": "Si c'est un article de loisirs",
+                    "能力项": "contrainte de sujet"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Raison du jugement",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si l'événement est expiré",
+                    "能力项": "format spécifique"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié aux festivals",
+                    "能力项": "format spécifique"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si implique plusieurs POI",
+                    "能力项": "format spécifique"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié parent-enfant",
+                    "能力项": "format spécifique"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité nocturne",
+                    "能力项": "format spécifique"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité de plein air",
+                    "能力项": "format spécifique"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Contexte : Vous êtes un analyste d’articles. Je vais vous fournir un article et un nom de POI. Votre tâche est d’analyser cet article, de déterminer si cet article est lié aux activités récréatives, et s’il est lié aux types d’événements populaires, et enfin de fournir la base du jugement.\nDate actuelle : 2024-06-01.\nConnaissance : Si c’est un guide de loisirs, jugez selon les dimensions suivantes, tous ces jugements de dimensions doivent passer pour être considérés comme un guide lié aux loisirs :\n1. Si l’article contient des informations sur les guides de voyage, les activités récréatives, les projets récréatifs, les itinéraires de voyage, les séquences de voyage, les points de check-in, les attractions, les expériences de voyage, etc. Une fréquence élevée d’occurrence rend plus probable qu’il s’agisse d’un article récréatif (mais pas obligatoire).\n2. Si le contenu de l’article concerne les ventes, la publicité, la location de maisons, la vente de maisons, l’immobilier, la restauration, les notes de type hébergement, il n’appartient pas aux articles récréatifs. Si les informations de l’article sont vides, elles n’appartiennent pas non plus aux articles récréatifs.\n3. Contient des mots-clés comme sources chaudes, ski, etc., classés comme articles récréatifs.\n4. Contient des fêtes comme Noël, Halloween, Nouvel An, etc., classés comme articles récréatifs.\n5. Contient des activités comme spectacles de lumières, spectacles de feux d’artifice, etc., classés comme articles récréatifs.\n6. Contient des activités comme foires aux lanternes du Nouvel An chinois, foires aux temples du Nouvel An chinois, etc., classés comme articles récréatifs.\nSi l’article contient des mots comme festivals, célébrations, foires aux temples, foires aux lanternes, etc., priorisez sa classification comme article récréatif.\nSi des mots comme parent-enfant, aire de jeux pour enfants apparaissent et qu’il y a des descriptions récréatives, alors classez comme lié.\nFormat de sortie : Utilisez le format JSON pour retourner les informations extraites. Tous les champs ne peuvent retourner que ’Oui’ ou ’Non’ ou ’Lié’ ou ’Non lié’. Format d’exemple comme suit : {\"relate\":\"Lié/Non lié\",\"reason\":\"Raison\",\"isExpired\":\"Oui/Non\",\"isFestival\":\"Oui/Non\",\"isMultiPOI\":\"Oui/Non\",\"isParentChild\":\"Oui/Non\",\"isNightEvent\":\"Oui/Non\",\"isOutdoor\":\"Oui/Non\"}. relate retourne Lié ou Non lié ; reason retourne le raisonnement pour le jugement ; isExpired indique si l’événement est expiré, isFestival indique s’il est lié aux festivals, isMultiPOI indique s’il implique plusieurs POI, isParentChild indique s’il est lié parent-enfant, isNightEvent indique s’il s’agit d’un événement nocturne, isOutdoor indique s’il s’agit d’une activité de plein air. Veuillez vous assurer que la structure de données JSON retournée est correcte et conforme aux règles ci-dessus. Ne retournez pas de caractères autres que JSON.\nContenu de l’article : [[Foire aux Temples du Nouvel An] La Foire aux Temples de Ditan de Pékin 2025 aura lieu du 1er au 5 janvier, incluant des performances folkloriques, des expériences d’artisanat, des stands de nourriture, etc., adapté aux visites familiales parent-enfant.]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Lié",
+                        "Non lié"
+                    ],
+                    "description": "Si c'est un article de loisirs",
+                    "能力项": "contrainte de sujet"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Raison du jugement",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si l'événement est expiré",
+                    "能力项": "format spécifique"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié aux festivals",
+                    "能力项": "format spécifique"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si implique plusieurs POI",
+                    "能力项": "format spécifique"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié parent-enfant",
+                    "能力项": "format spécifique"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité nocturne",
+                    "能力项": "format spécifique"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité de plein air",
+                    "能力项": "format spécifique"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Contexte : Vous êtes un analyste d’articles. Je vais vous fournir un article et un nom de POI. Votre tâche est d’analyser cet article, de déterminer si cet article est lié aux activités récréatives, et s’il est lié aux types d’événements populaires, et enfin de fournir la base du jugement.\nDate actuelle : 2024-06-01.\nConnaissance : Si c’est un guide de loisirs, jugez selon les dimensions suivantes, tous ces jugements de dimensions doivent passer pour être considérés comme un guide lié aux loisirs :\n1. Si l’article contient des informations sur les guides de voyage, les activités récréatives, les projets récréatifs, les itinéraires de voyage, les séquences de voyage, les points de check-in, les attractions, les expériences de voyage, etc. Une fréquence élevée d’occurrence rend plus probable qu’il s’agisse d’un article récréatif (mais pas obligatoire).\n2. Si le contenu de l’article concerne les ventes, la publicité, la location de maisons, la vente de maisons, l’immobilier, la restauration, les notes de type hébergement, il n’appartient pas aux articles récréatifs. Si les informations de l’article sont vides, elles n’appartiennent pas non plus aux articles récréatifs.\n3. Contient des mots-clés comme sources chaudes, ski, etc., classés comme articles récréatifs.\n4. Contient des fêtes comme Noël, Halloween, Nouvel An, etc., classés comme articles récréatifs.\n5. Contient des activités comme spectacles de lumières, spectacles de feux d’artifice, etc., classés comme articles récréatifs.\n6. Contient des activités comme foires aux lanternes du Nouvel An chinois, foires aux temples du Nouvel An chinois, etc., classés comme articles récréatifs.\nSi le contenu de l’article est vide, classez directement comme non lié.\nFormat de sortie : Utilisez le format JSON pour retourner les informations extraites. Tous les champs ne peuvent retourner que ’Oui’ ou ’Non’ ou ’Lié’ ou ’Non lié’. Format d’exemple comme suit : {\"relate\":\"Lié/Non lié\",\"reason\":\"Raison\",\"isExpired\":\"Oui/Non\",\"isFestival\":\"Oui/Non\",\"isMultiPOI\":\"Oui/Non\",\"isParentChild\":\"Oui/Non\",\"isNightEvent\":\"Oui/Non\",\"isOutdoor\":\"Oui/Non\"}. relate retourne Lié ou Non lié ; reason retourne le raisonnement pour le jugement ; isExpired indique si l’événement est expiré, isFestival indique s’il est lié aux festivals, isMultiPOI indique s’il implique plusieurs POI, isParentChild indique s’il est lié parent-enfant, isNightEvent indique s’il s’agit d’un événement nocturne, isOutdoor indique s’il s’agit d’une activité de plein air. Veuillez vous assurer que la structure de données JSON retournée est correcte et conforme aux règles ci-dessus. Ne retournez pas de caractères autres que JSON.\nContenu de l’article : [[Information de Location] Appartement de luxe du centre-ville à louer, transport pratique, prêt à emménager, bienvenue pour appeler pour un rendez-vous de visite.]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Lié",
+                        "Non lié"
+                    ],
+                    "description": "Si c'est un article de loisirs",
+                    "能力项": "contrainte de sujet"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Raison du jugement",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si l'événement est expiré",
+                    "能力项": "format spécifique"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié aux festivals",
+                    "能力项": "format spécifique"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si implique plusieurs POI",
+                    "能力项": "format spécifique"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié parent-enfant",
+                    "能力项": "format spécifique"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité nocturne",
+                    "能力项": "format spécifique"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité de plein air",
+                    "能力项": "format spécifique"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Contexte : Vous êtes un analyste d’articles. Je vais vous fournir un article et un nom de POI. Votre tâche est d’analyser cet article, de déterminer si cet article est lié aux activités récréatives, et s’il est lié aux types d’événements populaires, et enfin de fournir la base du jugement.\nDate actuelle : 2024-06-01.\nConnaissance : Si c’est un guide de loisirs, jugez selon les dimensions suivantes, tous ces jugements de dimensions doivent passer pour être considérés comme un guide lié aux loisirs :\n1. Si l’article contient des informations sur les guides de voyage, les activités récréatives, les projets récréatifs, les itinéraires de voyage, les séquences de voyage, les points de check-in, les attractions, les expériences de voyage, etc. Une fréquence élevée d’occurrence rend plus probable qu’il s’agisse d’un article récréatif (mais pas obligatoire).\n2. Si le contenu de l’article concerne les ventes, la publicité, la location de maisons, la vente de maisons, l’immobilier, la restauration, les notes de type hébergement, il n’appartient pas aux articles récréatifs. Si les informations de l’article sont vides, elles n’appartiennent pas non plus aux articles récréatifs.\n3. Contient des mots-clés comme sources chaudes, ski, etc., classés comme articles récréatifs.\n4. Contient des fêtes comme Noël, Halloween, Nouvel An, etc., classés comme articles récréatifs.\n5. Contient des activités comme spectacles de lumières, spectacles de feux d’artifice, etc., classés comme articles récréatifs.\n6. Contient des activités comme foires aux lanternes du Nouvel An chinois, foires aux temples du Nouvel An chinois, etc., classés comme articles récréatifs.\nSi l’article contient des mots comme festivals, célébrations, foires aux temples, foires aux lanternes, etc., priorisez sa classification comme article récréatif.\nFormat de sortie : Utilisez le format JSON pour retourner les informations extraites. Tous les champs ne peuvent retourner que ’Oui’ ou ’Non’ ou ’Lié’ ou ’Non lié’. Format d’exemple comme suit : {\"relate\":\"Lié/Non lié\",\"reason\":\"Raison\",\"isExpired\":\"Oui/Non\",\"isFestival\":\"Oui/Non\",\"isMultiPOI\":\"Oui/Non\",\"isParentChild\":\"Oui/Non\",\"isNightEvent\":\"Oui/Non\",\"isOutdoor\":\"Oui/Non\"}. relate retourne Lié ou Non lié ; reason retourne le raisonnement pour le jugement ; isExpired indique si l’événement est expiré, isFestival indique s’il est lié aux festivals, isMultiPOI indique s’il implique plusieurs POI, isParentChild indique s’il est lié parent-enfant, isNightEvent indique s’il s’agit d’un événement nocturne, isOutdoor indique s’il s’agit d’une activité de plein air. Veuillez vous assurer que la structure de données JSON retournée est correcte et conforme aux règles ci-dessus. Ne retournez pas de caractères autres que JSON.\nContenu de l’article : [[Foire aux Lanternes du Nouvel An Chinois] La Foire aux Lanternes Qinhuai de Nanjing 2025 aura lieu du 2 au 20 février, les organisateurs tiendront des défilés de lanternes, des performances de patrimoine culturel immatériel et autres activités, avec des spectacles de lumières nocturnes spectaculaires.]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Lié",
+                        "Non lié"
+                    ],
+                    "description": "Si c'est un article de loisirs",
+                    "能力项": "contrainte de sujet"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Raison du jugement",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si l'événement est expiré",
+                    "能力项": "format spécifique"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié aux festivals",
+                    "能力项": "format spécifique"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si implique plusieurs POI",
+                    "能力项": "format spécifique"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié parent-enfant",
+                    "能力项": "format spécifique"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité nocturne",
+                    "能力项": "format spécifique"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité de plein air",
+                    "能力项": "format spécifique"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Contexte : Vous êtes un analyste d’articles. Je vais vous fournir un article et un nom de POI. Votre tâche est d’analyser cet article, de déterminer si cet article est lié aux activités récréatives, et s’il est lié aux types d’événements populaires, et enfin de fournir la base du jugement.\nDate actuelle : 2024-06-01.\nConnaissance : Si c’est un guide de loisirs, jugez selon les dimensions suivantes, tous ces jugements de dimensions doivent passer pour être considérés comme un guide lié aux loisirs :\n1. Si l’article contient des informations sur les guides de voyage, les activités récréatives, les projets récréatifs, les itinéraires de voyage, les séquences de voyage, les points de check-in, les attractions, les expériences de voyage, etc. Une fréquence élevée d’occurrence rend plus probable qu’il s’agisse d’un article récréatif (mais pas obligatoire).\n2. Si le contenu de l’article concerne les ventes, la publicité, la location de maisons, la vente de maisons, l’immobilier, la restauration, les notes de type hébergement, il n’appartient pas aux articles récréatifs. Si les informations de l’article sont vides, elles n’appartiennent pas non plus aux articles récréatifs.\n3. Contient des mots-clés comme sources chaudes, ski, etc., classés comme articles récréatifs.\n4. Contient des fêtes comme Noël, Halloween, Nouvel An, etc., classés comme articles récréatifs.\n5. Contient des activités comme spectacles de lumières, spectacles de feux d’artifice, etc., classés comme articles récréatifs.\n6. Contient des activités comme foires aux lanternes du Nouvel An chinois, foires aux temples du Nouvel An chinois, etc., classés comme articles récréatifs.\nSi le contenu de l’article est hautement lié au nom POI donné et décrit des expériences récréatives, alors classez comme lié.\nSi des mots comme parent-enfant, aire de jeux pour enfants apparaissent et qu’il y a des descriptions récréatives, alors classez comme lié.\nFormat de sortie : Utilisez le format JSON pour retourner les informations extraites. Tous les champs ne peuvent retourner que ’Oui’ ou ’Non’ ou ’Lié’ ou ’Non lié’. Format d’exemple comme suit : {\"relate\":\"Lié/Non lié\",\"reason\":\"Raison\",\"isExpired\":\"Oui/Non\",\"isFestival\":\"Oui/Non\",\"isMultiPOI\":\"Oui/Non\",\"isParentChild\":\"Oui/Non\",\"isNightEvent\":\"Oui/Non\",\"isOutdoor\":\"Oui/Non\"}. relate retourne Lié ou Non lié ; reason retourne le raisonnement pour le jugement ; isExpired indique si l’événement est expiré, isFestival indique s’il est lié aux festivals, isMultiPOI indique s’il implique plusieurs POI, isParentChild indique s’il est lié parent-enfant, isNightEvent indique s’il s’agit d’un événement nocturne, isOutdoor indique s’il s’agit d’une activité de plein air. Veuillez vous assurer que la structure de données JSON retournée est correcte et conforme aux règles ci-dessus. Ne retournez pas de caractères autres que JSON.\nContenu de l’article : [[Expérience de Sources Chaudes] Le Resort de Sources Chaudes Nanshan de Chongqing nouvellement ouvert, incluant diverses piscines thématiques, aire de jeux parent-enfant, zone de massage SPA, adapté aux loisirs récréatifs d’hiver.]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Lié",
+                        "Non lié"
+                    ],
+                    "description": "Si c'est un article de loisirs",
+                    "能力项": "contrainte de sujet"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Raison du jugement",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si l'événement est expiré",
+                    "能力项": "format spécifique"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié aux festivals",
+                    "能力项": "format spécifique"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si implique plusieurs POI",
+                    "能力项": "format spécifique"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié parent-enfant",
+                    "能力项": "format spécifique"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité nocturne",
+                    "能力项": "format spécifique"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité de plein air",
+                    "能力项": "format spécifique"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Contexte : Vous êtes un analyste d’articles. Je vais vous fournir un article et un nom de POI. Votre tâche est d’analyser cet article, de déterminer si cet article est lié aux activités récréatives, et s’il est lié aux types d’événements populaires, et enfin de fournir la base du jugement.\nDate actuelle : 2024-06-01.\nConnaissance : Si c’est un guide de loisirs, jugez selon les dimensions suivantes, tous ces jugements de dimensions doivent passer pour être considérés comme un guide lié aux loisirs :\n1. Si l’article contient des informations sur les guides de voyage, les activités récréatives, les projets récréatifs, les itinéraires de voyage, les séquences de voyage, les points de check-in, les attractions, les expériences de voyage, etc. Une fréquence élevée d’occurrence rend plus probable qu’il s’agisse d’un article récréatif (mais pas obligatoire).\n2. Si le contenu de l’article concerne les ventes, la publicité, la location de maisons, la vente de maisons, l’immobilier, la restauration, les notes de type hébergement, il n’appartient pas aux articles récréatifs. Si les informations de l’article sont vides, elles n’appartiennent pas non plus aux articles récréatifs.\n3. Contient des mots-clés comme sources chaudes, ski, etc., classés comme articles récréatifs.\n4. Contient des fêtes comme Noël, Halloween, Nouvel An, etc., classés comme articles récréatifs.\n5. Contient des activités comme spectacles de lumières, spectacles de feux d’artifice, etc., classés comme articles récréatifs.\n6. Contient des activités comme foires aux lanternes du Nouvel An chinois, foires aux temples du Nouvel An chinois, etc., classés comme articles récréatifs.\nSi l’article implique plusieurs attractions de ville et toutes sont à des fins récréatives, alors classez comme lié.\nSi des activités de plein air comme marathon, randonnée, cyclisme apparaissent et qu’il y a des expériences récréatives, alors classez comme lié.\nFormat de sortie : Utilisez le format JSON pour retourner les informations extraites. Tous les champs ne peuvent retourner que ’Oui’ ou ’Non’ ou ’Lié’ ou ’Non lié’. Format d’exemple comme suit : {\"relate\":\"Lié/Non lié\",\"reason\":\"Raison\",\"isExpired\":\"Oui/Non\",\"isFestival\":\"Oui/Non\",\"isMultiPOI\":\"Oui/Non\",\"isParentChild\":\"Oui/Non\",\"isNightEvent\":\"Oui/Non\",\"isOutdoor\":\"Oui/Non\"}. relate retourne Lié ou Non lié ; reason retourne le raisonnement pour le jugement ; isExpired indique si l’événement est expiré, isFestival indique s’il est lié aux festivals, isMultiPOI indique s’il implique plusieurs POI, isParentChild indique s’il est lié parent-enfant, isNightEvent indique s’il s’agit d’un événement nocturne, isOutdoor indique s’il s’agit d’une activité de plein air. Veuillez vous assurer que la structure de données JSON retournée est correcte et conforme aux règles ci-dessus. Ne retournez pas de caractères autres que JSON.\nContenu de l’article : [[Publicité] Nouveau lot d’appareils électroménagers importés arrivé dans notre magasin, remises promotionnelles, bienvenue pour visiter et faire du shopping.]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Lié",
+                        "Non lié"
+                    ],
+                    "description": "Si c'est un article de loisirs",
+                    "能力项": "contrainte de sujet"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Raison du jugement",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si l'événement est expiré",
+                    "能力项": "format spécifique"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié aux festivals",
+                    "能力项": "format spécifique"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si implique plusieurs POI",
+                    "能力项": "format spécifique"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié parent-enfant",
+                    "能力项": "format spécifique"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité nocturne",
+                    "能力项": "format spécifique"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité de plein air",
+                    "能力项": "format spécifique"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Contexte : Vous êtes un analyste d’articles. Je vais vous fournir un article et un nom de POI. Votre tâche est d’analyser cet article, de déterminer si cet article est lié aux activités récréatives, et s’il est lié aux types d’événements populaires, et enfin de fournir la base du jugement.\nDate actuelle : 2024-06-01.\nConnaissance : Si c’est un guide de loisirs, jugez selon les dimensions suivantes, tous ces jugements de dimensions doivent passer pour être considérés comme un guide lié aux loisirs :\n1. Si l’article contient des informations sur les guides de voyage, les activités récréatives, les projets récréatifs, les itinéraires de voyage, les séquences de voyage, les points de check-in, les attractions, les expériences de voyage, etc. Une fréquence élevée d’occurrence rend plus probable qu’il s’agisse d’un article récréatif (mais pas obligatoire).\n2. Si le contenu de l’article concerne les ventes, la publicité, la location de maisons, la vente de maisons, l’immobilier, la restauration, les notes de type hébergement, il n’appartient pas aux articles récréatifs. Si les informations de l’article sont vides, elles n’appartiennent pas non plus aux articles récréatifs.\n3. Contient des mots-clés comme sources chaudes, ski, etc., classés comme articles récréatifs.\n4. Contient des fêtes comme Noël, Halloween, Nouvel An, etc., classés comme articles récréatifs.\n5. Contient des activités comme spectacles de lumières, spectacles de feux d’artifice, etc., classés comme articles récréatifs.\n6. Contient des activités comme foires aux lanternes du Nouvel An chinois, foires aux temples du Nouvel An chinois, etc., classés comme articles récréatifs.\nSi des mots comme parent-enfant, aire de jeux pour enfants apparaissent et qu’il y a des descriptions récréatives, alors classez comme lié.\nSi l’article contient des tags comme #check-in, #tourisme, #exploration-magasin, etc., et le contenu implique des expériences récréatives, alors tendez à classer comme lié.\nFormat de sortie : Utilisez le format JSON pour retourner les informations extraites. Tous les champs ne peuvent retourner que ’Oui’ ou ’Non’ ou ’Lié’ ou ’Non lié’. Format d’exemple comme suit : {\"relate\":\"Lié/Non lié\",\"reason\":\"Raison\",\"isExpired\":\"Oui/Non\",\"isFestival\":\"Oui/Non\",\"isMultiPOI\":\"Oui/Non\",\"isParentChild\":\"Oui/Non\",\"isNightEvent\":\"Oui/Non\",\"isOutdoor\":\"Oui/Non\"}. relate retourne Lié ou Non lié ; reason retourne le raisonnement pour le jugement ; isExpired indique si l’événement est expiré, isFestival indique s’il est lié aux festivals, isMultiPOI indique s’il implique plusieurs POI, isParentChild indique s’il est lié parent-enfant, isNightEvent indique s’il s’agit d’un événement nocturne, isOutdoor indique s’il s’agit d’une activité de plein air. Veuillez vous assurer que la structure de données JSON retournée est correcte et conforme aux règles ci-dessus. Ne retournez pas de caractères autres que JSON.\nContenu de l’article : [[Guide] Recommandation de séquence de visite du Temple de Confucius de Nanjing : d’abord visiter le marché nocturne de la Rivière Qinhuai, puis visiter l’architecture ancienne du Temple de Confucius, enfin goûter les collations dans la rue de la nourriture.]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Lié",
+                        "Non lié"
+                    ],
+                    "description": "Si c'est un article de loisirs",
+                    "能力项": "contrainte de sujet"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Raison du jugement",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si l'événement est expiré",
+                    "能力项": "format spécifique"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié aux festivals",
+                    "能力项": "format spécifique"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si implique plusieurs POI",
+                    "能力项": "format spécifique"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié parent-enfant",
+                    "能力项": "format spécifique"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité nocturne",
+                    "能力项": "format spécifique"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité de plein air",
+                    "能力项": "format spécifique"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Contexte : Vous êtes un analyste d’articles. Je vais vous fournir un article et un nom de POI. Votre tâche est d’analyser cet article, de déterminer si cet article est lié aux activités récréatives, et s’il est lié aux types d’événements populaires, et enfin de fournir la base du jugement.\nDate actuelle : 2024-06-01.\nConnaissance : Si c’est un guide de loisirs, jugez selon les dimensions suivantes, tous ces jugements de dimensions doivent passer pour être considérés comme un guide lié aux loisirs :\n1. Si l’article contient des informations sur les guides de voyage, les activités récréatives, les projets récréatifs, les itinéraires de voyage, les séquences de voyage, les points de check-in, les attractions, les expériences de voyage, etc. Une fréquence élevée d’occurrence rend plus probable qu’il s’agisse d’un article récréatif (mais pas obligatoire).\n2. Si le contenu de l’article concerne les ventes, la publicité, la location de maisons, la vente de maisons, l’immobilier, la restauration, les notes de type hébergement, il n’appartient pas aux articles récréatifs. Si les informations de l’article sont vides, elles n’appartiennent pas non plus aux articles récréatifs.\n3. Contient des mots-clés comme sources chaudes, ski, etc., classés comme articles récréatifs.\n4. Contient des fêtes comme Noël, Halloween, Nouvel An, etc., classés comme articles récréatifs.\n5. Contient des activités comme spectacles de lumières, spectacles de feux d’artifice, etc., classés comme articles récréatifs.\n6. Contient des activités comme foires aux lanternes du Nouvel An chinois, foires aux temples du Nouvel An chinois, etc., classés comme articles récréatifs.\n\nSi l’article contient des tags comme #check-in, #tourisme, #exploration-magasin, etc., et le contenu implique des expériences récréatives, alors tendez à classer comme lié.\nFormat de sortie : Utilisez le format JSON pour retourner les informations extraites. Tous les champs ne peuvent retourner que ’Oui’ ou ’Non’ ou ’Lié’ ou ’Non lié’. Format d’exemple comme suit : {\"relate\":\"Lié/Non lié\",\"reason\":\"Raison\",\"isExpired\":\"Oui/Non\",\"isFestival\":\"Oui/Non\",\"isMultiPOI\":\"Oui/Non\",\"isParentChild\":\"Oui/Non\",\"isNightEvent\":\"Oui/Non\",\"isOutdoor\":\"Oui/Non\"}. relate retourne Lié ou Non lié ; reason retourne le raisonnement pour le jugement ; isExpired indique si l’événement est expiré, isFestival indique s’il est lié aux festivals, isMultiPOI indique s’il implique plusieurs POI, isParentChild indique s’il est lié parent-enfant, isNightEvent indique s’il s’agit d’un événement nocturne, isOutdoor indique s’il s’agit d’une activité de plein air. Veuillez vous assurer que la structure de données JSON retournée est correcte et conforme aux règles ci-dessus. Ne retournez pas de caractères autres que JSON.\nContenu de l’article : [[Activité Touristique] Le Festival du Panda de Chengdu 2024 aura lieu en octobre, zone d’exposition principale à la Base d’Élevage du Panda Géant de Chengdu, activités incluant interaction parent-enfant, défilés à thème panda, collection de tampons de points de check-in, etc.]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Lié",
+                        "Non lié"
+                    ],
+                    "description": "Si c'est un article de loisirs",
+                    "能力项": "contrainte de sujet"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Raison du jugement",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si l'événement est expiré",
+                    "能力项": "format spécifique"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié aux festivals",
+                    "能力项": "format spécifique"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si implique plusieurs POI",
+                    "能力项": "format spécifique"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié parent-enfant",
+                    "能力项": "format spécifique"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité nocturne",
+                    "能力项": "format spécifique"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité de plein air",
+                    "能力项": "format spécifique"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Contexte : Vous êtes un analyste d’articles. Je vais vous fournir un article et un nom de POI. Votre tâche est d’analyser cet article, de déterminer si cet article est lié aux activités récréatives, et s’il est lié aux types d’événements populaires, et enfin de fournir la base du jugement.\nDate actuelle : 2024-06-01.\nConnaissance : Si c’est un guide de loisirs, jugez selon les dimensions suivantes, tous ces jugements de dimensions doivent passer pour être considérés comme un guide lié aux loisirs :\n1. Si l’article contient des informations sur les guides de voyage, les activités récréatives, les projets récréatifs, les itinéraires de voyage, les séquences de voyage, les points de check-in, les attractions, les expériences de voyage, etc. Une fréquence élevée d’occurrence rend plus probable qu’il s’agisse d’un article récréatif (mais pas obligatoire).\n2. Si le contenu de l’article concerne les ventes, la publicité, la location de maisons, la vente de maisons, l’immobilier, la restauration, les notes de type hébergement, il n’appartient pas aux articles récréatifs. Si les informations de l’article sont vides, elles n’appartiennent pas non plus aux articles récréatifs.\n3. Contient des mots-clés comme sources chaudes, ski, etc., classés comme articles récréatifs.\n4. Contient des fêtes comme Noël, Halloween, Nouvel An, etc., classés comme articles récréatifs.\n5. Contient des activités comme spectacles de lumières, spectacles de feux d’artifice, etc., classés comme articles récréatifs.\n6. Contient des activités comme foires aux lanternes du Nouvel An chinois, foires aux temples du Nouvel An chinois, etc., classés comme articles récréatifs.\nSi le contenu de l’article est hautement lié au nom POI donné et décrit des expériences récréatives, alors classez comme lié.\nSi le contenu de l’article est vide, classez directement comme non lié.\nFormat de sortie : Utilisez le format JSON pour retourner les informations extraites. Tous les champs ne peuvent retourner que ’Oui’ ou ’Non’ ou ’Lié’ ou ’Non lié’. Format d’exemple comme suit : {\"relate\":\"Lié/Non lié\",\"reason\":\"Raison\",\"isExpired\":\"Oui/Non\",\"isFestival\":\"Oui/Non\",\"isMultiPOI\":\"Oui/Non\",\"isParentChild\":\"Oui/Non\",\"isNightEvent\":\"Oui/Non\",\"isOutdoor\":\"Oui/Non\"}. relate retourne Lié ou Non lié ; reason retourne le raisonnement pour le jugement ; isExpired indique si l’événement est expiré, isFestival indique s’il est lié aux festivals, isMultiPOI indique s’il implique plusieurs POI, isParentChild indique s’il est lié parent-enfant, isNightEvent indique s’il s’agit d’un événement nocturne, isOutdoor indique s’il s’agit d’une activité de plein air. Veuillez vous assurer que la structure de données JSON retournée est correcte et conforme aux règles ci-dessus. Ne retournez pas de caractères autres que JSON.\nContenu de l’article : [[Recommandation d’Hôtel] Hôtel avec vue sur mer de Sanya, distance de marche de la plage, équipé d’une piscine à débordement et d’une aire de jeux pour enfants, adapté aux vacances familiales.]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Lié",
+                        "Non lié"
+                    ],
+                    "description": "Si c'est un article de loisirs",
+                    "能力项": "contrainte de sujet"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Raison du jugement",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si l'événement est expiré",
+                    "能力项": "format spécifique"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié aux festivals",
+                    "能力项": "format spécifique"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si implique plusieurs POI",
+                    "能力项": "format spécifique"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié parent-enfant",
+                    "能力项": "format spécifique"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité nocturne",
+                    "能力项": "format spécifique"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité de plein air",
+                    "能力项": "format spécifique"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Contexte : Vous êtes un analyste d’articles. Je vais vous fournir un article et un nom de POI. Votre tâche est d’analyser cet article, de déterminer si cet article est lié aux activités récréatives, et s’il est lié aux types d’événements populaires, et enfin de fournir la base du jugement.\nDate actuelle : 2024-06-01.\nConnaissance : Si c’est un guide de loisirs, jugez selon les dimensions suivantes, tous ces jugements de dimensions doivent passer pour être considérés comme un guide lié aux loisirs :\n1. Si l’article contient des informations sur les guides de voyage, les activités récréatives, les projets récréatifs, les itinéraires de voyage, les séquences de voyage, les points de check-in, les attractions, les expériences de voyage, etc. Une fréquence élevée d’occurrence rend plus probable qu’il s’agisse d’un article récréatif (mais pas obligatoire).\n2. Si le contenu de l’article concerne les ventes, la publicité, la location de maisons, la vente de maisons, l’immobilier, la restauration, les notes de type hébergement, il n’appartient pas aux articles récréatifs. Si les informations de l’article sont vides, elles n’appartiennent pas non plus aux articles récréatifs.\n3. Contient des mots-clés comme sources chaudes, ski, etc., classés comme articles récréatifs.\n4. Contient des fêtes comme Noël, Halloween, Nouvel An, etc., classés comme articles récréatifs.\n5. Contient des activités comme spectacles de lumières, spectacles de feux d’artifice, etc., classés comme articles récréatifs.\n6. Contient des activités comme foires aux lanternes du Nouvel An chinois, foires aux temples du Nouvel An chinois, etc., classés comme articles récréatifs.\nFormat de sortie : Utilisez le format JSON pour retourner les informations extraites. Tous les champs ne peuvent retourner que ’Oui’ ou ’Non’ ou ’Lié’ ou ’Non lié’. Format d’exemple comme suit : {\"relate\":\"Lié/Non lié\",\"reason\":\"Raison\",\"isExpired\":\"Oui/Non\",\"isFestival\":\"Oui/Non\",\"isMultiPOI\":\"Oui/Non\",\"isParentChild\":\"Oui/Non\",\"isNightEvent\":\"Oui/Non\",\"isOutdoor\":\"Oui/Non\"}. relate retourne Lié ou Non lié ; reason retourne le raisonnement pour le jugement ; isExpired indique si l’événement est expiré, isFestival indique s’il est lié aux festivals, isMultiPOI indique s’il implique plusieurs POI, isParentChild indique s’il est lié parent-enfant, isNightEvent indique s’il s’agit d’un événement nocturne, isOutdoor indique s’il s’agit d’une activité de plein air. Veuillez vous assurer que la structure de données JSON retournée est correcte et conforme aux règles ci-dessus. Ne retournez pas de caractères autres que JSON.\nContenu de l’article : [[Activité Halloween] La session nocturne Halloween 2024 de Guangzhou Chimelong ouvre le 31 octobre, parc décoré avec des maisons hantées et des lanternes citrouilles, organisant des performances de défilé et des fêtes à thème.]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Lié",
+                        "Non lié"
+                    ],
+                    "description": "Si c'est un article de loisirs",
+                    "能力项": "contrainte de sujet"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Raison du jugement",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si l'événement est expiré",
+                    "能力项": "format spécifique"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié aux festivals",
+                    "能力项": "format spécifique"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si implique plusieurs POI",
+                    "能力项": "format spécifique"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié parent-enfant",
+                    "能力项": "format spécifique"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité nocturne",
+                    "能力项": "format spécifique"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité de plein air",
+                    "能力项": "format spécifique"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Contexte : Vous êtes un analyste d’articles. Je vais vous fournir un article et un nom de POI. Votre tâche est d’analyser cet article, de déterminer si cet article est lié aux activités récréatives, et s’il est lié aux types d’événements populaires, et enfin de fournir la base du jugement.\nDate actuelle : 2024-06-01.\nConnaissance : Si c’est un guide de loisirs, jugez selon les dimensions suivantes, tous ces jugements de dimensions doivent passer pour être considérés comme un guide lié aux loisirs :\n1. Si l’article contient des informations sur les guides de voyage, les activités récréatives, les projets récréatifs, les itinéraires de voyage, les séquences de voyage, les points de check-in, les attractions, les expériences de voyage, etc. Une fréquence élevée d’occurrence rend plus probable qu’il s’agisse d’un article récréatif (mais pas obligatoire).\n2. Si le contenu de l’article concerne les ventes, la publicité, la location de maisons, la vente de maisons, l’immobilier, la restauration, les notes de type hébergement, il n’appartient pas aux articles récréatifs. Si les informations de l’article sont vides, elles n’appartiennent pas non plus aux articles récréatifs.\n3. Contient des mots-clés comme sources chaudes, ski, etc., classés comme articles récréatifs.\n4. Contient des fêtes comme Noël, Halloween, Nouvel An, etc., classés comme articles récréatifs.\n5. Contient des activités comme spectacles de lumières, spectacles de feux d’artifice, etc., classés comme articles récréatifs.\n6. Contient des activités comme foires aux lanternes du Nouvel An chinois, foires aux temples du Nouvel An chinois, etc., classés comme articles récréatifs.\nSi l’article contient des mots comme festivals, célébrations, foires aux temples, foires aux lanternes, etc., priorisez sa classification comme article récréatif.\nFormat de sortie : Utilisez le format JSON pour retourner les informations extraites. Tous les champs ne peuvent retourner que ’Oui’ ou ’Non’ ou ’Lié’ ou ’Non lié’. Format d’exemple comme suit : {\"relate\":\"Lié/Non lié\",\"reason\":\"Raison\",\"isExpired\":\"Oui/Non\",\"isFestival\":\"Oui/Non\",\"isMultiPOI\":\"Oui/Non\",\"isParentChild\":\"Oui/Non\",\"isNightEvent\":\"Oui/Non\",\"isOutdoor\":\"Oui/Non\"}. relate retourne Lié ou Non lié ; reason retourne le raisonnement pour le jugement ; isExpired indique si l’événement est expiré, isFestival indique s’il est lié aux festivals, isMultiPOI indique s’il implique plusieurs POI, isParentChild indique s’il est lié parent-enfant, isNightEvent indique s’il s’agit d’un événement nocturne, isOutdoor indique s’il s’agit d’une activité de plein air. Veuillez vous assurer que la structure de données JSON retournée est correcte et conforme aux règles ci-dessus. Ne retournez pas de caractères autres que JSON.\nContenu de l’article : [[Expérience Récréative] La vue nocturne de Hongyadong de Chongqing est super belle, recommandée pour le check-in du soir, marcher le long de la rivière pour profiter des spectacles de lumières, options de nourriture riches à proximité.]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Lié",
+                        "Non lié"
+                    ],
+                    "description": "Si c'est un article de loisirs",
+                    "能力项": "contrainte de sujet"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Raison du jugement",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si l'événement est expiré",
+                    "能力项": "format spécifique"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié aux festivals",
+                    "能力项": "format spécifique"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si implique plusieurs POI",
+                    "能力项": "format spécifique"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié parent-enfant",
+                    "能力项": "format spécifique"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité nocturne",
+                    "能力项": "format spécifique"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité de plein air",
+                    "能力项": "format spécifique"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Contexte : Vous êtes un analyste d’articles. Je vais vous fournir un article et un nom de POI. Votre tâche est d’analyser cet article, de déterminer si cet article est lié aux activités récréatives, et s’il est lié aux types d’événements populaires, et enfin de fournir la base du jugement.\nDate actuelle : 2024-06-01.\nConnaissance : Si c’est un guide de loisirs, jugez selon les dimensions suivantes, tous ces jugements de dimensions doivent passer pour être considérés comme un guide lié aux loisirs :\n1. Si l’article contient des informations sur les guides de voyage, les activités récréatives, les projets récréatifs, les itinéraires de voyage, les séquences de voyage, les points de check-in, les attractions, les expériences de voyage, etc. Une fréquence élevée d’occurrence rend plus probable qu’il s’agisse d’un article récréatif (mais pas obligatoire).\n2. Si le contenu de l’article concerne les ventes, la publicité, la location de maisons, la vente de maisons, l’immobilier, la restauration, les notes de type hébergement, il n’appartient pas aux articles récréatifs. Si les informations de l’article sont vides, elles n’appartiennent pas non plus aux articles récréatifs.\n3. Contient des mots-clés comme sources chaudes, ski, etc., classés comme articles récréatifs.\n4. Contient des fêtes comme Noël, Halloween, Nouvel An, etc., classés comme articles récréatifs.\n5. Contient des activités comme spectacles de lumières, spectacles de feux d’artifice, etc., classés comme articles récréatifs.\n6. Contient des activités comme foires aux lanternes du Nouvel An chinois, foires aux temples du Nouvel An chinois, etc., classés comme articles récréatifs.\nSi l’article implique plusieurs attractions de ville et toutes sont à des fins récréatives, alors classez comme lié.\n\nFormat de sortie : Utilisez le format JSON pour retourner les informations extraites. Tous les champs ne peuvent retourner que ’Oui’ ou ’Non’ ou ’Lié’ ou ’Non lié’. Format d’exemple comme suit : {\"relate\":\"Lié/Non lié\",\"reason\":\"Raison\",\"isExpired\":\"Oui/Non\",\"isFestival\":\"Oui/Non\",\"isMultiPOI\":\"Oui/Non\",\"isParentChild\":\"Oui/Non\",\"isNightEvent\":\"Oui/Non\",\"isOutdoor\":\"Oui/Non\"}. relate retourne Lié ou Non lié ; reason retourne le raisonnement pour le jugement ; isExpired indique si l’événement est expiré, isFestival indique s’il est lié aux festivals, isMultiPOI indique s’il implique plusieurs POI, isParentChild indique s’il est lié parent-enfant, isNightEvent indique s’il s’agit d’un événement nocturne, isOutdoor indique s’il s’agit d’une activité de plein air. Veuillez vous assurer que la structure de données JSON retournée est correcte et conforme aux règles ci-dessus. Ne retournez pas de caractères autres que JSON.\nContenu de l’article : [[Vide]]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Lié",
+                        "Non lié"
+                    ],
+                    "description": "Si c'est un article de loisirs",
+                    "能力项": "contrainte de sujet"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Raison du jugement",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si l'événement est expiré",
+                    "能力项": "format spécifique"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié aux festivals",
+                    "能力项": "format spécifique"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si implique plusieurs POI",
+                    "能力项": "format spécifique"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié parent-enfant",
+                    "能力项": "format spécifique"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité nocturne",
+                    "能力项": "format spécifique"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité de plein air",
+                    "能力项": "format spécifique"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Contexte : Vous êtes un analyste d’articles. Je vais vous fournir un article et un nom de POI. Votre tâche est d’analyser cet article, de déterminer si cet article est lié aux activités récréatives, et s’il est lié aux types d’événements populaires, et enfin de fournir la base du jugement.\nDate actuelle : 2024-06-01.\nConnaissance : Si c’est un guide de loisirs, jugez selon les dimensions suivantes, tous ces jugements de dimensions doivent passer pour être considérés comme un guide lié aux loisirs :\n1. Si l’article contient des informations sur les guides de voyage, les activités récréatives, les projets récréatifs, les itinéraires de voyage, les séquences de voyage, les points de check-in, les attractions, les expériences de voyage, etc. Une fréquence élevée d’occurrence rend plus probable qu’il s’agisse d’un article récréatif (mais pas obligatoire).\n2. Si le contenu de l’article concerne les ventes, la publicité, la location de maisons, la vente de maisons, l’immobilier, la restauration, les notes de type hébergement, il n’appartient pas aux articles récréatifs. Si les informations de l’article sont vides, elles n’appartiennent pas non plus aux articles récréatifs.\n3. Contient des mots-clés comme sources chaudes, ski, etc., classés comme articles récréatifs.\n4. Contient des fêtes comme Noël, Halloween, Nouvel An, etc., classés comme articles récréatifs.\n5. Contient des activités comme spectacles de lumières, spectacles de feux d’artifice, etc., classés comme articles récréatifs.\n6. Contient des activités comme foires aux lanternes du Nouvel An chinois, foires aux temples du Nouvel An chinois, etc., classés comme articles récréatifs.\n\nSi le contenu de l’article est hautement lié au nom POI donné et décrit des expériences récréatives, alors classez comme lié.\nFormat de sortie : Utilisez le format JSON pour retourner les informations extraites. Tous les champs ne peuvent retourner que ’Oui’ ou ’Non’ ou ’Lié’ ou ’Non lié’. Format d’exemple comme suit : {\"relate\":\"Lié/Non lié\",\"reason\":\"Raison\",\"isExpired\":\"Oui/Non\",\"isFestival\":\"Oui/Non\",\"isMultiPOI\":\"Oui/Non\",\"isParentChild\":\"Oui/Non\",\"isNightEvent\":\"Oui/Non\",\"isOutdoor\":\"Oui/Non\"}. relate retourne Lié ou Non lié ; reason retourne le raisonnement pour le jugement ; isExpired indique si l’événement est expiré, isFestival indique s’il est lié aux festivals, isMultiPOI indique s’il implique plusieurs POI, isParentChild indique s’il est lié parent-enfant, isNightEvent indique s’il s’agit d’un événement nocturne, isOutdoor indique s’il s’agit d’une activité de plein air. Veuillez vous assurer que la structure de données JSON retournée est correcte et conforme aux règles ci-dessus. Ne retournez pas de caractères autres que JSON.\nContenu de l’article : [[Guide Récréatif] Guide complet de l’itinéraire du Marathon des Remparts de la Ville de Xi’an, passant par plusieurs attractions historiques, avec des spectacles de lumières et des performances culturelles pendant l’événement.]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Lié",
+                        "Non lié"
+                    ],
+                    "description": "Si c'est un article de loisirs",
+                    "能力项": "contrainte de sujet"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Raison du jugement",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si l'événement est expiré",
+                    "能力项": "format spécifique"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié aux festivals",
+                    "能力项": "format spécifique"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si implique plusieurs POI",
+                    "能力项": "format spécifique"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié parent-enfant",
+                    "能力项": "format spécifique"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité nocturne",
+                    "能力项": "format spécifique"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité de plein air",
+                    "能力项": "format spécifique"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Contexte : Vous êtes un analyste d’articles. Je vais vous fournir un article et un nom de POI. Votre tâche est d’analyser cet article, de déterminer si cet article est lié aux activités récréatives, et s’il est lié aux types d’événements populaires, et enfin de fournir la base du jugement.\nDate actuelle : 2024-06-01.\nConnaissance : Si c’est un guide de loisirs, jugez selon les dimensions suivantes, tous ces jugements de dimensions doivent passer pour être considérés comme un guide lié aux loisirs :\n1. Si l’article contient des informations sur les guides de voyage, les activités récréatives, les projets récréatifs, les itinéraires de voyage, les séquences de voyage, les points de check-in, les attractions, les expériences de voyage, etc. Une fréquence élevée d’occurrence rend plus probable qu’il s’agisse d’un article récréatif (mais pas obligatoire).\n2. Si le contenu de l’article concerne les ventes, la publicité, la location de maisons, la vente de maisons, l’immobilier, la restauration, les notes de type hébergement, il n’appartient pas aux articles récréatifs. Si les informations de l’article sont vides, elles n’appartiennent pas non plus aux articles récréatifs.\n3. Contient des mots-clés comme sources chaudes, ski, etc., classés comme articles récréatifs.\n4. Contient des fêtes comme Noël, Halloween, Nouvel An, etc., classés comme articles récréatifs.\n5. Contient des activités comme spectacles de lumières, spectacles de feux d’artifice, etc., classés comme articles récréatifs.\n6. Contient des activités comme foires aux lanternes du Nouvel An chinois, foires aux temples du Nouvel An chinois, etc., classés comme articles récréatifs.\n\nSi le contenu de l’article est hautement lié au nom POI donné et décrit des expériences récréatives, alors classez comme lié.\nFormat de sortie : Utilisez le format JSON pour retourner les informations extraites. Tous les champs ne peuvent retourner que ’Oui’ ou ’Non’ ou ’Lié’ ou ’Non lié’. Format d’exemple comme suit : {\"relate\":\"Lié/Non lié\",\"reason\":\"Raison\",\"isExpired\":\"Oui/Non\",\"isFestival\":\"Oui/Non\",\"isMultiPOI\":\"Oui/Non\",\"isParentChild\":\"Oui/Non\",\"isNightEvent\":\"Oui/Non\",\"isOutdoor\":\"Oui/Non\"}. relate retourne Lié ou Non lié ; reason retourne le raisonnement pour le jugement ; isExpired indique si l’événement est expiré, isFestival indique s’il est lié aux festivals, isMultiPOI indique s’il implique plusieurs POI, isParentChild indique s’il est lié parent-enfant, isNightEvent indique s’il s’agit d’un événement nocturne, isOutdoor indique s’il s’agit d’une activité de plein air. Veuillez vous assurer que la structure de données JSON retournée est correcte et conforme aux règles ci-dessus. Ne retournez pas de caractères autres que JSON.\nContenu de l’article : [[Aperçu du Spectacle de Feux d’Artifice] Le spectacle de feux d’artifice 2024 du Lac de l’Est de Wuhan sera performé le 1er mai, le meilleur point de vue est la Zone Scénique de Moshan, planification à l’avance des itinéraires récréatifs recommandée.]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Lié",
+                        "Non lié"
+                    ],
+                    "description": "Si c'est un article de loisirs",
+                    "能力项": "contrainte de sujet"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Raison du jugement",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si l'événement est expiré",
+                    "能力项": "format spécifique"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié aux festivals",
+                    "能力项": "format spécifique"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si implique plusieurs POI",
+                    "能力项": "format spécifique"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié parent-enfant",
+                    "能力项": "format spécifique"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité nocturne",
+                    "能力项": "format spécifique"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité de plein air",
+                    "能力项": "format spécifique"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Contexte : Vous êtes un analyste d’articles. Je vais vous fournir un article et un nom de POI. Votre tâche est d’analyser cet article, de déterminer si cet article est lié aux activités récréatives, et s’il est lié aux types d’événements populaires, et enfin de fournir la base du jugement.\nDate actuelle : 2024-06-01.\nConnaissance : Si c’est un guide de loisirs, jugez selon les dimensions suivantes, tous ces jugements de dimensions doivent passer pour être considérés comme un guide lié aux loisirs :\n1. Si l’article contient des informations sur les guides de voyage, les activités récréatives, les projets récréatifs, les itinéraires de voyage, les séquences de voyage, les points de check-in, les attractions, les expériences de voyage, etc. Une fréquence élevée d’occurrence rend plus probable qu’il s’agisse d’un article récréatif (mais pas obligatoire).\n2. Si le contenu de l’article concerne les ventes, la publicité, la location de maisons, la vente de maisons, l’immobilier, la restauration, les notes de type hébergement, il n’appartient pas aux articles récréatifs. Si les informations de l’article sont vides, elles n’appartiennent pas non plus aux articles récréatifs.\n3. Contient des mots-clés comme sources chaudes, ski, etc., classés comme articles récréatifs.\n4. Contient des fêtes comme Noël, Halloween, Nouvel An, etc., classés comme articles récréatifs.\n5. Contient des activités comme spectacles de lumières, spectacles de feux d’artifice, etc., classés comme articles récréatifs.\n6. Contient des activités comme foires aux lanternes du Nouvel An chinois, foires aux temples du Nouvel An chinois, etc., classés comme articles récréatifs.\nSi l’article contient des mots comme festivals, célébrations, foires aux temples, foires aux lanternes, etc., priorisez sa classification comme article récréatif.\nSi le contenu de l’article est hautement lié au nom POI donné et décrit des expériences récréatives, alors classez comme lié.\nFormat de sortie : Utilisez le format JSON pour retourner les informations extraites. Tous les champs ne peuvent retourner que ’Oui’ ou ’Non’ ou ’Lié’ ou ’Non lié’. Format d’exemple comme suit : {\"relate\":\"Lié/Non lié\",\"reason\":\"Raison\",\"isExpired\":\"Oui/Non\",\"isFestival\":\"Oui/Non\",\"isMultiPOI\":\"Oui/Non\",\"isParentChild\":\"Oui/Non\",\"isNightEvent\":\"Oui/Non\",\"isOutdoor\":\"Oui/Non\"}. relate retourne Lié ou Non lié ; reason retourne le raisonnement pour le jugement ; isExpired indique si l’événement est expiré, isFestival indique s’il est lié aux festivals, isMultiPOI indique s’il implique plusieurs POI, isParentChild indique s’il est lié parent-enfant, isNightEvent indique s’il s’agit d’un événement nocturne, isOutdoor indique s’il s’agit d’une activité de plein air. Veuillez vous assurer que la structure de données JSON retournée est correcte et conforme aux règles ci-dessus. Ne retournez pas de caractères autres que JSON.\nContenu de l’article : [[Activité de Noël] Le spectacle de lumières de Noël 2024 du Global Harbor de Shanghai ouvre le 24 décembre, marché de Noël, stands de nourriture, performances de défilé, interactions parent-enfant tous disponibles.]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "relate": {
+                    "type": "string",
+                    "enum": [
+                        "Lié",
+                        "Non lié"
+                    ],
+                    "description": "Si c'est un article de loisirs",
+                    "能力项": "contrainte de sujet"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Raison du jugement",
+                    "能力项": "JSON"
+                },
+                "isExpired": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si l'événement est expiré",
+                    "能力项": "format spécifique"
+                },
+                "isFestival": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié aux festivals",
+                    "能力项": "format spécifique"
+                },
+                "isMultiPOI": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si implique plusieurs POI",
+                    "能力项": "format spécifique"
+                },
+                "isParentChild": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si lié parent-enfant",
+                    "能力项": "format spécifique"
+                },
+                "isNightEvent": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité nocturne",
+                    "能力项": "format spécifique"
+                },
+                "isOutdoor": {
+                    "type": "string",
+                    "enum": [
+                        "Oui",
+                        "Non"
+                    ],
+                    "description": "Si activité de plein air",
+                    "能力项": "format spécifique"
+                }
+            },
+            "required": [
+                "reason",
+                "relate",
+                "isExpired",
+                "isFestival",
+                "isMultiPOI",
+                "isParentChild",
+                "isNightEvent",
+                "isOutdoor"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ],
+        "corresponding_parts": {
+            "reason": "#JSONSCHEMA#:reason",
+            "relate": "#JSONSCHEMA#:relate",
+            "isExpired": "#JSONSCHEMA#:isExpired",
+            "isFestival": "#JSONSCHEMA#:isFestival",
+            "isMultiPOI": "#JSONSCHEMA#:isMultiPOI",
+            "isParentChild": "#JSONSCHEMA#:isParentChild",
+            "isNightEvent": "#JSONSCHEMA#:isNightEvent",
+            "isOutdoor": "#JSONSCHEMA#:isOutdoor"
+        }
+    }
+]

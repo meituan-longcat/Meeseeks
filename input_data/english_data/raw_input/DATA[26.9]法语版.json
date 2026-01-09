@@ -1,0 +1,382 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un assistant produit qui aide les utilisateurs à analyser les saveurs des produits.\nMon format d'entrée est : [{\"cspu\":\"Nom du produit 1\"}, {\"cspu\":\"Nom du produit 2\"}], où cspu est le nom du produit à analyser.\nVotre format de réponse est (doit strictement suivre les exigences du format JSON) :[{\"cspu\":\"Nom du produit 1\", \"type\":\"Saveur 1\"}, {\"cspu\":\"Nom du produit 2\",\"type\":\"Saveur 2\"}], où type représente la saveur du produit.\nPar exemple :\nSi mon entrée est [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}]\nJ'espère que votre sortie sera [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mango\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Hot Chili Pepper & Lime\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Onion\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Spicy Beef, Tomato Beef\"}]\nNote 1 : Les résultats de saveur du produit doivent exister dans le nom du produit, n'abstraisez pas ou ne convertissez pas arbitrairement de manière équivalente, et les saveurs doivent correspondre à de vrais types d'aliments ou d'assaisonnements, comme la saveur de mangue, la saveur épicée, la saveur de bœuf braisé, etc.\nNote 2 : Parfois la saveur est un mot descriptif, par exemple, la bouillie de dattes rouges a une saveur de dattes rouges, les chips de concombre ont une saveur de concombre, le soda au litchi a une saveur de litchi, le thé au jasmin a une saveur de jasmin\nDistinguez entre le type de produit et la saveur. S'il y a plusieurs saveurs, sortez toutes les saveurs séparées par des virgules\nNe mélangez pas les types de produits ! Ne mélangez pas les types de produits !\nLes saveurs ne doivent pas inclure les collations, les loisirs, les noms de lieux, etc.\nLes saveurs n'incluront pas des mots comme feuilles de nouilles, boulettes de riz, ramen\nSi le nom du produit ne contient pas de saveur, retournez NULL pour la valeur type\nIl n'y a pas de relation entre plusieurs produits, et le contexte n'affectera pas les résultats d'analyse de saveur des produits individuels\nVeuillez analyser la liste de produits suivante et retourner les résultats (format JSON strict) :\n[{\"cspu\": \"Jack Link's Jerky de Canard Épicé 6.35oz\"}, {\"cspu\": \"Wonderful Pistaches Chili Doux 5.5oz\"}, {\"cspu\": \"Nature Valley Barre de Granola Avoine et Miel 17.7oz\"}, {\"cspu\": \"Coca-Cola Zéro Sucre 12fl oz Pack de 6\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un assistant produit qui aide les utilisateurs à analyser les saveurs des produits.\nMon format d'entrée est : [{\"cspu\":\"Nom du produit 1\"}, {\"cspu\":\"Nom du produit 2\"}], où cspu est le nom du produit à analyser.\nVotre format de réponse est (doit strictement suivre les exigences du format JSON) :[{\"cspu\":\"Nom du produit 1\", \"type\":\"Saveur 1\"}, {\"cspu\":\"Nom du produit 2\",\"type\":\"Saveur 2\"}], où type représente la saveur du produit.\nPar exemple :\nSi mon entrée est [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}]\nJ'espère que votre sortie sera [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mango\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Hot Chili Pepper & Lime\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Onion\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Spicy Beef, Tomato Beef\"}]\nNote 1 : Les résultats de saveur du produit doivent exister dans le nom du produit, n'abstraisez pas ou ne convertissez pas arbitrairement de manière équivalente, et les saveurs doivent correspondre à de vrais types d'aliments ou d'assaisonnements, comme la saveur de mangue, la saveur épicée, la saveur de bœuf braisé, etc.\nNote 2 : Parfois la saveur est un mot descriptif, par exemple, la bouillie de dattes rouges a une saveur de dattes rouges, les chips de concombre ont une saveur de concombre, le soda au litchi a une saveur de litchi, le thé au jasmin a une saveur de jasmin\nDistinguez entre le type de produit et la saveur. S'il y a plusieurs saveurs, sortez toutes les saveurs séparées par des virgules\nNe mélangez pas les types de produits ! Ne mélangez pas les types de produits !\nLes saveurs ne doivent pas inclure les collations, les loisirs, les noms de lieux, etc.\nLes saveurs n'incluront pas des mots comme feuilles de nouilles, boulettes de riz, ramen\nSi le nom du produit ne contient pas de saveur, retournez NULL pour la valeur type\nIl n'y a pas de relation entre plusieurs produits, et le contexte n'affectera pas les résultats d'analyse de saveur des produits individuels\nVeuillez analyser la liste de produits suivante et retourner les résultats (format JSON strict) :\n[{\"cspu\": \"Arizona Thé Glacé Citron 23fl oz\"}, {\"cspu\": \"Flamin' Hot Cheetos Croquants 8.5oz Pack de 3\"}, {\"cspu\": \"David Graines de Tournesol Original 5.25oz\"}, {\"cspu\": \"Dannon Two Good Yaourt Grec Vanille 5.3oz Pack de 12\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un assistant produit qui aide les utilisateurs à analyser les saveurs des produits.\nMon format d'entrée est : [{\"cspu\":\"Nom du produit 1\"}, {\"cspu\":\"Nom du produit 2\"}], où cspu est le nom du produit à analyser.\nVotre format de réponse est (doit strictement suivre les exigences du format JSON) :[{\"cspu\":\"Nom du produit 1\", \"type\":\"Saveur 1\"}, {\"cspu\":\"Nom du produit 2\",\"type\":\"Saveur 2\"}], où type représente la saveur du produit.\nPar exemple :\nSi mon entrée est [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}]\nJ'espère que votre sortie sera [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mango\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Hot Chili Pepper & Lime\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Onion\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Spicy Beef, Tomato Beef\"}]\nNote 1 : Les résultats de saveur du produit doivent exister dans le nom du produit, n'abstraisez pas ou ne convertissez pas arbitrairement de manière équivalente, et les saveurs doivent correspondre à de vrais types d'aliments ou d'assaisonnements, comme la saveur de mangue, la saveur épicée, la saveur de bœuf braisé, etc.\nNote 2 : Parfois la saveur est un mot descriptif, par exemple, la bouillie de dattes rouges a une saveur de dattes rouges, les chips de concombre ont une saveur de concombre, le soda au litchi a une saveur de litchi, le thé au jasmin a une saveur de jasmin\nDistinguez entre le type de produit et la saveur. S'il y a plusieurs saveurs, sortez toutes les saveurs séparées par des virgules\nNe mélangez pas les types de produits ! Ne mélangez pas les types de produits !\nLes saveurs ne doivent pas inclure les collations, les loisirs, les noms de lieux, etc.\nLes saveurs n'incluront pas des mots comme feuilles de nouilles, boulettes de riz, ramen\nSi le nom du produit ne contient pas de saveur, retournez NULL pour la valeur type\nIl n'y a pas de relation entre plusieurs produits, et le contexte n'affectera pas les résultats d'analyse de saveur des produits individuels\nVeuillez analyser la liste de produits suivante et retourner les résultats (format JSON strict) :\n[{\"cspu\": \"Maruchan Ramen Saveur Bœuf 3oz\"}, {\"cspu\": \"Kellogg's Rice Krispies Treats Pack de 8\"}, {\"cspu\": \"Lay's Chips de Pomme de Terre Cornichon à l'Aneth 7.75oz\"}, {\"cspu\": \"Simply Jus de Pomme 52fl oz\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un assistant produit qui aide les utilisateurs à analyser les saveurs des produits.\nMon format d'entrée est : [{\"cspu\":\"Nom du produit 1\"}, {\"cspu\":\"Nom du produit 2\"}], où cspu est le nom du produit à analyser.\nVotre format de réponse est (doit strictement suivre les exigences du format JSON) :[{\"cspu\":\"Nom du produit 1\", \"type\":\"Saveur 1\"}, {\"cspu\":\"Nom du produit 2\",\"type\":\"Saveur 2\"}], où type représente la saveur du produit.\nPar exemple :\nSi mon entrée est [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}]\nJ'espère que votre sortie sera [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mango\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Hot Chili Pepper & Lime\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Onion\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Spicy Beef, Tomato Beef\"}]\nNote 1 : Les résultats de saveur du produit doivent exister dans le nom du produit, n'abstraisez pas ou ne convertissez pas arbitrairement de manière équivalente, et les saveurs doivent correspondre à de vrais types d'aliments ou d'assaisonnements, comme la saveur de mangue, la saveur épicée, la saveur de bœuf braisé, etc.\nNote 2 : Parfois la saveur est un mot descriptif, par exemple, la bouillie de dattes rouges a une saveur de dattes rouges, les chips de concombre ont une saveur de concombre, le soda au litchi a une saveur de litchi, le thé au jasmin a une saveur de jasmin\nDistinguez entre le type de produit et la saveur. S'il y a plusieurs saveurs, sortez toutes les saveurs séparées par des virgules\nNe mélangez pas les types de produits ! Ne mélangez pas les types de produits !\nLes saveurs ne doivent pas inclure les collations, les loisirs, les noms de lieux, etc.\nLes saveurs n'incluront pas des mots comme feuilles de nouilles, boulettes de riz, ramen\nSi le nom du produit ne contient pas de saveur, retournez NULL pour la valeur type\nIl n'y a pas de relation entre plusieurs produits, et le contexte n'affectera pas les résultats d'analyse de saveur des produits individuels\nVeuillez analyser la liste de produits suivante et retourner les résultats (format JSON strict) :\n[{\"cspu\": \"Pepperidge Farm Goldfish Crackers Cheddar 6.6oz\"}, {\"cspu\": \"Fairlife Core Power Shake Protéiné Vanille 14fl oz Pack de 12\"}, {\"cspu\": \"LaCroix Eau Pétillante Raisin Blanc 12fl oz\"}, {\"cspu\": \"Blue Diamond Amandes Pack Variété\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un assistant produit qui aide les utilisateurs à analyser les saveurs des produits.\nMon format d'entrée est : [{\"cspu\":\"Nom du produit 1\"}, {\"cspu\":\"Nom du produit 2\"}], où cspu est le nom du produit à analyser.\nVotre format de réponse est (doit strictement suivre les exigences du format JSON) :[{\"cspu\":\"Nom du produit 1\", \"type\":\"Saveur 1\"}, {\"cspu\":\"Nom du produit 2\",\"type\":\"Saveur 2\"}], où type représente la saveur du produit.\nPar exemple :\nSi mon entrée est [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}]\nJ'espère que votre sortie sera [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mango\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Hot Chili Pepper & Lime\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Onion\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Spicy Beef, Tomato Beef\"}]\nNote 1 : Les résultats de saveur du produit doivent exister dans le nom du produit, n'abstraisez pas ou ne convertissez pas arbitrairement de manière équivalente, et les saveurs doivent correspondre à de vrais types d'aliments ou d'assaisonnements, comme la saveur de mangue, la saveur épicée, la saveur de bœuf braisé, etc.\nNote 2 : Parfois la saveur est un mot descriptif, par exemple, la bouillie de dattes rouges a une saveur de dattes rouges, les chips de concombre ont une saveur de concombre, le soda au litchi a une saveur de litchi, le thé au jasmin a une saveur de jasmin\nDistinguez entre le type de produit et la saveur. S'il y a plusieurs saveurs, sortez toutes les saveurs séparées par des virgules\nNe mélangez pas les types de produits ! Ne mélangez pas les types de produits !\nLes saveurs ne doivent pas inclure les collations, les loisirs, les noms de lieux, etc.\nLes saveurs n'incluront pas des mots comme feuilles de nouilles, boulettes de riz, ramen\nSi le nom du produit ne contient pas de saveur, retournez NULL pour la valeur type\nIl n'y a pas de relation entre plusieurs produits, et le contexte n'affectera pas les résultats d'analyse de saveur des produits individuels\nVeuillez analyser la liste de produits suivante et retourner les résultats (format JSON strict) :\n[{\"cspu\": \"Lay's Chips de Pomme de Terre BBQ 7.75oz\"}, {\"cspu\": \"Arizona Thé Vert au Miel 23fl oz\"}, {\"cspu\": \"Pepsi Cola Classique 12fl oz\"}, {\"cspu\": \"David Graines de Tournesol Ranch 5.25oz\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un assistant produit qui aide les utilisateurs à analyser les saveurs des produits.\nMon format d'entrée est : [{\"cspu\":\"Nom du produit 1\"}, {\"cspu\":\"Nom du produit 2\"}], où cspu est le nom du produit à analyser.\nVotre format de réponse est (doit strictement suivre les exigences du format JSON) :[{\"cspu\":\"Nom du produit 1\", \"type\":\"Saveur 1\"}, {\"cspu\":\"Nom du produit 2\",\"type\":\"Saveur 2\"}], où type représente la saveur du produit.\nPar exemple :\nSi mon entrée est [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}]\nJ'espère que votre sortie sera [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mango\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Hot Chili Pepper & Lime\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Onion\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Spicy Beef, Tomato Beef\"}]\nNote 1 : Les résultats de saveur du produit doivent exister dans le nom du produit, n'abstraisez pas ou ne convertissez pas arbitrairement de manière équivalente, et les saveurs doivent correspondre à de vrais types d'aliments ou d'assaisonnements, comme la saveur de mangue, la saveur épicée, la saveur de bœuf braisé, etc.\nNote 2 : Parfois la saveur est un mot descriptif, par exemple, la bouillie de dattes rouges a une saveur de dattes rouges, les chips de concombre ont une saveur de concombre, le soda au litchi a une saveur de litchi, le thé au jasmin a une saveur de jasmin\nDistinguez entre le type de produit et la saveur. S'il y a plusieurs saveurs, sortez toutes les saveurs séparées par des virgules\nNe mélangez pas les types de produits ! Ne mélangez pas les types de produits !\nLes saveurs ne doivent pas inclure les collations, les loisirs, les noms de lieux, etc.\nLes saveurs n'incluront pas des mots comme feuilles de nouilles, boulettes de riz, ramen\nSi le nom du produit ne contient pas de saveur, retournez NULL pour la valeur type\nIl n'y a pas de relation entre plusieurs produits, et le contexte n'affectera pas les résultats d'analyse de saveur des produits individuels\nVeuillez analyser la liste de produits suivante et retourner les résultats (format JSON strict) :\n[{\"cspu\": \"Slim Jim Jerky de Bœuf Original 0.28oz\"}, {\"cspu\": \"Wonderful Pistaches Grillées au Miel 5.5oz\"}, {\"cspu\": \"Pringles Chips de Pomme de Terre BBQ 5.5oz\"}, {\"cspu\": \"Fairlife Lait 2% 52fl oz\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un assistant produit qui aide les utilisateurs à analyser les saveurs des produits.\nMon format d'entrée est : [{\"cspu\":\"Nom du produit 1\"}, {\"cspu\":\"Nom du produit 2\"}], où cspu est le nom du produit à analyser.\nVotre format de réponse est (doit strictement suivre les exigences du format JSON) :[{\"cspu\":\"Nom du produit 1\", \"type\":\"Saveur 1\"}, {\"cspu\":\"Nom du produit 2\",\"type\":\"Saveur 2\"}], où type représente la saveur du produit.\nPar exemple :\nSi mon entrée est [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}]\nJ'espère que votre sortie sera [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mango\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Hot Chili Pepper & Lime\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Onion\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Spicy Beef, Tomato Beef\"}]\nNote 1 : Les résultats de saveur du produit doivent exister dans le nom du produit, n'abstraisez pas ou ne convertissez pas arbitrairement de manière équivalente, et les saveurs doivent correspondre à de vrais types d'aliments ou d'assaisonnements, comme la saveur de mangue, la saveur épicée, la saveur de bœuf braisé, etc.\nNote 2 : Parfois la saveur est un mot descriptif, par exemple, la bouillie de dattes rouges a une saveur de dattes rouges, les chips de concombre ont une saveur de concombre, le soda au litchi a une saveur de litchi, le thé au jasmin a une saveur de jasmin\nDistinguez entre le type de produit et la saveur. S'il y a plusieurs saveurs, sortez toutes les saveurs séparées par des virgules\nNe mélangez pas les types de produits ! Ne mélangez pas les types de produits !\nLes saveurs ne doivent pas inclure les collations, les loisirs, les noms de lieux, etc.\nLes saveurs n'incluront pas des mots comme feuilles de nouilles, boulettes de riz, ramen\nSi le nom du produit ne contient pas de saveur, retournez NULL pour la valeur type\nIl n'y a pas de relation entre plusieurs produits, et le contexte n'affectera pas les résultats d'analyse de saveur des produits individuels\nVeuillez analyser la liste de produits suivante et retourner les résultats (format JSON strict) :\n[{\"cspu\": \"Jell-O Pots de Pudding Chocolat Pack de 4 15.5oz\"}, {\"cspu\": \"Maruchan Ramen Saveur Porc 3oz\"}, {\"cspu\": \"Blue Diamond Amandes Fumoir 6oz\"}, {\"cspu\": \"Smartwater Eau Distillée à la Vapeur 33.8fl oz\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un assistant produit qui aide les utilisateurs à analyser les saveurs des produits.\nMon format d'entrée est : [{\"cspu\":\"Nom du produit 1\"}, {\"cspu\":\"Nom du produit 2\"}], où cspu est le nom du produit à analyser.\nVotre format de réponse est (doit strictement suivre les exigences du format JSON) :[{\"cspu\":\"Nom du produit 1\", \"type\":\"Saveur 1\"}, {\"cspu\":\"Nom du produit 2\",\"type\":\"Saveur 2\"}], où type représente la saveur du produit.\nPar exemple :\nSi mon entrée est [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}]\nJ'espère que votre sortie sera [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mango\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Hot Chili Pepper & Lime\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Onion\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Spicy Beef, Tomato Beef\"}]\nNote 1 : Les résultats de saveur du produit doivent exister dans le nom du produit, n'abstraisez pas ou ne convertissez pas arbitrairement de manière équivalente, et les saveurs doivent correspondre à de vrais types d'aliments ou d'assaisonnements, comme la saveur de mangue, la saveur épicée, la saveur de bœuf braisé, etc.\nNote 2 : Parfois la saveur est un mot descriptif, par exemple, la bouillie de dattes rouges a une saveur de dattes rouges, les chips de concombre ont une saveur de concombre, le soda au litchi a une saveur de litchi, le thé au jasmin a une saveur de jasmin\nDistinguez entre le type de produit et la saveur. S'il y a plusieurs saveurs, sortez toutes les saveurs séparées par des virgules\nNe mélangez pas les types de produits ! Ne mélangez pas les types de produits !\nLes saveurs ne doivent pas inclure les collations, les loisirs, les noms de lieux, etc.\nLes saveurs n'incluront pas des mots comme feuilles de nouilles, boulettes de riz, ramen\nSi le nom du produit ne contient pas de saveur, retournez NULL pour la valeur type\nIl n'y a pas de relation entre plusieurs produits, et le contexte n'affectera pas les résultats d'analyse de saveur des produits individuels\nVeuillez analyser la liste de produits suivante et retourner les résultats (format JSON strict) :\n[{\"cspu\": \"Nestle Nesquik Lait Chocolaté 8fl oz Pack de 4\"}, {\"cspu\": \"Coca-Cola Cerise 16.9fl oz\"}, {\"cspu\": \"Pepperidge Farm Milano Biscuits Chocolat Noir 7oz\"}, {\"cspu\": \"Lay's Chips de Pomme de Terre Original 7.75oz\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un assistant produit qui aide les utilisateurs à analyser les saveurs des produits.\nMon format d'entrée est : [{\"cspu\":\"Nom du produit 1\"}, {\"cspu\":\"Nom du produit 2\"}], où cspu est le nom du produit à analyser.\nVotre format de réponse est (doit strictement suivre les exigences du format JSON) :[{\"cspu\":\"Nom du produit 1\", \"type\":\"Saveur 1\"}, {\"cspu\":\"Nom du produit 2\",\"type\":\"Saveur 2\"}], où type représente la saveur du produit.\nPar exemple :\nSi mon entrée est [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}]\nJ'espère que votre sortie sera [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mango\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Hot Chili Pepper & Lime\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Onion\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Spicy Beef, Tomato Beef\"}]\nNote 1 : Les résultats de saveur du produit doivent exister dans le nom du produit, n'abstraisez pas ou ne convertissez pas arbitrairement de manière équivalente, et les saveurs doivent correspondre à de vrais types d'aliments ou d'assaisonnements, comme la saveur de mangue, la saveur épicée, la saveur de bœuf braisé, etc.\nNote 2 : Parfois la saveur est un mot descriptif, par exemple, la bouillie de dattes rouges a une saveur de dattes rouges, les chips de concombre ont une saveur de concombre, le soda au litchi a une saveur de litchi, le thé au jasmin a une saveur de jasmin\nDistinguez entre le type de produit et la saveur. S'il y a plusieurs saveurs, sortez toutes les saveurs séparées par des virgules\nNe mélangez pas les types de produits ! Ne mélangez pas les types de produits !\nLes saveurs ne doivent pas inclure les collations, les loisirs, les noms de lieux, etc.\nLes saveurs n'incluront pas des mots comme feuilles de nouilles, boulettes de riz, ramen\nSi le nom du produit ne contient pas de saveur, retournez NULL pour la valeur type\nIl n'y a pas de relation entre plusieurs produits, et le contexte n'affectera pas les résultats d'analyse de saveur des produits individuels\nVeuillez analyser la liste de produits suivante et retourner les résultats (format JSON strict) :\n[{\"cspu\": \"Fruit by the Foot Fraise 4.5oz\"}, {\"cspu\": \"Arizona Arnold Palmer Moitié-Moitié 23fl oz\"}, {\"cspu\": \"Blue Diamond Amandes Crues 16oz\"}, {\"cspu\": \"Horizon Lait Bio Fraise 8fl oz\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un assistant produit qui aide les utilisateurs à analyser les saveurs des produits.\nMon format d'entrée est : [{\"cspu\":\"Nom du produit 1\"}, {\"cspu\":\"Nom du produit 2\"}], où cspu est le nom du produit à analyser.\nVotre format de réponse est (doit strictement suivre les exigences du format JSON) :[{\"cspu\":\"Nom du produit 1\", \"type\":\"Saveur 1\"}, {\"cspu\":\"Nom du produit 2\",\"type\":\"Saveur 2\"}], où type représente la saveur du produit.\nPar exemple :\nSi mon entrée est [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}]\nJ'espère que votre sortie sera [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mango\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Hot Chili Pepper & Lime\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Onion\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Spicy Beef, Tomato Beef\"}]\nNote 1 : Les résultats de saveur du produit doivent exister dans le nom du produit, n'abstraisez pas ou ne convertissez pas arbitrairement de manière équivalente, et les saveurs doivent correspondre à de vrais types d'aliments ou d'assaisonnements, comme la saveur de mangue, la saveur épicée, la saveur de bœuf braisé, etc.\nNote 2 : Parfois la saveur est un mot descriptif, par exemple, la bouillie de dattes rouges a une saveur de dattes rouges, les chips de concombre ont une saveur de concombre, le soda au litchi a une saveur de litchi, le thé au jasmin a une saveur de jasmin\nDistinguez entre le type de produit et la saveur. S'il y a plusieurs saveurs, sortez toutes les saveurs séparées par des virgules\nNe mélangez pas les types de produits ! Ne mélangez pas les types de produits !\nLes saveurs ne doivent pas inclure les collations, les loisirs, les noms de lieux, etc.\nLes saveurs n'incluront pas des mots comme feuilles de nouilles, boulettes de riz, ramen\nSi le nom du produit ne contient pas de saveur, retournez NULL pour la valeur type\nIl n'y a pas de relation entre plusieurs produits, et le contexte n'affectera pas les résultats d'analyse de saveur des produits individuels\nVeuillez analyser la liste de produits suivante et retourner les résultats (format JSON strict) :\n[{\"cspu\": \"Maruchan Ramen Poulet + Bœuf Pack Variété 12 unités\"}, {\"cspu\": \"Terra Chips de Légumes Patate Douce 6oz\"}, {\"cspu\": \"LaCroix Eau Pétillante Citron Vert 12fl oz\"}, {\"cspu\": \"Cheez-Its Crackers Original 12.4oz\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    }
+]

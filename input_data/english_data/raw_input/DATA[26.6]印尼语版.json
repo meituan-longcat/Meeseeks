@@ -1,0 +1,607 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah asisten penjualan. Silakan ringkas terlebih dahulu skenario dari konten panggilan berikut, dan tulis ulang konten panggilan menjadi alur percakapan yang lancar. Konten yang ditulis ulang tidak boleh melebihi 200 karakter.\nCatatan:\n1. Anda harus memastikan kelancaran dialog yang ditulis ulang.\n2. Anda harus memastikan relevansi dialog yang ditulis ulang: tema percakapan yang ditulis ulang tidak boleh menyimpang dari percakapan asli.\n3. Perhatikan bahwa percakapan yang ditulis ulang tidak boleh mengandung informasi yang tidak termasuk dalam percakapan asli.\n4. Anda harus memastikan bahwa percakapan yang ditulis ulang logis jelas, ringkas, dan berkualitas lebih tinggi.\n5. Perhatikan bahwa dalam percakapan yang ditulis ulang, nada pedagang dan penjual harus bersifat percakapan, mengikuti peran masing-masing, dan penjual harus memperhatikan kesopanan.\n6. Output dalam format JSON, misalnya: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nPersyaratan output:\n1. Gunakan format JSON untuk mengembalikan informasi yang diekstrak;\n2. \"scenario_summary\" adalah deskripsi skenario satu kalimat, \"dialogue_rewrite\" adalah array alur dialog, penjual dan pedagang berbicara bergantian, masing-masing tidak lebih dari 50 kata, panjang total tidak lebih dari 200 karakter;\n3. Jangan mengembalikan karakter apa pun selain format JSON.\nBerikut adalah konten panggilan antara penjual Meituan dan pedagang:\nPedagang: Halo, ini Restoran Sichuan.\nPenjual: Halo, saya dari Meituan. Saya ingin tahu apakah toko Anda memiliki kebutuhan promosi online baru-baru ini?\nPedagang: Kami terutama mengandalkan pelanggan tetap baru-baru ini dan belum melakukan banyak promosi.\nPenjual: Meituan memiliki aktivitas baru sekarang dengan biaya iklan yang sangat menguntungkan, yang dapat membantu Anda menarik lebih banyak pelanggan baru.\nPedagang: Bos kami sedang dalam perjalanan bisnis, kami perlu menunggu dia kembali untuk membahas ini.\nPenjual: Saya mengerti, saya akan menghubungi Anda lagi minggu depan. Semoga bisnis Anda makmur!\nPedagang: Baik, terima kasih.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Ringkasan satu kalimat dari skenario panggilan",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Alur dialog yang ditulis ulang",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Pernyataan penjual",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Pernyataan pedagang",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah asisten penjualan. Silakan ringkas terlebih dahulu skenario dari konten panggilan berikut, dan tulis ulang konten panggilan menjadi alur percakapan yang lancar. Konten yang ditulis ulang tidak boleh melebihi 200 karakter.\nCatatan:\n1. Anda harus memastikan kelancaran dialog yang ditulis ulang.\n2. Anda harus memastikan relevansi dialog yang ditulis ulang: tema percakapan yang ditulis ulang tidak boleh menyimpang dari percakapan asli.\n3. Perhatikan bahwa percakapan yang ditulis ulang tidak boleh mengandung informasi yang tidak termasuk dalam percakapan asli.\n4. Anda harus memastikan bahwa percakapan yang ditulis ulang logis jelas, ringkas, dan berkualitas lebih tinggi.\n5. Perhatikan bahwa dalam percakapan yang ditulis ulang, nada pedagang dan penjual harus bersifat percakapan, mengikuti peran masing-masing, dan penjual harus memperhatikan kesopanan.\n6. Output dalam format JSON, misalnya: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nPersyaratan output:\n1. Gunakan format JSON untuk mengembalikan informasi yang diekstrak;\n2. \"scenario_summary\" adalah deskripsi skenario satu kalimat, \"dialogue_rewrite\" adalah array alur dialog, penjual dan pedagang berbicara bergantian, masing-masing tidak lebih dari 50 kata, panjang total tidak lebih dari 200 karakter;\n3. Jangan mengembalikan karakter apa pun selain format JSON.\nBerikut adalah konten panggilan antara penjual Meituan dan pedagang:\nPedagang: Halo, ini Yuedong Fitness.\nPenjual: Halo, saya ingin bertanya apakah toko Anda saat ini melakukan pembelian grup atau promosi online?\nPedagang: Kami terutama mengandalkan rujukan anggota sekarang, tidak melakukan pembelian grup online.\nPenjual: Aktivitas pembelian grup Meituan sangat kuat sekarang, dan pusat kebugaran di industri yang sama semuanya melakukannya dengan hasil yang baik.\nPedagang: Bisakah Anda menambahkan WeChat saya untuk mengobrol secara detail?\nPenjual: Tentu saja, tolong kirimkan ID WeChat Anda.\nPedagang: Baik, saya akan mengirimkannya nanti.\nPenjual: Terima kasih, menantikan kerjasama!",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Ringkasan satu kalimat dari skenario panggilan",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Alur dialog yang ditulis ulang",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Pernyataan penjual",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Pernyataan pedagang",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah asisten penjualan. Silakan ringkas terlebih dahulu skenario dari konten panggilan berikut, dan tulis ulang konten panggilan menjadi alur percakapan yang lancar. Konten yang ditulis ulang tidak boleh melebihi 200 karakter.\nCatatan:\n1. Anda harus memastikan kelancaran dialog yang ditulis ulang.\n2. Anda harus memastikan relevansi dialog yang ditulis ulang: tema percakapan yang ditulis ulang tidak boleh menyimpang dari percakapan asli.\n3. Perhatikan bahwa percakapan yang ditulis ulang tidak boleh mengandung informasi yang tidak termasuk dalam percakapan asli.\n4. Anda harus memastikan bahwa percakapan yang ditulis ulang logis jelas, ringkas, dan berkualitas lebih tinggi.\n5. Perhatikan bahwa dalam percakapan yang ditulis ulang, nada pedagang dan penjual harus bersifat percakapan, mengikuti peran masing-masing, dan penjual harus memperhatikan kesopanan.\n6. Output dalam format JSON, misalnya: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nPersyaratan output:\n1. Gunakan format JSON untuk mengembalikan informasi yang diekstrak;\n2. \"scenario_summary\" adalah deskripsi skenario satu kalimat, \"dialogue_rewrite\" adalah array alur dialog, penjual dan pedagang berbicara bergantian, masing-masing tidak lebih dari 50 kata, panjang total tidak lebih dari 200 karakter;\n3. Jangan mengembalikan karakter apa pun selain format JSON.\nBerikut adalah konten panggilan antara penjual Meituan dan pedagang:\nPedagang: Halo.\nPenjual: Halo, apakah ini Huatian Xiaozhu B&B?\nPedagang: Ya, siapa ini?\nPenjual: Saya dari Meituan. Saya ingin tahu apakah B&B Anda ingin melakukan promosi iklan Meituan?\nPedagang: Pesanan kami baik-baik saja saat ini, kami tidak mempertimbangkannya untuk saat ini.\nPenjual: Saya mengerti, silakan hubungi saya jika Anda membutuhkannya di masa depan.\nPedagang: Baik, terima kasih.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Ringkasan satu kalimat dari skenario panggilan",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Alur dialog yang ditulis ulang",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Pernyataan penjual",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Pernyataan pedagang",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah asisten penjualan. Silakan ringkas terlebih dahulu skenario dari konten panggilan berikut, dan tulis ulang konten panggilan menjadi alur percakapan yang lancar. Konten yang ditulis ulang tidak boleh melebihi 200 karakter.\nCatatan:\n1. Anda harus memastikan kelancaran dialog yang ditulis ulang.\n2. Anda harus memastikan relevansi dialog yang ditulis ulang: tema percakapan yang ditulis ulang tidak boleh menyimpang dari percakapan asli.\n3. Perhatikan bahwa percakapan yang ditulis ulang tidak boleh mengandung informasi yang tidak termasuk dalam percakapan asli.\n4. Anda harus memastikan bahwa percakapan yang ditulis ulang logis jelas, ringkas, dan berkualitas lebih tinggi.\n5. Perhatikan bahwa dalam percakapan yang ditulis ulang, nada pedagang dan penjual harus bersifat percakapan, mengikuti peran masing-masing, dan penjual harus memperhatikan kesopanan.\n6. Output dalam format JSON, misalnya: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nPersyaratan output:\n1. Gunakan format JSON untuk mengembalikan informasi yang diekstrak;\n2. \"scenario_summary\" adalah deskripsi skenario satu kalimat, \"dialogue_rewrite\" adalah array alur dialog, penjual dan pedagang berbicara bergantian, masing-masing tidak lebih dari 50 kata, panjang total tidak lebih dari 200 karakter;\n3. Jangan mengembalikan karakter apa pun selain format JSON.\nBerikut adalah konten panggilan antara penjual Meituan dan pedagang:\nPedagang: Halo.\nPenjual: Halo, saya dari Meituan. Saya ingin bertanya apakah toko Anda melakukan promosi online?\nPedagang: Tidak saat ini, bos belum mengatur ini.\nPenjual: Jika Anda tertarik, Anda dapat menghubungi saya kapan saja. Meituan memiliki kebijakan preferensial baru-baru ini.\nPedagang: Baik, mengerti.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Ringkasan satu kalimat dari skenario panggilan",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Alur dialog yang ditulis ulang",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Pernyataan penjual",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Pernyataan pedagang",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah asisten penjualan. Silakan ringkas terlebih dahulu skenario dari konten panggilan berikut, dan tulis ulang konten panggilan menjadi alur percakapan yang lancar. Konten yang ditulis ulang tidak boleh melebihi 200 karakter.\nCatatan:\n1. Anda harus memastikan kelancaran dialog yang ditulis ulang.\n2. Anda harus memastikan relevansi dialog yang ditulis ulang: tema percakapan yang ditulis ulang tidak boleh menyimpang dari percakapan asli.\n3. Perhatikan bahwa percakapan yang ditulis ulang tidak boleh mengandung informasi yang tidak termasuk dalam percakapan asli.\n4. Anda harus memastikan bahwa percakapan yang ditulis ulang logis jelas, ringkas, dan berkualitas lebih tinggi.\n5. Perhatikan bahwa dalam percakapan yang ditulis ulang, nada pedagang dan penjual harus bersifat percakapan, mengikuti peran masing-masing, dan penjual harus memperhatikan kesopanan.\n6. Output dalam format JSON, misalnya: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nPersyaratan output:\n1. Gunakan format JSON untuk mengembalikan informasi yang diekstrak;\n2. \"scenario_summary\" adalah deskripsi skenario satu kalimat, \"dialogue_rewrite\" adalah array alur dialog, penjual dan pedagang berbicara bergantian, masing-masing tidak lebih dari 50 kata, panjang total tidak lebih dari 200 karakter;\n3. Jangan mengembalikan karakter apa pun selain format JSON.\nBerikut adalah konten panggilan antara penjual Meituan dan pedagang:\nPedagang: Halo, ini Lexiang KTV.\nPenjual: Halo, Meituan sedang melakukan aktivitas promosi eksklusif KTV sekarang. Saya ingin bertanya apakah toko Anda tertarik untuk berpartisipasi?\nPedagang: Kami tidak memiliki rencana untuk saat ini, bos sedang mempertimbangkannya.\nPenjual: Saya mengerti, Anda dapat menghubungi saya kapan saja jika Anda memiliki ide nanti.\nPedagang: Baik, terima kasih.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Ringkasan satu kalimat dari skenario panggilan",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Alur dialog yang ditulis ulang",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Pernyataan penjual",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Pernyataan pedagang",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah asisten penjualan. Silakan ringkas terlebih dahulu skenario dari konten panggilan berikut, dan tulis ulang konten panggilan menjadi alur percakapan yang lancar. Konten yang ditulis ulang tidak boleh melebihi 200 karakter.\nCatatan:\n1. Anda harus memastikan kelancaran dialog yang ditulis ulang.\n2. Anda harus memastikan relevansi dialog yang ditulis ulang: tema percakapan yang ditulis ulang tidak boleh menyimpang dari percakapan asli.\n3. Perhatikan bahwa percakapan yang ditulis ulang tidak boleh mengandung informasi yang tidak termasuk dalam percakapan asli.\n4. Anda harus memastikan bahwa percakapan yang ditulis ulang logis jelas, ringkas, dan berkualitas lebih tinggi.\n5. Perhatikan bahwa dalam percakapan yang ditulis ulang, nada pedagang dan penjual harus bersifat percakapan, mengikuti peran masing-masing, dan penjual harus memperhatikan kesopanan.\n6. Output dalam format JSON, misalnya: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nPersyaratan output:\n1. Gunakan format JSON untuk mengembalikan informasi yang diekstrak;\n2. \"scenario_summary\" adalah deskripsi skenario satu kalimat, \"dialogue_rewrite\" adalah array alur dialog, penjual dan pedagang berbicara bergantian, masing-masing tidak lebih dari 50 kata, panjang total tidak lebih dari 200 karakter;\n3. Jangan mengembalikan karakter apa pun selain format JSON.\nBerikut adalah konten panggilan antara penjual Meituan dan pedagang:\nPedagang: Halo, September Coffee.\nPenjual: Halo, saya ingin tahu apakah toko Anda telah melakukan promosi online baru-baru ini?\nPedagang: Kami telah melakukannya, tetapi anggaran kami terbatas baru-baru ini.\nPenjual: Meituan memiliki aktivitas baru-baru ini dengan biaya iklan yang lebih meng",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Ringkasan satu kalimat dari skenario panggilan",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Alur dialog yang ditulis ulang",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Pernyataan penjual",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Pernyataan pedagang",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah asisten penjualan. Silakan ringkas terlebih dahulu skenario dari konten panggilan berikut, dan tulis ulang konten panggilan menjadi alur percakapan yang lancar. Konten yang ditulis ulang tidak boleh melebihi 200 karakter.\nCatatan:\n1. Anda harus memastikan kelancaran dialog yang ditulis ulang.\n2. Anda harus memastikan relevansi dialog yang ditulis ulang: tema percakapan yang ditulis ulang tidak boleh menyimpang dari percakapan asli.\n3. Perhatikan bahwa percakapan yang ditulis ulang tidak boleh mengandung informasi yang tidak termasuk dalam percakapan asli.\n4. Anda harus memastikan bahwa percakapan yang ditulis ulang logis jelas, ringkas, dan berkualitas lebih tinggi.\n5. Perhatikan bahwa dalam percakapan yang ditulis ulang, nada pedagang dan penjual harus bersifat percakapan, mengikuti peran masing-masing, dan penjual harus memperhatikan kesopanan.\n6. Output dalam format JSON, misalnya: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nPersyaratan output:\n1. Gunakan format JSON untuk mengembalikan informasi yang diekstrak;\n2. \"scenario_summary\" adalah deskripsi skenario satu kalimat, \"dialogue_rewrite\" adalah array alur dialog, penjual dan pedagang berbicara bergantian, masing-masing tidak lebih dari 50 kata, panjang total tidak lebih dari 200 karakter;\n3. Jangan mengembalikan karakter apa pun selain format JSON.\nBerikut adalah konten panggilan antara penjual Meituan dan pedagang:\nPedagang: Halo, September Coffee.\nPenjual: Halo, saya ingin tahu apakah toko Anda telah melakukan promosi online baru-baru ini?\nPedagang: Kami telah melakukannya, tetapi anggaran kami terbatas baru-baru ini.\nPenjual: Meituan memiliki aktivitas baru-baru ini dengan biaya iklan yang lebih menguntungkan.\nPedagang: Baik, kami akan menghubungi Anda jika diperlukan.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Ringkasan satu kalimat dari skenario panggilan",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Alur dialog yang ditulis ulang",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Pernyataan penjual",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Pernyataan pedagang",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah asisten penjualan. Silakan ringkas terlebih dahulu skenario dari konten panggilan berikut, dan tulis ulang konten panggilan menjadi alur percakapan yang lancar. Konten yang ditulis ulang tidak boleh melebihi 200 karakter.\nCatatan:\n1. Anda harus memastikan kelancaran dialog yang ditulis ulang.\n2. Anda harus memastikan relevansi dialog yang ditulis ulang: tema percakapan yang ditulis ulang tidak boleh menyimpang dari percakapan asli.\n3. Perhatikan bahwa percakapan yang ditulis ulang tidak boleh mengandung informasi yang tidak termasuk dalam percakapan asli.\n4. Anda harus memastikan bahwa percakapan yang ditulis ulang logis jelas, ringkas, dan berkualitas lebih tinggi.\n5. Perhatikan bahwa dalam percakapan yang ditulis ulang, nada pedagang dan penjual harus bersifat percakapan, mengikuti peran masing-masing, dan penjual harus memperhatikan kesopanan.\n6. Output dalam format JSON, misalnya: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nPersyaratan output:\n1. Gunakan format JSON untuk mengembalikan informasi yang diekstrak;\n2. \"scenario_summary\" adalah deskripsi skenario satu kalimat, \"dialogue_rewrite\" adalah array alur dialog, penjual dan pedagang berbicara bergantian, masing-masing tidak lebih dari 50 kata, panjang total tidak lebih dari 200 karakter;\n3. Jangan mengembalikan karakter apa pun selain format JSON.\nBerikut adalah konten panggilan antara penjual Meituan dan pedagang:\nPedagang: Halo.\nPenjual: Halo, apakah ini Happy Florist?\nPedagang: Ya, siapa ini?\nPenjual: Saya dari Meituan. Saya ingin bertanya apakah Anda telah melakukan promosi iklan online?\nPedagang: Tidak untuk saat ini, kami akan menghubungi Anda jika diperlukan.\nPenjual: Baik, semoga bisnis Anda makmur!",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Ringkasan satu kalimat dari skenario panggilan",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Alur dialog yang ditulis ulang",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Pernyataan penjual",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Pernyataan pedagang",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah asisten penjualan. Silakan ringkas terlebih dahulu skenario dari konten panggilan berikut, dan tulis ulang konten panggilan menjadi alur percakapan yang lancar. Konten yang ditulis ulang tidak boleh melebihi 200 karakter.\nCatatan:\n1. Anda harus memastikan kelancaran dialog yang ditulis ulang.\n2. Anda harus memastikan relevansi dialog yang ditulis ulang: tema percakapan yang ditulis ulang tidak boleh menyimpang dari percakapan asli.\n3. Perhatikan bahwa percakapan yang ditulis ulang tidak boleh mengandung informasi yang tidak termasuk dalam percakapan asli.\n4. Anda harus memastikan bahwa percakapan yang ditulis ulang logis jelas, ringkas, dan berkualitas lebih tinggi.\n5. Perhatikan bahwa dalam percakapan yang ditulis ulang, nada pedagang dan penjual harus bersifat percakapan, mengikuti peran masing-masing, dan penjual harus memperhatikan kesopanan.\n6. Output dalam format JSON, misalnya: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nPersyaratan output:\n1. Gunakan format JSON untuk mengembalikan informasi yang diekstrak;\n2. \"scenario_summary\" adalah deskripsi skenario satu kalimat, \"dialogue_rewrite\" adalah array alur dialog, penjual dan pedagang berbicara bergantian, masing-masing tidak lebih dari 50 kata, panjang total tidak lebih dari 200 karakter;\n3. Jangan mengembalikan karakter apa pun selain format JSON.\nBerikut adalah konten panggilan antara penjual Meituan dan pedagang:\nPedagang: Halo.\nPenjual: Halo, apakah ini Sunshine Hotel?\nPedagang: Ya.\nPenjual: Saya dari Meituan. Saya ingin tahu apakah toko Anda melakukan promosi online?\nPedagang: Kami terutama mengandalkan pelanggan tetap sekarang, tidak melakukan promosi.\nPenjual: Saya mengerti, Anda dapat menghubungi saya kapan saja jika diperlukan.\nPedagang: Baik, terima kasih.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Ringkasan satu kalimat dari skenario panggilan",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Alur dialog yang ditulis ulang",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Pernyataan penjual",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Pernyataan pedagang",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah asisten penjualan. Silakan ringkas terlebih dahulu skenario dari konten panggilan berikut, dan tulis ulang konten panggilan menjadi alur percakapan yang lancar. Konten yang ditulis ulang tidak boleh melebihi 200 karakter.\nCatatan:\n1. Anda harus memastikan kelancaran dialog yang ditulis ulang.\n2. Anda harus memastikan relevansi dialog yang ditulis ulang: tema percakapan yang ditulis ulang tidak boleh menyimpang dari percakapan asli.\n3. Perhatikan bahwa percakapan yang ditulis ulang tidak boleh mengandung informasi yang tidak termasuk dalam percakapan asli.\n4. Anda harus memastikan bahwa percakapan yang ditulis ulang logis jelas, ringkas, dan berkualitas lebih tinggi.\n5. Perhatikan bahwa dalam percakapan yang ditulis ulang, nada pedagang dan penjual harus bersifat percakapan, mengikuti peran masing-masing, dan penjual harus memperhatikan kesopanan.\n6. Output dalam format JSON, misalnya: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nPersyaratan output:\n1. Gunakan format JSON untuk mengembalikan informasi yang diekstrak;\n2. \"scenario_summary\" adalah deskripsi skenario satu kalimat, \"dialogue_rewrite\" adalah array alur dialog, penjual dan pedagang berbicara bergantian, masing-masing tidak lebih dari 50 kata, panjang total tidak lebih dari 200 karakter;\n3. Jangan mengembalikan karakter apa pun selain format JSON.\nBerikut adalah konten panggilan antara penjual Meituan dan pedagang:\nPedagang: Halo, Restoran Fumanlou.\nPenjual: Halo, saya dari Meituan. Saya ingin bertanya apakah toko Anda memiliki kebutuhan promosi online baru-baru ini?\nPedagang: Kami memiliki lebih sedikit aktivitas baru-baru ini, tidak mempertimbangkannya untuk saat ini.\nPenjual: Baik, silakan hubungi kami jika Anda membutuhkannya di masa depan.\nPedagang: Terima kasih.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Ringkasan satu kalimat dari skenario panggilan",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Alur dialog yang ditulis ulang",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Pernyataan penjual",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Pernyataan pedagang",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah asisten penjualan. Silakan ringkas terlebih dahulu skenario dari konten panggilan berikut, dan tulis ulang konten panggilan menjadi alur percakapan yang lancar. Konten yang ditulis ulang tidak boleh melebihi 200 karakter.\nCatatan:\n1. Anda harus memastikan kelancaran dialog yang ditulis ulang.\n2. Anda harus memastikan relevansi dialog yang ditulis ulang: tema percakapan yang ditulis ulang tidak boleh menyimpang dari percakapan asli.\n3. Perhatikan bahwa percakapan yang ditulis ulang tidak boleh mengandung informasi yang tidak termasuk dalam percakapan asli.\n4. Anda harus memastikan bahwa percakapan yang ditulis ulang logis jelas, ringkas, dan berkualitas lebih tinggi.\n5. Perhatikan bahwa dalam percakapan yang ditulis ulang, nada pedagang dan penjual harus bersifat percakapan, mengikuti peran masing-masing, dan penjual harus memperhatikan kesopanan.\n6. Output dalam format JSON, misalnya: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nPersyaratan output:\n1. Gunakan format JSON untuk mengembalikan informasi yang diekstrak;\n2. \"scenario_summary\" adalah deskripsi skenario satu kalimat, \"dialogue_rewrite\" adalah array alur dialog, penjual dan pedagang berbicara bergantian, masing-masing tidak lebih dari 50 kata, panjang total tidak lebih dari 200 karakter;\n3. Jangan mengembalikan karakter apa pun selain format JSON.\nBerikut adalah konten panggilan antara penjual Meituan dan pedagang:\nPedagang: Halo.\nPenjual: Halo, saya dari Meituan. Saya ingin tahu apakah toko Anda melakukan pembelian grup online?\nPedagang: Tidak saat ini, bos belum memutuskan.\nPenjual: Saya mengerti, Anda dapat menghubungi saya kapan saja jika diperlukan.\nPedagang: Baik.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Ringkasan satu kalimat dari skenario panggilan",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Alur dialog yang ditulis ulang",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Pernyataan penjual",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Pernyataan pedagang",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    }
+]

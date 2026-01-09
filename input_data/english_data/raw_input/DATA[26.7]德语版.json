@@ -1,0 +1,982 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Nehmen Sie an, Sie sind ein professioneller Apotheker. Bitte führen Sie eine strukturierte Zerlegung der folgenden Beschreibung der anwendbaren Arzneimittelpopulation durch und geben Sie strikt gemäß der folgenden JSON-Struktur zurück:\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nRegeln:\n1. type gleich 3 ist ein fester Wert und muss existieren.\n2. Geschlecht-Wertebereich ist männlich, weiblich, unbegrenzt, keine anderen Geschlechter können erscheinen; wenn sowohl männlich als auch weiblich erscheinen, auf unbegrenzt setzen.\n3. Altersbereich-Wertebereich ist: ≥, ≤, >, <, =.\n4. Alterseinheit-Wertebereich ist: Jahre, Monate, Tage.\n5. Spezialpopulationstext hat maximal 1000 Zeichen.\n6. Die gleichen Wirksamkeitskomponenten und Inhaltsstrukturdaten werden als ein Datenobjekt gespeichert.\n7. Entfernen Sie verwandte Modifikatoren von der Wirksamkeit.\n8. Wenn kein Ergebnis existiert, muss \"XX\" durch leeren String \"\" ersetzt werden.\n9. Nur JSON-Daten ausgeben, keine anderen Inhalte ausgeben.\nBeschreibung der anwendbaren Arzneimittelpopulation:\nJahrhundert Jugend Multi-B Vitamin Tabletten: Personen unter 17 Jahren und schwangere Frauen, stillende Mütter. Tiancan Vitamin C Kautabletten: Personen unter 17 Jahren, schwangere Frauen, stillende Mütter. Weitoli Kalzium Plus Vitamin D Weichkapseln: Personen unter 17 Jahren, schwangere Frauen",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "Strukturtyp-Identifikator, fest als 3",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Strukturierte Zerlegungsergebnisse",
+                    "能力项": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "männlich",
+                                    "weiblich",
+                                    "unbegrenzt",
+                                    ""
+                                ],
+                                "description": "Geschlecht, männlich, weiblich, unbegrenzt oder leer",
+                                "能力项": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "Altersbereich-Symbol",
+                                "能力项": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "Alterszahl (arabische Ziffern)",
+                                "能力项": "范围、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "Jahre",
+                                    "Monate",
+                                    "Tage",
+                                    ""
+                                ],
+                                "description": "Alterseinheit",
+                                "能力项": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "Spezialpopulationsbeschreibung, innerhalb von 1000 Zeichen",
+                                "maxLength": 1000,
+                                "能力项": "范围"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Nehmen Sie an, Sie sind ein professioneller Apotheker. Bitte führen Sie eine strukturierte Zerlegung der folgenden Beschreibung der anwendbaren Arzneimittelpopulation durch und geben Sie strikt gemäß der folgenden JSON-Struktur zurück:\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nRegeln:\n1. type gleich 3 ist ein fester Wert und muss existieren.\n2. Geschlecht-Wertebereich ist männlich, weiblich, unbegrenzt, keine anderen Geschlechter können erscheinen; wenn sowohl männlich als auch weiblich erscheinen, auf unbegrenzt setzen.\n3. Altersbereich-Wertebereich ist: ≥, ≤, >, <, =.\n4. Alterseinheit-Wertebereich ist: Jahre, Monate, Tage.\n5. Spezialpopulationstext hat maximal 1000 Zeichen.\n6. Die gleichen Wirksamkeitskomponenten und Inhaltsstrukturdaten werden als ein Datenobjekt gespeichert.\n7. Entfernen Sie verwandte Modifikatoren von der Wirksamkeit.\n8. Wenn kein Ergebnis existiert, muss \"XX\" durch leeren String \"\" ersetzt werden.\n9. Nur JSON-Daten ausgeben, keine anderen Inhalte ausgeben.\nBeschreibung der anwendbaren Arzneimittelpopulation:\nJinsierkan Multivitamin Tabletten: Erwachsene 18 Jahre und älter, schwangere Frauen, stillende Mütter. Youkadan Pädiatrisches Paracetamol und Chlorphenamin Granulat: Kinder unter 12 Jahren, kontraindiziert für schwangere Frauen. Vitamin D2 Kalziumhydrogenphosphat Tabletten: Schwangere Frauen, stillende Mütter, ältere Menschen.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "Strukturtyp-Identifikator, fest als 3",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Strukturierte Zerlegungsergebnisse",
+                    "能力项": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "männlich",
+                                    "weiblich",
+                                    "unbegrenzt",
+                                    ""
+                                ],
+                                "description": "Geschlecht, männlich, weiblich, unbegrenzt oder leer",
+                                "能力项": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "Altersbereich-Symbol",
+                                "能力项": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "Alterszahl (arabische Ziffern)",
+                                "能力项": "范围、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "Jahre",
+                                    "Monate",
+                                    "Tage",
+                                    ""
+                                ],
+                                "description": "Alterseinheit",
+                                "能力项": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "Spezialpopulationsbeschreibung, innerhalb von 1000 Zeichen",
+                                "maxLength": 1000,
+                                "能力项": "范围"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Nehmen Sie an, Sie sind ein professioneller Apotheker. Bitte führen Sie eine strukturierte Zerlegung der folgenden Beschreibung der anwendbaren Arzneimittelpopulation durch und geben Sie strikt gemäß der folgenden JSON-Struktur zurück:\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nRegeln:\n1. type gleich 3 ist ein fester Wert und muss existieren.\n2. Geschlecht-Wertebereich ist männlich, weiblich, unbegrenzt, keine anderen Geschlechter können erscheinen; wenn sowohl männlich als auch weiblich erscheinen, auf unbegrenzt setzen.\n3. Altersbereich-Wertebereich ist: ≥, ≤, >, <, =.\n4. Alterseinheit-Wertebereich ist: Jahre, Monate, Tage.\n5. Spezialpopulationstext hat maximal 1000 Zeichen.\n6. Die gleichen Wirksamkeitskomponenten und Inhaltsstrukturdaten werden als ein Datenobjekt gespeichert.\n7. Entfernen Sie verwandte Modifikatoren von der Wirksamkeit.\n8. Wenn kein Ergebnis existiert, muss \"XX\" durch leeren String \"\" ersetzt werden.\n9. Nur JSON-Daten ausgeben, keine anderen Inhalte ausgeben.\nBeschreibung der anwendbaren Arzneimittelpopulation:\nQingkailing Oral Lösung: Unbegrenztes Geschlecht, Kinder über 3 Jahre, Erwachsene, ältere Menschen. Erkältungslinderung Granulat: Jugendliche und Erwachsene über 12 Jahre, mit Vorsicht bei schwangeren Frauen verwenden.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "Strukturtyp-Identifikator, fest als 3",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Strukturierte Zerlegungsergebnisse",
+                    "能力项": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "männlich",
+                                    "weiblich",
+                                    "unbegrenzt",
+                                    ""
+                                ],
+                                "description": "Geschlecht, männlich, weiblich, unbegrenzt oder leer",
+                                "能力项": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "Altersbereich-Symbol",
+                                "能力项": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "Alterszahl (arabische Ziffern)",
+                                "能力项": "范围、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "Jahre",
+                                    "Monate",
+                                    "Tage",
+                                    ""
+                                ],
+                                "description": "Alterseinheit",
+                                "能力项": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "Spezialpopulationsbeschreibung, innerhalb von 1000 Zeichen",
+                                "maxLength": 1000,
+                                "能力项": "范围"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Nehmen Sie an, Sie sind ein professioneller Apotheker. Bitte führen Sie eine strukturierte Zerlegung der folgenden Beschreibung der anwendbaren Arzneimittelpopulation durch und geben Sie strikt gemäß der folgenden JSON-Struktur zurück:\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nRegeln:\n1. type gleich 3 ist ein fester Wert und muss existieren.\n2. Geschlecht-Wertebereich ist männlich, weiblich, unbegrenzt, keine anderen Geschlechter können erscheinen; wenn sowohl männlich als auch weiblich erscheinen, auf unbegrenzt setzen.\n3. Altersbereich-Wertebereich ist: ≥, ≤, >, <, =.\n4. Alterseinheit-Wertebereich ist: Jahre, Monate, Tage.\n5. Spezialpopulationstext hat maximal 1000 Zeichen.\n6. Die gleichen Wirksamkeitskomponenten und Inhaltsstrukturdaten werden als ein Datenobjekt gespeichert.\n7. Entfernen Sie verwandte Modifikatoren von der Wirksamkeit.\n8. Wenn kein Ergebnis existiert, muss \"XX\" durch leeren String \"\" ersetzt werden.\n9. Nur JSON-Daten ausgeben, keine anderen Inhalte ausgeben.\nBeschreibung der anwendbaren Arzneimittelpopulation:\nZinkgluconat Oral Lösung: Kinder über 1 Jahr, schwangere Frauen, stillende Mütter, ältere Menschen. Zusammengesetzte Süßholz Tabletten: Erwachsene über 18 Jahre, kontraindiziert für schwangere Frauen.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "Strukturtyp-Identifikator, fest als 3",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Strukturierte Zerlegungsergebnisse",
+                    "能力项": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "männlich",
+                                    "weiblich",
+                                    "unbegrenzt",
+                                    ""
+                                ],
+                                "description": "Geschlecht, männlich, weiblich, unbegrenzt oder leer",
+                                "能力项": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "Altersbereich-Symbol",
+                                "能力项": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "Alterszahl (arabische Ziffern)",
+                                "能力项": "范围、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "Jahre",
+                                    "Monate",
+                                    "Tage",
+                                    ""
+                                ],
+                                "description": "Alterseinheit",
+                                "能力项": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "Spezialpopulationsbeschreibung, innerhalb von 1000 Zeichen",
+                                "maxLength": 1000,
+                                "能力项": "范围"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Nehmen Sie an, Sie sind ein professioneller Apotheker. Bitte führen Sie eine strukturierte Zerlegung der folgenden Beschreibung der anwendbaren Arzneimittelpopulation durch und geben Sie strikt gemäß der folgenden JSON-Struktur zurück:\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nRegeln:\n1. type gleich 3 ist ein fester Wert und muss existieren.\n2. Geschlecht-Wertebereich ist männlich, weiblich, unbegrenzt, keine anderen Geschlechter können erscheinen; wenn sowohl männlich als auch weiblich erscheinen, auf unbegrenzt setzen.\n3. Altersbereich-Wertebereich ist: ≥, ≤, >, <, =.\n4. Alterseinheit-Wertebereich ist: Jahre, Monate, Tage.\n5. Spezialpopulationstext hat maximal 1000 Zeichen.\n6. Die gleichen Wirksamkeitskomponenten und Inhaltsstrukturdaten werden als ein Datenobjekt gespeichert.\n7. Entfernen Sie verwandte Modifikatoren von der Wirksamkeit.\n8. Wenn kein Ergebnis existiert, muss \"XX\" durch leeren String \"\" ersetzt werden.\n9. Nur JSON-Daten ausgeben, keine anderen Inhalte ausgeben.\nBeschreibung der anwendbaren Arzneimittelpopulation:\nBettering Multi-Vitamin Mineral Kautabletten: Männlich und weiblich unbegrenzt, Jugendliche und Erwachsene über 15 Jahre. Caltrate D Tabletten: Personen über 50 Jahre, schwangere Frauen, stillende Mütter.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "Strukturtyp-Identifikator, fest als 3",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Strukturierte Zerlegungsergebnisse",
+                    "能力项": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "männlich",
+                                    "weiblich",
+                                    "unbegrenzt",
+                                    ""
+                                ],
+                                "description": "Geschlecht, männlich, weiblich, unbegrenzt oder leer",
+                                "能力项": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "Altersbereich-Symbol",
+                                "能力项": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "Alterszahl (arabische Ziffern)",
+                                "能力项": "范围、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "Jahre",
+                                    "Monate",
+                                    "Tage",
+                                    ""
+                                ],
+                                "description": "Alterseinheit",
+                                "能力项": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "Spezialpopulationsbeschreibung, innerhalb von 1000 Zeichen",
+                                "maxLength": 1000,
+                                "能力项": "范围"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Nehmen Sie an, Sie sind ein professioneller Apotheker. Bitte führen Sie eine strukturierte Zerlegung der folgenden Beschreibung der anwendbaren Arzneimittelpopulation durch und geben Sie strikt gemäß der folgenden JSON-Struktur zurück:\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nRegeln:\n1. type gleich 3 ist ein fester Wert und muss existieren.\n2. Geschlecht-Wertebereich ist männlich, weiblich, unbegrenzt, keine anderen Geschlechter können erscheinen; wenn sowohl männlich als auch weiblich erscheinen, auf unbegrenzt setzen.\n3. Altersbereich-Wertebereich ist: ≥, ≤, >, <, =.\n4. Alterseinheit-Wertebereich ist: Jahre, Monate, Tage.\n5. Spezialpopulationstext hat maximal 1000 Zeichen.\n6. Die gleichen Wirksamkeitskomponenten und Inhaltsstrukturdaten werden als ein Datenobjekt gespeichert.\n7. Entfernen Sie verwandte Modifikatoren von der Wirksamkeit.\n8. Wenn kein Ergebnis existiert, muss \"XX\" durch leeren String \"\" ersetzt werden.\n9. Nur JSON-Daten ausgeben, keine anderen Inhalte ausgeben.\nBeschreibung der anwendbaren Arzneimittelpopulation:\nDaiyin Multi-Element Tabletten: Erwachsene 18 Jahre und älter, schwangere Frauen, stillende Mütter. Yikexin Vitamin AD Tropfen: Säuglinge unter 1 Jahr, Kleinkinder 1-3 Jahre.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "Strukturtyp-Identifikator, fest als 3",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Strukturierte Zerlegungsergebnisse",
+                    "能力项": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "männlich",
+                                    "weiblich",
+                                    "unbegrenzt",
+                                    ""
+                                ],
+                                "description": "Geschlecht, männlich, weiblich, unbegrenzt oder leer",
+                                "能力项": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "Altersbereich-Symbol",
+                                "能力项": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "Alterszahl (arabische Ziffern)",
+                                "能力项": "范围、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "Jahre",
+                                    "Monate",
+                                    "Tage",
+                                    ""
+                                ],
+                                "description": "Alterseinheit",
+                                "能力项": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "Spezialpopulationsbeschreibung, innerhalb von 1000 Zeichen",
+                                "maxLength": 1000,
+                                "能力项": "范围"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Nehmen Sie an, Sie sind ein professioneller Apotheker. Bitte führen Sie eine strukturierte Zerlegung der folgenden Beschreibung der anwendbaren Arzneimittelpopulation durch und geben Sie strikt gemäß der folgenden JSON-Struktur zurück:\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nRegeln:\n1. type gleich 3 ist ein fester Wert und muss existieren.\n2. Geschlecht-Wertebereich ist männlich, weiblich, unbegrenzt, keine anderen Geschlechter können erscheinen; wenn sowohl männlich als auch weiblich erscheinen, auf unbegrenzt setzen.\n3. Altersbereich-Wertebereich ist: ≥, ≤, >, <, =.\n4. Alterseinheit-Wertebereich ist: Jahre, Monate, Tage.\n5. Spezialpopulationstext hat maximal 1000 Zeichen.\n6. Die gleichen Wirksamkeitskomponenten und Inhaltsstrukturdaten werden als ein Datenobjekt gespeichert.\n7. Entfernen Sie verwandte Modifikatoren von der Wirksamkeit.\n8. Wenn kein Ergebnis existiert, muss \"XX\" durch leeren String \"\" ersetzt werden.\n9. Nur JSON-Daten ausgeben, keine anderen Inhalte ausgeben.\nBeschreibung der anwendbaren Arzneimittelpopulation:\nPädiatrisches Paracetamol und Amantadin Granulat: Kinder unter 6 Jahren, kontraindiziert für schwangere Frauen. Schlaftabletten: Erwachsene über 18 Jahre, mit Vorsicht bei schwangeren Frauen und stillenden Müttern verwenden.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "Strukturtyp-Identifikator, fest als 3",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Strukturierte Zerlegungsergebnisse",
+                    "能力项": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "männlich",
+                                    "weiblich",
+                                    "unbegrenzt",
+                                    ""
+                                ],
+                                "description": "Geschlecht, männlich, weiblich, unbegrenzt oder leer",
+                                "能力项": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "Altersbereich-Symbol",
+                                "能力项": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "Alterszahl (arabische Ziffern)",
+                                "能力项": "范围、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "Jahre",
+                                    "Monate",
+                                    "Tage",
+                                    ""
+                                ],
+                                "description": "Alterseinheit",
+                                "能力项": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "Spezialpopulationsbeschreibung, innerhalb von 1000 Zeichen",
+                                "maxLength": 1000,
+                                "能力项": "范围"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Nehmen Sie an, Sie sind ein professioneller Apotheker. Bitte führen Sie eine strukturierte Zerlegung der folgenden Beschreibung der anwendbaren Arzneimittelpopulation durch und geben Sie strikt gemäß der folgenden JSON-Struktur zurück:\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nRegeln:\n1. type gleich 3 ist ein fester Wert und muss existieren.\n2. Geschlecht-Wertebereich ist männlich, weiblich, unbegrenzt, keine anderen Geschlechter können erscheinen; wenn sowohl männlich als auch weiblich erscheinen, auf unbegrenzt setzen.\n3. Altersbereich-Wertebereich ist: ≥, ≤, >, <, =.\n4. Alterseinheit-Wertebereich ist: Jahre, Monate, Tage.\n5. Spezialpopulationstext hat maximal 1000 Zeichen.\n6. Die gleichen Wirksamkeitskomponenten und Inhaltsstrukturdaten werden als ein Datenobjekt gespeichert.\n7. Entfernen Sie verwandte Modifikatoren von der Wirksamkeit.\n8. Wenn kein Ergebnis existiert, muss \"XX\" durch leeren String \"\" ersetzt werden.\n9. Nur JSON-Daten ausgeben, keine anderen Inhalte ausgeben.\nBeschreibung der anwendbaren Arzneimittelpopulation:\nPädiatrischer Hustensaft: Unbegrenztes Geschlecht, Kinder über 2 Jahre, mit Vorsicht bei schwangeren Frauen verwenden. Zusammengesetzte Vitamin B Tabletten: Erwachsene über 18 Jahre, schwangere Frauen, stillende Mütter.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "Strukturtyp-Identifikator, fest als 3",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Strukturierte Zerlegungsergebnisse",
+                    "能力项": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "männlich",
+                                    "weiblich",
+                                    "unbegrenzt",
+                                    ""
+                                ],
+                                "description": "Geschlecht, männlich, weiblich, unbegrenzt oder leer",
+                                "能力项": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "Altersbereich-Symbol",
+                                "能力项": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "Alterszahl (arabische Ziffern)",
+                                "能力项": "范围、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "Jahre",
+                                    "Monate",
+                                    "Tage",
+                                    ""
+                                ],
+                                "description": "Alterseinheit",
+                                "能力项": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "Spezialpopulationsbeschreibung, innerhalb von 1000 Zeichen",
+                                "maxLength": 1000,
+                                "能力项": "范围"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Nehmen Sie an, Sie sind ein professioneller Apotheker. Bitte führen Sie eine strukturierte Zerlegung der folgenden Beschreibung der anwendbaren Arzneimittelpopulation durch und geben Sie strikt gemäß der folgenden JSON-Struktur zurück:\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nRegeln:\n1. type gleich 3 ist ein fester Wert und muss existieren.\n2. Geschlecht-Wertebereich ist männlich, weiblich, unbegrenzt, keine anderen Geschlechter können erscheinen; wenn sowohl männlich als auch weiblich erscheinen, auf unbegrenzt setzen.\n3. Altersbereich-Wertebereich ist: ≥, ≤, >, <, =.\n4. Alterseinheit-Wertebereich ist: Jahre, Monate, Tage.\n5. Spezialpopulationstext hat maximal 1000 Zeichen.\n6. Die gleichen Wirksamkeitskomponenten und Inhaltsstrukturdaten werden als ein Datenobjekt gespeichert.\n7. Entfernen Sie verwandte Modifikatoren von der Wirksamkeit.\n8. Wenn kein Ergebnis existiert, muss \"XX\" durch leeren String \"\" ersetzt werden.\n9. Nur JSON-Daten ausgeben, keine anderen Inhalte ausgeben.\nBeschreibung der anwendbaren Arzneimittelpopulation:\nMagenverdauung Tabletten: Unbegrenztes Geschlecht, Kinder über 5 Jahre und Erwachsene. Vitamin E Weichkapseln: Frauen über 18 Jahre, schwangere Frauen, stillende Mütter.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "Strukturtyp-Identifikator, fest als 3",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Strukturierte Zerlegungsergebnisse",
+                    "能力项": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "männlich",
+                                    "weiblich",
+                                    "unbegrenzt",
+                                    ""
+                                ],
+                                "description": "Geschlecht, männlich, weiblich, unbegrenzt oder leer",
+                                "能力项": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "Altersbereich-Symbol",
+                                "能力项": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "Alterszahl (arabische Ziffern)",
+                                "能力项": "范围、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "Jahre",
+                                    "Monate",
+                                    "Tage",
+                                    ""
+                                ],
+                                "description": "Alterseinheit",
+                                "能力项": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "Spezialpopulationsbeschreibung, innerhalb von 1000 Zeichen",
+                                "maxLength": 1000,
+                                "能力项": "范围"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Nehmen Sie an, Sie sind ein professioneller Apotheker. Bitte führen Sie eine strukturierte Zerlegung der folgenden Beschreibung der anwendbaren Arzneimittelpopulation durch und geben Sie strikt gemäß der folgenden JSON-Struktur zurück:\n{\n  \"type\": 3,\n  \"data\": [\n     {\"gender\": \"XX\",\"age_range\": \"XX\",\"age_number\": \"XX\",\"age_unit\": \"XX\",\"special_population\": \"XX\"}, ... ]}\nRegeln:\n1. type gleich 3 ist ein fester Wert und muss existieren.\n2. Geschlecht-Wertebereich ist männlich, weiblich, unbegrenzt, keine anderen Geschlechter können erscheinen; wenn sowohl männlich als auch weiblich erscheinen, auf unbegrenzt setzen.\n3. Altersbereich-Wertebereich ist: ≥, ≤, >, <, =.\n4. Alterseinheit-Wertebereich ist: Jahre, Monate, Tage.\n5. Spezialpopulationstext hat maximal 1000 Zeichen.\n6. Die gleichen Wirksamkeitskomponenten und Inhaltsstrukturdaten werden als ein Datenobjekt gespeichert.\n7. Entfernen Sie verwandte Modifikatoren von der Wirksamkeit.\n8. Wenn kein Ergebnis existiert, muss \"XX\" durch leeren String \"\" ersetzt werden.\n9. Nur JSON-Daten ausgeben, keine anderen Inhalte ausgeben.\nBeschreibung der anwendbaren Arzneimittelpopulation:\nVitamin D Tropfen: Neugeborene, Säuglinge und Kleinkinder, schwangere Frauen, stillende Mütter. Zusammengesetztes Banlangen Granulat: Unbegrenztes Geschlecht, Kinder über 3 Jahre und Erwachsene, mit Vorsicht bei schwangeren Frauen verwenden.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        3
+                    ],
+                    "description": "Strukturtyp-Identifikator, fest als 3",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Strukturierte Zerlegungsergebnisse",
+                    "能力项": "JSON",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "gender": {
+                                "type": "string",
+                                "enum": [
+                                    "männlich",
+                                    "weiblich",
+                                    "unbegrenzt",
+                                    ""
+                                ],
+                                "description": "Geschlecht, männlich, weiblich, unbegrenzt oder leer",
+                                "能力项": "特定格式"
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "enum": [
+                                    "≥",
+                                    "≤",
+                                    "<",
+                                    ">",
+                                    "=",
+                                    ""
+                                ],
+                                "description": "Altersbereich-Symbol",
+                                "能力项": "特定格式"
+                            },
+                            "age_number": {
+                                "type": "string",
+                                "pattern": "^\\d+$|^$",
+                                "description": "Alterszahl (arabische Ziffern)",
+                                "能力项": "范围、0~10字"
+                            },
+                            "age_unit": {
+                                "type": "string",
+                                "enum": [
+                                    "Jahre",
+                                    "Monate",
+                                    "Tage",
+                                    ""
+                                ],
+                                "description": "Alterseinheit",
+                                "能力项": "特定格式"
+                            },
+                            "special_population": {
+                                "type": "string",
+                                "description": "Spezialpopulationsbeschreibung, innerhalb von 1000 Zeichen",
+                                "maxLength": 1000,
+                                "能力项": "范围"
+                            }
+                        },
+                        "required": [
+                            "gender",
+                            "age_range",
+                            "age_number",
+                            "age_unit",
+                            "special_population"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "is_depended": false,
+                "能力项": "JSON"
+            }
+        ]
+    }
+]

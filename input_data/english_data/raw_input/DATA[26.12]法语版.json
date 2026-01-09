@@ -1,0 +1,1092 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Supposons que vous êtes un pharmacien professionnel. Veuillez décomposer \"Acétate de vitamine A, β-carotène, vitamine D3, acétate de vitamine E, nitrate de thiamine, riboflavine, chlorhydrate de pyridoxine, acide ascorbique, cyanocobalamine, biotine, acide folique, nicotinamide, pantothénate de calcium, carbonate de calcium, oxyde de magnésium, fumarate de fer, sulfate de cuivre, sulfate de zinc, sulfate de manganèse, picolinate de chrome, cellulose microcristalline, amidon carboxyméthylique de sodium, carboxyméthylcellulose de sodium, dioxyde de silicium, acide stéarique, stéarate de magnésium, poudre d'enrobage.\" au format JSON selon la structure suivante.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Identifiant de poids par portion\": \"XX\",\n        \"Nom du composant\": \"XX\",\n        \"Nombre de contenu efficace\": \"XX\",\n        \"Unité de contenu efficace\": \"SS\"\n     }\n   ]\n}\nExigences :\n1. type égal à 2 comme valeur fixe. Doit exister.\n2. La plage de valeurs d'Unité de contenu efficace est g、mg、µg、ml、l、µl、U、UI、cuillère、cuillère à café、%、c㎡、cm、mm、kcal、UFC、LSU、pilule、grain、comprimé、stick、paquet、sachet、pièce、unité、goutte、spray、flacon、patch、inhalation、feuille、rouleau、tube、pastille、boîte、petite boîte、pression、unité、unité internationale. Pour toutes les autres unités, remplacez \"XX\" par \"\"\n3. Les mêmes composants fonctionnels et données structurées de contenu doivent être stockés comme un objet de données. Retournez le résultat strictement selon le format de données d'exemple JSON. Si les données ont plusieurs groupes, ils doivent être concaténés en format de tableau JSON. Seules les données JSON sont nécessaires, aucune donnée supplémentaire ne doit être sortie.\n4. Supprimez les modificateurs pertinents de l'efficacité\n5. \"XX\" est le résultat décomposé. Si aucun résultat n'existe, \"XX\" doit être remplacé par \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Identifiant de type structuré",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Détails structurés des composants",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Identifiant de poids par portion": {
+                                "type": "string",
+                                "description": "Identifiant de poids par portion",
+                                "能力项": "主题约束"
+                            },
+                            "Nom du composant": {
+                                "type": "string",
+                                "description": "Nom du composant",
+                                "能力项": "主题约束"
+                            },
+                            "Nombre de contenu efficace": {
+                                "type": "string",
+                                "description": "Partie numérique du contenu efficace",
+                                "能力项": "主题约束"
+                            },
+                            "Unité de contenu efficace": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "UI",
+                                    "cuillère",
+                                    "cuillère à café",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "UFC",
+                                    "LSU",
+                                    "pilule",
+                                    "grain",
+                                    "comprimé",
+                                    "stick",
+                                    "paquet",
+                                    "sachet",
+                                    "pièce",
+                                    "unité",
+                                    "goutte",
+                                    "spray",
+                                    "flacon",
+                                    "patch",
+                                    "inhalation",
+                                    "feuille",
+                                    "rouleau",
+                                    "tube",
+                                    "pastille",
+                                    "boîte",
+                                    "petite boîte",
+                                    "pression",
+                                    "unité",
+                                    "unité internationale",
+                                    ""
+                                ],
+                                "description": "Partie unité du contenu efficace",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Identifiant de poids par portion",
+                            "Nom du composant",
+                            "Nombre de contenu efficace",
+                            "Unité de contenu efficace"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Correspond-il au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Supposons que vous êtes un pharmacien professionnel. Veuillez décomposer \"Glucose (contenu par sachet : 10g), chlorure de sodium (9mg), chlorure de potassium (0,5g), acide citrique (0,2g), arôme citron, colorant jaune alimentaire, saccharose.\" au format JSON selon la structure suivante.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Identifiant de poids par portion\": \"XX\",\n        \"Nom du composant\": \"XX\",\n        \"Nombre de contenu efficace\": \"XX\",\n        \"Unité de contenu efficace\": \"SS\"\n     }\n   ]\n}\nExigences :\n1. type égal à 2 comme valeur fixe. Doit exister.\n2. La plage de valeurs d'Unité de contenu efficace est g、mg、µg、ml、l、µl、U、UI、cuillère、cuillère à café、%、c㎡、cm、mm、kcal、UFC、LSU、pilule、grain、comprimé、stick、paquet、sachet、pièce、unité、goutte、spray、flacon、patch、inhalation、feuille、rouleau、tube、pastille、boîte、petite boîte、pression、unité、unité internationale. Pour toutes les autres unités, remplacez \"XX\" par \"\"\n3. Les mêmes composants fonctionnels et données structurées de contenu doivent être stockés comme un objet de données. Retournez le résultat strictement selon le format de données d'exemple JSON. Si les données ont plusieurs groupes, ils doivent être concaténés en format de tableau JSON. Seules les données JSON sont nécessaires, aucune donnée supplémentaire ne doit être sortie.\n4. Supprimez les modificateurs pertinents de l'efficacité\n5. \"XX\" est le résultat décomposé. Si aucun résultat n'existe, \"XX\" doit être remplacé par \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Identifiant de type structuré",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Détails structurés des composants",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Identifiant de poids par portion": {
+                                "type": "string",
+                                "description": "Identifiant de poids par portion",
+                                "能力项": "主题约束"
+                            },
+                            "Nom du composant": {
+                                "type": "string",
+                                "description": "Nom du composant",
+                                "能力项": "主题约束"
+                            },
+                            "Nombre de contenu efficace": {
+                                "type": "string",
+                                "description": "Partie numérique du contenu efficace",
+                                "能力项": "主题约束"
+                            },
+                            "Unité de contenu efficace": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "UI",
+                                    "cuillère",
+                                    "cuillère à café",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "UFC",
+                                    "LSU",
+                                    "pilule",
+                                    "grain",
+                                    "comprimé",
+                                    "stick",
+                                    "paquet",
+                                    "sachet",
+                                    "pièce",
+                                    "unité",
+                                    "goutte",
+                                    "spray",
+                                    "flacon",
+                                    "patch",
+                                    "inhalation",
+                                    "feuille",
+                                    "rouleau",
+                                    "tube",
+                                    "pastille",
+                                    "boîte",
+                                    "petite boîte",
+                                    "pression",
+                                    "unité",
+                                    "unité internationale",
+                                    ""
+                                ],
+                                "description": "Partie unité du contenu efficace",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Identifiant de poids par portion",
+                            "Nom du composant",
+                            "Nombre de contenu efficace",
+                            "Unité de contenu efficace"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Correspond-il au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Supposons que vous êtes un pharmacien professionnel. Veuillez décomposer \"Céfixime (50mg/comprimé), lactose, amidon, amidon carboxyméthylique de sodium, stéarate de magnésium.\" au format JSON selon la structure suivante.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Identifiant de poids par portion\": \"XX\",\n        \"Nom du composant\": \"XX\",\n        \"Nombre de contenu efficace\": \"XX\",\n        \"Unité de contenu efficace\": \"SS\"\n     }\n   ]\n}\nExigences :\n1. type égal à 2 comme valeur fixe. Doit exister.\n2. La plage de valeurs d'Unité de contenu efficace est g、mg、µg、ml、l、µl、U、UI、cuillère、cuillère à café、%、c㎡、cm、mm、kcal、UFC、LSU、pilule、grain、comprimé、stick、paquet、sachet、pièce、unité、goutte、spray、flacon、patch、inhalation、feuille、rouleau、tube、pastille、boîte、petite boîte、pression、unité、unité internationale. Pour toutes les autres unités, remplacez \"XX\" par \"\"\n3. Les mêmes composants fonctionnels et données structurées de contenu doivent être stockés comme un objet de données. Retournez le résultat strictement selon le format de données d'exemple JSON. Si les données ont plusieurs groupes, ils doivent être concaténés en format de tableau JSON. Seules les données JSON sont nécessaires, aucune donnée supplémentaire ne doit être sortie.\n4. Supprimez les modificateurs pertinents de l'efficacité\n5. \"XX\" est le résultat décomposé. Si aucun résultat n'existe, \"XX\" doit être remplacé par \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Identifiant de type structuré",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Détails structurés des composants",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Identifiant de poids par portion": {
+                                "type": "string",
+                                "description": "Identifiant de poids par portion",
+                                "能力项": "主题约束"
+                            },
+                            "Nom du composant": {
+                                "type": "string",
+                                "description": "Nom du composant",
+                                "能力项": "主题约束"
+                            },
+                            "Nombre de contenu efficace": {
+                                "type": "string",
+                                "description": "Partie numérique du contenu efficace",
+                                "能力项": "主题约束"
+                            },
+                            "Unité de contenu efficace": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "UI",
+                                    "cuillère",
+                                    "cuillère à café",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "UFC",
+                                    "LSU",
+                                    "pilule",
+                                    "grain",
+                                    "comprimé",
+                                    "stick",
+                                    "paquet",
+                                    "sachet",
+                                    "pièce",
+                                    "unité",
+                                    "goutte",
+                                    "spray",
+                                    "flacon",
+                                    "patch",
+                                    "inhalation",
+                                    "feuille",
+                                    "rouleau",
+                                    "tube",
+                                    "pastille",
+                                    "boîte",
+                                    "petite boîte",
+                                    "pression",
+                                    "unité",
+                                    "unité internationale",
+                                    ""
+                                ],
+                                "description": "Partie unité du contenu efficace",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Identifiant de poids par portion",
+                            "Nom du composant",
+                            "Nombre de contenu efficace",
+                            "Unité de contenu efficace"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Correspond-il au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Supposons que vous êtes un pharmacien professionnel. Veuillez décomposer \"Amoxicilline (0,25g/gélule), clavulanate de potassium (0,0625g/gélule), cellulose microcristalline, croscarmellose sodique, dioxyde de silicium, hydroxypropylméthylcellulose, polyéthylène glycol 6000.\" au format JSON selon la structure suivante.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Identifiant de poids par portion\": \"XX\",\n        \"Nom du composant\": \"XX\",\n        \"Nombre de contenu efficace\": \"XX\",\n        \"Unité de contenu efficace\": \"SS\"\n     }\n   ]\n}\nExigences :\n1. type égal à 2 comme valeur fixe. Doit exister.\n2. La plage de valeurs d'Unité de contenu efficace est g、mg、µg、ml、l、µl、U、UI、cuillère、cuillère à café、%、c㎡、cm、mm、kcal、UFC、LSU、pilule、grain、comprimé、stick、paquet、sachet、pièce、unité、goutte、spray、flacon、patch、inhalation、feuille、rouleau、tube、pastille、boîte、petite boîte、pression、unité、unité internationale. Pour toutes les autres unités, remplacez \"XX\" par \"\"\n3. Les mêmes composants fonctionnels et données structurées de contenu doivent être stockés comme un objet de données. Retournez le résultat strictement selon le format de données d'exemple JSON. Si les données ont plusieurs groupes, ils doivent être concaténés en format de tableau JSON. Seules les données JSON sont nécessaires, aucune donnée supplémentaire ne doit être sortie.\n4. Supprimez les modificateurs pertinents de l'efficacité\n5. \"XX\" est le résultat décomposé. Si aucun résultat n'existe, \"XX\" doit être remplacé par \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Identifiant de type structuré",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Détails structurés des composants",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Identifiant de poids par portion": {
+                                "type": "string",
+                                "description": "Identifiant de poids par portion",
+                                "能力项": "主题约束"
+                            },
+                            "Nom du composant": {
+                                "type": "string",
+                                "description": "Nom du composant",
+                                "能力项": "主题约束"
+                            },
+                            "Nombre de contenu efficace": {
+                                "type": "string",
+                                "description": "Partie numérique du contenu efficace",
+                                "能力项": "主题约束"
+                            },
+                            "Unité de contenu efficace": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "UI",
+                                    "cuillère",
+                                    "cuillère à café",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "UFC",
+                                    "LSU",
+                                    "pilule",
+                                    "grain",
+                                    "comprimé",
+                                    "stick",
+                                    "paquet",
+                                    "sachet",
+                                    "pièce",
+                                    "unité",
+                                    "goutte",
+                                    "spray",
+                                    "flacon",
+                                    "patch",
+                                    "inhalation",
+                                    "feuille",
+                                    "rouleau",
+                                    "tube",
+                                    "pastille",
+                                    "boîte",
+                                    "petite boîte",
+                                    "pression",
+                                    "unité",
+                                    "unité internationale",
+                                    ""
+                                ],
+                                "description": "Partie unité du contenu efficace",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Identifiant de poids par portion",
+                            "Nom du composant",
+                            "Nombre de contenu efficace",
+                            "Unité de contenu efficace"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Correspond-il au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Supposons que vous êtes un pharmacien professionnel. Veuillez décomposer \"Vitamine C (100mg), vitamine E (10mg), glucose (5g), acide citrique, arôme, colorant.\" au format JSON selon la structure suivante.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Identifiant de poids par portion\": \"XX\",\n        \"Nom du composant\": \"XX\",\n        \"Nombre de contenu efficace\": \"XX\",\n        \"Unité de contenu efficace\": \"SS\"\n     }\n   ]\n}\nExigences :\n1. type égal à 2 comme valeur fixe. Doit exister.\n2. La plage de valeurs d'Unité de contenu efficace est g、mg、µg、ml、l、µl、U、UI、cuillère、cuillère à café、%、c㎡、cm、mm、kcal、UFC、LSU、pilule、grain、comprimé、stick、paquet、sachet、pièce、unité、goutte、spray、flacon、patch、inhalation、feuille、rouleau、tube、pastille、boîte、petite boîte、pression、unité、unité internationale. Pour toutes les autres unités, remplacez \"XX\" par \"\"\n3. Les mêmes composants fonctionnels et données structurées de contenu doivent être stockés comme un objet de données. Retournez le résultat strictement selon le format de données d'exemple JSON. Si les données ont plusieurs groupes, ils doivent être concaténés en format de tableau JSON. Seules les données JSON sont nécessaires, aucune donnée supplémentaire ne doit être sortie.\n4. Supprimez les modificateurs pertinents de l'efficacité\n5. \"XX\" est le résultat décomposé. Si aucun résultat n'existe, \"XX\" doit être remplacé par \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Identifiant de type structuré",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Détails structurés des composants",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Identifiant de poids par portion": {
+                                "type": "string",
+                                "description": "Identifiant de poids par portion",
+                                "能力项": "主题约束"
+                            },
+                            "Nom du composant": {
+                                "type": "string",
+                                "description": "Nom du composant",
+                                "能力项": "主题约束"
+                            },
+                            "Nombre de contenu efficace": {
+                                "type": "string",
+                                "description": "Partie numérique du contenu efficace",
+                                "能力项": "主题约束"
+                            },
+                            "Unité de contenu efficace": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "UI",
+                                    "cuillère",
+                                    "cuillère à café",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "UFC",
+                                    "LSU",
+                                    "pilule",
+                                    "grain",
+                                    "comprimé",
+                                    "stick",
+                                    "paquet",
+                                    "sachet",
+                                    "pièce",
+                                    "unité",
+                                    "goutte",
+                                    "spray",
+                                    "flacon",
+                                    "patch",
+                                    "inhalation",
+                                    "feuille",
+                                    "rouleau",
+                                    "tube",
+                                    "pastille",
+                                    "boîte",
+                                    "petite boîte",
+                                    "pression",
+                                    "unité",
+                                    "unité internationale",
+                                    ""
+                                ],
+                                "description": "Partie unité du contenu efficace",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Identifiant de poids par portion",
+                            "Nom du composant",
+                            "Nombre de contenu efficace",
+                            "Unité de contenu efficace"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Correspond-il au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Supposons que vous êtes un pharmacien professionnel. Veuillez décomposer \"Loratadine (10mg/comprimé), lactose, amidon, amidon carboxyméthylique de sodium, stéarate de magnésium.\" au format JSON selon la structure suivante.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Identifiant de poids par portion\": \"XX\",\n        \"Nom du composant\": \"XX\",\n        \"Nombre de contenu efficace\": \"XX\",\n        \"Unité de contenu efficace\": \"SS\"\n     }\n   ]\n}\nExigences :\n1. type égal à 2 comme valeur fixe. Doit exister.\n2. La plage de valeurs d'Unité de contenu efficace est g、mg、µg、ml、l、µl、U、UI、cuillère、cuillère à café、%、c㎡、cm、mm、kcal、UFC、LSU、pilule、grain、comprimé、stick、paquet、sachet、pièce、unité、goutte、spray、flacon、patch、inhalation、feuille、rouleau、tube、pastille、boîte、petite boîte、pression、unité、unité internationale. Pour toutes les autres unités, remplacez \"XX\" par \"\"\n3. Les mêmes composants fonctionnels et données structurées de contenu doivent être stockés comme un objet de données. Retournez le résultat strictement selon le format de données d'exemple JSON. Si les données ont plusieurs groupes, ils doivent être concaténés en format de tableau JSON. Seules les données JSON sont nécessaires, aucune donnée supplémentaire ne doit être sortie.\n4. Supprimez les modificateurs pertinents de l'efficacité\n5. \"XX\" est le résultat décomposé. Si aucun résultat n'existe, \"XX\" doit être remplacé par \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Identifiant de type structuré",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Détails structurés des composants",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Identifiant de poids par portion": {
+                                "type": "string",
+                                "description": "Identifiant de poids par portion",
+                                "能力项": "主题约束"
+                            },
+                            "Nom du composant": {
+                                "type": "string",
+                                "description": "Nom du composant",
+                                "能力项": "主题约束"
+                            },
+                            "Nombre de contenu efficace": {
+                                "type": "string",
+                                "description": "Partie numérique du contenu efficace",
+                                "能力项": "主题约束"
+                            },
+                            "Unité de contenu efficace": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "UI",
+                                    "cuillère",
+                                    "cuillère à café",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "UFC",
+                                    "LSU",
+                                    "pilule",
+                                    "grain",
+                                    "comprimé",
+                                    "stick",
+                                    "paquet",
+                                    "sachet",
+                                    "pièce",
+                                    "unité",
+                                    "goutte",
+                                    "spray",
+                                    "flacon",
+                                    "patch",
+                                    "inhalation",
+                                    "feuille",
+                                    "rouleau",
+                                    "tube",
+                                    "pastille",
+                                    "boîte",
+                                    "petite boîte",
+                                    "pression",
+                                    "unité",
+                                    "unité internationale",
+                                    ""
+                                ],
+                                "description": "Partie unité du contenu efficace",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Identifiant de poids par portion",
+                            "Nom du composant",
+                            "Nombre de contenu efficace",
+                            "Unité de contenu efficace"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Correspond-il au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Supposons que vous êtes un pharmacien professionnel. Veuillez décomposer \"Bactéries lactiques (1 milliard UFC/sachet), glucose, maltodextrine, acide citrique, arôme.\" au format JSON selon la structure suivante.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Identifiant de poids par portion\": \"XX\",\n        \"Nom du composant\": \"XX\",\n        \"Nombre de contenu efficace\": \"XX\",\n        \"Unité de contenu efficace\": \"SS\"\n     }\n   ]\n}\nExigences :\n1. type égal à 2 comme valeur fixe. Doit exister.\n2. La plage de valeurs d'Unité de contenu efficace est g、mg、µg、ml、l、µl、U、UI、cuillère、cuillère à café、%、c㎡、cm、mm、kcal、UFC、LSU、pilule、grain、comprimé、stick、paquet、sachet、pièce、unité、goutte、spray、flacon、patch、inhalation、feuille、rouleau、tube、pastille、boîte、petite boîte、pression、unité、unité internationale. Pour toutes les autres unités, remplacez \"XX\" par \"\"\n3. Les mêmes composants fonctionnels et données structurées de contenu doivent être stockés comme un objet de données. Retournez le résultat strictement selon le format de données d'exemple JSON. Si les données ont plusieurs groupes, ils doivent être concaténés en format de tableau JSON. Seules les données JSON sont nécessaires, aucune donnée supplémentaire ne doit être sortie.\n4. Supprimez les modificateurs pertinents de l'efficacité\n5. \"XX\" est le résultat décomposé. Si aucun résultat n'existe, \"XX\" doit être remplacé par \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Identifiant de type structuré",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Détails structurés des composants",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Identifiant de poids par portion": {
+                                "type": "string",
+                                "description": "Identifiant de poids par portion",
+                                "能力项": "主题约束"
+                            },
+                            "Nom du composant": {
+                                "type": "string",
+                                "description": "Nom du composant",
+                                "能力项": "主题约束"
+                            },
+                            "Nombre de contenu efficace": {
+                                "type": "string",
+                                "description": "Partie numérique du contenu efficace",
+                                "能力项": "主题约束"
+                            },
+                            "Unité de contenu efficace": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "UI",
+                                    "cuillère",
+                                    "cuillère à café",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "UFC",
+                                    "LSU",
+                                    "pilule",
+                                    "grain",
+                                    "comprimé",
+                                    "stick",
+                                    "paquet",
+                                    "sachet",
+                                    "pièce",
+                                    "unité",
+                                    "goutte",
+                                    "spray",
+                                    "flacon",
+                                    "patch",
+                                    "inhalation",
+                                    "feuille",
+                                    "rouleau",
+                                    "tube",
+                                    "pastille",
+                                    "boîte",
+                                    "petite boîte",
+                                    "pression",
+                                    "unité",
+                                    "unité internationale",
+                                    ""
+                                ],
+                                "description": "Partie unité du contenu efficace",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Identifiant de poids par portion",
+                            "Nom du composant",
+                            "Nombre de contenu efficace",
+                            "Unité de contenu efficace"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Correspond-il au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Supposons que vous êtes un pharmacien professionnel. Veuillez décomposer \"Complexe de vitamine B (vitamine B1, B2, B6, B12, nicotinamide, acide folique, pantothénate de calcium), lactose, amidon.\" au format JSON selon la structure suivante.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Identifiant de poids par portion\": \"XX\",\n        \"Nom du composant\": \"XX\",\n        \"Nombre de contenu efficace\": \"XX\",\n        \"Unité de contenu efficace\": \"SS\"\n     }\n   ]\n}\nExigences :\n1. type égal à 2 comme valeur fixe. Doit exister.\n2. La plage de valeurs d'Unité de contenu efficace est g、mg、µg、ml、l、µl、U、UI、cuillère、cuillère à café、%、c㎡、cm、mm、kcal、UFC、LSU、pilule、grain、comprimé、stick、paquet、sachet、pièce、unité、goutte、spray、flacon、patch、inhalation、feuille、rouleau、tube、pastille、boîte、petite boîte、pression、unité、unité internationale. Pour toutes les autres unités, remplacez \"XX\" par \"\"\n3. Les mêmes composants fonctionnels et données structurées de contenu doivent être stockés comme un objet de données. Retournez le résultat strictement selon le format de données d'exemple JSON. Si les données ont plusieurs groupes, ils doivent être concaténés en format de tableau JSON. Seules les données JSON sont nécessaires, aucune donnée supplémentaire ne doit être sortie.\n4. Supprimez les modificateurs pertinents de l'efficacité\n5. \"XX\" est le résultat décomposé. Si aucun résultat n'existe, \"XX\" doit être remplacé par \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Identifiant de type structuré",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Détails structurés des composants",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Identifiant de poids par portion": {
+                                "type": "string",
+                                "description": "Identifiant de poids par portion",
+                                "能力项": "主题约束"
+                            },
+                            "Nom du composant": {
+                                "type": "string",
+                                "description": "Nom du composant",
+                                "能力项": "主题约束"
+                            },
+                            "Nombre de contenu efficace": {
+                                "type": "string",
+                                "description": "Partie numérique du contenu efficace",
+                                "能力项": "主题约束"
+                            },
+                            "Unité de contenu efficace": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "UI",
+                                    "cuillère",
+                                    "cuillère à café",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "UFC",
+                                    "LSU",
+                                    "pilule",
+                                    "grain",
+                                    "comprimé",
+                                    "stick",
+                                    "paquet",
+                                    "sachet",
+                                    "pièce",
+                                    "unité",
+                                    "goutte",
+                                    "spray",
+                                    "flacon",
+                                    "patch",
+                                    "inhalation",
+                                    "feuille",
+                                    "rouleau",
+                                    "tube",
+                                    "pastille",
+                                    "boîte",
+                                    "petite boîte",
+                                    "pression",
+                                    "unité",
+                                    "unité internationale",
+                                    ""
+                                ],
+                                "description": "Partie unité du contenu efficace",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Identifiant de poids par portion",
+                            "Nom du composant",
+                            "Nombre de contenu efficace",
+                            "Unité de contenu efficace"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Correspond-il au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Supposons que vous êtes un pharmacien professionnel. Veuillez décomposer \"Carbonate de calcium (500mg/comprimé), vitamine D3 (200UI/comprimé), lactose, amidon, stéarate de magnésium.\" au format JSON selon la structure suivante.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Identifiant de poids par portion\": \"XX\",\n        \"Nom du composant\": \"XX\",\n        \"Nombre de contenu efficace\": \"XX\",\n        \"Unité de contenu efficace\": \"SS\"\n     }\n   ]\n}\nExigences :\n1. type égal à 2 comme valeur fixe. Doit exister.\n2. La plage de valeurs d'Unité de contenu efficace est g、mg、µg、ml、l、µl、U、UI、cuillère、cuillère à café、%、c㎡、cm、mm、kcal、UFC、LSU、pilule、grain、comprimé、stick、paquet、sachet、pièce、unité、goutte、spray、flacon、patch、inhalation、feuille、rouleau、tube、pastille、boîte、petite boîte、pression、unité、unité internationale. Pour toutes les autres unités, remplacez \"XX\" par \"\"\n3. Les mêmes composants fonctionnels et données structurées de contenu doivent être stockés comme un objet de données. Retournez le résultat strictement selon le format de données d'exemple JSON. Si les données ont plusieurs groupes, ils doivent être concaténés en format de tableau JSON. Seules les données JSON sont nécessaires, aucune donnée supplémentaire ne doit être sortie.\n4. Supprimez les modificateurs pertinents de l'efficacité\n5. \"XX\" est le résultat décomposé. Si aucun résultat n'existe, \"XX\" doit être remplacé par \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Identifiant de type structuré",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Détails structurés des composants",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Identifiant de poids par portion": {
+                                "type": "string",
+                                "description": "Identifiant de poids par portion",
+                                "能力项": "主题约束"
+                            },
+                            "Nom du composant": {
+                                "type": "string",
+                                "description": "Nom du composant",
+                                "能力项": "主题约束"
+                            },
+                            "Nombre de contenu efficace": {
+                                "type": "string",
+                                "description": "Partie numérique du contenu efficace",
+                                "能力项": "主题约束"
+                            },
+                            "Unité de contenu efficace": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "UI",
+                                    "cuillère",
+                                    "cuillère à café",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "UFC",
+                                    "LSU",
+                                    "pilule",
+                                    "grain",
+                                    "comprimé",
+                                    "stick",
+                                    "paquet",
+                                    "sachet",
+                                    "pièce",
+                                    "unité",
+                                    "goutte",
+                                    "spray",
+                                    "flacon",
+                                    "patch",
+                                    "inhalation",
+                                    "feuille",
+                                    "rouleau",
+                                    "tube",
+                                    "pastille",
+                                    "boîte",
+                                    "petite boîte",
+                                    "pression",
+                                    "unité",
+                                    "unité internationale",
+                                    ""
+                                ],
+                                "description": "Partie unité du contenu efficace",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Identifiant de poids par portion",
+                            "Nom du composant",
+                            "Nombre de contenu efficace",
+                            "Unité de contenu efficace"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Correspond-il au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Supposons que vous êtes un pharmacien professionnel. Veuillez décomposer \"Gluconate de zinc (10mg), lactose, amidon, arôme, colorant.\" au format JSON selon la structure suivante.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Identifiant de poids par portion\": \"XX\",\n        \"Nom du composant\": \"XX\",\n        \"Nombre de contenu efficace\": \"XX\",\n        \"Unité de contenu efficace\": \"SS\"\n     }\n   ]\n}\nExigences :\n1. type égal à 2 comme valeur fixe. Doit exister.\n2. La plage de valeurs d'Unité de contenu efficace est g、mg、µg、ml、l、µl、U、UI、cuillère、cuillère à café、%、c㎡、cm、mm、kcal、UFC、LSU、pilule、grain、comprimé、stick、paquet、sachet、pièce、unité、goutte、spray、flacon、patch、inhalation、feuille、rouleau、tube、pastille、boîte、petite boîte、pression、unité、unité internationale. Pour toutes les autres unités, remplacez \"XX\" par \"\"\n3. Les mêmes composants fonctionnels et données structurées de contenu doivent être stockés comme un objet de données. Retournez le résultat strictement selon le format de données d'exemple JSON. Si les données ont plusieurs groupes, ils doivent être concaténés en format de tableau JSON. Seules les données JSON sont nécessaires, aucune donnée supplémentaire ne doit être sortie.\n4. Supprimez les modificateurs pertinents de l'efficacité\n5. \"XX\" est le résultat décomposé. Si aucun résultat n'existe, \"XX\" doit être remplacé par \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Identifiant de type structuré",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Détails structurés des composants",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Identifiant de poids par portion": {
+                                "type": "string",
+                                "description": "Identifiant de poids par portion",
+                                "能力项": "主题约束"
+                            },
+                            "Nom du composant": {
+                                "type": "string",
+                                "description": "Nom du composant",
+                                "能力项": "主题约束"
+                            },
+                            "Nombre de contenu efficace": {
+                                "type": "string",
+                                "description": "Partie numérique du contenu efficace",
+                                "能力项": "主题约束"
+                            },
+                            "Unité de contenu efficace": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "UI",
+                                    "cuillère",
+                                    "cuillère à café",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "UFC",
+                                    "LSU",
+                                    "pilule",
+                                    "grain",
+                                    "comprimé",
+                                    "stick",
+                                    "paquet",
+                                    "sachet",
+                                    "pièce",
+                                    "unité",
+                                    "goutte",
+                                    "spray",
+                                    "flacon",
+                                    "patch",
+                                    "inhalation",
+                                    "feuille",
+                                    "rouleau",
+                                    "tube",
+                                    "pastille",
+                                    "boîte",
+                                    "petite boîte",
+                                    "pression",
+                                    "unité",
+                                    "unité internationale",
+                                    ""
+                                ],
+                                "description": "Partie unité du contenu efficace",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Identifiant de poids par portion",
+                            "Nom du composant",
+                            "Nombre de contenu efficace",
+                            "Unité de contenu efficace"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Correspond-il au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    }
+]

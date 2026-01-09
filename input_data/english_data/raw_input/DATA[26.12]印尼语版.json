@@ -1,0 +1,1092 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Asumsikan Anda adalah seorang apoteker profesional. Silakan uraikan \"Asetat vitamin A, β-karoten, vitamin D3, asetat vitamin E, nitrat tiamin, riboflavin, hidroklorida piridoksin, asam askorbat, sianokobalamin, biotin, asam folat, nikotinamid, pantotenat kalsium, karbonat kalsium, oksida magnesium, fumarat besi, sulfat tembaga, sulfat seng, sulfat mangan, pikolinat kromium, selulosa mikrokristal, natrium karboksimetil pati, natrium karboksimetilselulosa, silikon dioksida, asam stearat, magnesium stearat, bubuk pelapis.\" ke dalam format JSON sesuai dengan struktur berikut.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Pengenal berat per porsi\": \"XX\",\n        \"Nama komponen\": \"XX\",\n        \"Angka kandungan efektif\": \"XX\",\n        \"Satuan kandungan efektif\": \"SS\"\n     }\n   ]\n}\nPersyaratan:\n1. type sama dengan 2 sebagai nilai tetap. Harus ada.\n2. Rentang nilai Satuan kandungan efektif adalah g、mg、µg、ml、l、µl、U、IU、sendok、sendok teh、%、c㎡、cm、mm、kcal、CFU、LSU、pil、butir、tablet、stick、kemasan、kantong、buah、unit、tetes、spray、botol、patch、inhalasi、lembar、gulungan、tube、tablet hisap、kotak、kotak kecil、tekan、unit、unit internasional. Untuk semua unit lainnya, ganti \"XX\" dengan \"\"\n3. Komponen fungsional yang sama dan data terstruktur kandungan harus disimpan sebagai satu objek data. Kembalikan hasil secara ketat sesuai dengan format data contoh JSON. Jika data memiliki beberapa grup, mereka perlu digabungkan menjadi format array JSON. Hanya data JSON yang diperlukan, tidak ada data tambahan yang harus dikeluarkan.\n4. Hapus pengubah yang relevan dari kemanjuran\n5. \"XX\" adalah hasil yang diuraikan. Jika tidak ada hasil, \"XX\" perlu diganti dengan \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Pengenal jenis terstruktur",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Detail terstruktur komponen",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Pengenal berat per porsi": {
+                                "type": "string",
+                                "description": "Pengenal berat per porsi",
+                                "能力项": "主题约束"
+                            },
+                            "Nama komponen": {
+                                "type": "string",
+                                "description": "Nama komponen",
+                                "能力项": "主题约束"
+                            },
+                            "Angka kandungan efektif": {
+                                "type": "string",
+                                "description": "Bagian numerik kandungan efektif",
+                                "能力项": "主题约束"
+                            },
+                            "Satuan kandungan efektif": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "IU",
+                                    "sendok",
+                                    "sendok teh",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "CFU",
+                                    "LSU",
+                                    "pil",
+                                    "butir",
+                                    "tablet",
+                                    "stick",
+                                    "kemasan",
+                                    "kantong",
+                                    "buah",
+                                    "unit",
+                                    "tetes",
+                                    "spray",
+                                    "botol",
+                                    "patch",
+                                    "inhalasi",
+                                    "lembar",
+                                    "gulungan",
+                                    "tube",
+                                    "tablet hisap",
+                                    "kotak",
+                                    "kotak kecil",
+                                    "tekan",
+                                    "unit",
+                                    "unit internasional",
+                                    ""
+                                ],
+                                "description": "Bagian satuan kandungan efektif",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Pengenal berat per porsi",
+                            "Nama komponen",
+                            "Angka kandungan efektif",
+                            "Satuan kandungan efektif"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Asumsikan Anda adalah seorang apoteker profesional. Silakan uraikan \"Glukosa (kandungan per kantong: 10g), natrium klorida (9mg), kalium klorida (0,5g), asam sitrat (0,2g), perasa lemon, pewarna kuning yang dapat dimakan, sukrosa.\" ke dalam format JSON sesuai dengan struktur berikut.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Pengenal berat per porsi\": \"XX\",\n        \"Nama komponen\": \"XX\",\n        \"Angka kandungan efektif\": \"XX\",\n        \"Satuan kandungan efektif\": \"SS\"\n     }\n   ]\n}\nPersyaratan:\n1. type sama dengan 2 sebagai nilai tetap. Harus ada.\n2. Rentang nilai Satuan kandungan efektif adalah g、mg、µg、ml、l、µl、U、IU、sendok、sendok teh、%、c㎡、cm、mm、kcal、CFU、LSU、pil、butir、tablet、stick、kemasan、kantong、buah、unit、tetes、spray、botol、patch、inhalasi、lembar、gulungan、tube、tablet hisap、kotak、kotak kecil、tekan、unit、unit internasional. Untuk semua unit lainnya, ganti \"XX\" dengan \"\"\n3. Komponen fungsional yang sama dan data terstruktur kandungan harus disimpan sebagai satu objek data. Kembalikan hasil secara ketat sesuai dengan format data contoh JSON. Jika data memiliki beberapa grup, mereka perlu digabungkan menjadi format array JSON. Hanya data JSON yang diperlukan, tidak ada data tambahan yang harus dikeluarkan.\n4. Hapus pengubah yang relevan dari kemanjuran\n5. \"XX\" adalah hasil yang diuraikan. Jika tidak ada hasil, \"XX\" perlu diganti dengan \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Pengenal jenis terstruktur",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Detail terstruktur komponen",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Pengenal berat per porsi": {
+                                "type": "string",
+                                "description": "Pengenal berat per porsi",
+                                "能力项": "主题约束"
+                            },
+                            "Nama komponen": {
+                                "type": "string",
+                                "description": "Nama komponen",
+                                "能力项": "主题约束"
+                            },
+                            "Angka kandungan efektif": {
+                                "type": "string",
+                                "description": "Bagian numerik kandungan efektif",
+                                "能力项": "主题约束"
+                            },
+                            "Satuan kandungan efektif": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "IU",
+                                    "sendok",
+                                    "sendok teh",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "CFU",
+                                    "LSU",
+                                    "pil",
+                                    "butir",
+                                    "tablet",
+                                    "stick",
+                                    "kemasan",
+                                    "kantong",
+                                    "buah",
+                                    "unit",
+                                    "tetes",
+                                    "spray",
+                                    "botol",
+                                    "patch",
+                                    "inhalasi",
+                                    "lembar",
+                                    "gulungan",
+                                    "tube",
+                                    "tablet hisap",
+                                    "kotak",
+                                    "kotak kecil",
+                                    "tekan",
+                                    "unit",
+                                    "unit internasional",
+                                    ""
+                                ],
+                                "description": "Bagian satuan kandungan efektif",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Pengenal berat per porsi",
+                            "Nama komponen",
+                            "Angka kandungan efektif",
+                            "Satuan kandungan efektif"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Asumsikan Anda adalah seorang apoteker profesional. Silakan uraikan \"Sefiksim (50mg/tablet), laktosa, pati, natrium karboksimetil pati, magnesium stearat.\" ke dalam format JSON sesuai dengan struktur berikut.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Pengenal berat per porsi\": \"XX\",\n        \"Nama komponen\": \"XX\",\n        \"Angka kandungan efektif\": \"XX\",\n        \"Satuan kandungan efektif\": \"SS\"\n     }\n   ]\n}\nPersyaratan:\n1. type sama dengan 2 sebagai nilai tetap. Harus ada.\n2. Rentang nilai Satuan kandungan efektif adalah g、mg、µg、ml、l、µl、U、IU、sendok、sendok teh、%、c㎡、cm、mm、kcal、CFU、LSU、pil、butir、tablet、stick、kemasan、kantong、buah、unit、tetes、spray、botol、patch、inhalasi、lembar、gulungan、tube、tablet hisap、kotak、kotak kecil、tekan、unit、unit internasional. Untuk semua unit lainnya, ganti \"XX\" dengan \"\"\n3. Komponen fungsional yang sama dan data terstruktur kandungan harus disimpan sebagai satu objek data. Kembalikan hasil secara ketat sesuai dengan format data contoh JSON. Jika data memiliki beberapa grup, mereka perlu digabungkan menjadi format array JSON. Hanya data JSON yang diperlukan, tidak ada data tambahan yang harus dikeluarkan.\n4. Hapus pengubah yang relevan dari kemanjuran\n5. \"XX\" adalah hasil yang diuraikan. Jika tidak ada hasil, \"XX\" perlu diganti dengan \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Pengenal jenis terstruktur",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Detail terstruktur komponen",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Pengenal berat per porsi": {
+                                "type": "string",
+                                "description": "Pengenal berat per porsi",
+                                "能力项": "主题约束"
+                            },
+                            "Nama komponen": {
+                                "type": "string",
+                                "description": "Nama komponen",
+                                "能力项": "主题约束"
+                            },
+                            "Angka kandungan efektif": {
+                                "type": "string",
+                                "description": "Bagian numerik kandungan efektif",
+                                "能力项": "主题约束"
+                            },
+                            "Satuan kandungan efektif": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "IU",
+                                    "sendok",
+                                    "sendok teh",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "CFU",
+                                    "LSU",
+                                    "pil",
+                                    "butir",
+                                    "tablet",
+                                    "stick",
+                                    "kemasan",
+                                    "kantong",
+                                    "buah",
+                                    "unit",
+                                    "tetes",
+                                    "spray",
+                                    "botol",
+                                    "patch",
+                                    "inhalasi",
+                                    "lembar",
+                                    "gulungan",
+                                    "tube",
+                                    "tablet hisap",
+                                    "kotak",
+                                    "kotak kecil",
+                                    "tekan",
+                                    "unit",
+                                    "unit internasional",
+                                    ""
+                                ],
+                                "description": "Bagian satuan kandungan efektif",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Pengenal berat per porsi",
+                            "Nama komponen",
+                            "Angka kandungan efektif",
+                            "Satuan kandungan efektif"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Asumsikan Anda adalah seorang apoteker profesional. Silakan uraikan \"Amoksisilin (0,25g/kapsul), kalium klavulanat (0,0625g/kapsul), selulosa mikrokristal, kroskarmelosa natrium, silikon dioksida, hidroksipropilmetilselulosa, polietilen glikol 6000.\" ke dalam format JSON sesuai dengan struktur berikut.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Pengenal berat per porsi\": \"XX\",\n        \"Nama komponen\": \"XX\",\n        \"Angka kandungan efektif\": \"XX\",\n        \"Satuan kandungan efektif\": \"SS\"\n     }\n   ]\n}\nPersyaratan:\n1. type sama dengan 2 sebagai nilai tetap. Harus ada.\n2. Rentang nilai Satuan kandungan efektif adalah g、mg、µg、ml、l、µl、U、IU、sendok、sendok teh、%、c㎡、cm、mm、kcal、CFU、LSU、pil、butir、tablet、stick、kemasan、kantong、buah、unit、tetes、spray、botol、patch、inhalasi、lembar、gulungan、tube、tablet hisap、kotak、kotak kecil、tekan、unit、unit internasional. Untuk semua unit lainnya, ganti \"XX\" dengan \"\"\n3. Komponen fungsional yang sama dan data terstruktur kandungan harus disimpan sebagai satu objek data. Kembalikan hasil secara ketat sesuai dengan format data contoh JSON. Jika data memiliki beberapa grup, mereka perlu digabungkan menjadi format array JSON. Hanya data JSON yang diperlukan, tidak ada data tambahan yang harus dikeluarkan.\n4. Hapus pengubah yang relevan dari kemanjuran\n5. \"XX\" adalah hasil yang diuraikan. Jika tidak ada hasil, \"XX\" perlu diganti dengan \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Pengenal jenis terstruktur",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Detail terstruktur komponen",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Pengenal berat per porsi": {
+                                "type": "string",
+                                "description": "Pengenal berat per porsi",
+                                "能力项": "主题约束"
+                            },
+                            "Nama komponen": {
+                                "type": "string",
+                                "description": "Nama komponen",
+                                "能力项": "主题约束"
+                            },
+                            "Angka kandungan efektif": {
+                                "type": "string",
+                                "description": "Bagian numerik kandungan efektif",
+                                "能力项": "主题约束"
+                            },
+                            "Satuan kandungan efektif": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "IU",
+                                    "sendok",
+                                    "sendok teh",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "CFU",
+                                    "LSU",
+                                    "pil",
+                                    "butir",
+                                    "tablet",
+                                    "stick",
+                                    "kemasan",
+                                    "kantong",
+                                    "buah",
+                                    "unit",
+                                    "tetes",
+                                    "spray",
+                                    "botol",
+                                    "patch",
+                                    "inhalasi",
+                                    "lembar",
+                                    "gulungan",
+                                    "tube",
+                                    "tablet hisap",
+                                    "kotak",
+                                    "kotak kecil",
+                                    "tekan",
+                                    "unit",
+                                    "unit internasional",
+                                    ""
+                                ],
+                                "description": "Bagian satuan kandungan efektif",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Pengenal berat per porsi",
+                            "Nama komponen",
+                            "Angka kandungan efektif",
+                            "Satuan kandungan efektif"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Asumsikan Anda adalah seorang apoteker profesional. Silakan uraikan \"Vitamin C (100mg), vitamin E (10mg), glukosa (5g), asam sitrat, perasa, pewarna.\" ke dalam format JSON sesuai dengan struktur berikut.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Pengenal berat per porsi\": \"XX\",\n        \"Nama komponen\": \"XX\",\n        \"Angka kandungan efektif\": \"XX\",\n        \"Satuan kandungan efektif\": \"SS\"\n     }\n   ]\n}\nPersyaratan:\n1. type sama dengan 2 sebagai nilai tetap. Harus ada.\n2. Rentang nilai Satuan kandungan efektif adalah g、mg、µg、ml、l、µl、U、IU、sendok、sendok teh、%、c㎡、cm、mm、kcal、CFU、LSU、pil、butir、tablet、stick、kemasan、kantong、buah、unit、tetes、spray、botol、patch、inhalasi、lembar、gulungan、tube、tablet hisap、kotak、kotak kecil、tekan、unit、unit internasional. Untuk semua unit lainnya, ganti \"XX\" dengan \"\"\n3. Komponen fungsional yang sama dan data terstruktur kandungan harus disimpan sebagai satu objek data. Kembalikan hasil secara ketat sesuai dengan format data contoh JSON. Jika data memiliki beberapa grup, mereka perlu digabungkan menjadi format array JSON. Hanya data JSON yang diperlukan, tidak ada data tambahan yang harus dikeluarkan.\n4. Hapus pengubah yang relevan dari kemanjuran\n5. \"XX\" adalah hasil yang diuraikan. Jika tidak ada hasil, \"XX\" perlu diganti dengan \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Pengenal jenis terstruktur",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Detail terstruktur komponen",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Pengenal berat per porsi": {
+                                "type": "string",
+                                "description": "Pengenal berat per porsi",
+                                "能力项": "主题约束"
+                            },
+                            "Nama komponen": {
+                                "type": "string",
+                                "description": "Nama komponen",
+                                "能力项": "主题约束"
+                            },
+                            "Angka kandungan efektif": {
+                                "type": "string",
+                                "description": "Bagian numerik kandungan efektif",
+                                "能力项": "主题约束"
+                            },
+                            "Satuan kandungan efektif": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "IU",
+                                    "sendok",
+                                    "sendok teh",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "CFU",
+                                    "LSU",
+                                    "pil",
+                                    "butir",
+                                    "tablet",
+                                    "stick",
+                                    "kemasan",
+                                    "kantong",
+                                    "buah",
+                                    "unit",
+                                    "tetes",
+                                    "spray",
+                                    "botol",
+                                    "patch",
+                                    "inhalasi",
+                                    "lembar",
+                                    "gulungan",
+                                    "tube",
+                                    "tablet hisap",
+                                    "kotak",
+                                    "kotak kecil",
+                                    "tekan",
+                                    "unit",
+                                    "unit internasional",
+                                    ""
+                                ],
+                                "description": "Bagian satuan kandungan efektif",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Pengenal berat per porsi",
+                            "Nama komponen",
+                            "Angka kandungan efektif",
+                            "Satuan kandungan efektif"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Asumsikan Anda adalah seorang apoteker profesional. Silakan uraikan \"Loratadin (10mg/tablet), laktosa, pati, natrium karboksimetil pati, magnesium stearat.\" ke dalam format JSON sesuai dengan struktur berikut.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Pengenal berat per porsi\": \"XX\",\n        \"Nama komponen\": \"XX\",\n        \"Angka kandungan efektif\": \"XX\",\n        \"Satuan kandungan efektif\": \"SS\"\n     }\n   ]\n}\nPersyaratan:\n1. type sama dengan 2 sebagai nilai tetap. Harus ada.\n2. Rentang nilai Satuan kandungan efektif adalah g、mg、µg、ml、l、µl、U、IU、sendok、sendok teh、%、c㎡、cm、mm、kcal、CFU、LSU、pil、butir、tablet、stick、kemasan、kantong、buah、unit、tetes、spray、botol、patch、inhalasi、lembar、gulungan、tube、tablet hisap、kotak、kotak kecil、tekan、unit、unit internasional. Untuk semua unit lainnya, ganti \"XX\" dengan \"\"\n3. Komponen fungsional yang sama dan data terstruktur kandungan harus disimpan sebagai satu objek data. Kembalikan hasil secara ketat sesuai dengan format data contoh JSON. Jika data memiliki beberapa grup, mereka perlu digabungkan menjadi format array JSON. Hanya data JSON yang diperlukan, tidak ada data tambahan yang harus dikeluarkan.\n4. Hapus pengubah yang relevan dari kemanjuran\n5. \"XX\" adalah hasil yang diuraikan. Jika tidak ada hasil, \"XX\" perlu diganti dengan \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Pengenal jenis terstruktur",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Detail terstruktur komponen",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Pengenal berat per porsi": {
+                                "type": "string",
+                                "description": "Pengenal berat per porsi",
+                                "能力项": "主题约束"
+                            },
+                            "Nama komponen": {
+                                "type": "string",
+                                "description": "Nama komponen",
+                                "能力项": "主题约束"
+                            },
+                            "Angka kandungan efektif": {
+                                "type": "string",
+                                "description": "Bagian numerik kandungan efektif",
+                                "能力项": "主题约束"
+                            },
+                            "Satuan kandungan efektif": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "IU",
+                                    "sendok",
+                                    "sendok teh",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "CFU",
+                                    "LSU",
+                                    "pil",
+                                    "butir",
+                                    "tablet",
+                                    "stick",
+                                    "kemasan",
+                                    "kantong",
+                                    "buah",
+                                    "unit",
+                                    "tetes",
+                                    "spray",
+                                    "botol",
+                                    "patch",
+                                    "inhalasi",
+                                    "lembar",
+                                    "gulungan",
+                                    "tube",
+                                    "tablet hisap",
+                                    "kotak",
+                                    "kotak kecil",
+                                    "tekan",
+                                    "unit",
+                                    "unit internasional",
+                                    ""
+                                ],
+                                "description": "Bagian satuan kandungan efektif",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Pengenal berat per porsi",
+                            "Nama komponen",
+                            "Angka kandungan efektif",
+                            "Satuan kandungan efektif"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Asumsikan Anda adalah seorang apoteker profesional. Silakan uraikan \"Bakteri asam laktat (1 miliar CFU/kantong), glukosa, maltodekstrin, asam sitrat, perasa.\" ke dalam format JSON sesuai dengan struktur berikut.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Pengenal berat per porsi\": \"XX\",\n        \"Nama komponen\": \"XX\",\n        \"Angka kandungan efektif\": \"XX\",\n        \"Satuan kandungan efektif\": \"SS\"\n     }\n   ]\n}\nPersyaratan:\n1. type sama dengan 2 sebagai nilai tetap. Harus ada.\n2. Rentang nilai Satuan kandungan efektif adalah g、mg、µg、ml、l、µl、U、IU、sendok、sendok teh、%、c㎡、cm、mm、kcal、CFU、LSU、pil、butir、tablet、stick、kemasan、kantong、buah、unit、tetes、spray、botol、patch、inhalasi、lembar、gulungan、tube、tablet hisap、kotak、kotak kecil、tekan、unit、unit internasional. Untuk semua unit lainnya, ganti \"XX\" dengan \"\"\n3. Komponen fungsional yang sama dan data terstruktur kandungan harus disimpan sebagai satu objek data. Kembalikan hasil secara ketat sesuai dengan format data contoh JSON. Jika data memiliki beberapa grup, mereka perlu digabungkan menjadi format array JSON. Hanya data JSON yang diperlukan, tidak ada data tambahan yang harus dikeluarkan.\n4. Hapus pengubah yang relevan dari kemanjuran\n5. \"XX\" adalah hasil yang diuraikan. Jika tidak ada hasil, \"XX\" perlu diganti dengan \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Pengenal jenis terstruktur",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Detail terstruktur komponen",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Pengenal berat per porsi": {
+                                "type": "string",
+                                "description": "Pengenal berat per porsi",
+                                "能力项": "主题约束"
+                            },
+                            "Nama komponen": {
+                                "type": "string",
+                                "description": "Nama komponen",
+                                "能力项": "主题约束"
+                            },
+                            "Angka kandungan efektif": {
+                                "type": "string",
+                                "description": "Bagian numerik kandungan efektif",
+                                "能力项": "主题约束"
+                            },
+                            "Satuan kandungan efektif": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "IU",
+                                    "sendok",
+                                    "sendok teh",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "CFU",
+                                    "LSU",
+                                    "pil",
+                                    "butir",
+                                    "tablet",
+                                    "stick",
+                                    "kemasan",
+                                    "kantong",
+                                    "buah",
+                                    "unit",
+                                    "tetes",
+                                    "spray",
+                                    "botol",
+                                    "patch",
+                                    "inhalasi",
+                                    "lembar",
+                                    "gulungan",
+                                    "tube",
+                                    "tablet hisap",
+                                    "kotak",
+                                    "kotak kecil",
+                                    "tekan",
+                                    "unit",
+                                    "unit internasional",
+                                    ""
+                                ],
+                                "description": "Bagian satuan kandungan efektif",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Pengenal berat per porsi",
+                            "Nama komponen",
+                            "Angka kandungan efektif",
+                            "Satuan kandungan efektif"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Asumsikan Anda adalah seorang apoteker profesional. Silakan uraikan \"Kompleks vitamin B (vitamin B1, B2, B6, B12, nikotinamid, asam folat, pantotenat kalsium), laktosa, pati.\" ke dalam format JSON sesuai dengan struktur berikut.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Pengenal berat per porsi\": \"XX\",\n        \"Nama komponen\": \"XX\",\n        \"Angka kandungan efektif\": \"XX\",\n        \"Satuan kandungan efektif\": \"SS\"\n     }\n   ]\n}\nPersyaratan:\n1. type sama dengan 2 sebagai nilai tetap. Harus ada.\n2. Rentang nilai Satuan kandungan efektif adalah g、mg、µg、ml、l、µl、U、IU、sendok、sendok teh、%、c㎡、cm、mm、kcal、CFU、LSU、pil、butir、tablet、stick、kemasan、kantong、buah、unit、tetes、spray、botol、patch、inhalasi、lembar、gulungan、tube、tablet hisap、kotak、kotak kecil、tekan、unit、unit internasional. Untuk semua unit lainnya, ganti \"XX\" dengan \"\"\n3. Komponen fungsional yang sama dan data terstruktur kandungan harus disimpan sebagai satu objek data. Kembalikan hasil secara ketat sesuai dengan format data contoh JSON. Jika data memiliki beberapa grup, mereka perlu digabungkan menjadi format array JSON. Hanya data JSON yang diperlukan, tidak ada data tambahan yang harus dikeluarkan.\n4. Hapus pengubah yang relevan dari kemanjuran\n5. \"XX\" adalah hasil yang diuraikan. Jika tidak ada hasil, \"XX\" perlu diganti dengan \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Pengenal jenis terstruktur",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Detail terstruktur komponen",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Pengenal berat per porsi": {
+                                "type": "string",
+                                "description": "Pengenal berat per porsi",
+                                "能力项": "主题约束"
+                            },
+                            "Nama komponen": {
+                                "type": "string",
+                                "description": "Nama komponen",
+                                "能力项": "主题约束"
+                            },
+                            "Angka kandungan efektif": {
+                                "type": "string",
+                                "description": "Bagian numerik kandungan efektif",
+                                "能力项": "主题约束"
+                            },
+                            "Satuan kandungan efektif": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "IU",
+                                    "sendok",
+                                    "sendok teh",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "CFU",
+                                    "LSU",
+                                    "pil",
+                                    "butir",
+                                    "tablet",
+                                    "stick",
+                                    "kemasan",
+                                    "kantong",
+                                    "buah",
+                                    "unit",
+                                    "tetes",
+                                    "spray",
+                                    "botol",
+                                    "patch",
+                                    "inhalasi",
+                                    "lembar",
+                                    "gulungan",
+                                    "tube",
+                                    "tablet hisap",
+                                    "kotak",
+                                    "kotak kecil",
+                                    "tekan",
+                                    "unit",
+                                    "unit internasional",
+                                    ""
+                                ],
+                                "description": "Bagian satuan kandungan efektif",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Pengenal berat per porsi",
+                            "Nama komponen",
+                            "Angka kandungan efektif",
+                            "Satuan kandungan efektif"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Asumsikan Anda adalah seorang apoteker profesional. Silakan uraikan \"Karbonat kalsium (500mg/tablet), vitamin D3 (200IU/tablet), laktosa, pati, magnesium stearat.\" ke dalam format JSON sesuai dengan struktur berikut.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Pengenal berat per porsi\": \"XX\",\n        \"Nama komponen\": \"XX\",\n        \"Angka kandungan efektif\": \"XX\",\n        \"Satuan kandungan efektif\": \"SS\"\n     }\n   ]\n}\nPersyaratan:\n1. type sama dengan 2 sebagai nilai tetap. Harus ada.\n2. Rentang nilai Satuan kandungan efektif adalah g、mg、µg、ml、l、µl、U、IU、sendok、sendok teh、%、c㎡、cm、mm、kcal、CFU、LSU、pil、butir、tablet、stick、kemasan、kantong、buah、unit、tetes、spray、botol、patch、inhalasi、lembar、gulungan、tube、tablet hisap、kotak、kotak kecil、tekan、unit、unit internasional. Untuk semua unit lainnya, ganti \"XX\" dengan \"\"\n3. Komponen fungsional yang sama dan data terstruktur kandungan harus disimpan sebagai satu objek data. Kembalikan hasil secara ketat sesuai dengan format data contoh JSON. Jika data memiliki beberapa grup, mereka perlu digabungkan menjadi format array JSON. Hanya data JSON yang diperlukan, tidak ada data tambahan yang harus dikeluarkan.\n4. Hapus pengubah yang relevan dari kemanjuran\n5. \"XX\" adalah hasil yang diuraikan. Jika tidak ada hasil, \"XX\" perlu diganti dengan \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Pengenal jenis terstruktur",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Detail terstruktur komponen",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Pengenal berat per porsi": {
+                                "type": "string",
+                                "description": "Pengenal berat per porsi",
+                                "能力项": "主题约束"
+                            },
+                            "Nama komponen": {
+                                "type": "string",
+                                "description": "Nama komponen",
+                                "能力项": "主题约束"
+                            },
+                            "Angka kandungan efektif": {
+                                "type": "string",
+                                "description": "Bagian numerik kandungan efektif",
+                                "能力项": "主题约束"
+                            },
+                            "Satuan kandungan efektif": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "IU",
+                                    "sendok",
+                                    "sendok teh",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "CFU",
+                                    "LSU",
+                                    "pil",
+                                    "butir",
+                                    "tablet",
+                                    "stick",
+                                    "kemasan",
+                                    "kantong",
+                                    "buah",
+                                    "unit",
+                                    "tetes",
+                                    "spray",
+                                    "botol",
+                                    "patch",
+                                    "inhalasi",
+                                    "lembar",
+                                    "gulungan",
+                                    "tube",
+                                    "tablet hisap",
+                                    "kotak",
+                                    "kotak kecil",
+                                    "tekan",
+                                    "unit",
+                                    "unit internasional",
+                                    ""
+                                ],
+                                "description": "Bagian satuan kandungan efektif",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Pengenal berat per porsi",
+                            "Nama komponen",
+                            "Angka kandungan efektif",
+                            "Satuan kandungan efektif"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Asumsikan Anda adalah seorang apoteker profesional. Silakan uraikan \"Glukonat seng (10mg), laktosa, pati, perasa, pewarna.\" ke dalam format JSON sesuai dengan struktur berikut.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Pengenal berat per porsi\": \"XX\",\n        \"Nama komponen\": \"XX\",\n        \"Angka kandungan efektif\": \"XX\",\n        \"Satuan kandungan efektif\": \"SS\"\n     }\n   ]\n}\nPersyaratan:\n1. type sama dengan 2 sebagai nilai tetap. Harus ada.\n2. Rentang nilai Satuan kandungan efektif adalah g、mg、µg、ml、l、µl、U、IU、sendok、sendok teh、%、c㎡、cm、mm、kcal、CFU、LSU、pil、butir、tablet、stick、kemasan、kantong、buah、unit、tetes、spray、botol、patch、inhalasi、lembar、gulungan、tube、tablet hisap、kotak、kotak kecil、tekan、unit、unit internasional. Untuk semua unit lainnya, ganti \"XX\" dengan \"\"\n3. Komponen fungsional yang sama dan data terstruktur kandungan harus disimpan sebagai satu objek data. Kembalikan hasil secara ketat sesuai dengan format data contoh JSON. Jika data memiliki beberapa grup, mereka perlu digabungkan menjadi format array JSON. Hanya data JSON yang diperlukan, tidak ada data tambahan yang harus dikeluarkan.\n4. Hapus pengubah yang relevan dari kemanjuran\n5. \"XX\" adalah hasil yang diuraikan. Jika tidak ada hasil, \"XX\" perlu diganti dengan \"\"",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Pengenal jenis terstruktur",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Detail terstruktur komponen",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Pengenal berat per porsi": {
+                                "type": "string",
+                                "description": "Pengenal berat per porsi",
+                                "能力项": "主题约束"
+                            },
+                            "Nama komponen": {
+                                "type": "string",
+                                "description": "Nama komponen",
+                                "能力项": "主题约束"
+                            },
+                            "Angka kandungan efektif": {
+                                "type": "string",
+                                "description": "Bagian numerik kandungan efektif",
+                                "能力项": "主题约束"
+                            },
+                            "Satuan kandungan efektif": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "IU",
+                                    "sendok",
+                                    "sendok teh",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "CFU",
+                                    "LSU",
+                                    "pil",
+                                    "butir",
+                                    "tablet",
+                                    "stick",
+                                    "kemasan",
+                                    "kantong",
+                                    "buah",
+                                    "unit",
+                                    "tetes",
+                                    "spray",
+                                    "botol",
+                                    "patch",
+                                    "inhalasi",
+                                    "lembar",
+                                    "gulungan",
+                                    "tube",
+                                    "tablet hisap",
+                                    "kotak",
+                                    "kotak kecil",
+                                    "tekan",
+                                    "unit",
+                                    "unit internasional",
+                                    ""
+                                ],
+                                "description": "Bagian satuan kandungan efektif",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Pengenal berat per porsi",
+                            "Nama komponen",
+                            "Angka kandungan efektif",
+                            "Satuan kandungan efektif"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    }
+]

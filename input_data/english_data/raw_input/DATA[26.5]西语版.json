@@ -1,0 +1,2242 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Eres un experto en viajes. Te proporcionaré un artículo de guía de viaje que contiene título y contenido. Por favor, analiza el artículo para determinar si contiene rutas de viaje (containRoute), cuántas rutas de viaje contiene (routeCount), si contiene proyectos con límite de tiempo (containTimelinessProject), y extrae la información detallada de cada ruta (como nombre de la ruta, días, puntos de viaje, si contiene proyectos con límite de tiempo, nombres de los proyectos con límite de tiempo involucrados). Finalmente, muestra los resultados en el formato JSON especificado.\nDefiniciones de términos:\nRuta de viaje: Una ruta planificada con múltiples puntos de viaje en orden cronológico, con una duración de aproximadamente 1-3 días. Normalmente, los múltiples puntos de una ruta están conectados por secuencia temporal (por ejemplo, ir al lugar A a las 11 AM, luego al lugar B a las 2 PM) o secuencia de lugares (por ejemplo, actualmente en el lugar A, próxima parada en el lugar B). Ten en cuenta que si sólo se presentan varios puntos independientes, no constituye una ruta de viaje.\nSi contiene rutas de viaje: Si el artículo contiene al menos una ruta de viaje completa, devuelve 1, si no, devuelve 0.\nNúmero de rutas de viaje: El número de rutas completas contenidas en el artículo, 0 si no hay ninguna.\nSi contiene proyectos con límite de tiempo: Los proyectos con límite de tiempo se refieren a actividades realizadas en momentos específicos, como conciertos, exposiciones, reuniones, shows de comedia, festivales de música y otras actividades temporales. Si la ruta contiene algún proyecto con límite de tiempo, devuelve 1, si no, devuelve 0.\nCampo routes: Si hay rutas de viaje, se debe mostrar la información estructurada detallada de cada ruta, incluyendo: routeName (nombre de la ruta), days (número de días), routePoints (lista de puntos de viaje), hasTimelinessProject (si la ruta contiene proyectos con límite de tiempo), timelinessProjects (lista de proyectos con límite de tiempo involucrados en la ruta, array vacío si no hay, cada nombre de proyecto debe tener entre 9 y 150 caracteres (incluye espacio, número...)).\nRequisitos de formato de salida: Por favor, muestra estrictamente los resultados del análisis en el siguiente formato JSON, no añadas ninguna explicación adicional:{\"containRoute\": 0 o 1,\"routeCount\": número(0,1,2...),\"containTimelinessProject\": 0 o 1, \"routes\": [{\"routeName\": \"nombre de la ruta\", \"days\": 1-3, \"routePoints\": [\"punto de viaje A\", \"punto de viaje B\"], \"hasTimelinessProject\": 0 o 1, \"timelinessProjects\": [\"nombre del proyecto con límite de tiempo\"]}]}\nContenido del artículo:\n【Itinerario de medio día】14:00 Reunión para visitar fábrica centenaria (requiere reserva) 15:30 Traslado a tienda cultural creativa adyacente 16:00 Participación en taller de manualidades (todos los días de 16:00 a 17:00)",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si el artículo contiene rutas de viaje, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de rutas de viaje contenidas en el artículo",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si las rutas de viaje incluyen proyectos con límite de tiempo, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detalles de todas las rutas de viaje",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nombre de la ruta, no puede estar vacío",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de días de la ruta, rango de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de puntos de viaje, debe contener al menos dos puntos",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si esta ruta contiene proyectos con límite de tiempo",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyectos con límite de tiempo involucrados en esta ruta, cada nombre de proyecto tiene entre 2 y 30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cumple con el esquema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Eres un experto en viajes. Te proporcionaré un artículo de guía de viaje que contiene título y contenido. Por favor, analiza el artículo para determinar si contiene rutas de viaje (containRoute), cuántas rutas de viaje contiene (routeCount), si contiene proyectos con límite de tiempo (containTimelinessProject), y extrae la información detallada de cada ruta (como nombre de la ruta, días, puntos de viaje, si contiene proyectos con límite de tiempo, nombres de los proyectos con límite de tiempo involucrados). Finalmente, muestra los resultados en el formato JSON especificado.\nDefiniciones de términos:\nRuta de viaje: Una ruta planificada con múltiples puntos de viaje en orden cronológico, con una duración de aproximadamente 1-3 días. Normalmente, los múltiples puntos de una ruta están conectados por secuencia temporal (por ejemplo, ir al lugar A a las 11 AM, luego al lugar B a las 2 PM) o secuencia de lugares (por ejemplo, actualmente en el lugar A, próxima parada en el lugar B). Ten en cuenta que si sólo se presentan varios puntos independientes, no constituye una ruta de viaje.\nSi contiene rutas de viaje: Si el artículo contiene al menos una ruta de viaje completa, devuelve 1, si no, devuelve 0.\nNúmero de rutas de viaje: El número de rutas completas contenidas en el artículo, 0 si no hay ninguna.\nSi contiene proyectos con límite de tiempo: Los proyectos con límite de tiempo se refieren a actividades realizadas en momentos específicos, como conciertos, exposiciones, reuniones, shows de comedia, festivales de música y otras actividades temporales. Si la ruta contiene algún proyecto con límite de tiempo, devuelve 1, si no, devuelve 0.\nCampo routes: Si hay rutas de viaje, se debe mostrar la información estructurada detallada de cada ruta, incluyendo: routeName (nombre de la ruta), days (número de días), routePoints (lista de puntos de viaje), hasTimelinessProject (si la ruta contiene proyectos con límite de tiempo), timelinessProjects (lista de proyectos con límite de tiempo involucrados en la ruta, array vacío si no hay, cada nombre de proyecto debe tener entre 9 y 150 caracteres (incluye espacio, número...)).\nRequisitos de formato de salida: Por favor, muestra estrictamente los resultados del análisis en el siguiente formato JSON, no añadas ninguna explicación adicional:{\"containRoute\": 0 o 1,\"routeCount\": número(0,1,2...),\"containTimelinessProject\": 0 o 1, \"routes\": [{\"routeName\": \"nombre de la ruta\", \"days\": 1-3, \"routePoints\": [\"punto de viaje A\", \"punto de viaje B\"], \"hasTimelinessProject\": 0 o 1, \"timelinessProjects\": [\"nombre del proyecto con límite de tiempo\"]}]}\nContenido del artículo:\n【Visita de un día completo】Reunión en el museo a las 10 AM, luego paseo a la galería de arte, almuerzo en restaurante cercano, participación en exposición temporal por la tarde, espectáculo de festival de música por la noche.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si el artículo contiene rutas de viaje, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de rutas de viaje contenidas en el artículo",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si las rutas de viaje incluyen proyectos con límite de tiempo, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detalles de todas las rutas de viaje",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nombre de la ruta, no puede estar vacío",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de días de la ruta, rango de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de puntos de viaje, debe contener al menos dos puntos",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si esta ruta contiene proyectos con límite de tiempo",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyectos con límite de tiempo involucrados en esta ruta, cada nombre de proyecto tiene entre 2 y 30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cumple con el esquema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Eres un experto en viajes. Te proporcionaré un artículo de guía de viaje que contiene título y contenido. Por favor, analiza el artículo para determinar si contiene rutas de viaje (containRoute), cuántas rutas de viaje contiene (routeCount), si contiene proyectos con límite de tiempo (containTimelinessProject), y extrae la información detallada de cada ruta (como nombre de la ruta, días, puntos de viaje, si contiene proyectos con límite de tiempo, nombres de los proyectos con límite de tiempo involucrados). Finalmente, muestra los resultados en el formato JSON especificado.\nDefiniciones de términos:\nRuta de viaje: Una ruta planificada con múltiples puntos de viaje en orden cronológico, con una duración de aproximadamente 1-3 días. Normalmente, los múltiples puntos de una ruta están conectados por secuencia temporal (por ejemplo, ir al lugar A a las 11 AM, luego al lugar B a las 2 PM) o secuencia de lugares (por ejemplo, actualmente en el lugar A, próxima parada en el lugar B). Ten en cuenta que si sólo se presentan varios puntos independientes, no constituye una ruta de viaje.\nSi contiene rutas de viaje: Si el artículo contiene al menos una ruta de viaje completa, devuelve 1, si no, devuelve 0.\nNúmero de rutas de viaje: El número de rutas completas contenidas en el artículo, 0 si no hay ninguna.\nSi contiene proyectos con límite de tiempo: Los proyectos con límite de tiempo se refieren a actividades realizadas en momentos específicos, como conciertos, exposiciones, reuniones, shows de comedia, festivales de música y otras actividades temporales. Si la ruta contiene algún proyecto con límite de tiempo, devuelve 1, si no, devuelve 0.\nCampo routes: Si hay rutas de viaje, se debe mostrar la información estructurada detallada de cada ruta, incluyendo: routeName (nombre de la ruta), days (número de días), routePoints (lista de puntos de viaje), hasTimelinessProject (si la ruta contiene proyectos con límite de tiempo), timelinessProjects (lista de proyectos con límite de tiempo involucrados en la ruta, array vacío si no hay, cada nombre de proyecto debe tener entre 9 y 150 caracteres (incluye espacio, número...)).\nRequisitos de formato de salida: Por favor, muestra estrictamente los resultados del análisis en el siguiente formato JSON, no añadas ninguna explicación adicional:{\"containRoute\": 0 o 1,\"routeCount\": número(0,1,2...),\"containTimelinessProject\": 0 o 1, \"routes\": [{\"routeName\": \"nombre de la ruta\", \"days\": 1-3, \"routePoints\": [\"punto de viaje A\", \"punto de viaje B\"], \"hasTimelinessProject\": 0 o 1, \"timelinessProjects\": [\"nombre del proyecto con límite de tiempo\"]}]}\nContenido del artículo:\n【Recomendaciones gastronómicas】La calle de aperitivos locales tiene varias marcas tradicionales, se recomienda puestos de desayuno, pastelerías, puestos de barbacoa, sin secuencia de tiempo, adecuado para visitas informales.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si el artículo contiene rutas de viaje, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de rutas de viaje contenidas en el artículo",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si las rutas de viaje incluyen proyectos con límite de tiempo, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detalles de todas las rutas de viaje",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nombre de la ruta, no puede estar vacío",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de días de la ruta, rango de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de puntos de viaje, debe contener al menos dos puntos",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si esta ruta contiene proyectos con límite de tiempo",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyectos con límite de tiempo involucrados en esta ruta, cada nombre de proyecto tiene entre 2 y 30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cumple con el esquema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Eres un experto en viajes. Te proporcionaré un artículo de guía de viaje que contiene título y contenido. Por favor, analiza el artículo para determinar si contiene rutas de viaje (containRoute), cuántas rutas de viaje contiene (routeCount), si contiene proyectos con límite de tiempo (containTimelinessProject), y extrae la información detallada de cada ruta (como nombre de la ruta, días, puntos de viaje, si contiene proyectos con límite de tiempo, nombres de los proyectos con límite de tiempo involucrados). Finalmente, muestra los resultados en el formato JSON especificado.\nDefiniciones de términos:\nRuta de viaje: Una ruta planificada con múltiples puntos de viaje en orden cronológico, con una duración de aproximadamente 1-3 días. Normalmente, los múltiples puntos de una ruta están conectados por secuencia temporal (por ejemplo, ir al lugar A a las 11 AM, luego al lugar B a las 2 PM) o secuencia de lugares (por ejemplo, actualmente en el lugar A, próxima parada en el lugar B). Ten en cuenta que si sólo se presentan varios puntos independientes, no constituye una ruta de viaje.\nSi contiene rutas de viaje: Si el artículo contiene al menos una ruta de viaje completa, devuelve 1, si no, devuelve 0.\nNúmero de rutas de viaje: El número de rutas completas contenidas en el artículo, 0 si no hay ninguna.\nSi contiene proyectos con límite de tiempo: Los proyectos con límite de tiempo se refieren a actividades realizadas en momentos específicos, como conciertos, exposiciones, reuniones, shows de comedia, festivales de música y otras actividades temporales. Si la ruta contiene algún proyecto con límite de tiempo, devuelve 1, si no, devuelve 0.\nCampo routes: Si hay rutas de viaje, se debe mostrar la información estructurada detallada de cada ruta, incluyendo: routeName (nombre de la ruta), days (número de días), routePoints (lista de puntos de viaje), hasTimelinessProject (si la ruta contiene proyectos con límite de tiempo), timelinessProjects (lista de proyectos con límite de tiempo involucrados en la ruta, array vacío si no hay, cada nombre de proyecto debe tener entre 9 y 150 caracteres (incluye espacio, número...)).\nRequisitos de formato de salida: Por favor, muestra estrictamente los resultados del análisis en el siguiente formato JSON, no añadas ninguna explicación adicional:{\"containRoute\": 0 o 1,\"routeCount\": número(0,1,2...),\"containTimelinessProject\": 0 o 1, \"routes\": [{\"routeName\": \"nombre de la ruta\", \"days\": 1-3, \"routePoints\": [\"punto de viaje A\", \"punto de viaje B\"], \"hasTimelinessProject\": 0 o 1, \"timelinessProjects\": [\"nombre del proyecto con límite de tiempo\"]}]}\nContenido del artículo:\n【Ruta de dos días】Día1: Visita al pueblo antiguo por la mañana, visita al museo de cerámica por la tarde, participación en espectáculo de luces del mercado nocturno por la noche. Día2: Senderismo por la montaña por la mañana, aguas termales por la tarde.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si el artículo contiene rutas de viaje, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de rutas de viaje contenidas en el artículo",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si las rutas de viaje incluyen proyectos con límite de tiempo, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detalles de todas las rutas de viaje",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nombre de la ruta, no puede estar vacío",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de días de la ruta, rango de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de puntos de viaje, debe contener al menos dos puntos",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si esta ruta contiene proyectos con límite de tiempo",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyectos con límite de tiempo involucrados en esta ruta, cada nombre de proyecto tiene entre 2 y 30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cumple con el esquema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Eres un experto en viajes. Te proporcionaré un artículo de guía de viaje que contiene título y contenido. Por favor, analiza el artículo para determinar si contiene rutas de viaje (containRoute), cuántas rutas de viaje contiene (routeCount), si contiene proyectos con límite de tiempo (containTimelinessProject), y extrae la información detallada de cada ruta (como nombre de la ruta, días, puntos de viaje, si contiene proyectos con límite de tiempo, nombres de los proyectos con límite de tiempo involucrados). Finalmente, muestra los resultados en el formato JSON especificado.\nDefiniciones de términos:\nRuta de viaje: Una ruta planificada con múltiples puntos de viaje en orden cronológico, con una duración de aproximadamente 1-3 días. Normalmente, los múltiples puntos de una ruta están conectados por secuencia temporal (por ejemplo, ir al lugar A a las 11 AM, luego al lugar B a las 2 PM) o secuencia de lugares (por ejemplo, actualmente en el lugar A, próxima parada en el lugar B). Ten en cuenta que si sólo se presentan varios puntos independientes, no constituye una ruta de viaje.\nSi contiene rutas de viaje: Si el artículo contiene al menos una ruta de viaje completa, devuelve 1, si no, devuelve 0.\nNúmero de rutas de viaje: El número de rutas completas contenidas en el artículo, 0 si no hay ninguna.\nSi contiene proyectos con límite de tiempo: Los proyectos con límite de tiempo se refieren a actividades realizadas en momentos específicos, como conciertos, exposiciones, reuniones, shows de comedia, festivales de música y otras actividades temporales. Si la ruta contiene algún proyecto con límite de tiempo, devuelve 1, si no, devuelve 0.\nCampo routes: Si hay rutas de viaje, se debe mostrar la información estructurada detallada de cada ruta, incluyendo: routeName (nombre de la ruta), days (número de días), routePoints (lista de puntos de viaje), hasTimelinessProject (si la ruta contiene proyectos con límite de tiempo), timelinessProjects (lista de proyectos con límite de tiempo involucrados en la ruta, array vacío si no hay, cada nombre de proyecto debe tener entre 9 y 150 caracteres (incluye espacio, número...)).\nRequisitos de formato de salida: Por favor, muestra estrictamente los resultados del análisis en el siguiente formato JSON, no añadas ninguna explicación adicional:{\"containRoute\": 0 o 1,\"routeCount\": número(0,1,2...),\"containTimelinessProject\": 0 o 1, \"routes\": [{\"routeName\": \"nombre de la ruta\", \"days\": 1-3, \"routePoints\": [\"punto de viaje A\", \"punto de viaje B\"], \"hasTimelinessProject\": 0 o 1, \"timelinessProjects\": [\"nombre del proyecto con límite de tiempo\"]}]}\nContenido del artículo:\n【Tour familiar de fin de semana】Visita al zoológico para ver pandas gigantes por la mañana, experiencia de exposición de robots en el museo de ciencia por la tarde, asistencia a espectáculo infantil por la noche. Visita al jardín botánico en la mañana del segundo día, regreso por la tarde.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si el artículo contiene rutas de viaje, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de rutas de viaje contenidas en el artículo",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si las rutas de viaje incluyen proyectos con límite de tiempo, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detalles de todas las rutas de viaje",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nombre de la ruta, no puede estar vacío",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de días de la ruta, rango de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de puntos de viaje, debe contener al menos dos puntos",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si esta ruta contiene proyectos con límite de tiempo",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyectos con límite de tiempo involucrados en esta ruta, cada nombre de proyecto tiene entre 2 y 30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cumple con el esquema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Eres un experto en viajes. Te proporcionaré un artículo de guía de viaje que contiene título y contenido. Por favor, analiza el artículo para determinar si contiene rutas de viaje (containRoute), cuántas rutas de viaje contiene (routeCount), si contiene proyectos con límite de tiempo (containTimelinessProject), y extrae la información detallada de cada ruta (como nombre de la ruta, días, puntos de viaje, si contiene proyectos con límite de tiempo, nombres de los proyectos con límite de tiempo involucrados). Finalmente, muestra los resultados en el formato JSON especificado.\nDefiniciones de términos:\nRuta de viaje: Una ruta planificada con múltiples puntos de viaje en orden cronológico, con una duración de aproximadamente 1-3 días. Normalmente, los múltiples puntos de una ruta están conectados por secuencia temporal (por ejemplo, ir al lugar A a las 11 AM, luego al lugar B a las 2 PM) o secuencia de lugares (por ejemplo, actualmente en el lugar A, próxima parada en el lugar B). Ten en cuenta que si sólo se presentan varios puntos independientes, no constituye una ruta de viaje.\nSi contiene rutas de viaje: Si el artículo contiene al menos una ruta de viaje completa, devuelve 1, si no, devuelve 0.\nNúmero de rutas de viaje: El número de rutas completas contenidas en el artículo, 0 si no hay ninguna.\nSi contiene proyectos con límite de tiempo: Los proyectos con límite de tiempo se refieren a actividades realizadas en momentos específicos, como conciertos, exposiciones, reuniones, shows de comedia, festivales de música y otras actividades temporales. Si la ruta contiene algún proyecto con límite de tiempo, devuelve 1, si no, devuelve 0.\nCampo routes: Si hay rutas de viaje, se debe mostrar la información estructurada detallada de cada ruta, incluyendo: routeName (nombre de la ruta), days (número de días), routePoints (lista de puntos de viaje), hasTimelinessProject (si la ruta contiene proyectos con límite de tiempo), timelinessProjects (lista de proyectos con límite de tiempo involucrados en la ruta, array vacío si no hay, cada nombre de proyecto debe tener entre 9 y 150 caracteres (incluye espacio, número...)).\nRequisitos de formato de salida: Por favor, muestra estrictamente los resultados del análisis en el siguiente formato JSON, no añadas ninguna explicación adicional:{\"containRoute\": 0 o 1,\"routeCount\": número(0,1,2...),\"containTimelinessProject\": 0 o 1, \"routes\": [{\"routeName\": \"nombre de la ruta\", \"days\": 1-3, \"routePoints\": [\"punto de viaje A\", \"punto de viaje B\"], \"hasTimelinessProject\": 0 o 1, \"timelinessProjects\": [\"nombre del proyecto con límite de tiempo\"]}]}\nContenido del artículo:\n【Check-in de exposición】La galería de arte tiene nueva exposición este fin de semana, encuentro con el artista a las 14:00 del sábado, show de comedia por la noche, se requiere reserva previa.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si el artículo contiene rutas de viaje, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de rutas de viaje contenidas en el artículo",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si las rutas de viaje incluyen proyectos con límite de tiempo, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detalles de todas las rutas de viaje",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nombre de la ruta, no puede estar vacío",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de días de la ruta, rango de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de puntos de viaje, debe contener al menos dos puntos",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si esta ruta contiene proyectos con límite de tiempo",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyectos con límite de tiempo involucrados en esta ruta, cada nombre de proyecto tiene entre 2 y 30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cumple con el esquema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Eres un experto en viajes. Te proporcionaré un artículo de guía de viaje que contiene título y contenido. Por favor, analiza el artículo para determinar si contiene rutas de viaje (containRoute), cuántas rutas de viaje contiene (routeCount), si contiene proyectos con límite de tiempo (containTimelinessProject), y extrae la información detallada de cada ruta (como nombre de la ruta, días, puntos de viaje, si contiene proyectos con límite de tiempo, nombres de los proyectos con límite de tiempo involucrados). Finalmente, muestra los resultados en el formato JSON especificado.\nDefiniciones de términos:\nRuta de viaje: Una ruta planificada con múltiples puntos de viaje en orden cronológico, con una duración de aproximadamente 1-3 días. Normalmente, los múltiples puntos de una ruta están conectados por secuencia temporal (por ejemplo, ir al lugar A a las 11 AM, luego al lugar B a las 2 PM) o secuencia de lugares (por ejemplo, actualmente en el lugar A, próxima parada en el lugar B). Ten en cuenta que si sólo se presentan varios puntos independientes, no constituye una ruta de viaje.\nSi contiene rutas de viaje: Si el artículo contiene al menos una ruta de viaje completa, devuelve 1, si no, devuelve 0.\nNúmero de rutas de viaje: El número de rutas completas contenidas en el artículo, 0 si no hay ninguna.\nSi contiene proyectos con límite de tiempo: Los proyectos con límite de tiempo se refieren a actividades realizadas en momentos específicos, como conciertos, exposiciones, reuniones, shows de comedia, festivales de música y otras actividades temporales. Si la ruta contiene algún proyecto con límite de tiempo, devuelve 1, si no, devuelve 0.\nCampo routes: Si hay rutas de viaje, se debe mostrar la información estructurada detallada de cada ruta, incluyendo: routeName (nombre de la ruta), days (número de días), routePoints (lista de puntos de viaje), hasTimelinessProject (si la ruta contiene proyectos con límite de tiempo), timelinessProjects (lista de proyectos con límite de tiempo involucrados en la ruta, array vacío si no hay, cada nombre de proyecto debe tener entre 9 y 150 caracteres (incluye espacio, número...)).\nRequisitos de formato de salida: Por favor, muestra estrictamente los resultados del análisis en el siguiente formato JSON, no añadas ninguna explicación adicional:{\"containRoute\": 0 o 1,\"routeCount\": número(0,1,2...),\"containTimelinessProject\": 0 o 1, \"routes\": [{\"routeName\": \"nombre de la ruta\", \"days\": 1-3, \"routePoints\": [\"punto de viaje A\", \"punto de viaje B\"], \"hasTimelinessProject\": 0 o 1, \"timelinessProjects\": [\"nombre del proyecto con límite de tiempo\"]}]}\nContenido del artículo:\n【Guía de viaje independiente】Atracciones recomendadas incluyen parques, calles antiguas, museos, mercados nocturnos, cada una puede visitarse de forma independiente, sin ruta fija.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si el artículo contiene rutas de viaje, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de rutas de viaje contenidas en el artículo",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si las rutas de viaje incluyen proyectos con límite de tiempo, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detalles de todas las rutas de viaje",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nombre de la ruta, no puede estar vacío",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de días de la ruta, rango de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de puntos de viaje, debe contener al menos dos puntos",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si esta ruta contiene proyectos con límite de tiempo",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyectos con límite de tiempo involucrados en esta ruta, cada nombre de proyecto tiene entre 2 y 30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cumple con el esquema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Eres un experto en viajes. Te proporcionaré un artículo de guía de viaje que contiene título y contenido. Por favor, analiza el artículo para determinar si contiene rutas de viaje (containRoute), cuántas rutas de viaje contiene (routeCount), si contiene proyectos con límite de tiempo (containTimelinessProject), y extrae la información detallada de cada ruta (como nombre de la ruta, días, puntos de viaje, si contiene proyectos con límite de tiempo, nombres de los proyectos con límite de tiempo involucrados). Finalmente, muestra los resultados en el formato JSON especificado.\nDefiniciones de términos:\nRuta de viaje: Una ruta planificada con múltiples puntos de viaje en orden cronológico, con una duración de aproximadamente 1-3 días. Normalmente, los múltiples puntos de una ruta están conectados por secuencia temporal (por ejemplo, ir al lugar A a las 11 AM, luego al lugar B a las 2 PM) o secuencia de lugares (por ejemplo, actualmente en el lugar A, próxima parada en el lugar B). Ten en cuenta que si sólo se presentan varios puntos independientes, no constituye una ruta de viaje.\nSi contiene rutas de viaje: Si el artículo contiene al menos una ruta de viaje completa, devuelve 1, si no, devuelve 0.\nNúmero de rutas de viaje: El número de rutas completas contenidas en el artículo, 0 si no hay ninguna.\nSi contiene proyectos con límite de tiempo: Los proyectos con límite de tiempo se refieren a actividades realizadas en momentos específicos, como conciertos, exposiciones, reuniones, shows de comedia, festivales de música y otras actividades temporales. Si la ruta contiene algún proyecto con límite de tiempo, devuelve 1, si no, devuelve 0.\nCampo routes: Si hay rutas de viaje, se debe mostrar la información estructurada detallada de cada ruta, incluyendo: routeName (nombre de la ruta), days (número de días), routePoints (lista de puntos de viaje), hasTimelinessProject (si la ruta contiene proyectos con límite de tiempo), timelinessProjects (lista de proyectos con límite de tiempo involucrados en la ruta, array vacío si no hay, cada nombre de proyecto debe tener entre 9 y 150 caracteres (incluye espacio, número...)).\nRequisitos de formato de salida: Por favor, muestra estrictamente los resultados del análisis en el siguiente formato JSON, no añadas ninguna explicación adicional:{\"containRoute\": 0 o 1,\"routeCount\": número(0,1,2...),\"containTimelinessProject\": 0 o 1, \"routes\": [{\"routeName\": \"nombre de la ruta\", \"days\": 1-3, \"routePoints\": [\"punto de viaje A\", \"punto de viaje B\"], \"hasTimelinessProject\": 0 o 1, \"timelinessProjects\": [\"nombre del proyecto con límite de tiempo\"]}]}\nContenido del artículo:\n【Ruta de un día】Reunión en la estación de tren a las 8 AM, llegada a la zona escénica a las 9 AM, visita a la cima de la montaña a las 10 AM, descenso para almorzar a las 12 PM, visita a aldea folclórica por la tarde, regreso a las 16:00.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si el artículo contiene rutas de viaje, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de rutas de viaje contenidas en el artículo",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si las rutas de viaje incluyen proyectos con límite de tiempo, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detalles de todas las rutas de viaje",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nombre de la ruta, no puede estar vacío",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de días de la ruta, rango de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de puntos de viaje, debe contener al menos dos puntos",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si esta ruta contiene proyectos con límite de tiempo",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyectos con límite de tiempo involucrados en esta ruta, cada nombre de proyecto tiene entre 2 y 30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cumple con el esquema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Eres un experto en viajes. Te proporcionaré un artículo de guía de viaje que contiene título y contenido. Por favor, analiza el artículo para determinar si contiene rutas de viaje (containRoute), cuántas rutas de viaje contiene (routeCount), si contiene proyectos con límite de tiempo (containTimelinessProject), y extrae la información detallada de cada ruta (como nombre de la ruta, días, puntos de viaje, si contiene proyectos con límite de tiempo, nombres de los proyectos con límite de tiempo involucrados). Finalmente, muestra los resultados en el formato JSON especificado.\nDefiniciones de términos:\nRuta de viaje: Una ruta planificada con múltiples puntos de viaje en orden cronológico, con una duración de aproximadamente 1-3 días. Normalmente, los múltiples puntos de una ruta están conectados por secuencia temporal (por ejemplo, ir al lugar A a las 11 AM, luego al lugar B a las 2 PM) o secuencia de lugares (por ejemplo, actualmente en el lugar A, próxima parada en el lugar B). Ten en cuenta que si sólo se presentan varios puntos independientes, no constituye una ruta de viaje.\nSi contiene rutas de viaje: Si el artículo contiene al menos una ruta de viaje completa, devuelve 1, si no, devuelve 0.\nNúmero de rutas de viaje: El número de rutas completas contenidas en el artículo, 0 si no hay ninguna.\nSi contiene proyectos con límite de tiempo: Los proyectos con límite de tiempo se refieren a actividades realizadas en momentos específicos, como conciertos, exposiciones, reuniones, shows de comedia, festivales de música y otras actividades temporales. Si la ruta contiene algún proyecto con límite de tiempo, devuelve 1, si no, devuelve 0.\nCampo routes: Si hay rutas de viaje, se debe mostrar la información estructurada detallada de cada ruta, incluyendo: routeName (nombre de la ruta), days (número de días), routePoints (lista de puntos de viaje), hasTimelinessProject (si la ruta contiene proyectos con límite de tiempo), timelinessProjects (lista de proyectos con límite de tiempo involucrados en la ruta, array vacío si no hay, cada nombre de proyecto debe tener entre 9 y 150 caracteres (incluye espacio, número...)).\nRequisitos de formato de salida: Por favor, muestra estrictamente los resultados del análisis en el siguiente formato JSON, no añadas ninguna explicación adicional:{\"containRoute\": 0 o 1,\"routeCount\": número(0,1,2...),\"containTimelinessProject\": 0 o 1, \"routes\": [{\"routeName\": \"nombre de la ruta\", \"days\": 1-3, \"routePoints\": [\"punto de viaje A\", \"punto de viaje B\"], \"hasTimelinessProject\": 0 o 1, \"timelinessProjects\": [\"nombre del proyecto con límite de tiempo\"]}]}\nContenido del artículo:\n【Ruta nocturna】Reunión junto al río a las 18:00, paseo en barco nocturno a las 18:30, caminata a la plaza de la música después de desembarcar a las 20:00 para ver concierto al aire libre.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si el artículo contiene rutas de viaje, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de rutas de viaje contenidas en el artículo",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si las rutas de viaje incluyen proyectos con límite de tiempo, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detalles de todas las rutas de viaje",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nombre de la ruta, no puede estar vacío",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de días de la ruta, rango de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de puntos de viaje, debe contener al menos dos puntos",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si esta ruta contiene proyectos con límite de tiempo",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyectos con límite de tiempo involucrados en esta ruta, cada nombre de proyecto tiene entre 2 y 30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cumple con el esquema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Eres un experto en viajes. Te proporcionaré un artículo de guía de viaje que contiene título y contenido. Por favor, analiza el artículo para determinar si contiene rutas de viaje (containRoute), cuántas rutas de viaje contiene (routeCount), si contiene proyectos con límite de tiempo (containTimelinessProject), y extrae la información detallada de cada ruta (como nombre de la ruta, días, puntos de viaje, si contiene proyectos con límite de tiempo, nombres de los proyectos con límite de tiempo involucrados). Finalmente, muestra los resultados en el formato JSON especificado.\nDefiniciones de términos:\nRuta de viaje: Una ruta planificada con múltiples puntos de viaje en orden cronológico, con una duración de aproximadamente 1-3 días. Normalmente, los múltiples puntos de una ruta están conectados por secuencia temporal (por ejemplo, ir al lugar A a las 11 AM, luego al lugar B a las 2 PM) o secuencia de lugares (por ejemplo, actualmente en el lugar A, próxima parada en el lugar B). Ten en cuenta que si sólo se presentan varios puntos independientes, no constituye una ruta de viaje.\nSi contiene rutas de viaje: Si el artículo contiene al menos una ruta de viaje completa, devuelve 1, si no, devuelve 0.\nNúmero de rutas de viaje: El número de rutas completas contenidas en el artículo, 0 si no hay ninguna.\nSi contiene proyectos con límite de tiempo: Los proyectos con límite de tiempo se refieren a actividades realizadas en momentos específicos, como conciertos, exposiciones, reuniones, shows de comedia, festivales de música y otras actividades temporales. Si la ruta contiene algún proyecto con límite de tiempo, devuelve 1, si no, devuelve 0.\nCampo routes: Si hay rutas de viaje, se debe mostrar la información estructurada detallada de cada ruta, incluyendo: routeName (nombre de la ruta), days (número de días), routePoints (lista de puntos de viaje), hasTimelinessProject (si la ruta contiene proyectos con límite de tiempo), timelinessProjects (lista de proyectos con límite de tiempo involucrados en la ruta, array vacío si no hay, cada nombre de proyecto debe tener entre 9 y 150 caracteres (incluye espacio, número...)).\nRequisitos de formato de salida: Por favor, muestra estrictamente los resultados del análisis en el siguiente formato JSON, no añadas ninguna explicación adicional:{\"containRoute\": 0 o 1,\"routeCount\": número(0,1,2...),\"containTimelinessProject\": 0 o 1, \"routes\": [{\"routeName\": \"nombre de la ruta\", \"days\": 1-3, \"routePoints\": [\"punto de viaje A\", \"punto de viaje B\"], \"hasTimelinessProject\": 0 o 1, \"timelinessProjects\": [\"nombre del proyecto con límite de tiempo\"]}]}\nContenido del artículo:\n【Guía】Recomendación de tres lugares principales: museo, galería de arte, museo de ciencia, cada uno con exposiciones características, adecuado para visitas familiares, sin ruta específica.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si el artículo contiene rutas de viaje, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de rutas de viaje contenidas en el artículo",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si las rutas de viaje incluyen proyectos con límite de tiempo, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detalles de todas las rutas de viaje",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nombre de la ruta, no puede estar vacío",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de días de la ruta, rango de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de puntos de viaje, debe contener al menos dos puntos",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si esta ruta contiene proyectos con límite de tiempo",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyectos con límite de tiempo involucrados en esta ruta, cada nombre de proyecto tiene entre 2 y 30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cumple con el esquema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Eres un experto en viajes. Te proporcionaré un artículo de guía de viaje que contiene título y contenido. Por favor, analiza el artículo para determinar si contiene rutas de viaje (containRoute), cuántas rutas de viaje contiene (routeCount), si contiene proyectos con límite de tiempo (containTimelinessProject), y extrae la información detallada de cada ruta (como nombre de la ruta, días, puntos de viaje, si contiene proyectos con límite de tiempo, nombres de los proyectos con límite de tiempo involucrados). Finalmente, muestra los resultados en el formato JSON especificado.\nDefiniciones de términos:\nRuta de viaje: Una ruta planificada con múltiples puntos de viaje en orden cronológico, con una duración de aproximadamente 1-3 días. Normalmente, los múltiples puntos de una ruta están conectados por secuencia temporal (por ejemplo, ir al lugar A a las 11 AM, luego al lugar B a las 2 PM) o secuencia de lugares (por ejemplo, actualmente en el lugar A, próxima parada en el lugar B). Ten en cuenta que si sólo se presentan varios puntos independientes, no constituye una ruta de viaje.\nSi contiene rutas de viaje: Si el artículo contiene al menos una ruta de viaje completa, devuelve 1, si no, devuelve 0.\nNúmero de rutas de viaje: El número de rutas completas contenidas en el artículo, 0 si no hay ninguna.\nSi contiene proyectos con límite de tiempo: Los proyectos con límite de tiempo se refieren a actividades realizadas en momentos específicos, como conciertos, exposiciones, reuniones, shows de comedia, festivales de música y otras actividades temporales. Si la ruta contiene algún proyecto con límite de tiempo, devuelve 1, si no, devuelve 0.\nCampo routes: Si hay rutas de viaje, se debe mostrar la información estructurada detallada de cada ruta, incluyendo: routeName (nombre de la ruta), days (número de días), routePoints (lista de puntos de viaje), hasTimelinessProject (si la ruta contiene proyectos con límite de tiempo), timelinessProjects (lista de proyectos con límite de tiempo involucrados en la ruta, array vacío si no hay, cada nombre de proyecto debe tener entre 9 y 150 caracteres (incluye espacio, número...)).\nRequisitos de formato de salida: Por favor, muestra estrictamente los resultados del análisis en el siguiente formato JSON, no añadas ninguna explicación adicional:{\"containRoute\": 0 o 1,\"routeCount\": número(0,1,2...),\"containTimelinessProject\": 0 o 1, \"routes\": [{\"routeName\": \"nombre de la ruta\", \"days\": 1-3, \"routePoints\": [\"punto de viaje A\", \"punto de viaje B\"], \"hasTimelinessProject\": 0 o 1, \"timelinessProjects\": [\"nombre del proyecto con límite de tiempo\"]}]}\nContenido del artículo:\n【Ruta de tres días en coche】Día1: Salida por la mañana hacia Gubei Water Town, recorrido por el paisaje del pueblo tras el almuerzo, participación en espectáculo de luces por la noche. Día2: Hacia los pies de la Gran Muralla por la mañana, ascenso a la muralla por la tarde, campamento por la noche. Día3: Visita al museo de la Gran Muralla por la mañana, regreso por la tarde.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si el artículo contiene rutas de viaje, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de rutas de viaje contenidas en el artículo",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si las rutas de viaje incluyen proyectos con límite de tiempo, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detalles de todas las rutas de viaje",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nombre de la ruta, no puede estar vacío",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de días de la ruta, rango de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de puntos de viaje, debe contener al menos dos puntos",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si esta ruta contiene proyectos con límite de tiempo",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyectos con límite de tiempo involucrados en esta ruta, cada nombre de proyecto tiene entre 2 y 30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cumple con el esquema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Eres un experto en viajes. Te proporcionaré un artículo de guía de viaje que contiene título y contenido. Por favor, analiza el artículo para determinar si contiene rutas de viaje (containRoute), cuántas rutas de viaje contiene (routeCount), si contiene proyectos con límite de tiempo (containTimelinessProject), y extrae la información detallada de cada ruta (como nombre de la ruta, días, puntos de viaje, si contiene proyectos con límite de tiempo, nombres de los proyectos con límite de tiempo involucrados). Finalmente, muestra los resultados en el formato JSON especificado.\nDefiniciones de términos:\nRuta de viaje: Una ruta planificada con múltiples puntos de viaje en orden cronológico, con una duración de aproximadamente 1-3 días. Normalmente, los múltiples puntos de una ruta están conectados por secuencia temporal (por ejemplo, ir al lugar A a las 11 AM, luego al lugar B a las 2 PM) o secuencia de lugares (por ejemplo, actualmente en el lugar A, próxima parada en el lugar B). Ten en cuenta que si sólo se presentan varios puntos independientes, no constituye una ruta de viaje.\nSi contiene rutas de viaje: Si el artículo contiene al menos una ruta de viaje completa, devuelve 1, si no, devuelve 0.\nNúmero de rutas de viaje: El número de rutas completas contenidas en el artículo, 0 si no hay ninguna.\nSi contiene proyectos con límite de tiempo: Los proyectos con límite de tiempo se refieren a actividades realizadas en momentos específicos, como conciertos, exposiciones, reuniones, shows de comedia, festivales de música y otras actividades temporales. Si la ruta contiene algún proyecto con límite de tiempo, devuelve 1, si no, devuelve 0.\nCampo routes: Si hay rutas de viaje, se debe mostrar la información estructurada detallada de cada ruta, incluyendo: routeName (nombre de la ruta), days (número de días), routePoints (lista de puntos de viaje), hasTimelinessProject (si la ruta contiene proyectos con límite de tiempo), timelinessProjects (lista de proyectos con límite de tiempo involucrados en la ruta, array vacío si no hay, cada nombre de proyecto debe tener entre 9 y 150 caracteres (incluye espacio, número...)).\nRequisitos de formato de salida: Por favor, muestra estrictamente los resultados del análisis en el siguiente formato JSON, no añadas ninguna explicación adicional:{\"containRoute\": 0 o 1,\"routeCount\": número(0,1,2...),\"containTimelinessProject\": 0 o 1, \"routes\": [{\"routeName\": \"nombre de la ruta\", \"days\": 1-3, \"routePoints\": [\"punto de viaje A\", \"punto de viaje B\"], \"hasTimelinessProject\": 0 o 1, \"timelinessProjects\": [\"nombre del proyecto con límite de tiempo\"]}]}\nContenido del artículo:\n【Campamento de verano para padres e hijos】Primer día reunión por la mañana, visita al museo de ciencia, experiencia de experimentos científicos por la tarde, show de comedia científica por la noche. Segundo día desarrollo al aire libre todo el día, tercer día visita al jardín botánico por la mañana, ceremonia de clausura por la tarde.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si el artículo contiene rutas de viaje, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de rutas de viaje contenidas en el artículo",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si las rutas de viaje incluyen proyectos con límite de tiempo, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detalles de todas las rutas de viaje",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nombre de la ruta, no puede estar vacío",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de días de la ruta, rango de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de puntos de viaje, debe contener al menos dos puntos",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si esta ruta contiene proyectos con límite de tiempo",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyectos con límite de tiempo involucrados en esta ruta, cada nombre de proyecto tiene entre 2 y 30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cumple con el esquema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Eres un experto en viajes. Te proporcionaré un artículo de guía de viaje que contiene título y contenido. Por favor, analiza el artículo para determinar si contiene rutas de viaje (containRoute), cuántas rutas de viaje contiene (routeCount), si contiene proyectos con límite de tiempo (containTimelinessProject), y extrae la información detallada de cada ruta (como nombre de la ruta, días, puntos de viaje, si contiene proyectos con límite de tiempo, nombres de los proyectos con límite de tiempo involucrados). Finalmente, muestra los resultados en el formato JSON especificado.\nDefiniciones de términos:\nRuta de viaje: Una ruta planificada con múltiples puntos de viaje en orden cronológico, con una duración de aproximadamente 1-3 días. Normalmente, los múltiples puntos de una ruta están conectados por secuencia temporal (por ejemplo, ir al lugar A a las 11 AM, luego al lugar B a las 2 PM) o secuencia de lugares (por ejemplo, actualmente en el lugar A, próxima parada en el lugar B). Ten en cuenta que si sólo se presentan varios puntos independientes, no constituye una ruta de viaje.\nSi contiene rutas de viaje: Si el artículo contiene al menos una ruta de viaje completa, devuelve 1, si no, devuelve 0.\nNúmero de rutas de viaje: El número de rutas completas contenidas en el artículo, 0 si no hay ninguna.\nSi contiene proyectos con límite de tiempo: Los proyectos con límite de tiempo se refieren a actividades realizadas en momentos específicos, como conciertos, exposiciones, reuniones, shows de comedia, festivales de música y otras actividades temporales. Si la ruta contiene algún proyecto con límite de tiempo, devuelve 1, si no, devuelve 0.\nCampo routes: Si hay rutas de viaje, se debe mostrar la información estructurada detallada de cada ruta, incluyendo: routeName (nombre de la ruta), days (número de días), routePoints (lista de puntos de viaje), hasTimelinessProject (si la ruta contiene proyectos con límite de tiempo), timelinessProjects (lista de proyectos con límite de tiempo involucrados en la ruta, array vacío si no hay, cada nombre de proyecto debe tener entre 9 y 150 caracteres (incluye espacio, número...)).\nRequisitos de formato de salida: Por favor, muestra estrictamente los resultados del análisis en el siguiente formato JSON, no añadas ninguna explicación adicional:{\"containRoute\": 0 o 1,\"routeCount\": número(0,1,2...),\"containTimelinessProject\": 0 o 1, \"routes\": [{\"routeName\": \"nombre de la ruta\", \"days\": 1-3, \"routePoints\": [\"punto de viaje A\", \"punto de viaje B\"], \"hasTimelinessProject\": 0 o 1, \"timelinessProjects\": [\"nombre del proyecto con límite de tiempo\"]}]}\nContenido del artículo:\n【Ruta nocturna de running en la ciudad】Reunión en el parque deportivo de la ciudad a las 19:00, carrera nocturna por el sendero junto al río pasando por la fuente musical y el puente iluminado, final en la plaza central de la ciudad, adecuado para aficionados al deporte.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si el artículo contiene rutas de viaje, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de rutas de viaje contenidas en el artículo",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si las rutas de viaje incluyen proyectos con límite de tiempo, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detalles de todas las rutas de viaje",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nombre de la ruta, no puede estar vacío",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de días de la ruta, rango de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de puntos de viaje, debe contener al menos dos puntos",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si esta ruta contiene proyectos con límite de tiempo",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyectos con límite de tiempo involucrados en esta ruta, cada nombre de proyecto tiene entre 2 y 30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cumple con el esquema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Eres un experto en viajes. Te proporcionaré un artículo de guía de viaje que contiene título y contenido. Por favor, analiza el artículo para determinar si contiene rutas de viaje (containRoute), cuántas rutas de viaje contiene (routeCount), si contiene proyectos con límite de tiempo (containTimelinessProject), y extrae la información detallada de cada ruta (como nombre de la ruta, días, puntos de viaje, si contiene proyectos con límite de tiempo, nombres de los proyectos con límite de tiempo involucrados). Finalmente, muestra los resultados en el formato JSON especificado.\nDefiniciones de términos:\nRuta de viaje: Una ruta planificada con múltiples puntos de viaje en orden cronológico, con una duración de aproximadamente 1-3 días. Normalmente, los múltiples puntos de una ruta están conectados por secuencia temporal (por ejemplo, ir al lugar A a las 11 AM, luego al lugar B a las 2 PM) o secuencia de lugares (por ejemplo, actualmente en el lugar A, próxima parada en el lugar B). Ten en cuenta que si sólo se presentan varios puntos independientes, no constituye una ruta de viaje.\nSi contiene rutas de viaje: Si el artículo contiene al menos una ruta de viaje completa, devuelve 1, si no, devuelve 0.\nNúmero de rutas de viaje: El número de rutas completas contenidas en el artículo, 0 si no hay ninguna.\nSi contiene proyectos con límite de tiempo: Los proyectos con límite de tiempo se refieren a actividades realizadas en momentos específicos, como conciertos, exposiciones, reuniones, shows de comedia, festivales de música y otras actividades temporales. Si la ruta contiene algún proyecto con límite de tiempo, devuelve 1, si no, devuelve 0.\nCampo routes: Si hay rutas de viaje, se debe mostrar la información estructurada detallada de cada ruta, incluyendo: routeName (nombre de la ruta), days (número de días), routePoints (lista de puntos de viaje), hasTimelinessProject (si la ruta contiene proyectos con límite de tiempo), timelinessProjects (lista de proyectos con límite de tiempo involucrados en la ruta, array vacío si no hay, cada nombre de proyecto debe tener entre 9 y 150 caracteres (incluye espacio, número...)).\nRequisitos de formato de salida: Por favor, muestra estrictamente los resultados del análisis en el siguiente formato JSON, no añadas ninguna explicación adicional:{\"containRoute\": 0 o 1,\"routeCount\": número(0,1,2...),\"containTimelinessProject\": 0 o 1, \"routes\": [{\"routeName\": \"nombre de la ruta\", \"days\": 1-3, \"routePoints\": [\"punto de viaje A\", \"punto de viaje B\"], \"hasTimelinessProject\": 0 o 1, \"timelinessProjects\": [\"nombre del proyecto con límite de tiempo\"]}]}\nContenido del artículo:\n【Tour de pareja de fin de semana】Visita al jardín de rosas por la mañana, exposición de pintura en la galería de arte por la tarde, concierto de jazz por la noche. Segundo día experiencia de cerámica por la mañana, descanso en cafetería de la calle antigua por la tarde.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si el artículo contiene rutas de viaje, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de rutas de viaje contenidas en el artículo",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si las rutas de viaje incluyen proyectos con límite de tiempo, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detalles de todas las rutas de viaje",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nombre de la ruta, no puede estar vacío",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de días de la ruta, rango de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de puntos de viaje, debe contener al menos dos puntos",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si esta ruta contiene proyectos con límite de tiempo",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyectos con límite de tiempo involucrados en esta ruta, cada nombre de proyecto tiene entre 2 y 30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cumple con el esquema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Eres un experto en viajes. Te proporcionaré un artículo de guía de viaje que contiene título y contenido. Por favor, analiza el artículo para determinar si contiene rutas de viaje (containRoute), cuántas rutas de viaje contiene (routeCount), si contiene proyectos con límite de tiempo (containTimelinessProject), y extrae la información detallada de cada ruta (como nombre de la ruta, días, puntos de viaje, si contiene proyectos con límite de tiempo, nombres de los proyectos con límite de tiempo involucrados). Finalmente, muestra los resultados en el formato JSON especificado.\nDefiniciones de términos:\nRuta de viaje: Una ruta planificada con múltiples puntos de viaje en orden cronológico, con una duración de aproximadamente 1-3 días. Normalmente, los múltiples puntos de una ruta están conectados por secuencia temporal (por ejemplo, ir al lugar A a las 11 AM, luego al lugar B a las 2 PM) o secuencia de lugares (por ejemplo, actualmente en el lugar A, próxima parada en el lugar B). Ten en cuenta que si sólo se presentan varios puntos independientes, no constituye una ruta de viaje.\nSi contiene rutas de viaje: Si el artículo contiene al menos una ruta de viaje completa, devuelve 1, si no, devuelve 0.\nNúmero de rutas de viaje: El número de rutas completas contenidas en el artículo, 0 si no hay ninguna.\nSi contiene proyectos con límite de tiempo: Los proyectos con límite de tiempo se refieren a actividades realizadas en momentos específicos, como conciertos, exposiciones, reuniones, shows de comedia, festivales de música y otras actividades temporales. Si la ruta contiene algún proyecto con límite de tiempo, devuelve 1, si no, devuelve 0.\nCampo routes: Si hay rutas de viaje, se debe mostrar la información estructurada detallada de cada ruta, incluyendo: routeName (nombre de la ruta), days (número de días), routePoints (lista de puntos de viaje), hasTimelinessProject (si la ruta contiene proyectos con límite de tiempo), timelinessProjects (lista de proyectos con límite de tiempo involucrados en la ruta, array vacío si no hay, cada nombre de proyecto debe tener entre 9 y 150 caracteres (incluye espacio, número...)).\nRequisitos de formato de salida: Por favor, muestra estrictamente los resultados del análisis en el siguiente formato JSON, no añadas ninguna explicación adicional:{\"containRoute\": 0 o 1,\"routeCount\": número(0,1,2...),\"containTimelinessProject\": 0 o 1, \"routes\": [{\"routeName\": \"nombre de la ruta\", \"days\": 1-3, \"routePoints\": [\"punto de viaje A\", \"punto de viaje B\"], \"hasTimelinessProject\": 0 o 1, \"timelinessProjects\": [\"nombre del proyecto con límite de tiempo\"]}]}\nContenido del artículo:\n【Doble ruta de exposición + concierto】Nueva exposición en la galería de arte por la mañana, charla del artista por la tarde, asistencia a concierto temporal por la noche. Segundo día actividades libres por la mañana.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si el artículo contiene rutas de viaje, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de rutas de viaje contenidas en el artículo",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si las rutas de viaje incluyen proyectos con límite de tiempo, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detalles de todas las rutas de viaje",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nombre de la ruta, no puede estar vacío",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de días de la ruta, rango de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de puntos de viaje, debe contener al menos dos puntos",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si esta ruta contiene proyectos con límite de tiempo",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyectos con límite de tiempo involucrados en esta ruta, cada nombre de proyecto tiene entre 2 y 30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cumple con el esquema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Eres un experto en viajes. Te proporcionaré un artículo de guía de viaje que contiene título y contenido. Por favor, analiza el artículo para determinar si contiene rutas de viaje (containRoute), cuántas rutas de viaje contiene (routeCount), si contiene proyectos con límite de tiempo (containTimelinessProject), y extrae la información detallada de cada ruta (como nombre de la ruta, días, puntos de viaje, si contiene proyectos con límite de tiempo, nombres de los proyectos con límite de tiempo involucrados). Finalmente, muestra los resultados en el formato JSON especificado.\nDefiniciones de términos:\nRuta de viaje: Una ruta planificada con múltiples puntos de viaje en orden cronológico, con una duración de aproximadamente 1-3 días. Normalmente, los múltiples puntos de una ruta están conectados por secuencia temporal (por ejemplo, ir al lugar A a las 11 AM, luego al lugar B a las 2 PM) o secuencia de lugares (por ejemplo, actualmente en el lugar A, próxima parada en el lugar B). Ten en cuenta que si sólo se presentan varios puntos independientes, no constituye una ruta de viaje.\nSi contiene rutas de viaje: Si el artículo contiene al menos una ruta de viaje completa, devuelve 1, si no, devuelve 0.\nNúmero de rutas de viaje: El número de rutas completas contenidas en el artículo, 0 si no hay ninguna.\nSi contiene proyectos con límite de tiempo: Los proyectos con límite de tiempo se refieren a actividades realizadas en momentos específicos, como conciertos, exposiciones, reuniones, shows de comedia, festivales de música y otras actividades temporales. Si la ruta contiene algún proyecto con límite de tiempo, devuelve 1, si no, devuelve 0.\nCampo routes: Si hay rutas de viaje, se debe mostrar la información estructurada detallada de cada ruta, incluyendo: routeName (nombre de la ruta), days (número de días), routePoints (lista de puntos de viaje), hasTimelinessProject (si la ruta contiene proyectos con límite de tiempo), timelinessProjects (lista de proyectos con límite de tiempo involucrados en la ruta, array vacío si no hay, cada nombre de proyecto debe tener entre 9 y 150 caracteres (incluye espacio, número...)).\nRequisitos de formato de salida: Por favor, muestra estrictamente los resultados del análisis en el siguiente formato JSON, no añadas ninguna explicación adicional:{\"containRoute\": 0 o 1,\"routeCount\": número(0,1,2...),\"containTimelinessProject\": 0 o 1, \"routes\": [{\"routeName\": \"nombre de la ruta\", \"days\": 1-3, \"routePoints\": [\"punto de viaje A\", \"punto de viaje B\"], \"hasTimelinessProject\": 0 o 1, \"timelinessProjects\": [\"nombre del proyecto con límite de tiempo\"]}]}\nContenido del artículo:\n【Ruta ciclista de dos días】Día1: Ciclismo al parque junto al lago por la mañana, vuelta al lago en bicicleta tras el almuerzo, llegada al campamento para acampar por la tarde. Día2: Ver el amanecer por la mañana, ciclismo al pueblo antiguo por la mañana, fin del viaje por la tarde.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si el artículo contiene rutas de viaje, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de rutas de viaje contenidas en el artículo",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si las rutas de viaje incluyen proyectos con límite de tiempo, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detalles de todas las rutas de viaje",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nombre de la ruta, no puede estar vacío",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de días de la ruta, rango de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de puntos de viaje, debe contener al menos dos puntos",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si esta ruta contiene proyectos con límite de tiempo",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyectos con límite de tiempo involucrados en esta ruta, cada nombre de proyecto tiene entre 2 y 30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cumple con el esquema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Eres un experto en viajes. Te proporcionaré un artículo de guía de viaje que contiene título y contenido. Por favor, analiza el artículo para determinar si contiene rutas de viaje (containRoute), cuántas rutas de viaje contiene (routeCount), si contiene proyectos con límite de tiempo (containTimelinessProject), y extrae la información detallada de cada ruta (como nombre de la ruta, días, puntos de viaje, si contiene proyectos con límite de tiempo, nombres de los proyectos con límite de tiempo involucrados). Finalmente, muestra los resultados en el formato JSON especificado.\nDefiniciones de términos:\nRuta de viaje: Una ruta planificada con múltiples puntos de viaje en orden cronológico, con una duración de aproximadamente 1-3 días. Normalmente, los múltiples puntos de una ruta están conectados por secuencia temporal (por ejemplo, ir al lugar A a las 11 AM, luego al lugar B a las 2 PM) o secuencia de lugares (por ejemplo, actualmente en el lugar A, próxima parada en el lugar B). Ten en cuenta que si sólo se presentan varios puntos independientes, no constituye una ruta de viaje.\nSi contiene rutas de viaje: Si el artículo contiene al menos una ruta de viaje completa, devuelve 1, si no, devuelve 0.\nNúmero de rutas de viaje: El número de rutas completas contenidas en el artículo, 0 si no hay ninguna.\nSi contiene proyectos con límite de tiempo: Los proyectos con límite de tiempo se refieren a actividades realizadas en momentos específicos, como conciertos, exposiciones, reuniones, shows de comedia, festivales de música y otras actividades temporales. Si la ruta contiene algún proyecto con límite de tiempo, devuelve 1, si no, devuelve 0.\nCampo routes: Si hay rutas de viaje, se debe mostrar la información estructurada detallada de cada ruta, incluyendo: routeName (nombre de la ruta), days (número de días), routePoints (lista de puntos de viaje), hasTimelinessProject (si la ruta contiene proyectos con límite de tiempo), timelinessProjects (lista de proyectos con límite de tiempo involucrados en la ruta, array vacío si no hay, cada nombre de proyecto debe tener entre 9 y 150 caracteres (incluye espacio, número...)).\nRequisitos de formato de salida: Por favor, muestra estrictamente los resultados del análisis en el siguiente formato JSON, no añadas ninguna explicación adicional:{\"containRoute\": 0 o 1,\"routeCount\": número(0,1,2...),\"containTimelinessProject\": 0 o 1, \"routes\": [{\"routeName\": \"nombre de la ruta\", \"days\": 1-3, \"routePoints\": [\"punto de viaje A\", \"punto de viaje B\"], \"hasTimelinessProject\": 0 o 1, \"timelinessProjects\": [\"nombre del proyecto con límite de tiempo\"]}]}\nContenido del artículo:\n【Ruta científica de un día para padres e hijos】Visita al zoológico por la mañana, show de acuario, experiencia en parque científico infantil por la tarde, asistencia a obra interactiva para padres e hijos por la noche.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si el artículo contiene rutas de viaje, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de rutas de viaje contenidas en el artículo",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si las rutas de viaje incluyen proyectos con límite de tiempo, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detalles de todas las rutas de viaje",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nombre de la ruta, no puede estar vacío",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de días de la ruta, rango de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de puntos de viaje, debe contener al menos dos puntos",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si esta ruta contiene proyectos con límite de tiempo",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyectos con límite de tiempo involucrados en esta ruta, cada nombre de proyecto tiene entre 2 y 30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cumple con el esquema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Eres un experto en viajes. Te proporcionaré un artículo de guía de viaje que contiene título y contenido. Por favor, analiza el artículo para determinar si contiene rutas de viaje (containRoute), cuántas rutas de viaje contiene (routeCount), si contiene proyectos con límite de tiempo (containTimelinessProject), y extrae la información detallada de cada ruta (como nombre de la ruta, días, puntos de viaje, si contiene proyectos con límite de tiempo, nombres de los proyectos con límite de tiempo involucrados). Finalmente, muestra los resultados en el formato JSON especificado.\nDefiniciones de términos:\nRuta de viaje: Una ruta planificada con múltiples puntos de viaje en orden cronológico, con una duración de aproximadamente 1-3 días. Normalmente, los múltiples puntos de una ruta están conectados por secuencia temporal (por ejemplo, ir al lugar A a las 11 AM, luego al lugar B a las 2 PM) o secuencia de lugares (por ejemplo, actualmente en el lugar A, próxima parada en el lugar B). Ten en cuenta que si sólo se presentan varios puntos independientes, no constituye una ruta de viaje.\nSi contiene rutas de viaje: Si el artículo contiene al menos una ruta de viaje completa, devuelve 1, si no, devuelve 0.\nNúmero de rutas de viaje: El número de rutas completas contenidas en el artículo, 0 si no hay ninguna.\nSi contiene proyectos con límite de tiempo: Los proyectos con límite de tiempo se refieren a actividades realizadas en momentos específicos, como conciertos, exposiciones, reuniones, shows de comedia, festivales de música y otras actividades temporales. Si la ruta contiene algún proyecto con límite de tiempo, devuelve 1, si no, devuelve 0.\nCampo routes: Si hay rutas de viaje, se debe mostrar la información estructurada detallada de cada ruta, incluyendo: routeName (nombre de la ruta), days (número de días), routePoints (lista de puntos de viaje), hasTimelinessProject (si la ruta contiene proyectos con límite de tiempo), timelinessProjects (lista de proyectos con límite de tiempo involucrados en la ruta, array vacío si no hay, cada nombre de proyecto debe tener entre 9 y 150 caracteres (incluye espacio, número...)).\nRequisitos de formato de salida: Por favor, muestra estrictamente los resultados del análisis en el siguiente formato JSON, no añadas ninguna explicación adicional:{\"containRoute\": 0 o 1,\"routeCount\": número(0,1,2...),\"containTimelinessProject\": 0 o 1, \"routes\": [{\"routeName\": \"nombre de la ruta\", \"days\": 1-3, \"routePoints\": [\"punto de viaje A\", \"punto de viaje B\"], \"hasTimelinessProject\": 0 o 1, \"timelinessProjects\": [\"nombre del proyecto con límite de tiempo\"]}]}\nContenido del artículo:\n【Ruta de observación de flores de primavera】Visita al Parque del Siglo para ver cerezos en flor por la mañana, visita al jardín botánico para ver tulipanes por la tarde, paseo por el sendero junto al río por la noche.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si el artículo contiene rutas de viaje, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de rutas de viaje contenidas en el artículo",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si las rutas de viaje incluyen proyectos con límite de tiempo, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detalles de todas las rutas de viaje",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nombre de la ruta, no puede estar vacío",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de días de la ruta, rango de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de puntos de viaje, debe contener al menos dos puntos",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si esta ruta contiene proyectos con límite de tiempo",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyectos con límite de tiempo involucrados en esta ruta, cada nombre de proyecto tiene entre 2 y 30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cumple con el esquema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Eres un experto en viajes. Te proporcionaré un artículo de guía de viaje que contiene título y contenido. Por favor, analiza el artículo para determinar si contiene rutas de viaje (containRoute), cuántas rutas de viaje contiene (routeCount), si contiene proyectos con límite de tiempo (containTimelinessProject), y extrae la información detallada de cada ruta (como nombre de la ruta, días, puntos de viaje, si contiene proyectos con límite de tiempo, nombres de los proyectos con límite de tiempo involucrados). Finalmente, muestra los resultados en el formato JSON especificado.\nDefiniciones de términos:\nRuta de viaje: Una ruta planificada con múltiples puntos de viaje en orden cronológico, con una duración de aproximadamente 1-3 días. Normalmente, los múltiples puntos de una ruta están conectados por secuencia temporal (por ejemplo, ir al lugar A a las 11 AM, luego al lugar B a las 2 PM) o secuencia de lugares (por ejemplo, actualmente en el lugar A, próxima parada en el lugar B). Ten en cuenta que si sólo se presentan varios puntos independientes, no constituye una ruta de viaje.\nSi contiene rutas de viaje: Si el artículo contiene al menos una ruta de viaje completa, devuelve 1, si no, devuelve 0.\nNúmero de rutas de viaje: El número de rutas completas contenidas en el artículo, 0 si no hay ninguna.\nSi contiene proyectos con límite de tiempo: Los proyectos con límite de tiempo se refieren a actividades realizadas en momentos específicos, como conciertos, exposiciones, reuniones, shows de comedia, festivales de música y otras actividades temporales. Si la ruta contiene algún proyecto con límite de tiempo, devuelve 1, si no, devuelve 0.\nCampo routes: Si hay rutas de viaje, se debe mostrar la información estructurada detallada de cada ruta, incluyendo: routeName (nombre de la ruta), days (número de días), routePoints (lista de puntos de viaje), hasTimelinessProject (si la ruta contiene proyectos con límite de tiempo), timelinessProjects (lista de proyectos con límite de tiempo involucrados en la ruta, array vacío si no hay, cada nombre de proyecto debe tener entre 9 y 150 caracteres (incluye espacio, número...)).\nRequisitos de formato de salida: Por favor, muestra estrictamente los resultados del análisis en el siguiente formato JSON, no añadas ninguna explicación adicional:{\"containRoute\": 0 o 1,\"routeCount\": número(0,1,2...),\"containTimelinessProject\": 0 o 1, \"routes\": [{\"routeName\": \"nombre de la ruta\", \"days\": 1-3, \"routePoints\": [\"punto de viaje A\", \"punto de viaje B\"], \"hasTimelinessProject\": 0 o 1, \"timelinessProjects\": [\"nombre del proyecto con límite de tiempo\"]}]}\nContenido del artículo:\n【Experiencia completa de festival de arte】Ceremonia de apertura de exposición de pintura por la mañana, participación en taller de escultura por la tarde, espectáculo de festival de teatro al aire libre por la noche, asistencia a la ceremonia de clausura del festival de música al día siguiente.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si el artículo contiene rutas de viaje, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de rutas de viaje contenidas en el artículo",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si las rutas de viaje incluyen proyectos con límite de tiempo, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detalles de todas las rutas de viaje",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nombre de la ruta, no puede estar vacío",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de días de la ruta, rango de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de puntos de viaje, debe contener al menos dos puntos",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si esta ruta contiene proyectos con límite de tiempo",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyectos con límite de tiempo involucrados en esta ruta, cada nombre de proyecto tiene entre 2 y 30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cumple con el esquema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Eres un experto en viajes. Te proporcionaré un artículo de guía de viaje que contiene título y contenido. Por favor, analiza el artículo para determinar si contiene rutas de viaje (containRoute), cuántas rutas de viaje contiene (routeCount), si contiene proyectos con límite de tiempo (containTimelinessProject), y extrae la información detallada de cada ruta (como nombre de la ruta, días, puntos de viaje, si contiene proyectos con límite de tiempo, nombres de los proyectos con límite de tiempo involucrados). Finalmente, muestra los resultados en el formato JSON especificado.\nDefiniciones de términos:\nRuta de viaje: Una ruta planificada con múltiples puntos de viaje en orden cronológico, con una duración de aproximadamente 1-3 días. Normalmente, los múltiples puntos de una ruta están conectados por secuencia temporal (por ejemplo, ir al lugar A a las 11 AM, luego al lugar B a las 2 PM) o secuencia de lugares (por ejemplo, actualmente en el lugar A, próxima parada en el lugar B). Ten en cuenta que si sólo se presentan varios puntos independientes, no constituye una ruta de viaje.\nSi contiene rutas de viaje: Si el artículo contiene al menos una ruta de viaje completa, devuelve 1, si no, devuelve 0.\nNúmero de rutas de viaje: El número de rutas completas contenidas en el artículo, 0 si no hay ninguna.\nSi contiene proyectos con límite de tiempo: Los proyectos con límite de tiempo se refieren a actividades realizadas en momentos específicos, como conciertos, exposiciones, reuniones, shows de comedia, festivales de música y otras actividades temporales. Si la ruta contiene algún proyecto con límite de tiempo, devuelve 1, si no, devuelve 0.\nCampo routes: Si hay rutas de viaje, se debe mostrar la información estructurada detallada de cada ruta, incluyendo: routeName (nombre de la ruta), days (número de días), routePoints (lista de puntos de viaje), hasTimelinessProject (si la ruta contiene proyectos con límite de tiempo), timelinessProjects (lista de proyectos con límite de tiempo involucrados en la ruta, array vacío si no hay, cada nombre de proyecto debe tener entre 9 y 150 caracteres (incluye espacio, número...)).\nRequisitos de formato de salida: Por favor, muestra estrictamente los resultados del análisis en el siguiente formato JSON, no añadas ninguna explicación adicional:{\"containRoute\": 0 o 1,\"routeCount\": número(0,1,2...),\"containTimelinessProject\": 0 o 1, \"routes\": [{\"routeName\": \"nombre de la ruta\", \"days\": 1-3, \"routePoints\": [\"punto de viaje A\", \"punto de viaje B\"], \"hasTimelinessProject\": 0 o 1, \"timelinessProjects\": [\"nombre del proyecto con límite de tiempo\"]}]}\nContenido del artículo:\n【Ruta de aventura al aire libre】Ascenso a la montaña al amanecer, caminata por el bosque por la mañana, rastreo de arroyos por la tarde, fiesta de fogata por la noche, acampada y observación de estrellas por la noche.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si el artículo contiene rutas de viaje, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Número de rutas de viaje contenidas en el artículo",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si las rutas de viaje incluyen proyectos con límite de tiempo, 1 significa sí, 0 significa no",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Detalles de todas las rutas de viaje",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nombre de la ruta, no puede estar vacío",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Número de días de la ruta, rango de valores 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Lista de puntos de viaje, debe contener al menos dos puntos",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si esta ruta contiene proyectos con límite de tiempo",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Proyectos con límite de tiempo involucrados en esta ruta, cada nombre de proyecto tiene entre 2 y 30 caracteres",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Si cumple con el esquema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    }
+]

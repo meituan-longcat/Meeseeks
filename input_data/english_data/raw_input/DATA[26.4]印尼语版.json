@@ -1,0 +1,1342 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah analis artikel hotspot perjalanan profesional. Saya akan memberikan Anda konten artikel dan jenis artikel. Anda perlu menjalankan strategi identifikasi yang berbeda berdasarkan jenis artikel yang berbeda. Hanya kembalikan informasi permainan yang diekstrak, jangan kembalikan informasi berlebihan lainnya.\nJenis artikel: Identifikasi otomatis\nSilakan ekstrak informasi sesuai aturan berikut:\n1. playName: Nama permainan, mengacu pada nama permainan atau aktivitas spesifik yang disebutkan dalam artikel.\n2. briefDesc: Deskripsi satu kalimat, diperlukan untuk merangkum highlight dan fitur permainan, tidak termasuk waktu operasional, informasi praktis, deskripsi negatif, 68-100 karakter (termasuk spasi, angka...).\n3. location: Lokasi geografis permainan, mengacu pada titik referensi spesifik atau landmark dalam area pemandangan atau tempat, tidak bisa berupa kota atau provinsi.\n4. startDate/endDate: Rentang waktu permainan, format tanggal adalah xxxx-xx-xx, kembalikan string kosong jika tidak teridentifikasi.\n5. detailDesc: Pengenalan permainan yang detail, diperlukan 315-400 karakter (termasuk spasi, angka...), menggambarkan highlight dan fitur permainan, tidak termasuk kata-kata perspektif pihak ketiga.\n6. price: Informasi harga tiket, format pengembalian [\"\",\"\"], kembalikan daftar kosong jika tidak teridentifikasi.\n7. issueTime: Jika permainan termasuk konser, festival musik, Livehouse, kabaret dan jenis lainnya, perlu mengidentifikasi waktu rilis tiket, format tanggal adalah xxxx-xx-xx, kembalikan string kosong jika tidak ada.\n8. hasNightView: Apakah ini aktivitas malam (Ya/Tidak).\n9. isParentChildFriendly: Apakah cocok untuk orang tua-anak (Ya/Tidak).\n10. isOutdoor: Apakah ini permainan luar ruangan (Ya/Tidak).\n11. hasCulturalShow: Apakah termasuk pertunjukan budaya (Ya/Tidak).\n12. hasHotSpring: Apakah memiliki proyek mata air panas (Ya/Tidak).\nPersyaratan output:\n1. Gunakan format JSON untuk mengembalikan informasi yang diekstrak\n2. Setiap permainan sebagai objek, berisi semua field\n3. Semua objek permainan membentuk array\n4. Jangan kembalikan karakter lain selain format JSON\nContoh format output:\n[\n  {\"playName\":\"Nama permainan\",\"briefDesc\":\"Deskripsi satu kalimat\",\"location\":\"Lokasi geografis\",\"startDate\":\"Waktu mulai\",\"endDate\":\"Waktu berakhir\",\"detailDesc\":\"Pengenalan permainan yang detail\",\"price\":[],\"issueTime\":\"Waktu rilis tiket\",\"hasNightView\":\"Ya/Tidak\",\"isParentChildFriendly\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\",\"hasCulturalShow\":\"Ya/Tidak\",\"hasHotSpring\":\"Ya/Tidak\"}\n]\nKonten artikel:Pasar malam Natal Institut Teknik Mesin dan Listrik Sanlitun dibuka! Wood Eats Talk Pasar Musim Dingin, Parade Makanan Penutup Malam, Pertunjukan Label Musik Independen, 90 jam pengalaman musik tanpa henti, suasana Natal dan makanan berkumpul. Ada juga area interaksi orang tua-anak dan workshop pasar.",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "Nama permainan",
+                        "能力项": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "Deskripsi satu kalimat",
+                        "能力项": "范围、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "Lokasi geografis permainan",
+                        "能力项": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu mulai"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu berakhir"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "Pengenalan permainan yang detail",
+                        "能力项": "范围、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "Informasi harga tiket",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力项": "主题约束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu rilis tiket"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah ini aktivitas malam",
+                        "能力项": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah cocok untuk orang tua-anak",
+                        "能力项": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah ini permainan luar ruangan",
+                        "能力项": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah termasuk pertunjukan budaya",
+                        "能力项": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki proyek mata air panas",
+                        "能力项": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah analis artikel hotspot perjalanan profesional. Saya akan memberikan Anda konten artikel dan jenis artikel. Anda perlu menjalankan strategi identifikasi yang berbeda berdasarkan jenis artikel yang berbeda. Hanya kembalikan informasi permainan yang diekstrak, jangan kembalikan informasi berlebihan lainnya.\nJenis artikel: Identifikasi otomatis\nSilakan ekstrak informasi sesuai aturan berikut:\n1. playName: Nama permainan, mengacu pada nama permainan atau aktivitas spesifik yang disebutkan dalam artikel.\n2. briefDesc: Deskripsi satu kalimat, diperlukan untuk merangkum highlight dan fitur permainan, tidak termasuk waktu operasional, informasi praktis, deskripsi negatif, 68-100 karakter (termasuk spasi, angka...).\n3. location: Lokasi geografis permainan, mengacu pada titik referensi spesifik atau landmark dalam area pemandangan atau tempat, tidak bisa berupa kota atau provinsi.\n4. startDate/endDate: Rentang waktu permainan, format tanggal adalah xxxx-xx-xx, kembalikan string kosong jika tidak teridentifikasi.\n5. detailDesc: Pengenalan permainan yang detail, diperlukan 315-400 karakter (termasuk spasi, angka...), menggambarkan highlight dan fitur permainan, tidak termasuk kata-kata perspektif pihak ketiga.\n6. price: Informasi harga tiket, format pengembalian [\"\",\"\"], kembalikan daftar kosong jika tidak teridentifikasi.\n7. issueTime: Jika permainan termasuk konser, festival musik, Livehouse, kabaret dan jenis lainnya, perlu mengidentifikasi waktu rilis tiket, format tanggal adalah xxxx-xx-xx, kembalikan string kosong jika tidak ada.\n8. hasNightView: Apakah ini aktivitas malam (Ya/Tidak).\n9. isParentChildFriendly: Apakah cocok untuk orang tua-anak (Ya/Tidak).\n10. isOutdoor: Apakah ini permainan luar ruangan (Ya/Tidak).\n11. hasCulturalShow: Apakah termasuk pertunjukan budaya (Ya/Tidak).\n12. hasHotSpring: Apakah memiliki proyek mata air panas (Ya/Tidak).\nPersyaratan output:\n1. Gunakan format JSON untuk mengembalikan informasi yang diekstrak\n2. Setiap permainan sebagai objek, berisi semua field\n3. Semua objek permainan membentuk array\n4. Jangan kembalikan karakter lain selain format JSON\nContoh format output:\n[\n  {\"playName\":\"Nama permainan\",\"briefDesc\":\"Deskripsi satu kalimat\",\"location\":\"Lokasi geografis\",\"startDate\":\"Waktu mulai\",\"endDate\":\"Waktu berakhir\",\"detailDesc\":\"Pengenalan permainan yang detail\",\"price\":[],\"issueTime\":\"Waktu rilis tiket\",\"hasNightView\":\"Ya/Tidak\",\"isParentChildFriendly\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\",\"hasCulturalShow\":\"Ya/Tidak\",\"hasHotSpring\":\"Ya/Tidak\"}\n]\nKonten artikel:Pertunjukan Lampu Natal Happy Valley dibuka, ada pertunjukan parade skala besar dan pasar bertema Natal di malam hari, orang tua dan anak, pasangan, teman bisa bersenang-senang, pemandangan malam luar ruangan tak terlupakan.",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "Nama permainan",
+                        "能力项": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "Deskripsi satu kalimat",
+                        "能力项": "范围、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "Lokasi geografis permainan",
+                        "能力项": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu mulai"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu berakhir"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "Pengenalan permainan yang detail",
+                        "能力项": "范围、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "Informasi harga tiket",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力项": "主题约束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu rilis tiket"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah ini aktivitas malam",
+                        "能力项": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah cocok untuk orang tua-anak",
+                        "能力项": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah ini permainan luar ruangan",
+                        "能力项": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah termasuk pertunjukan budaya",
+                        "能力项": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki proyek mata air panas",
+                        "能力项": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah analis artikel hotspot perjalanan profesional. Saya akan memberikan Anda konten artikel dan jenis artikel. Anda perlu menjalankan strategi identifikasi yang berbeda berdasarkan jenis artikel yang berbeda. Hanya kembalikan informasi permainan yang diekstrak, jangan kembalikan informasi berlebihan lainnya.\nJenis artikel: Identifikasi otomatis\nSilakan ekstrak informasi sesuai aturan berikut:\n1. playName: Nama permainan, mengacu pada nama permainan atau aktivitas spesifik yang disebutkan dalam artikel.\n2. briefDesc: Deskripsi satu kalimat, diperlukan untuk merangkum highlight dan fitur permainan, tidak termasuk waktu operasional, informasi praktis, deskripsi negatif, 68-100 karakter (termasuk spasi, angka...).\n3. location: Lokasi geografis permainan, mengacu pada titik referensi spesifik atau landmark dalam area pemandangan atau tempat, tidak bisa berupa kota atau provinsi.\n4. startDate/endDate: Rentang waktu permainan, format tanggal adalah xxxx-xx-xx, kembalikan string kosong jika tidak teridentifikasi.\n5. detailDesc: Pengenalan permainan yang detail, diperlukan 315-400 karakter (termasuk spasi, angka...), menggambarkan highlight dan fitur permainan, tidak termasuk kata-kata perspektif pihak ketiga.\n6. price: Informasi harga tiket, format pengembalian [\"\",\"\"], kembalikan daftar kosong jika tidak teridentifikasi.\n7. issueTime: Jika permainan termasuk konser, festival musik, Livehouse, kabaret dan jenis lainnya, perlu mengidentifikasi waktu rilis tiket, format tanggal adalah xxxx-xx-xx, kembalikan string kosong jika tidak ada.\n8. hasNightView: Apakah ini aktivitas malam (Ya/Tidak).\n9. isParentChildFriendly: Apakah cocok untuk orang tua-anak (Ya/Tidak).\n10. isOutdoor: Apakah ini permainan luar ruangan (Ya/Tidak).\n11. hasCulturalShow: Apakah termasuk pertunjukan budaya (Ya/Tidak).\n12. hasHotSpring: Apakah memiliki proyek mata air panas (Ya/Tidak).\nPersyaratan output:\n1. Gunakan format JSON untuk mengembalikan informasi yang diekstrak\n2. Setiap permainan sebagai objek, berisi semua field\n3. Semua objek permainan membentuk array\n4. Jangan kembalikan karakter lain selain format JSON\nContoh format output:\n[\n  {\"playName\":\"Nama permainan\",\"briefDesc\":\"Deskripsi satu kalimat\",\"location\":\"Lokasi geografis\",\"startDate\":\"Waktu mulai\",\"endDate\":\"Waktu berakhir\",\"detailDesc\":\"Pengenalan permainan yang detail\",\"price\":[],\"issueTime\":\"Waktu rilis tiket\",\"hasNightView\":\"Ya/Tidak\",\"isParentChildFriendly\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\",\"hasCulturalShow\":\"Ya/Tidak\",\"hasHotSpring\":\"Ya/Tidak\"}\n]\nKonten artikel:Festival Es dan Salju Kota Terlarang dibuka, pameran patung es, seluncuran salju, sepeda es dan cara bermain kaya lainnya menunggu Anda untuk mengalami, pertunjukan lampu malam romantis dan seperti mimpi. Seluruh keluarga bisa menemukan kesenangan.",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "Nama permainan",
+                        "能力项": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "Deskripsi satu kalimat",
+                        "能力项": "范围、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "Lokasi geografis permainan",
+                        "能力项": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu mulai"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu berakhir"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "Pengenalan permainan yang detail",
+                        "能力项": "范围、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "Informasi harga tiket",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力项": "主题约束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu rilis tiket"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah ini aktivitas malam",
+                        "能力项": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah cocok untuk orang tua-anak",
+                        "能力项": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah ini permainan luar ruangan",
+                        "能力项": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah termasuk pertunjukan budaya",
+                        "能力项": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki proyek mata air panas",
+                        "能力项": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah analis artikel hotspot perjalanan profesional. Saya akan memberikan Anda konten artikel dan jenis artikel. Anda perlu menjalankan strategi identifikasi yang berbeda berdasarkan jenis artikel yang berbeda. Hanya kembalikan informasi permainan yang diekstrak, jangan kembalikan informasi berlebihan lainnya.\nJenis artikel: Identifikasi otomatis\nSilakan ekstrak informasi sesuai aturan berikut:\n1. playName: Nama permainan, mengacu pada nama permainan atau aktivitas spesifik yang disebutkan dalam artikel.\n2. briefDesc: Deskripsi satu kalimat, diperlukan untuk merangkum highlight dan fitur permainan, tidak termasuk waktu operasional, informasi praktis, deskripsi negatif, 68-100 karakter (termasuk spasi, angka...).\n3. location: Lokasi geografis permainan, mengacu pada titik referensi spesifik atau landmark dalam area pemandangan atau tempat, tidak bisa berupa kota atau provinsi.\n4. startDate/endDate: Rentang waktu permainan, format tanggal adalah xxxx-xx-xx, kembalikan string kosong jika tidak teridentifikasi.\n5. detailDesc: Pengenalan permainan yang detail, diperlukan 315-400 karakter (termasuk spasi, angka...), menggambarkan highlight dan fitur permainan, tidak termasuk kata-kata perspektif pihak ketiga.\n6. price: Informasi harga tiket, format pengembalian [\"\",\"\"], kembalikan daftar kosong jika tidak teridentifikasi.\n7. issueTime: Jika permainan termasuk konser, festival musik, Livehouse, kabaret dan jenis lainnya, perlu mengidentifikasi waktu rilis tiket, format tanggal adalah xxxx-xx-xx, kembalikan string kosong jika tidak ada.\n8. hasNightView: Apakah ini aktivitas malam (Ya/Tidak).\n9. isParentChildFriendly: Apakah cocok untuk orang tua-anak (Ya/Tidak).\n10. isOutdoor: Apakah ini permainan luar ruangan (Ya/Tidak).\n11. hasCulturalShow: Apakah termasuk pertunjukan budaya (Ya/Tidak).\n12. hasHotSpring: Apakah memiliki proyek mata air panas (Ya/Tidak).\nPersyaratan output:\n1. Gunakan format JSON untuk mengembalikan informasi yang diekstrak\n2. Setiap permainan sebagai objek, berisi semua field\n3. Semua objek permainan membentuk array\n4. Jangan kembalikan karakter lain selain format JSON\nContoh format output:\n[\n  {\"playName\":\"Nama permainan\",\"briefDesc\":\"Deskripsi satu kalimat\",\"location\":\"Lokasi geografis\",\"startDate\":\"Waktu mulai\",\"endDate\":\"Waktu berakhir\",\"detailDesc\":\"Pengenalan permainan yang detail\",\"price\":[],\"issueTime\":\"Waktu rilis tiket\",\"hasNightView\":\"Ya/Tidak\",\"isParentChildFriendly\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\",\"hasCulturalShow\":\"Ya/Tidak\",\"hasHotSpring\":\"Ya/Tidak\"}\n]\nKonten artikel:Pertunjukan Kembang Api Tahun Baru Universal Studios, titik pandang terbaik adalah Hollywood Boulevard, kembang api dan bangunan bertema dalam frame yang sama, suasananya meledak, cocok untuk kencan pasangan dan pengalaman orang tua-anak.",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "Nama permainan",
+                        "能力项": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "Deskripsi satu kalimat",
+                        "能力项": "范围、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "Lokasi geografis permainan",
+                        "能力项": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu mulai"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu berakhir"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "Pengenalan permainan yang detail",
+                        "能力项": "范围、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "Informasi harga tiket",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力项": "主题约束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu rilis tiket"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah ini aktivitas malam",
+                        "能力项": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah cocok untuk orang tua-anak",
+                        "能力项": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah ini permainan luar ruangan",
+                        "能力项": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah termasuk pertunjukan budaya",
+                        "能力项": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki proyek mata air panas",
+                        "能力项": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah analis artikel hotspot perjalanan profesional. Saya akan memberikan Anda konten artikel dan jenis artikel. Anda perlu menjalankan strategi identifikasi yang berbeda berdasarkan jenis artikel yang berbeda. Hanya kembalikan informasi permainan yang diekstrak, jangan kembalikan informasi berlebihan lainnya.\nJenis artikel: Identifikasi otomatis\nSilakan ekstrak informasi sesuai aturan berikut:\n1. playName: Nama permainan, mengacu pada nama permainan atau aktivitas spesifik yang disebutkan dalam artikel.\n2. briefDesc: Deskripsi satu kalimat, diperlukan untuk merangkum highlight dan fitur permainan, tidak termasuk waktu operasional, informasi praktis, deskripsi negatif, 68-100 karakter (termasuk spasi, angka...).\n3. location: Lokasi geografis permainan, mengacu pada titik referensi spesifik atau landmark dalam area pemandangan atau tempat, tidak bisa berupa kota atau provinsi.\n4. startDate/endDate: Rentang waktu permainan, format tanggal adalah xxxx-xx-xx, kembalikan string kosong jika tidak teridentifikasi.\n5. detailDesc: Pengenalan permainan yang detail, diperlukan 315-400 karakter (termasuk spasi, angka...), menggambarkan highlight dan fitur permainan, tidak termasuk kata-kata perspektif pihak ketiga.\n6. price: Informasi harga tiket, format pengembalian [\"\",\"\"], kembalikan daftar kosong jika tidak teridentifikasi.\n7. issueTime: Jika permainan termasuk konser, festival musik, Livehouse, kabaret dan jenis lainnya, perlu mengidentifikasi waktu rilis tiket, format tanggal adalah xxxx-xx-xx, kembalikan string kosong jika tidak ada.\n8. hasNightView: Apakah ini aktivitas malam (Ya/Tidak).\n9. isParentChildFriendly: Apakah cocok untuk orang tua-anak (Ya/Tidak).\n10. isOutdoor: Apakah ini permainan luar ruangan (Ya/Tidak).\n11. hasCulturalShow: Apakah termasuk pertunjukan budaya (Ya/Tidak).\n12. hasHotSpring: Apakah memiliki proyek mata air panas (Ya/Tidak).\nPersyaratan output:\n1. Gunakan format JSON untuk mengembalikan informasi yang diekstrak\n2. Setiap permainan sebagai objek, berisi semua field\n3. Semua objek permainan membentuk array\n4. Jangan kembalikan karakter lain selain format JSON\nContoh format output:\n[\n  {\"playName\":\"Nama permainan\",\"briefDesc\":\"Deskripsi satu kalimat\",\"location\":\"Lokasi geografis\",\"startDate\":\"Waktu mulai\",\"endDate\":\"Waktu berakhir\",\"detailDesc\":\"Pengenalan permainan yang detail\",\"price\":[],\"issueTime\":\"Waktu rilis tiket\",\"hasNightView\":\"Ya/Tidak\",\"isParentChildFriendly\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\",\"hasCulturalShow\":\"Ya/Tidak\",\"hasHotSpring\":\"Ya/Tidak\"}\n]\nKonten artikel:Festival Perahu Naga Danau Barat dimulai pada Hari Perahu Naga, balapan perahu naga, pertunjukan rakyat, makanan festival perahu naga semuanya tersedia, pengalaman menonton pantai sangat baik, ada pertunjukan cahaya dan air di malam hari.",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "Nama permainan",
+                        "能力项": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "Deskripsi satu kalimat",
+                        "能力项": "范围、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "Lokasi geografis permainan",
+                        "能力项": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu mulai"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu berakhir"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "Pengenalan permainan yang detail",
+                        "能力项": "范围、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "Informasi harga tiket",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力项": "主题约束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu rilis tiket"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah ini aktivitas malam",
+                        "能力项": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah cocok untuk orang tua-anak",
+                        "能力项": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah ini permainan luar ruangan",
+                        "能力项": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah termasuk pertunjukan budaya",
+                        "能力项": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki proyek mata air panas",
+                        "能力项": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah analis artikel hotspot perjalanan profesional. Saya akan memberikan Anda konten artikel dan jenis artikel. Anda perlu menjalankan strategi identifikasi yang berbeda berdasarkan jenis artikel yang berbeda. Hanya kembalikan informasi permainan yang diekstrak, jangan kembalikan informasi berlebihan lainnya.\nJenis artikel: Identifikasi otomatis\nSilakan ekstrak informasi sesuai aturan berikut:\n1. playName: Nama permainan, mengacu pada nama permainan atau aktivitas spesifik yang disebutkan dalam artikel.\n2. briefDesc: Deskripsi satu kalimat, diperlukan untuk merangkum highlight dan fitur permainan, tidak termasuk waktu operasional, informasi praktis, deskripsi negatif, 68-100 karakter (termasuk spasi, angka...).\n3. location: Lokasi geografis permainan, mengacu pada titik referensi spesifik atau landmark dalam area pemandangan atau tempat, tidak bisa berupa kota atau provinsi.\n4. startDate/endDate: Rentang waktu permainan, format tanggal adalah xxxx-xx-xx, kembalikan string kosong jika tidak teridentifikasi.\n5. detailDesc: Pengenalan permainan yang detail, diperlukan 315-400 karakter (termasuk spasi, angka...), menggambarkan highlight dan fitur permainan, tidak termasuk kata-kata perspektif pihak ketiga.\n6. price: Informasi harga tiket, format pengembalian [\"\",\"\"], kembalikan daftar kosong jika tidak teridentifikasi.\n7. issueTime: Jika permainan termasuk konser, festival musik, Livehouse, kabaret dan jenis lainnya, perlu mengidentifikasi waktu rilis tiket, format tanggal adalah xxxx-xx-xx, kembalikan string kosong jika tidak ada.\n8. hasNightView: Apakah ini aktivitas malam (Ya/Tidak).\n9. isParentChildFriendly: Apakah cocok untuk orang tua-anak (Ya/Tidak).\n10. isOutdoor: Apakah ini permainan luar ruangan (Ya/Tidak).\n11. hasCulturalShow: Apakah termasuk pertunjukan budaya (Ya/Tidak).\n12. hasHotSpring: Apakah memiliki proyek mata air panas (Ya/Tidak).\nPersyaratan output:\n1. Gunakan format JSON untuk mengembalikan informasi yang diekstrak\n2. Setiap permainan sebagai objek, berisi semua field\n3. Semua objek permainan membentuk array\n4. Jangan kembalikan karakter lain selain format JSON\nContoh format output:\n[\n  {\"playName\":\"Nama permainan\",\"briefDesc\":\"Deskripsi satu kalimat\",\"location\":\"Lokasi geografis\",\"startDate\":\"Waktu mulai\",\"endDate\":\"Waktu berakhir\",\"detailDesc\":\"Pengenalan permainan yang detail\",\"price\":[],\"issueTime\":\"Waktu rilis tiket\",\"hasNightView\":\"Ya/Tidak\",\"isParentChildFriendly\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\",\"hasCulturalShow\":\"Ya/Tidak\",\"hasHotSpring\":\"Ya/Tidak\"}\n]\nKonten artikel:Taman Air Chimelong buka di malam hari pada musim panas. Pesta air dan pertunjukan cahaya dan musik elektronik akan membuat seluruh tempat bersemangat. Pengalaman tur malam unik dan cocok untuk orang tua dan anak serta anak muda.",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "Nama permainan",
+                        "能力项": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "Deskripsi satu kalimat",
+                        "能力项": "范围、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "Lokasi geografis permainan",
+                        "能力项": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu mulai"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu berakhir"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "Pengenalan permainan yang detail",
+                        "能力项": "范围、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "Informasi harga tiket",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力项": "主题约束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu rilis tiket"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah ini aktivitas malam",
+                        "能力项": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah cocok untuk orang tua-anak",
+                        "能力项": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah ini permainan luar ruangan",
+                        "能力项": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah termasuk pertunjukan budaya",
+                        "能力项": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki proyek mata air panas",
+                        "能力项": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah analis artikel hotspot perjalanan profesional. Saya akan memberikan Anda konten artikel dan jenis artikel. Anda perlu menjalankan strategi identifikasi yang berbeda berdasarkan jenis artikel yang berbeda. Hanya kembalikan informasi permainan yang diekstrak, jangan kembalikan informasi berlebihan lainnya.\nJenis artikel: Identifikasi otomatis\nSilakan ekstrak informasi sesuai aturan berikut:\n1. playName: Nama permainan, mengacu pada nama permainan atau aktivitas spesifik yang disebutkan dalam artikel.\n2. briefDesc: Deskripsi satu kalimat, diperlukan untuk merangkum highlight dan fitur permainan, tidak termasuk waktu operasional, informasi praktis, deskripsi negatif, 68-100 karakter (termasuk spasi, angka...).\n3. location: Lokasi geografis permainan, mengacu pada titik referensi spesifik atau landmark dalam area pemandangan atau tempat, tidak bisa berupa kota atau provinsi.\n4. startDate/endDate: Rentang waktu permainan, format tanggal adalah xxxx-xx-xx, kembalikan string kosong jika tidak teridentifikasi.\n5. detailDesc: Pengenalan permainan yang detail, diperlukan 315-400 karakter (termasuk spasi, angka...), menggambarkan highlight dan fitur permainan, tidak termasuk kata-kata perspektif pihak ketiga.\n6. price: Informasi harga tiket, format pengembalian [\"\",\"\"], kembalikan daftar kosong jika tidak teridentifikasi.\n7. issueTime: Jika permainan termasuk konser, festival musik, Livehouse, kabaret dan jenis lainnya, perlu mengidentifikasi waktu rilis tiket, format tanggal adalah xxxx-xx-xx, kembalikan string kosong jika tidak ada.\n8. hasNightView: Apakah ini aktivitas malam (Ya/Tidak).\n9. isParentChildFriendly: Apakah cocok untuk orang tua-anak (Ya/Tidak).\n10. isOutdoor: Apakah ini permainan luar ruangan (Ya/Tidak).\n11. hasCulturalShow: Apakah termasuk pertunjukan budaya (Ya/Tidak).\n12. hasHotSpring: Apakah memiliki proyek mata air panas (Ya/Tidak).\nPersyaratan output:\n1. Gunakan format JSON untuk mengembalikan informasi yang diekstrak\n2. Setiap permainan sebagai objek, berisi semua field\n3. Semua objek permainan membentuk array\n4. Jangan kembalikan karakter lain selain format JSON\nContoh format output:\n[\n  {\"playName\":\"Nama permainan\",\"briefDesc\":\"Deskripsi satu kalimat\",\"location\":\"Lokasi geografis\",\"startDate\":\"Waktu mulai\",\"endDate\":\"Waktu berakhir\",\"detailDesc\":\"Pengenalan permainan yang detail\",\"price\":[],\"issueTime\":\"Waktu rilis tiket\",\"hasNightView\":\"Ya/Tidak\",\"isParentChildFriendly\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\",\"hasCulturalShow\":\"Ya/Tidak\",\"hasHotSpring\":\"Ya/Tidak\"}\n]\nKonten artikel:Parade Natal Shanghai Disneyland, semua anggota keluarga Mickey keluar, upacara penyalaan pohon Natal hangat dan romantis. Pertunjukan kembang api malam dan pertunjukan cahaya saling melengkapi.",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "Nama permainan",
+                        "能力项": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "Deskripsi satu kalimat",
+                        "能力项": "范围、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "Lokasi geografis permainan",
+                        "能力项": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu mulai"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu berakhir"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "Pengenalan permainan yang detail",
+                        "能力项": "范围、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "Informasi harga tiket",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力项": "主题约束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu rilis tiket"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah ini aktivitas malam",
+                        "能力项": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah cocok untuk orang tua-anak",
+                        "能力项": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah ini permainan luar ruangan",
+                        "能力项": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah termasuk pertunjukan budaya",
+                        "能力项": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki proyek mata air panas",
+                        "能力项": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah analis artikel hotspot perjalanan profesional. Saya akan memberikan Anda konten artikel dan jenis artikel. Anda perlu menjalankan strategi identifikasi yang berbeda berdasarkan jenis artikel yang berbeda. Hanya kembalikan informasi permainan yang diekstrak, jangan kembalikan informasi berlebihan lainnya.\nJenis artikel: Identifikasi otomatis\nSilakan ekstrak informasi sesuai aturan berikut:\n1. playName: Nama permainan, mengacu pada nama permainan atau aktivitas spesifik yang disebutkan dalam artikel.\n2. briefDesc: Deskripsi satu kalimat, diperlukan untuk merangkum highlight dan fitur permainan, tidak termasuk waktu operasional, informasi praktis, deskripsi negatif, 68-100 karakter (termasuk spasi, angka...).\n3. location: Lokasi geografis permainan, mengacu pada titik referensi spesifik atau landmark dalam area pemandangan atau tempat, tidak bisa berupa kota atau provinsi.\n4. startDate/endDate: Rentang waktu permainan, format tanggal adalah xxxx-xx-xx, kembalikan string kosong jika tidak teridentifikasi.\n5. detailDesc: Pengenalan permainan yang detail, diperlukan 315-400 karakter (termasuk spasi, angka...), menggambarkan highlight dan fitur permainan, tidak termasuk kata-kata perspektif pihak ketiga.\n6. price: Informasi harga tiket, format pengembalian [\"\",\"\"], kembalikan daftar kosong jika tidak teridentifikasi.\n7. issueTime: Jika permainan termasuk konser, festival musik, Livehouse, kabaret dan jenis lainnya, perlu mengidentifikasi waktu rilis tiket, format tanggal adalah xxxx-xx-xx, kembalikan string kosong jika tidak ada.\n8. hasNightView: Apakah ini aktivitas malam (Ya/Tidak).\n9. isParentChildFriendly: Apakah cocok untuk orang tua-anak (Ya/Tidak).\n10. isOutdoor: Apakah ini permainan luar ruangan (Ya/Tidak).\n11. hasCulturalShow: Apakah termasuk pertunjukan budaya (Ya/Tidak).\n12. hasHotSpring: Apakah memiliki proyek mata air panas (Ya/Tidak).\nPersyaratan output:\n1. Gunakan format JSON untuk mengembalikan informasi yang diekstrak\n2. Setiap permainan sebagai objek, berisi semua field\n3. Semua objek permainan membentuk array\n4. Jangan kembalikan karakter lain selain format JSON\nContoh format output:\n[\n  {\"playName\":\"Nama permainan\",\"briefDesc\":\"Deskripsi satu kalimat\",\"location\":\"Lokasi geografis\",\"startDate\":\"Waktu mulai\",\"endDate\":\"Waktu berakhir\",\"detailDesc\":\"Pengenalan permainan yang detail\",\"price\":[],\"issueTime\":\"Waktu rilis tiket\",\"hasNightView\":\"Ya/Tidak\",\"isParentChildFriendly\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\",\"hasCulturalShow\":\"Ya/Tidak\",\"hasHotSpring\":\"Ya/Tidak\"}\n]\nKonten artikel:Festival Musik Pasar Malam Chongqing Hongyadong, band independen tampil bergantian, pemandangan malam tepi sungai dan musik terintegrasi sempurna, orang tua dan anak, pasangan cocok untuk check-in malam.",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "Nama permainan",
+                        "能力项": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "Deskripsi satu kalimat",
+                        "能力项": "范围、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "Lokasi geografis permainan",
+                        "能力项": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu mulai"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu berakhir"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "Pengenalan permainan yang detail",
+                        "能力项": "范围、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "Informasi harga tiket",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力项": "主题约束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu rilis tiket"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah ini aktivitas malam",
+                        "能力项": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah cocok untuk orang tua-anak",
+                        "能力项": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah ini permainan luar ruangan",
+                        "能力项": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah termasuk pertunjukan budaya",
+                        "能力项": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki proyek mata air panas",
+                        "能力项": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah analis artikel hotspot perjalanan profesional. Saya akan memberikan Anda konten artikel dan jenis artikel. Anda perlu menjalankan strategi identifikasi yang berbeda berdasarkan jenis artikel yang berbeda. Hanya kembalikan informasi permainan yang diekstrak, jangan kembalikan informasi berlebihan lainnya.\nJenis artikel: Identifikasi otomatis\nSilakan ekstrak informasi sesuai aturan berikut:\n1. playName: Nama permainan, mengacu pada nama permainan atau aktivitas spesifik yang disebutkan dalam artikel.\n2. briefDesc: Deskripsi satu kalimat, diperlukan untuk merangkum highlight dan fitur permainan, tidak termasuk waktu operasional, informasi praktis, deskripsi negatif, 68-100 karakter (termasuk spasi, angka...).\n3. location: Lokasi geografis permainan, mengacu pada titik referensi spesifik atau landmark dalam area pemandangan atau tempat, tidak bisa berupa kota atau provinsi.\n4. startDate/endDate: Rentang waktu permainan, format tanggal adalah xxxx-xx-xx, kembalikan string kosong jika tidak teridentifikasi.\n5. detailDesc: Pengenalan permainan yang detail, diperlukan 315-400 karakter (termasuk spasi, angka...), menggambarkan highlight dan fitur permainan, tidak termasuk kata-kata perspektif pihak ketiga.\n6. price: Informasi harga tiket, format pengembalian [\"\",\"\"], kembalikan daftar kosong jika tidak teridentifikasi.\n7. issueTime: Jika permainan termasuk konser, festival musik, Livehouse, kabaret dan jenis lainnya, perlu mengidentifikasi waktu rilis tiket, format tanggal adalah xxxx-xx-xx, kembalikan string kosong jika tidak ada.\n8. hasNightView: Apakah ini aktivitas malam (Ya/Tidak).\n9. isParentChildFriendly: Apakah cocok untuk orang tua-anak (Ya/Tidak).\n10. isOutdoor: Apakah ini permainan luar ruangan (Ya/Tidak).\n11. hasCulturalShow: Apakah termasuk pertunjukan budaya (Ya/Tidak).\n12. hasHotSpring: Apakah memiliki proyek mata air panas (Ya/Tidak).\nPersyaratan output:\n1. Gunakan format JSON untuk mengembalikan informasi yang diekstrak\n2. Setiap permainan sebagai objek, berisi semua field\n3. Semua objek permainan membentuk array\n4. Jangan kembalikan karakter lain selain format JSON\nContoh format output:\n[\n  {\"playName\":\"Nama permainan\",\"briefDesc\":\"Deskripsi satu kalimat\",\"location\":\"Lokasi geografis\",\"startDate\":\"Waktu mulai\",\"endDate\":\"Waktu berakhir\",\"detailDesc\":\"Pengenalan permainan yang detail\",\"price\":[],\"issueTime\":\"Waktu rilis tiket\",\"hasNightView\":\"Ya/Tidak\",\"isParentChildFriendly\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\",\"hasCulturalShow\":\"Ya/Tidak\",\"hasHotSpring\":\"Ya/Tidak\"}\n]\nKonten artikel:Pameran Kuil Tahun Baru Kota Kuno Dali, tarian Bai, pasar rakyat, pertunjukan kembang api menerangi langit malam kota kuno, pengalaman mata air panas dan makanan pasar malam kaya dan berwarna-warni.",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "Nama permainan",
+                        "能力项": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "Deskripsi satu kalimat",
+                        "能力项": "范围、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "Lokasi geografis permainan",
+                        "能力项": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu mulai"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu berakhir"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "Pengenalan permainan yang detail",
+                        "能力项": "范围、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "Informasi harga tiket",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力项": "主题约束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu rilis tiket"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah ini aktivitas malam",
+                        "能力项": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah cocok untuk orang tua-anak",
+                        "能力项": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah ini permainan luar ruangan",
+                        "能力项": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah termasuk pertunjukan budaya",
+                        "能力项": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki proyek mata air panas",
+                        "能力项": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah analis artikel hotspot perjalanan profesional. Saya akan memberikan Anda konten artikel dan jenis artikel. Anda perlu menjalankan strategi identifikasi yang berbeda berdasarkan jenis artikel yang berbeda. Hanya kembalikan informasi permainan yang diekstrak, jangan kembalikan informasi berlebihan lainnya.\nJenis artikel: Identifikasi otomatis\nSilakan ekstrak informasi sesuai aturan berikut:\n1. playName: Nama permainan, mengacu pada nama permainan atau aktivitas spesifik yang disebutkan dalam artikel.\n2. briefDesc: Deskripsi satu kalimat, diperlukan untuk merangkum highlight dan fitur permainan, tidak termasuk waktu operasional, informasi praktis, deskripsi negatif, 68-100 karakter (termasuk spasi, angka...).\n3. location: Lokasi geografis permainan, mengacu pada titik referensi spesifik atau landmark dalam area pemandangan atau tempat, tidak bisa berupa kota atau provinsi.\n4. startDate/endDate: Rentang waktu permainan, format tanggal adalah xxxx-xx-xx, kembalikan string kosong jika tidak teridentifikasi.\n5. detailDesc: Pengenalan permainan yang detail, diperlukan 315-400 karakter (termasuk spasi, angka...), menggambarkan highlight dan fitur permainan, tidak termasuk kata-kata perspektif pihak ketiga.\n6. price: Informasi harga tiket, format pengembalian [\"\",\"\"], kembalikan daftar kosong jika tidak teridentifikasi.\n7. issueTime: Jika permainan termasuk konser, festival musik, Livehouse, kabaret dan jenis lainnya, perlu mengidentifikasi waktu rilis tiket, format tanggal adalah xxxx-xx-xx, kembalikan string kosong jika tidak ada.\n8. hasNightView: Apakah ini aktivitas malam (Ya/Tidak).\n9. isParentChildFriendly: Apakah cocok untuk orang tua-anak (Ya/Tidak).\n10. isOutdoor: Apakah ini permainan luar ruangan (Ya/Tidak).\n11. hasCulturalShow: Apakah termasuk pertunjukan budaya (Ya/Tidak).\n12. hasHotSpring: Apakah memiliki proyek mata air panas (Ya/Tidak).\nPersyaratan output:\n1. Gunakan format JSON untuk mengembalikan informasi yang diekstrak\n2. Setiap permainan sebagai objek, berisi semua field\n3. Semua objek permainan membentuk array\n4. Jangan kembalikan karakter lain selain format JSON\nContoh format output:\n[\n  {\"playName\":\"Nama permainan\",\"briefDesc\":\"Deskripsi satu kalimat\",\"location\":\"Lokasi geografis\",\"startDate\":\"Waktu mulai\",\"endDate\":\"Waktu berakhir\",\"detailDesc\":\"Pengenalan permainan yang detail\",\"price\":[],\"issueTime\":\"Waktu rilis tiket\",\"hasNightView\":\"Ya/Tidak\",\"isParentChildFriendly\":\"Ya/Tidak\",\"isOutdoor\":\"Ya/Tidak\",\"hasCulturalShow\":\"Ya/Tidak\",\"hasHotSpring\":\"Ya/Tidak\"}\n]\nKonten artikel:Tur Sains Orang Tua-Anak Pangkalan Panda Chengdu, penjelasan panda, pengalaman buatan tangan, suvenir bertema kaya dan berwarna-warni, taman memiliki pertunjukan lampu malam kecil.",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "Nama permainan",
+                        "能力项": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "Deskripsi satu kalimat",
+                        "能力项": "范围、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "Lokasi geografis permainan",
+                        "能力项": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu mulai"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu berakhir"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "Pengenalan permainan yang detail",
+                        "能力项": "范围、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "Informasi harga tiket",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力项": "主题约束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力项": "日期格式",
+                        "description": "Waktu rilis tiket"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah ini aktivitas malam",
+                        "能力项": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah cocok untuk orang tua-anak",
+                        "能力项": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah ini permainan luar ruangan",
+                        "能力项": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah termasuk pertunjukan budaya",
+                        "能力项": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki proyek mata air panas",
+                        "能力项": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah memenuhi skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    }
+]

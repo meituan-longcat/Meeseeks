@@ -1,0 +1,2242 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Reiseexperte. Ich werde Ihnen einen Reiseführer-Artikel mit Titel und Inhalt zur Verfügung stellen. Bitte analysieren Sie den Artikel, um zu bestimmen, ob er Reiserouten enthält (containRoute), wie viele Reiserouten er enthält (routeCount), ob er zeitkritische Projekte enthält (containTimelinessProject), und extrahieren Sie detaillierte Informationen für jede Route (wie Routenname, Tage, Reisepunkte, ob sie zeitkritische Projekte enthält, Namen der beteiligten zeitkritischen Projekte). Geben Sie schließlich die Ergebnisse im angegebenen JSON-Format aus.\nBegriffsdefinitionen:\nReiseroute: Eine geplante Reiseroute mit mehreren Reisepunkten in chronologischer Reihenfolge, die etwa 1-3 Tage dauert. Normalerweise sind mehrere Reisepunkte in einer Reiseroute durch Zeitsequenz (wie um 11 Uhr zu Ort A gehen, um 14 Uhr zu Ort B gehen) oder Ortssequenz (wie derzeit an Ort A, nächster Stopp zu Ort B) verbunden. Beachten Sie, dass wenn nur mehrere unabhängige Reisepunkte vorgestellt werden, dies keine Reiseroute darstellen kann.\nOb Reiserouten enthalten: Wenn der Artikel mindestens eine vollständige Reiseroute enthält, geben Sie 1 zurück, andernfalls 0.\nAnzahl der Reiserouten: Die Anzahl der vollständigen Reiserouten im Artikel, 0 wenn keine vorhanden.\nOb zeitkritische Projekte enthalten: Zeitkritische Projekte beziehen sich auf Projekte, die zu bestimmten Zeiten stattfinden, wie Konzerte, Ausstellungen, Versammlungen, Stand-up-Comedy-Shows, Musikfestivals und andere zeitlich begrenzte Aktivitäten. Wenn die Reiseroute zeitkritische Projekte enthält, geben Sie 1 zurück, andernfalls 0.\nroutes-Feld: Wenn Reiserouten enthalten sind, müssen detaillierte strukturierte Informationen für jede Route ausgegeben werden, einschließlich: routeName (Routenname), days (Anzahl der Tage), routePoints (Liste der Reisepunkte), hasTimelinessProject (ob diese Route zeitkritische Projekte enthält), timelinessProjects (Liste der zeitkritischen Projekte in dieser Route, leeres Array wenn keine, jeder Projektname ist 9-150 Zeichen lang (einschließlich Leerzeichen, Zahlen...)).\nAusgabeformat-Anforderungen: Bitte geben Sie die Analyseergebnisse strikt im folgenden JSON-Format aus, fügen Sie keine zusätzlichen Texterklärungen hinzu:{\"containRoute\": 0 oder 1,\"routeCount\": Zahl(0,1,2...),\"containTimelinessProject\": 0 oder 1, \"routes\": [{\"routeName\": \"Routenname\", \"days\": 1-3, \"routePoints\": [\"Reisepunkt A\", \"Reisepunkt B\"], \"hasTimelinessProject\": 0 oder 1, \"timelinessProjects\": [\"Name des zeitkritischen Projekts\"]}]}\nArtikelinhalt:\n【Halbtagesausflug】14:00 Versammlung zum Besuch der jahrhundertealten Fabrik (Reservierung erforderlich) 15:30 Transfer zum benachbarten Kreativladen 16:00 Teilnahme am Handwerkskurs (täglich 16:00-17:00)",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob der Artikel Reiserouten enthält, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Anzahl der im Artikel enthaltenen Reiserouten",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob die Reiserouten zeitkritische Projekte enthalten, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Details aller Reiserouten",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Routenname, darf nicht leer sein",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Anzahl der Tage für die Route, Wertebereich 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste der Reisepunkte, muss mindestens zwei Punkte enthalten",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Ob diese Route zeitkritische Projekte enthält",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Zeitkritische Projekte in dieser Route, jeder Projektname ist 9-150 Zeichen lang",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Ob Schema erfüllt",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Reiseexperte. Ich werde Ihnen einen Reiseführer-Artikel mit Titel und Inhalt zur Verfügung stellen. Bitte analysieren Sie den Artikel, um zu bestimmen, ob er Reiserouten enthält (containRoute), wie viele Reiserouten er enthält (routeCount), ob er zeitkritische Projekte enthält (containTimelinessProject), und extrahieren Sie detaillierte Informationen für jede Route (wie Routenname, Tage, Reisepunkte, ob sie zeitkritische Projekte enthält, Namen der beteiligten zeitkritischen Projekte). Geben Sie schließlich die Ergebnisse im angegebenen JSON-Format aus.\nBegriffsdefinitionen:\nReiseroute: Eine geplante Reiseroute mit mehreren Reisepunkten in chronologischer Reihenfolge, die etwa 1-3 Tage dauert. Normalerweise sind mehrere Reisepunkte in einer Reiseroute durch Zeitsequenz (wie um 11 Uhr zu Ort A gehen, um 14 Uhr zu Ort B gehen) oder Ortssequenz (wie derzeit an Ort A, nächster Stopp zu Ort B) verbunden. Beachten Sie, dass wenn nur mehrere unabhängige Reisepunkte vorgestellt werden, dies keine Reiseroute darstellen kann.\nOb Reiserouten enthalten: Wenn der Artikel mindestens eine vollständige Reiseroute enthält, geben Sie 1 zurück, andernfalls 0.\nAnzahl der Reiserouten: Die Anzahl der vollständigen Reiserouten im Artikel, 0 wenn keine vorhanden.\nOb zeitkritische Projekte enthalten: Zeitkritische Projekte beziehen sich auf Projekte, die zu bestimmten Zeiten stattfinden, wie Konzerte, Ausstellungen, Versammlungen, Stand-up-Comedy-Shows, Musikfestivals und andere zeitlich begrenzte Aktivitäten. Wenn die Reiseroute zeitkritische Projekte enthält, geben Sie 1 zurück, andernfalls 0.\nroutes-Feld: Wenn Reiserouten enthalten sind, müssen detaillierte strukturierte Informationen für jede Route ausgegeben werden, einschließlich: routeName (Routenname), days (Anzahl der Tage), routePoints (Liste der Reisepunkte), hasTimelinessProject (ob diese Route zeitkritische Projekte enthält), timelinessProjects (Liste der zeitkritischen Projekte in dieser Route, leeres Array wenn keine, jeder Projektname ist 9-150 Zeichen lang (einschließlich Leerzeichen, Zahlen...)).\nAusgabeformat-Anforderungen: Bitte geben Sie die Analyseergebnisse strikt im folgenden JSON-Format aus, fügen Sie keine zusätzlichen Texterklärungen hinzu:{\"containRoute\": 0 oder 1,\"routeCount\": Zahl(0,1,2...),\"containTimelinessProject\": 0 oder 1, \"routes\": [{\"routeName\": \"Routenname\", \"days\": 1-3, \"routePoints\": [\"Reisepunkt A\", \"Reisepunkt B\"], \"hasTimelinessProject\": 0 oder 1, \"timelinessProjects\": [\"Name des zeitkritischen Projekts\"]}]}\nArtikelinhalt:\n【Eintägige Tiefentour】Versammlung im Museum um 10 Uhr, dann zu Fuß zur Kunstgalerie, Mittagessen in einem nahegelegenen Restaurant, Teilnahme an zeitlich begrenzter Ausstellung am Nachmittag, Musikfestival-Aufführung am Abend.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob der Artikel Reiserouten enthält, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Anzahl der im Artikel enthaltenen Reiserouten",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob die Reiserouten zeitkritische Projekte enthalten, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Details aller Reiserouten",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Routenname, darf nicht leer sein",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Anzahl der Tage für die Route, Wertebereich 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste der Reisepunkte, muss mindestens zwei Punkte enthalten",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Ob diese Route zeitkritische Projekte enthält",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Zeitkritische Projekte in dieser Route, jeder Projektname ist 9-150 Zeichen lang",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Ob Schema erfüllt",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Reiseexperte. Ich werde Ihnen einen Reiseführer-Artikel mit Titel und Inhalt zur Verfügung stellen. Bitte analysieren Sie den Artikel, um zu bestimmen, ob er Reiserouten enthält (containRoute), wie viele Reiserouten er enthält (routeCount), ob er zeitkritische Projekte enthält (containTimelinessProject), und extrahieren Sie detaillierte Informationen für jede Route (wie Routenname, Tage, Reisepunkte, ob sie zeitkritische Projekte enthält, Namen der beteiligten zeitkritischen Projekte). Geben Sie schließlich die Ergebnisse im angegebenen JSON-Format aus.\nBegriffsdefinitionen:\nReiseroute: Eine geplante Reiseroute mit mehreren Reisepunkten in chronologischer Reihenfolge, die etwa 1-3 Tage dauert. Normalerweise sind mehrere Reisepunkte in einer Reiseroute durch Zeitsequenz (wie um 11 Uhr zu Ort A gehen, um 14 Uhr zu Ort B gehen) oder Ortssequenz (wie derzeit an Ort A, nächster Stopp zu Ort B) verbunden. Beachten Sie, dass wenn nur mehrere unabhängige Reisepunkte vorgestellt werden, dies keine Reiseroute darstellen kann.\nOb Reiserouten enthalten: Wenn der Artikel mindestens eine vollständige Reiseroute enthält, geben Sie 1 zurück, andernfalls 0.\nAnzahl der Reiserouten: Die Anzahl der vollständigen Reiserouten im Artikel, 0 wenn keine vorhanden.\nOb zeitkritische Projekte enthalten: Zeitkritische Projekte beziehen sich auf Projekte, die zu bestimmten Zeiten stattfinden, wie Konzerte, Ausstellungen, Versammlungen, Stand-up-Comedy-Shows, Musikfestivals und andere zeitlich begrenzte Aktivitäten. Wenn die Reiseroute zeitkritische Projekte enthält, geben Sie 1 zurück, andernfalls 0.\nroutes-Feld: Wenn Reiserouten enthalten sind, müssen detaillierte strukturierte Informationen für jede Route ausgegeben werden, einschließlich: routeName (Routenname), days (Anzahl der Tage), routePoints (Liste der Reisepunkte), hasTimelinessProject (ob diese Route zeitkritische Projekte enthält), timelinessProjects (Liste der zeitkritischen Projekte in dieser Route, leeres Array wenn keine, jeder Projektname ist 9-150 Zeichen lang (einschließlich Leerzeichen, Zahlen...)).\nAusgabeformat-Anforderungen: Bitte geben Sie die Analyseergebnisse strikt im folgenden JSON-Format aus, fügen Sie keine zusätzlichen Texterklärungen hinzu:{\"containRoute\": 0 oder 1,\"routeCount\": Zahl(0,1,2...),\"containTimelinessProject\": 0 oder 1, \"routes\": [{\"routeName\": \"Routenname\", \"days\": 1-3, \"routePoints\": [\"Reisepunkt A\", \"Reisepunkt B\"], \"hasTimelinessProject\": 0 oder 1, \"timelinessProjects\": [\"Name des zeitkritischen Projekts\"]}]}\nArtikelinhalt:\n【Essensempfehlungen】Die lokale Snackstraße hat mehrere traditionsreiche Marken, empfehle Frühstücksstände, Konditoreien, Grillstände, keine zeitliche Reihenfolge, geeignet für entspannte Besuche.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob der Artikel Reiserouten enthält, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Anzahl der im Artikel enthaltenen Reiserouten",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob die Reiserouten zeitkritische Projekte enthalten, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Details aller Reiserouten",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Routenname, darf nicht leer sein",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Anzahl der Tage für die Route, Wertebereich 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste der Reisepunkte, muss mindestens zwei Punkte enthalten",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Ob diese Route zeitkritische Projekte enthält",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Zeitkritische Projekte in dieser Route, jeder Projektname ist 9-150 Zeichen lang",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Ob Schema erfüllt",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Reiseexperte. Ich werde Ihnen einen Reiseführer-Artikel mit Titel und Inhalt zur Verfügung stellen. Bitte analysieren Sie den Artikel, um zu bestimmen, ob er Reiserouten enthält (containRoute), wie viele Reiserouten er enthält (routeCount), ob er zeitkritische Projekte enthält (containTimelinessProject), und extrahieren Sie detaillierte Informationen für jede Route (wie Routenname, Tage, Reisepunkte, ob sie zeitkritische Projekte enthält, Namen der beteiligten zeitkritischen Projekte). Geben Sie schließlich die Ergebnisse im angegebenen JSON-Format aus.\nBegriffsdefinitionen:\nReiseroute: Eine geplante Reiseroute mit mehreren Reisepunkten in chronologischer Reihenfolge, die etwa 1-3 Tage dauert. Normalerweise sind mehrere Reisepunkte in einer Reiseroute durch Zeitsequenz (wie um 11 Uhr zu Ort A gehen, um 14 Uhr zu Ort B gehen) oder Ortssequenz (wie derzeit an Ort A, nächster Stopp zu Ort B) verbunden. Beachten Sie, dass wenn nur mehrere unabhängige Reisepunkte vorgestellt werden, dies keine Reiseroute darstellen kann.\nOb Reiserouten enthalten: Wenn der Artikel mindestens eine vollständige Reiseroute enthält, geben Sie 1 zurück, andernfalls 0.\nAnzahl der Reiserouten: Die Anzahl der vollständigen Reiserouten im Artikel, 0 wenn keine vorhanden.\nOb zeitkritische Projekte enthalten: Zeitkritische Projekte beziehen sich auf Projekte, die zu bestimmten Zeiten stattfinden, wie Konzerte, Ausstellungen, Versammlungen, Stand-up-Comedy-Shows, Musikfestivals und andere zeitlich begrenzte Aktivitäten. Wenn die Reiseroute zeitkritische Projekte enthält, geben Sie 1 zurück, andernfalls 0.\nroutes-Feld: Wenn Reiserouten enthalten sind, müssen detaillierte strukturierte Informationen für jede Route ausgegeben werden, einschließlich: routeName (Routenname), days (Anzahl der Tage), routePoints (Liste der Reisepunkte), hasTimelinessProject (ob diese Route zeitkritische Projekte enthält), timelinessProjects (Liste der zeitkritischen Projekte in dieser Route, leeres Array wenn keine, jeder Projektname ist 9-150 Zeichen lang (einschließlich Leerzeichen, Zahlen...)).\nAusgabeformat-Anforderungen: Bitte geben Sie die Analyseergebnisse strikt im folgenden JSON-Format aus, fügen Sie keine zusätzlichen Texterklärungen hinzu:{\"containRoute\": 0 oder 1,\"routeCount\": Zahl(0,1,2...),\"containTimelinessProject\": 0 oder 1, \"routes\": [{\"routeName\": \"Routenname\", \"days\": 1-3, \"routePoints\": [\"Reisepunkt A\", \"Reisepunkt B\"], \"hasTimelinessProject\": 0 oder 1, \"timelinessProjects\": [\"Name des zeitkritischen Projekts\"]}]}\nArtikelinhalt:\n【Zweitägige Reiseroute】Tag1: Besuch der Altstadt am Morgen, Besuch des Keramikmuseums am Nachmittag, Teilnahme an der Nachtmarkt-Lichtshow am Abend. Tag2: Bergsteigen am Morgen, heiße Quellen am Nachmittag.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob der Artikel Reiserouten enthält, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Anzahl der im Artikel enthaltenen Reiserouten",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob die Reiserouten zeitkritische Projekte enthalten, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Details aller Reiserouten",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Routenname, darf nicht leer sein",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Anzahl der Tage für die Route, Wertebereich 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste der Reisepunkte, muss mindestens zwei Punkte enthalten",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Ob diese Route zeitkritische Projekte enthält",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Zeitkritische Projekte in dieser Route, jeder Projektname ist 9-150 Zeichen lang",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Ob Schema erfüllt",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Reiseexperte. Ich werde Ihnen einen Reiseführer-Artikel mit Titel und Inhalt zur Verfügung stellen. Bitte analysieren Sie den Artikel, um zu bestimmen, ob er Reiserouten enthält (containRoute), wie viele Reiserouten er enthält (routeCount), ob er zeitkritische Projekte enthält (containTimelinessProject), und extrahieren Sie detaillierte Informationen für jede Route (wie Routenname, Tage, Reisepunkte, ob sie zeitkritische Projekte enthält, Namen der beteiligten zeitkritischen Projekte). Geben Sie schließlich die Ergebnisse im angegebenen JSON-Format aus.\nBegriffsdefinitionen:\nReiseroute: Eine geplante Reiseroute mit mehreren Reisepunkten in chronologischer Reihenfolge, die etwa 1-3 Tage dauert. Normalerweise sind mehrere Reisepunkte in einer Reiseroute durch Zeitsequenz (wie um 11 Uhr zu Ort A gehen, um 14 Uhr zu Ort B gehen) oder Ortssequenz (wie derzeit an Ort A, nächster Stopp zu Ort B) verbunden. Beachten Sie, dass wenn nur mehrere unabhängige Reisepunkte vorgestellt werden, dies keine Reiseroute darstellen kann.\nOb Reiserouten enthalten: Wenn der Artikel mindestens eine vollständige Reiseroute enthält, geben Sie 1 zurück, andernfalls 0.\nAnzahl der Reiserouten: Die Anzahl der vollständigen Reiserouten im Artikel, 0 wenn keine vorhanden.\nOb zeitkritische Projekte enthalten: Zeitkritische Projekte beziehen sich auf Projekte, die zu bestimmten Zeiten stattfinden, wie Konzerte, Ausstellungen, Versammlungen, Stand-up-Comedy-Shows, Musikfestivals und andere zeitlich begrenzte Aktivitäten. Wenn die Reiseroute zeitkritische Projekte enthält, geben Sie 1 zurück, andernfalls 0.\nroutes-Feld: Wenn Reiserouten enthalten sind, müssen detaillierte strukturierte Informationen für jede Route ausgegeben werden, einschließlich: routeName (Routenname), days (Anzahl der Tage), routePoints (Liste der Reisepunkte), hasTimelinessProject (ob diese Route zeitkritische Projekte enthält), timelinessProjects (Liste der zeitkritischen Projekte in dieser Route, leeres Array wenn keine, jeder Projektname ist 9-150 Zeichen lang (einschließlich Leerzeichen, Zahlen...)).\nAusgabeformat-Anforderungen: Bitte geben Sie die Analyseergebnisse strikt im folgenden JSON-Format aus, fügen Sie keine zusätzlichen Texterklärungen hinzu:{\"containRoute\": 0 oder 1,\"routeCount\": Zahl(0,1,2...),\"containTimelinessProject\": 0 oder 1, \"routes\": [{\"routeName\": \"Routenname\", \"days\": 1-3, \"routePoints\": [\"Reisepunkt A\", \"Reisepunkt B\"], \"hasTimelinessProject\": 0 oder 1, \"timelinessProjects\": [\"Name des zeitkritischen Projekts\"]}]}\nArtikelinhalt:\n【Wochenend-Familienausflug】Zoobesuch zur Panda-Beobachtung am Morgen, Roboterausstellung im Wissenschaftsmuseum am Nachmittag, Kindertheater-Aufführung am Abend. Besuch des botanischen Gartens am Morgen des zweiten Tages, Rückkehr am Nachmittag.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob der Artikel Reiserouten enthält, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Anzahl der im Artikel enthaltenen Reiserouten",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob die Reiserouten zeitkritische Projekte enthalten, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Details aller Reiserouten",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Routenname, darf nicht leer sein",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Anzahl der Tage für die Route, Wertebereich 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste der Reisepunkte, muss mindestens zwei Punkte enthalten",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Ob diese Route zeitkritische Projekte enthält",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Zeitkritische Projekte in dieser Route, jeder Projektname ist 9-150 Zeichen lang",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Ob Schema erfüllt",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Reiseexperte. Ich werde Ihnen einen Reiseführer-Artikel mit Titel und Inhalt zur Verfügung stellen. Bitte analysieren Sie den Artikel, um zu bestimmen, ob er Reiserouten enthält (containRoute), wie viele Reiserouten er enthält (routeCount), ob er zeitkritische Projekte enthält (containTimelinessProject), und extrahieren Sie detaillierte Informationen für jede Route (wie Routenname, Tage, Reisepunkte, ob sie zeitkritische Projekte enthält, Namen der beteiligten zeitkritischen Projekte). Geben Sie schließlich die Ergebnisse im angegebenen JSON-Format aus.\nBegriffsdefinitionen:\nReiseroute: Eine geplante Reiseroute mit mehreren Reisepunkten in chronologischer Reihenfolge, die etwa 1-3 Tage dauert. Normalerweise sind mehrere Reisepunkte in einer Reiseroute durch Zeitsequenz (wie um 11 Uhr zu Ort A gehen, um 14 Uhr zu Ort B gehen) oder Ortssequenz (wie derzeit an Ort A, nächster Stopp zu Ort B) verbunden. Beachten Sie, dass wenn nur mehrere unabhängige Reisepunkte vorgestellt werden, dies keine Reiseroute darstellen kann.\nOb Reiserouten enthalten: Wenn der Artikel mindestens eine vollständige Reiseroute enthält, geben Sie 1 zurück, andernfalls 0.\nAnzahl der Reiserouten: Die Anzahl der vollständigen Reiserouten im Artikel, 0 wenn keine vorhanden.\nOb zeitkritische Projekte enthalten: Zeitkritische Projekte beziehen sich auf Projekte, die zu bestimmten Zeiten stattfinden, wie Konzerte, Ausstellungen, Versammlungen, Stand-up-Comedy-Shows, Musikfestivals und andere zeitlich begrenzte Aktivitäten. Wenn die Reiseroute zeitkritische Projekte enthält, geben Sie 1 zurück, andernfalls 0.\nroutes-Feld: Wenn Reiserouten enthalten sind, müssen detaillierte strukturierte Informationen für jede Route ausgegeben werden, einschließlich: routeName (Routenname), days (Anzahl der Tage), routePoints (Liste der Reisepunkte), hasTimelinessProject (ob diese Route zeitkritische Projekte enthält), timelinessProjects (Liste der zeitkritischen Projekte in dieser Route, leeres Array wenn keine, jeder Projektname ist 9-150 Zeichen lang (einschließlich Leerzeichen, Zahlen...)).\nAusgabeformat-Anforderungen: Bitte geben Sie die Analyseergebnisse strikt im folgenden JSON-Format aus, fügen Sie keine zusätzlichen Texterklärungen hinzu:{\"containRoute\": 0 oder 1,\"routeCount\": Zahl(0,1,2...),\"containTimelinessProject\": 0 oder 1, \"routes\": [{\"routeName\": \"Routenname\", \"days\": 1-3, \"routePoints\": [\"Reisepunkt A\", \"Reisepunkt B\"], \"hasTimelinessProject\": 0 oder 1, \"timelinessProjects\": [\"Name des zeitkritischen Projekts\"]}]}\nArtikelinhalt:\n【Ausstellungsbesuch】Kunstgalerie hat neue Ausstellung dieses Wochenende, Künstlertreffen um 14 Uhr am Samstag, Stand-up-Comedy-Show am Abend, Voranmeldung erforderlich.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob der Artikel Reiserouten enthält, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Anzahl der im Artikel enthaltenen Reiserouten",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob die Reiserouten zeitkritische Projekte enthalten, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Details aller Reiserouten",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Routenname, darf nicht leer sein",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Anzahl der Tage für die Route, Wertebereich 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste der Reisepunkte, muss mindestens zwei Punkte enthalten",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Ob diese Route zeitkritische Projekte enthält",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Zeitkritische Projekte in dieser Route, jeder Projektname ist 9-150 Zeichen lang",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Ob Schema erfüllt",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Reiseexperte. Ich werde Ihnen einen Reiseführer-Artikel mit Titel und Inhalt zur Verfügung stellen. Bitte analysieren Sie den Artikel, um zu bestimmen, ob er Reiserouten enthält (containRoute), wie viele Reiserouten er enthält (routeCount), ob er zeitkritische Projekte enthält (containTimelinessProject), und extrahieren Sie detaillierte Informationen für jede Route (wie Routenname, Tage, Reisepunkte, ob sie zeitkritische Projekte enthält, Namen der beteiligten zeitkritischen Projekte). Geben Sie schließlich die Ergebnisse im angegebenen JSON-Format aus.\nBegriffsdefinitionen:\nReiseroute: Eine geplante Reiseroute mit mehreren Reisepunkten in chronologischer Reihenfolge, die etwa 1-3 Tage dauert. Normalerweise sind mehrere Reisepunkte in einer Reiseroute durch Zeitsequenz (wie um 11 Uhr zu Ort A gehen, um 14 Uhr zu Ort B gehen) oder Ortssequenz (wie derzeit an Ort A, nächster Stopp zu Ort B) verbunden. Beachten Sie, dass wenn nur mehrere unabhängige Reisepunkte vorgestellt werden, dies keine Reiseroute darstellen kann.\nOb Reiserouten enthalten: Wenn der Artikel mindestens eine vollständige Reiseroute enthält, geben Sie 1 zurück, andernfalls 0.\nAnzahl der Reiserouten: Die Anzahl der vollständigen Reiserouten im Artikel, 0 wenn keine vorhanden.\nOb zeitkritische Projekte enthalten: Zeitkritische Projekte beziehen sich auf Projekte, die zu bestimmten Zeiten stattfinden, wie Konzerte, Ausstellungen, Versammlungen, Stand-up-Comedy-Shows, Musikfestivals und andere zeitlich begrenzte Aktivitäten. Wenn die Reiseroute zeitkritische Projekte enthält, geben Sie 1 zurück, andernfalls 0.\nroutes-Feld: Wenn Reiserouten enthalten sind, müssen detaillierte strukturierte Informationen für jede Route ausgegeben werden, einschließlich: routeName (Routenname), days (Anzahl der Tage), routePoints (Liste der Reisepunkte), hasTimelinessProject (ob diese Route zeitkritische Projekte enthält), timelinessProjects (Liste der zeitkritischen Projekte in dieser Route, leeres Array wenn keine, jeder Projektname ist 9-150 Zeichen lang (einschließlich Leerzeichen, Zahlen...)).\nAusgabeformat-Anforderungen: Bitte geben Sie die Analyseergebnisse strikt im folgenden JSON-Format aus, fügen Sie keine zusätzlichen Texterklärungen hinzu:{\"containRoute\": 0 oder 1,\"routeCount\": Zahl(0,1,2...),\"containTimelinessProject\": 0 oder 1, \"routes\": [{\"routeName\": \"Routenname\", \"days\": 1-3, \"routePoints\": [\"Reisepunkt A\", \"Reisepunkt B\"], \"hasTimelinessProject\": 0 oder 1, \"timelinessProjects\": [\"Name des zeitkritischen Projekts\"]}]}\nArtikelinhalt:\n【Individueller Reiseführer】Empfohlene Attraktionen umfassen Parks, alte Straßen, Museen, Nachtmärkte, jede kann unabhängig besucht werden, keine feste Route.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob der Artikel Reiserouten enthält, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Anzahl der im Artikel enthaltenen Reiserouten",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob die Reiserouten zeitkritische Projekte enthalten, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Details aller Reiserouten",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Routenname, darf nicht leer sein",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Anzahl der Tage für die Route, Wertebereich 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste der Reisepunkte, muss mindestens zwei Punkte enthalten",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Ob diese Route zeitkritische Projekte enthält",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Zeitkritische Projekte in dieser Route, jeder Projektname ist 9-150 Zeichen lang",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Ob Schema erfüllt",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Reiseexperte. Ich werde Ihnen einen Reiseführer-Artikel mit Titel und Inhalt zur Verfügung stellen. Bitte analysieren Sie den Artikel, um zu bestimmen, ob er Reiserouten enthält (containRoute), wie viele Reiserouten er enthält (routeCount), ob er zeitkritische Projekte enthält (containTimelinessProject), und extrahieren Sie detaillierte Informationen für jede Route (wie Routenname, Tage, Reisepunkte, ob sie zeitkritische Projekte enthält, Namen der beteiligten zeitkritischen Projekte). Geben Sie schließlich die Ergebnisse im angegebenen JSON-Format aus.\nBegriffsdefinitionen:\nReiseroute: Eine geplante Reiseroute mit mehreren Reisepunkten in chronologischer Reihenfolge, die etwa 1-3 Tage dauert. Normalerweise sind mehrere Reisepunkte in einer Reiseroute durch Zeitsequenz (wie um 11 Uhr zu Ort A gehen, um 14 Uhr zu Ort B gehen) oder Ortssequenz (wie derzeit an Ort A, nächster Stopp zu Ort B) verbunden. Beachten Sie, dass wenn nur mehrere unabhängige Reisepunkte vorgestellt werden, dies keine Reiseroute darstellen kann.\nOb Reiserouten enthalten: Wenn der Artikel mindestens eine vollständige Reiseroute enthält, geben Sie 1 zurück, andernfalls 0.\nAnzahl der Reiserouten: Die Anzahl der vollständigen Reiserouten im Artikel, 0 wenn keine vorhanden.\nOb zeitkritische Projekte enthalten: Zeitkritische Projekte beziehen sich auf Projekte, die zu bestimmten Zeiten stattfinden, wie Konzerte, Ausstellungen, Versammlungen, Stand-up-Comedy-Shows, Musikfestivals und andere zeitlich begrenzte Aktivitäten. Wenn die Reiseroute zeitkritische Projekte enthält, geben Sie 1 zurück, andernfalls 0.\nroutes-Feld: Wenn Reiserouten enthalten sind, müssen detaillierte strukturierte Informationen für jede Route ausgegeben werden, einschließlich: routeName (Routenname), days (Anzahl der Tage), routePoints (Liste der Reisepunkte), hasTimelinessProject (ob diese Route zeitkritische Projekte enthält), timelinessProjects (Liste der zeitkritischen Projekte in dieser Route, leeres Array wenn keine, jeder Projektname ist 9-150 Zeichen lang (einschließlich Leerzeichen, Zahlen...)).\nAusgabeformat-Anforderungen: Bitte geben Sie die Analyseergebnisse strikt im folgenden JSON-Format aus, fügen Sie keine zusätzlichen Texterklärungen hinzu:{\"containRoute\": 0 oder 1,\"routeCount\": Zahl(0,1,2...),\"containTimelinessProject\": 0 oder 1, \"routes\": [{\"routeName\": \"Routenname\", \"days\": 1-3, \"routePoints\": [\"Reisepunkt A\", \"Reisepunkt B\"], \"hasTimelinessProject\": 0 oder 1, \"timelinessProjects\": [\"Name des zeitkritischen Projekts\"]}]}\nArtikelinhalt:\n【Eintagesausflug】Versammlung am Bahnhof um 8 Uhr, Ankunft im Landschaftsgebiet um 9 Uhr, Berggipfeltour um 10 Uhr, Abstieg zum Mittagessen um 12 Uhr, Besuch des Volksdorfes am Nachmittag, Rückkehr um 16 Uhr.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob der Artikel Reiserouten enthält, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Anzahl der im Artikel enthaltenen Reiserouten",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob die Reiserouten zeitkritische Projekte enthalten, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Details aller Reiserouten",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Routenname, darf nicht leer sein",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Anzahl der Tage für die Route, Wertebereich 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste der Reisepunkte, muss mindestens zwei Punkte enthalten",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Ob diese Route zeitkritische Projekte enthält",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Zeitkritische Projekte in dieser Route, jeder Projektname ist 9-150 Zeichen lang",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Ob Schema erfüllt",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Reiseexperte. Ich werde Ihnen einen Reiseführer-Artikel mit Titel und Inhalt zur Verfügung stellen. Bitte analysieren Sie den Artikel, um zu bestimmen, ob er Reiserouten enthält (containRoute), wie viele Reiserouten er enthält (routeCount), ob er zeitkritische Projekte enthält (containTimelinessProject), und extrahieren Sie detaillierte Informationen für jede Route (wie Routenname, Tage, Reisepunkte, ob sie zeitkritische Projekte enthält, Namen der beteiligten zeitkritischen Projekte). Geben Sie schließlich die Ergebnisse im angegebenen JSON-Format aus.\nBegriffsdefinitionen:\nReiseroute: Eine geplante Reiseroute mit mehreren Reisepunkten in chronologischer Reihenfolge, die etwa 1-3 Tage dauert. Normalerweise sind mehrere Reisepunkte in einer Reiseroute durch Zeitsequenz (wie um 11 Uhr zu Ort A gehen, um 14 Uhr zu Ort B gehen) oder Ortssequenz (wie derzeit an Ort A, nächster Stopp zu Ort B) verbunden. Beachten Sie, dass wenn nur mehrere unabhängige Reisepunkte vorgestellt werden, dies keine Reiseroute darstellen kann.\nOb Reiserouten enthalten: Wenn der Artikel mindestens eine vollständige Reiseroute enthält, geben Sie 1 zurück, andernfalls 0.\nAnzahl der Reiserouten: Die Anzahl der vollständigen Reiserouten im Artikel, 0 wenn keine vorhanden.\nOb zeitkritische Projekte enthalten: Zeitkritische Projekte beziehen sich auf Projekte, die zu bestimmten Zeiten stattfinden, wie Konzerte, Ausstellungen, Versammlungen, Stand-up-Comedy-Shows, Musikfestivals und andere zeitlich begrenzte Aktivitäten. Wenn die Reiseroute zeitkritische Projekte enthält, geben Sie 1 zurück, andernfalls 0.\nroutes-Feld: Wenn Reiserouten enthalten sind, müssen detaillierte strukturierte Informationen für jede Route ausgegeben werden, einschließlich: routeName (Routenname), days (Anzahl der Tage), routePoints (Liste der Reisepunkte), hasTimelinessProject (ob diese Route zeitkritische Projekte enthält), timelinessProjects (Liste der zeitkritischen Projekte in dieser Route, leeres Array wenn keine, jeder Projektname ist 9-150 Zeichen lang (einschließlich Leerzeichen, Zahlen...)).\nAusgabeformat-Anforderungen: Bitte geben Sie die Analyseergebnisse strikt im folgenden JSON-Format aus, fügen Sie keine zusätzlichen Texterklärungen hinzu:{\"containRoute\": 0 oder 1,\"routeCount\": Zahl(0,1,2...),\"containTimelinessProject\": 0 oder 1, \"routes\": [{\"routeName\": \"Routenname\", \"days\": 1-3, \"routePoints\": [\"Reisepunkt A\", \"Reisepunkt B\"], \"hasTimelinessProject\": 0 oder 1, \"timelinessProjects\": [\"Name des zeitkritischen Projekts\"]}]}\nArtikelinhalt:\n【Nachttour-Route】Versammlung am Flussufer um 18:00, Bootstour bei Nacht um 18:30, nach dem Aussteigen um 20:00 zu Fuß zum Musikplatz für Freiluftkonzert.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob der Artikel Reiserouten enthält, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Anzahl der im Artikel enthaltenen Reiserouten",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob die Reiserouten zeitkritische Projekte enthalten, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Details aller Reiserouten",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Routenname, darf nicht leer sein",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Anzahl der Tage für die Route, Wertebereich 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste der Reisepunkte, muss mindestens zwei Punkte enthalten",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Ob diese Route zeitkritische Projekte enthält",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Zeitkritische Projekte in dieser Route, jeder Projektname ist 9-150 Zeichen lang",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Ob Schema erfüllt",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Reiseexperte. Ich werde Ihnen einen Reiseführer-Artikel mit Titel und Inhalt zur Verfügung stellen. Bitte analysieren Sie den Artikel, um zu bestimmen, ob er Reiserouten enthält (containRoute), wie viele Reiserouten er enthält (routeCount), ob er zeitkritische Projekte enthält (containTimelinessProject), und extrahieren Sie detaillierte Informationen für jede Route (wie Routenname, Tage, Reisepunkte, ob sie zeitkritische Projekte enthält, Namen der beteiligten zeitkritischen Projekte). Geben Sie schließlich die Ergebnisse im angegebenen JSON-Format aus.\nBegriffsdefinitionen:\nReiseroute: Eine geplante Reiseroute mit mehreren Reisepunkten in chronologischer Reihenfolge, die etwa 1-3 Tage dauert. Normalerweise sind mehrere Reisepunkte in einer Reiseroute durch Zeitsequenz (wie um 11 Uhr zu Ort A gehen, um 14 Uhr zu Ort B gehen) oder Ortssequenz (wie derzeit an Ort A, nächster Stopp zu Ort B) verbunden. Beachten Sie, dass wenn nur mehrere unabhängige Reisepunkte vorgestellt werden, dies keine Reiseroute darstellen kann.\nOb Reiserouten enthalten: Wenn der Artikel mindestens eine vollständige Reiseroute enthält, geben Sie 1 zurück, andernfalls 0.\nAnzahl der Reiserouten: Die Anzahl der vollständigen Reiserouten im Artikel, 0 wenn keine vorhanden.\nOb zeitkritische Projekte enthalten: Zeitkritische Projekte beziehen sich auf Projekte, die zu bestimmten Zeiten stattfinden, wie Konzerte, Ausstellungen, Versammlungen, Stand-up-Comedy-Shows, Musikfestivals und andere zeitlich begrenzte Aktivitäten. Wenn die Reiseroute zeitkritische Projekte enthält, geben Sie 1 zurück, andernfalls 0.\nroutes-Feld: Wenn Reiserouten enthalten sind, müssen detaillierte strukturierte Informationen für jede Route ausgegeben werden, einschließlich: routeName (Routenname), days (Anzahl der Tage), routePoints (Liste der Reisepunkte), hasTimelinessProject (ob diese Route zeitkritische Projekte enthält), timelinessProjects (Liste der zeitkritischen Projekte in dieser Route, leeres Array wenn keine, jeder Projektname ist 9-150 Zeichen lang (einschließlich Leerzeichen, Zahlen...)).\nAusgabeformat-Anforderungen: Bitte geben Sie die Analyseergebnisse strikt im folgenden JSON-Format aus, fügen Sie keine zusätzlichen Texterklärungen hinzu:{\"containRoute\": 0 oder 1,\"routeCount\": Zahl(0,1,2...),\"containTimelinessProject\": 0 oder 1, \"routes\": [{\"routeName\": \"Routenname\", \"days\": 1-3, \"routePoints\": [\"Reisepunkt A\", \"Reisepunkt B\"], \"hasTimelinessProject\": 0 oder 1, \"timelinessProjects\": [\"Name des zeitkritischen Projekts\"]}]}\nArtikelinhalt:\n【Reiseführer】Empfehle drei Hauptveranstaltungsorte: Museum, Kunstgalerie, Wissenschaftsmuseum, jeder mit charakteristischen Ausstellungen, geeignet für Familienbesuche, keine spezifische Route.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob der Artikel Reiserouten enthält, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Anzahl der im Artikel enthaltenen Reiserouten",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob die Reiserouten zeitkritische Projekte enthalten, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Details aller Reiserouten",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Routenname, darf nicht leer sein",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Anzahl der Tage für die Route, Wertebereich 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste der Reisepunkte, muss mindestens zwei Punkte enthalten",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Ob diese Route zeitkritische Projekte enthält",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Zeitkritische Projekte in dieser Route, jeder Projektname ist 9-150 Zeichen lang",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Ob Schema erfüllt",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Reiseexperte. Ich werde Ihnen einen Reiseführer-Artikel mit Titel und Inhalt zur Verfügung stellen. Bitte analysieren Sie den Artikel, um zu bestimmen, ob er Reiserouten enthält (containRoute), wie viele Reiserouten er enthält (routeCount), ob er zeitkritische Projekte enthält (containTimelinessProject), und extrahieren Sie detaillierte Informationen für jede Route (wie Routenname, Tage, Reisepunkte, ob sie zeitkritische Projekte enthält, Namen der beteiligten zeitkritischen Projekte). Geben Sie schließlich die Ergebnisse im angegebenen JSON-Format aus.\nBegriffsdefinitionen:\nReiseroute: Eine geplante Reiseroute mit mehreren Reisepunkten in chronologischer Reihenfolge, die etwa 1-3 Tage dauert. Normalerweise sind mehrere Reisepunkte in einer Reiseroute durch Zeitsequenz (wie um 11 Uhr zu Ort A gehen, um 14 Uhr zu Ort B gehen) oder Ortssequenz (wie derzeit an Ort A, nächster Stopp zu Ort B) verbunden. Beachten Sie, dass wenn nur mehrere unabhängige Reisepunkte vorgestellt werden, dies keine Reiseroute darstellen kann.\nOb Reiserouten enthalten: Wenn der Artikel mindestens eine vollständige Reiseroute enthält, geben Sie 1 zurück, andernfalls 0.\nAnzahl der Reiserouten: Die Anzahl der vollständigen Reiserouten im Artikel, 0 wenn keine vorhanden.\nOb zeitkritische Projekte enthalten: Zeitkritische Projekte beziehen sich auf Projekte, die zu bestimmten Zeiten stattfinden, wie Konzerte, Ausstellungen, Versammlungen, Stand-up-Comedy-Shows, Musikfestivals und andere zeitlich begrenzte Aktivitäten. Wenn die Reiseroute zeitkritische Projekte enthält, geben Sie 1 zurück, andernfalls 0.\nroutes-Feld: Wenn Reiserouten enthalten sind, müssen detaillierte strukturierte Informationen für jede Route ausgegeben werden, einschließlich: routeName (Routenname), days (Anzahl der Tage), routePoints (Liste der Reisepunkte), hasTimelinessProject (ob diese Route zeitkritische Projekte enthält), timelinessProjects (Liste der zeitkritischen Projekte in dieser Route, leeres Array wenn keine, jeder Projektname ist 9-150 Zeichen lang (einschließlich Leerzeichen, Zahlen...)).\nAusgabeformat-Anforderungen: Bitte geben Sie die Analyseergebnisse strikt im folgenden JSON-Format aus, fügen Sie keine zusätzlichen Texterklärungen hinzu:{\"containRoute\": 0 oder 1,\"routeCount\": Zahl(0,1,2...),\"containTimelinessProject\": 0 oder 1, \"routes\": [{\"routeName\": \"Routenname\", \"days\": 1-3, \"routePoints\": [\"Reisepunkt A\", \"Reisepunkt B\"], \"hasTimelinessProject\": 0 oder 1, \"timelinessProjects\": [\"Name des zeitkritischen Projekts\"]}]}\nArtikelinhalt:\n【Dreitägige Selbstfahrer-Tour】Tag1: Morgens Abfahrt nach Gubei-Wasserstadt, nach dem Mittagessen Tour durch die Wasserstadtlandschaft, Teilnahme an der Wasserstadt-Lichtshow am Abend. Tag2: Morgens zu den Ausläufern der Großen Mauer, Besteigung der Großen Mauer am Nachmittag, Camping am Abend. Tag3: Besuch des Museums der Großen Mauer am Morgen, Rückkehr am Nachmittag.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob der Artikel Reiserouten enthält, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Anzahl der im Artikel enthaltenen Reiserouten",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob die Reiserouten zeitkritische Projekte enthalten, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Details aller Reiserouten",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Routenname, darf nicht leer sein",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Anzahl der Tage für die Route, Wertebereich 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste der Reisepunkte, muss mindestens zwei Punkte enthalten",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Ob diese Route zeitkritische Projekte enthält",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Zeitkritische Projekte in dieser Route, jeder Projektname ist 9-150 Zeichen lang",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Ob Schema erfüllt",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Reiseexperte. Ich werde Ihnen einen Reiseführer-Artikel mit Titel und Inhalt zur Verfügung stellen. Bitte analysieren Sie den Artikel, um zu bestimmen, ob er Reiserouten enthält (containRoute), wie viele Reiserouten er enthält (routeCount), ob er zeitkritische Projekte enthält (containTimelinessProject), und extrahieren Sie detaillierte Informationen für jede Route (wie Routenname, Tage, Reisepunkte, ob sie zeitkritische Projekte enthält, Namen der beteiligten zeitkritischen Projekte). Geben Sie schließlich die Ergebnisse im angegebenen JSON-Format aus.\nBegriffsdefinitionen:\nReiseroute: Eine geplante Reiseroute mit mehreren Reisepunkten in chronologischer Reihenfolge, die etwa 1-3 Tage dauert. Normalerweise sind mehrere Reisepunkte in einer Reiseroute durch Zeitsequenz (wie um 11 Uhr zu Ort A gehen, um 14 Uhr zu Ort B gehen) oder Ortssequenz (wie derzeit an Ort A, nächster Stopp zu Ort B) verbunden. Beachten Sie, dass wenn nur mehrere unabhängige Reisepunkte vorgestellt werden, dies keine Reiseroute darstellen kann.\nOb Reiserouten enthalten: Wenn der Artikel mindestens eine vollständige Reiseroute enthält, geben Sie 1 zurück, andernfalls 0.\nAnzahl der Reiserouten: Die Anzahl der vollständigen Reiserouten im Artikel, 0 wenn keine vorhanden.\nOb zeitkritische Projekte enthalten: Zeitkritische Projekte beziehen sich auf Projekte, die zu bestimmten Zeiten stattfinden, wie Konzerte, Ausstellungen, Versammlungen, Stand-up-Comedy-Shows, Musikfestivals und andere zeitlich begrenzte Aktivitäten. Wenn die Reiseroute zeitkritische Projekte enthält, geben Sie 1 zurück, andernfalls 0.\nroutes-Feld: Wenn Reiserouten enthalten sind, müssen detaillierte strukturierte Informationen für jede Route ausgegeben werden, einschließlich: routeName (Routenname), days (Anzahl der Tage), routePoints (Liste der Reisepunkte), hasTimelinessProject (ob diese Route zeitkritische Projekte enthält), timelinessProjects (Liste der zeitkritischen Projekte in dieser Route, leeres Array wenn keine, jeder Projektname ist 9-150 Zeichen lang (einschließlich Leerzeichen, Zahlen...)).\nAusgabeformat-Anforderungen: Bitte geben Sie die Analyseergebnisse strikt im folgenden JSON-Format aus, fügen Sie keine zusätzlichen Texterklärungen hinzu:{\"containRoute\": 0 oder 1,\"routeCount\": Zahl(0,1,2...),\"containTimelinessProject\": 0 oder 1, \"routes\": [{\"routeName\": \"Routenname\", \"days\": 1-3, \"routePoints\": [\"Reisepunkt A\", \"Reisepunkt B\"], \"hasTimelinessProject\": 0 oder 1, \"timelinessProjects\": [\"Name des zeitkritischen Projekts\"]}]}\nArtikelinhalt:\n【Sommer-Eltern-Kind-Camp】Erster Tag morgens Versammlung, Besuch des Wissenschaftsmuseums, nachmittags Wissenschaftsexperiment-Erfahrung, abends Wissenschafts-Stand-up-Comedy-Show. Zweiter Tag ganztägige Outdoor-Entwicklung, dritter Tag morgens Besuch des botanischen Gartens, nachmittags Abschlusszeremonie.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob der Artikel Reiserouten enthält, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Anzahl der im Artikel enthaltenen Reiserouten",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob die Reiserouten zeitkritische Projekte enthalten, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Details aller Reiserouten",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Routenname, darf nicht leer sein",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Anzahl der Tage für die Route, Wertebereich 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste der Reisepunkte, muss mindestens zwei Punkte enthalten",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Ob diese Route zeitkritische Projekte enthält",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Zeitkritische Projekte in dieser Route, jeder Projektname ist 9-150 Zeichen lang",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Ob Schema erfüllt",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Reiseexperte. Ich werde Ihnen einen Reiseführer-Artikel mit Titel und Inhalt zur Verfügung stellen. Bitte analysieren Sie den Artikel, um zu bestimmen, ob er Reiserouten enthält (containRoute), wie viele Reiserouten er enthält (routeCount), ob er zeitkritische Projekte enthält (containTimelinessProject), und extrahieren Sie detaillierte Informationen für jede Route (wie Routenname, Tage, Reisepunkte, ob sie zeitkritische Projekte enthält, Namen der beteiligten zeitkritischen Projekte). Geben Sie schließlich die Ergebnisse im angegebenen JSON-Format aus.\nBegriffsdefinitionen:\nReiseroute: Eine geplante Reiseroute mit mehreren Reisepunkten in chronologischer Reihenfolge, die etwa 1-3 Tage dauert. Normalerweise sind mehrere Reisepunkte in einer Reiseroute durch Zeitsequenz (wie um 11 Uhr zu Ort A gehen, um 14 Uhr zu Ort B gehen) oder Ortssequenz (wie derzeit an Ort A, nächster Stopp zu Ort B) verbunden. Beachten Sie, dass wenn nur mehrere unabhängige Reisepunkte vorgestellt werden, dies keine Reiseroute darstellen kann.\nOb Reiserouten enthalten: Wenn der Artikel mindestens eine vollständige Reiseroute enthält, geben Sie 1 zurück, andernfalls 0.\nAnzahl der Reiserouten: Die Anzahl der vollständigen Reiserouten im Artikel, 0 wenn keine vorhanden.\nOb zeitkritische Projekte enthalten: Zeitkritische Projekte beziehen sich auf Projekte, die zu bestimmten Zeiten stattfinden, wie Konzerte, Ausstellungen, Versammlungen, Stand-up-Comedy-Shows, Musikfestivals und andere zeitlich begrenzte Aktivitäten. Wenn die Reiseroute zeitkritische Projekte enthält, geben Sie 1 zurück, andernfalls 0.\nroutes-Feld: Wenn Reiserouten enthalten sind, müssen detaillierte strukturierte Informationen für jede Route ausgegeben werden, einschließlich: routeName (Routenname), days (Anzahl der Tage), routePoints (Liste der Reisepunkte), hasTimelinessProject (ob diese Route zeitkritische Projekte enthält), timelinessProjects (Liste der zeitkritischen Projekte in dieser Route, leeres Array wenn keine, jeder Projektname ist 9-150 Zeichen lang (einschließlich Leerzeichen, Zahlen...)).\nAusgabeformat-Anforderungen: Bitte geben Sie die Analyseergebnisse strikt im folgenden JSON-Format aus, fügen Sie keine zusätzlichen Texterklärungen hinzu:{\"containRoute\": 0 oder 1,\"routeCount\": Zahl(0,1,2...),\"containTimelinessProject\": 0 oder 1, \"routes\": [{\"routeName\": \"Routenname\", \"days\": 1-3, \"routePoints\": [\"Reisepunkt A\", \"Reisepunkt B\"], \"hasTimelinessProject\": 0 oder 1, \"timelinessProjects\": [\"Name des zeitkritischen Projekts\"]}]}\nArtikelinhalt:\n【Städtische Nachtlauf-Route】Versammlung im städtischen Sportpark um 19 Uhr, Nachtlauf entlang des Flussuferwegs vorbei an Musikbrunnen und Lichtbrücke, Ende am Stadtzentrumplatz, geeignet für Sportbegeisterte.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob der Artikel Reiserouten enthält, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Anzahl der im Artikel enthaltenen Reiserouten",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob die Reiserouten zeitkritische Projekte enthalten, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Details aller Reiserouten",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Routenname, darf nicht leer sein",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Anzahl der Tage für die Route, Wertebereich 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste der Reisepunkte, muss mindestens zwei Punkte enthalten",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Ob diese Route zeitkritische Projekte enthält",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Zeitkritische Projekte in dieser Route, jeder Projektname ist 9-150 Zeichen lang",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Ob Schema erfüllt",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Reiseexperte. Ich werde Ihnen einen Reiseführer-Artikel mit Titel und Inhalt zur Verfügung stellen. Bitte analysieren Sie den Artikel, um zu bestimmen, ob er Reiserouten enthält (containRoute), wie viele Reiserouten er enthält (routeCount), ob er zeitkritische Projekte enthält (containTimelinessProject), und extrahieren Sie detaillierte Informationen für jede Route (wie Routenname, Tage, Reisepunkte, ob sie zeitkritische Projekte enthält, Namen der beteiligten zeitkritischen Projekte). Geben Sie schließlich die Ergebnisse im angegebenen JSON-Format aus.\nBegriffsdefinitionen:\nReiseroute: Eine geplante Reiseroute mit mehreren Reisepunkten in chronologischer Reihenfolge, die etwa 1-3 Tage dauert. Normalerweise sind mehrere Reisepunkte in einer Reiseroute durch Zeitsequenz (wie um 11 Uhr zu Ort A gehen, um 14 Uhr zu Ort B gehen) oder Ortssequenz (wie derzeit an Ort A, nächster Stopp zu Ort B) verbunden. Beachten Sie, dass wenn nur mehrere unabhängige Reisepunkte vorgestellt werden, dies keine Reiseroute darstellen kann.\nOb Reiserouten enthalten: Wenn der Artikel mindestens eine vollständige Reiseroute enthält, geben Sie 1 zurück, andernfalls 0.\nAnzahl der Reiserouten: Die Anzahl der vollständigen Reiserouten im Artikel, 0 wenn keine vorhanden.\nOb zeitkritische Projekte enthalten: Zeitkritische Projekte beziehen sich auf Projekte, die zu bestimmten Zeiten stattfinden, wie Konzerte, Ausstellungen, Versammlungen, Stand-up-Comedy-Shows, Musikfestivals und andere zeitlich begrenzte Aktivitäten. Wenn die Reiseroute zeitkritische Projekte enthält, geben Sie 1 zurück, andernfalls 0.\nroutes-Feld: Wenn Reiserouten enthalten sind, müssen detaillierte strukturierte Informationen für jede Route ausgegeben werden, einschließlich: routeName (Routenname), days (Anzahl der Tage), routePoints (Liste der Reisepunkte), hasTimelinessProject (ob diese Route zeitkritische Projekte enthält), timelinessProjects (Liste der zeitkritischen Projekte in dieser Route, leeres Array wenn keine, jeder Projektname ist 9-150 Zeichen lang (einschließlich Leerzeichen, Zahlen...)).\nAusgabeformat-Anforderungen: Bitte geben Sie die Analyseergebnisse strikt im folgenden JSON-Format aus, fügen Sie keine zusätzlichen Texterklärungen hinzu:{\"containRoute\": 0 oder 1,\"routeCount\": Zahl(0,1,2...),\"containTimelinessProject\": 0 oder 1, \"routes\": [{\"routeName\": \"Routenname\", \"days\": 1-3, \"routePoints\": [\"Reisepunkt A\", \"Reisepunkt B\"], \"hasTimelinessProject\": 0 oder 1, \"timelinessProjects\": [\"Name des zeitkritischen Projekts\"]}]}\nArtikelinhalt:\n【Wochenend-Paar-Tour】Besuch des Rosengartens am Morgen, Malerei-Ausstellung in der Kunstgalerie am Nachmittag, Jazz-Konzert am Abend. Zweiter Tag morgens Töpferei-Erfahrung, nachmittags Entspannung im Altstadtcafé.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob der Artikel Reiserouten enthält, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Anzahl der im Artikel enthaltenen Reiserouten",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob die Reiserouten zeitkritische Projekte enthalten, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Details aller Reiserouten",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Routenname, darf nicht leer sein",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Anzahl der Tage für die Route, Wertebereich 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste der Reisepunkte, muss mindestens zwei Punkte enthalten",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Ob diese Route zeitkritische Projekte enthält",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Zeitkritische Projekte in dieser Route, jeder Projektname ist 9-150 Zeichen lang",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Ob Schema erfüllt",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Reiseexperte. Ich werde Ihnen einen Reiseführer-Artikel mit Titel und Inhalt zur Verfügung stellen. Bitte analysieren Sie den Artikel, um zu bestimmen, ob er Reiserouten enthält (containRoute), wie viele Reiserouten er enthält (routeCount), ob er zeitkritische Projekte enthält (containTimelinessProject), und extrahieren Sie detaillierte Informationen für jede Route (wie Routenname, Tage, Reisepunkte, ob sie zeitkritische Projekte enthält, Namen der beteiligten zeitkritischen Projekte). Geben Sie schließlich die Ergebnisse im angegebenen JSON-Format aus.\nBegriffsdefinitionen:\nReiseroute: Eine geplante Reiseroute mit mehreren Reisepunkten in chronologischer Reihenfolge, die etwa 1-3 Tage dauert. Normalerweise sind mehrere Reisepunkte in einer Reiseroute durch Zeitsequenz (wie um 11 Uhr zu Ort A gehen, um 14 Uhr zu Ort B gehen) oder Ortssequenz (wie derzeit an Ort A, nächster Stopp zu Ort B) verbunden. Beachten Sie, dass wenn nur mehrere unabhängige Reisepunkte vorgestellt werden, dies keine Reiseroute darstellen kann.\nOb Reiserouten enthalten: Wenn der Artikel mindestens eine vollständige Reiseroute enthält, geben Sie 1 zurück, andernfalls 0.\nAnzahl der Reiserouten: Die Anzahl der vollständigen Reiserouten im Artikel, 0 wenn keine vorhanden.\nOb zeitkritische Projekte enthalten: Zeitkritische Projekte beziehen sich auf Projekte, die zu bestimmten Zeiten stattfinden, wie Konzerte, Ausstellungen, Versammlungen, Stand-up-Comedy-Shows, Musikfestivals und andere zeitlich begrenzte Aktivitäten. Wenn die Reiseroute zeitkritische Projekte enthält, geben Sie 1 zurück, andernfalls 0.\nroutes-Feld: Wenn Reiserouten enthalten sind, müssen detaillierte strukturierte Informationen für jede Route ausgegeben werden, einschließlich: routeName (Routenname), days (Anzahl der Tage), routePoints (Liste der Reisepunkte), hasTimelinessProject (ob diese Route zeitkritische Projekte enthält), timelinessProjects (Liste der zeitkritischen Projekte in dieser Route, leeres Array wenn keine, jeder Projektname ist 9-150 Zeichen lang (einschließlich Leerzeichen, Zahlen...)).\nAusgabeformat-Anforderungen: Bitte geben Sie die Analyseergebnisse strikt im folgenden JSON-Format aus, fügen Sie keine zusätzlichen Texterklärungen hinzu:{\"containRoute\": 0 oder 1,\"routeCount\": Zahl(0,1,2...),\"containTimelinessProject\": 0 oder 1, \"routes\": [{\"routeName\": \"Routenname\", \"days\": 1-3, \"routePoints\": [\"Reisepunkt A\", \"Reisepunkt B\"], \"hasTimelinessProject\": 0 oder 1, \"timelinessProjects\": [\"Name des zeitkritischen Projekts\"]}]}\nArtikelinhalt:\n【Ausstellung + Konzert Doppelroute】Neue Ausstellung in der Kunstgalerie am Morgen, Künstlervortrag am Nachmittag, Teilnahme an zeitlich begrenztem Konzert am Abend. Zweiter Tag morgens freie Aktivitäten.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob der Artikel Reiserouten enthält, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Anzahl der im Artikel enthaltenen Reiserouten",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob die Reiserouten zeitkritische Projekte enthalten, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Details aller Reiserouten",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Routenname, darf nicht leer sein",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Anzahl der Tage für die Route, Wertebereich 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste der Reisepunkte, muss mindestens zwei Punkte enthalten",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Ob diese Route zeitkritische Projekte enthält",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Zeitkritische Projekte in dieser Route, jeder Projektname ist 9-150 Zeichen lang",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Ob Schema erfüllt",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Reiseexperte. Ich werde Ihnen einen Reiseführer-Artikel mit Titel und Inhalt zur Verfügung stellen. Bitte analysieren Sie den Artikel, um zu bestimmen, ob er Reiserouten enthält (containRoute), wie viele Reiserouten er enthält (routeCount), ob er zeitkritische Projekte enthält (containTimelinessProject), und extrahieren Sie detaillierte Informationen für jede Route (wie Routenname, Tage, Reisepunkte, ob sie zeitkritische Projekte enthält, Namen der beteiligten zeitkritischen Projekte). Geben Sie schließlich die Ergebnisse im angegebenen JSON-Format aus.\nBegriffsdefinitionen:\nReiseroute: Eine geplante Reiseroute mit mehreren Reisepunkten in chronologischer Reihenfolge, die etwa 1-3 Tage dauert. Normalerweise sind mehrere Reisepunkte in einer Reiseroute durch Zeitsequenz (wie um 11 Uhr zu Ort A gehen, um 14 Uhr zu Ort B gehen) oder Ortssequenz (wie derzeit an Ort A, nächster Stopp zu Ort B) verbunden. Beachten Sie, dass wenn nur mehrere unabhängige Reisepunkte vorgestellt werden, dies keine Reiseroute darstellen kann.\nOb Reiserouten enthalten: Wenn der Artikel mindestens eine vollständige Reiseroute enthält, geben Sie 1 zurück, andernfalls 0.\nAnzahl der Reiserouten: Die Anzahl der vollständigen Reiserouten im Artikel, 0 wenn keine vorhanden.\nOb zeitkritische Projekte enthalten: Zeitkritische Projekte beziehen sich auf Projekte, die zu bestimmten Zeiten stattfinden, wie Konzerte, Ausstellungen, Versammlungen, Stand-up-Comedy-Shows, Musikfestivals und andere zeitlich begrenzte Aktivitäten. Wenn die Reiseroute zeitkritische Projekte enthält, geben Sie 1 zurück, andernfalls 0.\nroutes-Feld: Wenn Reiserouten enthalten sind, müssen detaillierte strukturierte Informationen für jede Route ausgegeben werden, einschließlich: routeName (Routenname), days (Anzahl der Tage), routePoints (Liste der Reisepunkte), hasTimelinessProject (ob diese Route zeitkritische Projekte enthält), timelinessProjects (Liste der zeitkritischen Projekte in dieser Route, leeres Array wenn keine, jeder Projektname ist 9-150 Zeichen lang (einschließlich Leerzeichen, Zahlen...)).\nAusgabeformat-Anforderungen: Bitte geben Sie die Analyseergebnisse strikt im folgenden JSON-Format aus, fügen Sie keine zusätzlichen Texterklärungen hinzu:{\"containRoute\": 0 oder 1,\"routeCount\": Zahl(0,1,2...),\"containTimelinessProject\": 0 oder 1, \"routes\": [{\"routeName\": \"Routenname\", \"days\": 1-3, \"routePoints\": [\"Reisepunkt A\", \"Reisepunkt B\"], \"hasTimelinessProject\": 0 oder 1, \"timelinessProjects\": [\"Name des zeitkritischen Projekts\"]}]}\nArtikelinhalt:\n【Zweitägige Fahrradroute】Tag1: Morgens Radfahrt zum Seepark, nach dem Mittagessen Rundfahrt um den See, nachmittags Ankunft am Campingplatz zum Camping. Tag2: Sonnenaufgang beobachten am Morgen, morgens Radfahrt zur Altstadt, nachmittags Ende der Reise.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob der Artikel Reiserouten enthält, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Anzahl der im Artikel enthaltenen Reiserouten",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob die Reiserouten zeitkritische Projekte enthalten, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Details aller Reiserouten",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Routenname, darf nicht leer sein",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Anzahl der Tage für die Route, Wertebereich 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste der Reisepunkte, muss mindestens zwei Punkte enthalten",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Ob diese Route zeitkritische Projekte enthält",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Zeitkritische Projekte in dieser Route, jeder Projektname ist 9-150 Zeichen lang",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Ob Schema erfüllt",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Reiseexperte. Ich werde Ihnen einen Reiseführer-Artikel mit Titel und Inhalt zur Verfügung stellen. Bitte analysieren Sie den Artikel, um zu bestimmen, ob er Reiserouten enthält (containRoute), wie viele Reiserouten er enthält (routeCount), ob er zeitkritische Projekte enthält (containTimelinessProject), und extrahieren Sie detaillierte Informationen für jede Route (wie Routenname, Tage, Reisepunkte, ob sie zeitkritische Projekte enthält, Namen der beteiligten zeitkritischen Projekte). Geben Sie schließlich die Ergebnisse im angegebenen JSON-Format aus.\nBegriffsdefinitionen:\nReiseroute: Eine geplante Reiseroute mit mehreren Reisepunkten in chronologischer Reihenfolge, die etwa 1-3 Tage dauert. Normalerweise sind mehrere Reisepunkte in einer Reiseroute durch Zeitsequenz (wie um 11 Uhr zu Ort A gehen, um 14 Uhr zu Ort B gehen) oder Ortssequenz (wie derzeit an Ort A, nächster Stopp zu Ort B) verbunden. Beachten Sie, dass wenn nur mehrere unabhängige Reisepunkte vorgestellt werden, dies keine Reiseroute darstellen kann.\nOb Reiserouten enthalten: Wenn der Artikel mindestens eine vollständige Reiseroute enthält, geben Sie 1 zurück, andernfalls 0.\nAnzahl der Reiserouten: Die Anzahl der vollständigen Reiserouten im Artikel, 0 wenn keine vorhanden.\nOb zeitkritische Projekte enthalten: Zeitkritische Projekte beziehen sich auf Projekte, die zu bestimmten Zeiten stattfinden, wie Konzerte, Ausstellungen, Versammlungen, Stand-up-Comedy-Shows, Musikfestivals und andere zeitlich begrenzte Aktivitäten. Wenn die Reiseroute zeitkritische Projekte enthält, geben Sie 1 zurück, andernfalls 0.\nroutes-Feld: Wenn Reiserouten enthalten sind, müssen detaillierte strukturierte Informationen für jede Route ausgegeben werden, einschließlich: routeName (Routenname), days (Anzahl der Tage), routePoints (Liste der Reisepunkte), hasTimelinessProject (ob diese Route zeitkritische Projekte enthält), timelinessProjects (Liste der zeitkritischen Projekte in dieser Route, leeres Array wenn keine, jeder Projektname ist 9-150 Zeichen lang (einschließlich Leerzeichen, Zahlen...)).\nAusgabeformat-Anforderungen: Bitte geben Sie die Analyseergebnisse strikt im folgenden JSON-Format aus, fügen Sie keine zusätzlichen Texterklärungen hinzu:{\"containRoute\": 0 oder 1,\"routeCount\": Zahl(0,1,2...),\"containTimelinessProject\": 0 oder 1, \"routes\": [{\"routeName\": \"Routenname\", \"days\": 1-3, \"routePoints\": [\"Reisepunkt A\", \"Reisepunkt B\"], \"hasTimelinessProject\": 0 oder 1, \"timelinessProjects\": [\"Name des zeitkritischen Projekts\"]}]}\nArtikelinhalt:\n【Eintägige Eltern-Kind-Wissenschaftstour】Zoobesuch am Morgen, Aquarium-Show anschauen, nachmittags Kinder-Wissenschaftspark erleben, abends interaktives Eltern-Kind-Drama besuchen.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob der Artikel Reiserouten enthält, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Anzahl der im Artikel enthaltenen Reiserouten",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob die Reiserouten zeitkritische Projekte enthalten, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Details aller Reiserouten",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Routenname, darf nicht leer sein",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Anzahl der Tage für die Route, Wertebereich 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste der Reisepunkte, muss mindestens zwei Punkte enthalten",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Ob diese Route zeitkritische Projekte enthält",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Zeitkritische Projekte in dieser Route, jeder Projektname ist 9-150 Zeichen lang",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Ob Schema erfüllt",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Reiseexperte. Ich werde Ihnen einen Reiseführer-Artikel mit Titel und Inhalt zur Verfügung stellen. Bitte analysieren Sie den Artikel, um zu bestimmen, ob er Reiserouten enthält (containRoute), wie viele Reiserouten er enthält (routeCount), ob er zeitkritische Projekte enthält (containTimelinessProject), und extrahieren Sie detaillierte Informationen für jede Route (wie Routenname, Tage, Reisepunkte, ob sie zeitkritische Projekte enthält, Namen der beteiligten zeitkritischen Projekte). Geben Sie schließlich die Ergebnisse im angegebenen JSON-Format aus.\nBegriffsdefinitionen:\nReiseroute: Eine geplante Reiseroute mit mehreren Reisepunkten in chronologischer Reihenfolge, die etwa 1-3 Tage dauert. Normalerweise sind mehrere Reisepunkte in einer Reiseroute durch Zeitsequenz (wie um 11 Uhr zu Ort A gehen, um 14 Uhr zu Ort B gehen) oder Ortssequenz (wie derzeit an Ort A, nächster Stopp zu Ort B) verbunden. Beachten Sie, dass wenn nur mehrere unabhängige Reisepunkte vorgestellt werden, dies keine Reiseroute darstellen kann.\nOb Reiserouten enthalten: Wenn der Artikel mindestens eine vollständige Reiseroute enthält, geben Sie 1 zurück, andernfalls 0.\nAnzahl der Reiserouten: Die Anzahl der vollständigen Reiserouten im Artikel, 0 wenn keine vorhanden.\nOb zeitkritische Projekte enthalten: Zeitkritische Projekte beziehen sich auf Projekte, die zu bestimmten Zeiten stattfinden, wie Konzerte, Ausstellungen, Versammlungen, Stand-up-Comedy-Shows, Musikfestivals und andere zeitlich begrenzte Aktivitäten. Wenn die Reiseroute zeitkritische Projekte enthält, geben Sie 1 zurück, andernfalls 0.\nroutes-Feld: Wenn Reiserouten enthalten sind, müssen detaillierte strukturierte Informationen für jede Route ausgegeben werden, einschließlich: routeName (Routenname), days (Anzahl der Tage), routePoints (Liste der Reisepunkte), hasTimelinessProject (ob diese Route zeitkritische Projekte enthält), timelinessProjects (Liste der zeitkritischen Projekte in dieser Route, leeres Array wenn keine, jeder Projektname ist 9-150 Zeichen lang (einschließlich Leerzeichen, Zahlen...)).\nAusgabeformat-Anforderungen: Bitte geben Sie die Analyseergebnisse strikt im folgenden JSON-Format aus, fügen Sie keine zusätzlichen Texterklärungen hinzu:{\"containRoute\": 0 oder 1,\"routeCount\": Zahl(0,1,2...),\"containTimelinessProject\": 0 oder 1, \"routes\": [{\"routeName\": \"Routenname\", \"days\": 1-3, \"routePoints\": [\"Reisepunkt A\", \"Reisepunkt B\"], \"hasTimelinessProject\": 0 oder 1, \"timelinessProjects\": [\"Name des zeitkritischen Projekts\"]}]}\nArtikelinhalt:\n【Frühlingsblüten-Betrachtungsroute】Besuch des Century Parks zur Kirschblütenbetrachtung am Morgen, nachmittags zum botanischen Garten für Tulpen, abends Spaziergang entlang des Flussuferwegs.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob der Artikel Reiserouten enthält, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Anzahl der im Artikel enthaltenen Reiserouten",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob die Reiserouten zeitkritische Projekte enthalten, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Details aller Reiserouten",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Routenname, darf nicht leer sein",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Anzahl der Tage für die Route, Wertebereich 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste der Reisepunkte, muss mindestens zwei Punkte enthalten",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Ob diese Route zeitkritische Projekte enthält",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Zeitkritische Projekte in dieser Route, jeder Projektname ist 9-150 Zeichen lang",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Ob Schema erfüllt",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Reiseexperte. Ich werde Ihnen einen Reiseführer-Artikel mit Titel und Inhalt zur Verfügung stellen. Bitte analysieren Sie den Artikel, um zu bestimmen, ob er Reiserouten enthält (containRoute), wie viele Reiserouten er enthält (routeCount), ob er zeitkritische Projekte enthält (containTimelinessProject), und extrahieren Sie detaillierte Informationen für jede Route (wie Routenname, Tage, Reisepunkte, ob sie zeitkritische Projekte enthält, Namen der beteiligten zeitkritischen Projekte). Geben Sie schließlich die Ergebnisse im angegebenen JSON-Format aus.\nBegriffsdefinitionen:\nReiseroute: Eine geplante Reiseroute mit mehreren Reisepunkten in chronologischer Reihenfolge, die etwa 1-3 Tage dauert. Normalerweise sind mehrere Reisepunkte in einer Reiseroute durch Zeitsequenz (wie um 11 Uhr zu Ort A gehen, um 14 Uhr zu Ort B gehen) oder Ortssequenz (wie derzeit an Ort A, nächster Stopp zu Ort B) verbunden. Beachten Sie, dass wenn nur mehrere unabhängige Reisepunkte vorgestellt werden, dies keine Reiseroute darstellen kann.\nOb Reiserouten enthalten: Wenn der Artikel mindestens eine vollständige Reiseroute enthält, geben Sie 1 zurück, andernfalls 0.\nAnzahl der Reiserouten: Die Anzahl der vollständigen Reiserouten im Artikel, 0 wenn keine vorhanden.\nOb zeitkritische Projekte enthalten: Zeitkritische Projekte beziehen sich auf Projekte, die zu bestimmten Zeiten stattfinden, wie Konzerte, Ausstellungen, Versammlungen, Stand-up-Comedy-Shows, Musikfestivals und andere zeitlich begrenzte Aktivitäten. Wenn die Reiseroute zeitkritische Projekte enthält, geben Sie 1 zurück, andernfalls 0.\nroutes-Feld: Wenn Reiserouten enthalten sind, müssen detaillierte strukturierte Informationen für jede Route ausgegeben werden, einschließlich: routeName (Routenname), days (Anzahl der Tage), routePoints (Liste der Reisepunkte), hasTimelinessProject (ob diese Route zeitkritische Projekte enthält), timelinessProjects (Liste der zeitkritischen Projekte in dieser Route, leeres Array wenn keine, jeder Projektname ist 9-150 Zeichen lang (einschließlich Leerzeichen, Zahlen...)).\nAusgabeformat-Anforderungen: Bitte geben Sie die Analyseergebnisse strikt im folgenden JSON-Format aus, fügen Sie keine zusätzlichen Texterklärungen hinzu:{\"containRoute\": 0 oder 1,\"routeCount\": Zahl(0,1,2...),\"containTimelinessProject\": 0 oder 1, \"routes\": [{\"routeName\": \"Routenname\", \"days\": 1-3, \"routePoints\": [\"Reisepunkt A\", \"Reisepunkt B\"], \"hasTimelinessProject\": 0 oder 1, \"timelinessProjects\": [\"Name des zeitkritischen Projekts\"]}]}\nArtikelinhalt:\n【Kunstfestival-Vollständige Erfahrung】Eröffnungszeremonie der Malerei-Ausstellung am Morgen, Teilnahme am Skulptur-Workshop am Nachmittag, Freilufttheater-Festival-Aufführung am Abend, Teilnahme an der Abschlusszeremonie des Musikfestivals am nächsten Tag.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob der Artikel Reiserouten enthält, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Anzahl der im Artikel enthaltenen Reiserouten",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob die Reiserouten zeitkritische Projekte enthalten, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Details aller Reiserouten",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Routenname, darf nicht leer sein",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Anzahl der Tage für die Route, Wertebereich 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste der Reisepunkte, muss mindestens zwei Punkte enthalten",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Ob diese Route zeitkritische Projekte enthält",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Zeitkritische Projekte in dieser Route, jeder Projektname ist 9-150 Zeichen lang",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Ob Schema erfüllt",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Reiseexperte. Ich werde Ihnen einen Reiseführer-Artikel mit Titel und Inhalt zur Verfügung stellen. Bitte analysieren Sie den Artikel, um zu bestimmen, ob er Reiserouten enthält (containRoute), wie viele Reiserouten er enthält (routeCount), ob er zeitkritische Projekte enthält (containTimelinessProject), und extrahieren Sie detaillierte Informationen für jede Route (wie Routenname, Tage, Reisepunkte, ob sie zeitkritische Projekte enthält, Namen der beteiligten zeitkritischen Projekte). Geben Sie schließlich die Ergebnisse im angegebenen JSON-Format aus.\nBegriffsdefinitionen:\nReiseroute: Eine geplante Reiseroute mit mehreren Reisepunkten in chronologischer Reihenfolge, die etwa 1-3 Tage dauert. Normalerweise sind mehrere Reisepunkte in einer Reiseroute durch Zeitsequenz (wie um 11 Uhr zu Ort A gehen, um 14 Uhr zu Ort B gehen) oder Ortssequenz (wie derzeit an Ort A, nächster Stopp zu Ort B) verbunden. Beachten Sie, dass wenn nur mehrere unabhängige Reisepunkte vorgestellt werden, dies keine Reiseroute darstellen kann.\nOb Reiserouten enthalten: Wenn der Artikel mindestens eine vollständige Reiseroute enthält, geben Sie 1 zurück, andernfalls 0.\nAnzahl der Reiserouten: Die Anzahl der vollständigen Reiserouten im Artikel, 0 wenn keine vorhanden.\nOb zeitkritische Projekte enthalten: Zeitkritische Projekte beziehen sich auf Projekte, die zu bestimmten Zeiten stattfinden, wie Konzerte, Ausstellungen, Versammlungen, Stand-up-Comedy-Shows, Musikfestivals und andere zeitlich begrenzte Aktivitäten. Wenn die Reiseroute zeitkritische Projekte enthält, geben Sie 1 zurück, andernfalls 0.\nroutes-Feld: Wenn Reiserouten enthalten sind, müssen detaillierte strukturierte Informationen für jede Route ausgegeben werden, einschließlich: routeName (Routenname), days (Anzahl der Tage), routePoints (Liste der Reisepunkte), hasTimelinessProject (ob diese Route zeitkritische Projekte enthält), timelinessProjects (Liste der zeitkritischen Projekte in dieser Route, leeres Array wenn keine, jeder Projektname ist 9-150 Zeichen lang (einschließlich Leerzeichen, Zahlen...)).\nAusgabeformat-Anforderungen: Bitte geben Sie die Analyseergebnisse strikt im folgenden JSON-Format aus, fügen Sie keine zusätzlichen Texterklärungen hinzu:{\"containRoute\": 0 oder 1,\"routeCount\": Zahl(0,1,2...),\"containTimelinessProject\": 0 oder 1, \"routes\": [{\"routeName\": \"Routenname\", \"days\": 1-3, \"routePoints\": [\"Reisepunkt A\", \"Reisepunkt B\"], \"hasTimelinessProject\": 0 oder 1, \"timelinessProjects\": [\"Name des zeitkritischen Projekts\"]}]}\nArtikelinhalt:\n【Outdoor-Abenteuer-Route】Bergsteigen bei Morgendämmerung, Waldwanderung am Morgen, Bachverfolgung am Nachmittag, Lagerfeuerparty am Abend, Camping und Sternbeobachtung in der Nacht.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob der Artikel Reiserouten enthält, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Anzahl der im Artikel enthaltenen Reiserouten",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Ob die Reiserouten zeitkritische Projekte enthalten, 1 bedeutet ja, 0 bedeutet nein",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Details aller Reiserouten",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Routenname, darf nicht leer sein",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Anzahl der Tage für die Route, Wertebereich 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste der Reisepunkte, muss mindestens zwei Punkte enthalten",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Ob diese Route zeitkritische Projekte enthält",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Zeitkritische Projekte in dieser Route, jeder Projektname ist 9-150 Zeichen lang",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Ob Schema erfüllt",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    }
+]

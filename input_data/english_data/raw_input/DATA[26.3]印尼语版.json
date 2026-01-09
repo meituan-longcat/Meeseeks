@@ -1,0 +1,1062 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan senior dan analis artikel profesional. Saya akan memberikan Anda sebuah artikel yang merekomendasikan destinasi wisata yang cocok. Tugas Anda adalah menganalisis artikel ini dan mengekstrak informasi berdasarkan dimensi nama atraksi.\n\n1. poiName: Ekstrak nama-nama atraksi yang disebutkan dalam artikel. Atraksi harus berupa posisi geografis tingkat lokasi, bukan kota atau provinsi. Contoh: kebun raya, taman, kota kuno, area pemandangan, museum, kuil dan atraksi spesifik lainnya (seperti Kebun Raya Taiyuan, Taman Jingshan, Kota Air Gubei).\n\nPersyaratan output:\n1. Kembalikan informasi yang diekstrak dalam format JSON\n2. Setiap atraksi sebagai objek terpisah, berisi field poiName\n3. Semua objek atraksi membentuk array\n4. Jangan kembalikan karakter selain format JSON\nAnda perlu mengidentifikasi jenis setiap atraksi (seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.) dan mengembalikan field poiType dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi cocok untuk bermain orang tua-anak (kembalikan \"Ya\" jika cocok, jika tidak \"Tidak\") dan mengembalikan field isParentChildFriendly dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi memiliki pemandangan malam (kembalikan \"Ya\" jika memiliki pemandangan malam, jika tidak \"Tidak\") dan mengembalikan field hasNightView dalam json.\nContoh format output:\n[\n  {\"poiName\": \"contoh nilai\", \"poiType\": \"contoh jenis\", \"isParentChildFriendly\": \"Ya/Tidak\", \"hasNightView\": \"Ya/Tidak\"}\n]\n\nKonten artikel:Rekomendasi tur sekitar Jakarta:\n1. Kebun Raya Bogor adalah kebun raya terbesar di Jawa Barat, cocok untuk tur keluarga\n2. Taman Mini Indonesia Indah menawarkan pemandangan panorama budaya Indonesia\n3. Pemandangan malam Kota Tua Jakarta menakjubkan, disarankan menginap di area wisata",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "isParentChildFriendly",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nama atraksi, harus berupa posisi geografis spesifik tingkat lokasi",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Jenis atraksi, seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.",
+                        "能力项": "JSON"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah cocok untuk orang tua-anak",
+                        "能力项": "特定格式"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki pemandangan malam",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan senior dan analis artikel profesional. Saya akan memberikan Anda sebuah artikel yang merekomendasikan destinasi wisata yang cocok. Tugas Anda adalah menganalisis artikel ini dan mengekstrak informasi berdasarkan dimensi nama atraksi.\n\n1. poiName: Ekstrak nama-nama atraksi yang disebutkan dalam artikel. Atraksi harus berupa posisi geografis tingkat lokasi, bukan kota atau provinsi. Contoh: kebun raya, taman, kota kuno, area pemandangan, museum, kuil dan atraksi spesifik lainnya (seperti Kebun Raya Taiyuan, Taman Jingshan, Kota Air Gubei).\n\nPersyaratan output:\n1. Kembalikan informasi yang diekstrak dalam format JSON\n2. Setiap atraksi sebagai objek terpisah, berisi field poiName\n3. Semua objek atraksi membentuk array\n4. Jangan kembalikan karakter selain format JSON\nAnda perlu mengidentifikasi jenis setiap atraksi (seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.) dan mengembalikan field poiType dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi memiliki pemandangan malam (kembalikan \"Ya\" jika memiliki pemandangan malam, jika tidak \"Tidak\") dan mengembalikan field hasNightView dalam json.\nContoh format output:\n[\n  {\"poiName\": \"contoh nilai\", \"poiType\": \"contoh jenis\", \"hasNightView\": \"Ya/Tidak\"}\n]\n\nKonten artikel:Jalan-jalan kota di Bandung:\n1. Taman Hutan Raya Ir. H. Djuanda cocok untuk jalan-jalan keluarga, pertunjukan air mancur malam tidak boleh dilewatkan\n2. Pertunjukan lampu Jalan Braga memiliki pemandangan malam yang menawan\n3. Museum Geologi memungkinkan Anda merasakan budaya Indonesia",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nama atraksi, harus berupa posisi geografis spesifik tingkat lokasi",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Jenis atraksi, seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki pemandangan malam",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan senior dan analis artikel profesional. Saya akan memberikan Anda sebuah artikel yang merekomendasikan destinasi wisata yang cocok. Tugas Anda adalah menganalisis artikel ini dan mengekstrak informasi berdasarkan dimensi nama atraksi.\n\n1. poiName: Ekstrak nama-nama atraksi yang disebutkan dalam artikel. Atraksi harus berupa posisi geografis tingkat lokasi, bukan kota atau provinsi. Contoh: kebun raya, taman, kota kuno, area pemandangan, museum, kuil dan atraksi spesifik lainnya (seperti Kebun Raya Taiyuan, Taman Jingshan, Kota Air Gubei).\n\nPersyaratan output:\n1. Kembalikan informasi yang diekstrak dalam format JSON\n2. Setiap atraksi sebagai objek terpisah, berisi field poiName\n3. Semua objek atraksi membentuk array\n4. Jangan kembalikan karakter selain format JSON\nAnda perlu mengidentifikasi jenis setiap atraksi (seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.) dan mengembalikan field poiType dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi cocok untuk bermain orang tua-anak (kembalikan \"Ya\" jika cocok, jika tidak \"Tidak\") dan mengembalikan field isParentChildFriendly dalam json.\nContoh format output:\n[\n  {\"poiName\": \"contoh nilai\", \"poiType\": \"contoh jenis\", \"isParentChildFriendly\": \"Ya/Tidak\"}\n]\n\nKonten artikel:Tur keluarga di Yogyakarta:\n1. Taman Sari cocok untuk keluarga orang tua-anak\n2. Gunung Merapi adalah tempat yang bagus untuk mendaki\n3. Malioboro Street memiliki arsitektur Jawa dan kafe",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "isParentChildFriendly"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nama atraksi, harus berupa posisi geografis spesifik tingkat lokasi",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Jenis atraksi, seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.",
+                        "能力项": "JSON"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah cocok untuk orang tua-anak",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan senior dan analis artikel profesional. Saya akan memberikan Anda sebuah artikel yang merekomendasikan destinasi wisata yang cocok. Tugas Anda adalah menganalisis artikel ini dan mengekstrak informasi berdasarkan dimensi nama atraksi.\n\n1. poiName: Ekstrak nama-nama atraksi yang disebutkan dalam artikel. Atraksi harus berupa posisi geografis tingkat lokasi, bukan kota atau provinsi. Contoh: kebun raya, taman, kota kuno, area pemandangan, museum, kuil dan atraksi spesifik lainnya (seperti Kebun Raya Taiyuan, Taman Jingshan, Kota Air Gubei).\n\nPersyaratan output:\n1. Kembalikan informasi yang diekstrak dalam format JSON\n2. Setiap atraksi sebagai objek terpisah, berisi field poiName\n3. Semua objek atraksi membentuk array\n4. Jangan kembalikan karakter selain format JSON\nAnda perlu mengidentifikasi jenis setiap atraksi (seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.) dan mengembalikan field poiType dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi memiliki pertunjukan budaya (kembalikan \"Ya\" jika ada, jika tidak \"Tidak\") dan mengembalikan field hasCulturalShow dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi memiliki pemandangan malam (kembalikan \"Ya\" jika memiliki pemandangan malam, jika tidak \"Tidak\") dan mengembalikan field hasNightView dalam json.\nContoh format output:\n[\n  {\"poiName\": \"contoh nilai\", \"poiType\": \"contoh jenis\", \"hasCulturalShow\": \"Ya/Tidak\", \"hasNightView\": \"Ya/Tidak\"}\n]\n\nKonten artikel:Tur budaya di Solo:\n1. Keraton Surakarta memiliki pertunjukan budaya Jawa\n2. Candi Sukuh menampilkan budaya Hindu-Jawa\n3. Pasar Klewer cocok untuk tur malam dan mencicipi makanan khas",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasCulturalShow",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nama atraksi, harus berupa posisi geografis spesifik tingkat lokasi",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Jenis atraksi, seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.",
+                        "能力项": "JSON"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki pertunjukan budaya",
+                        "能力项": "特定格式"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki pemandangan malam",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan senior dan analis artikel profesional. Saya akan memberikan Anda sebuah artikel yang merekomendasikan destinasi wisata yang cocok. Tugas Anda adalah menganalisis artikel ini dan mengekstrak informasi berdasarkan dimensi nama atraksi.\n\n1. poiName: Ekstrak nama-nama atraksi yang disebutkan dalam artikel. Atraksi harus berupa posisi geografis tingkat lokasi, bukan kota atau provinsi. Contoh: kebun raya, taman, kota kuno, area pemandangan, museum, kuil dan atraksi spesifik lainnya (seperti Kebun Raya Taiyuan, Taman Jingshan, Kota Air Gubei).\n\nPersyaratan output:\n1. Kembalikan informasi yang diekstrak dalam format JSON\n2. Setiap atraksi sebagai objek terpisah, berisi field poiName\n3. Semua objek atraksi membentuk array\n4. Jangan kembalikan karakter selain format JSON\nAnda perlu mengidentifikasi jenis setiap atraksi (seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.) dan mengembalikan field poiType dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi memiliki pemandangan malam (kembalikan \"Ya\" jika memiliki pemandangan malam, jika tidak \"Tidak\") dan mengembalikan field hasNightView dalam json.\nContoh format output:\n[\n  {\"poiName\": \"contoh nilai\", \"poiType\": \"contoh jenis\", \"hasNightView\": \"Ya/Tidak\"}\n]\n\nKonten artikel:Eksplorasi sejarah di Semarang:\n1. Lawang Sewu memiliki pertunjukan lampu malam\n2. Museum Ronggowarsito terkenal di dunia\n3. Kampung Pelangi adalah tempat check-in kuliner",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nama atraksi, harus berupa posisi geografis spesifik tingkat lokasi",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Jenis atraksi, seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki pemandangan malam",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan senior dan analis artikel profesional. Saya akan memberikan Anda sebuah artikel yang merekomendasikan destinasi wisata yang cocok. Tugas Anda adalah menganalisis artikel ini dan mengekstrak informasi berdasarkan dimensi nama atraksi.\n\n1. poiName: Ekstrak nama-nama atraksi yang disebutkan dalam artikel. Atraksi harus berupa posisi geografis tingkat lokasi, bukan kota atau provinsi. Contoh: kebun raya, taman, kota kuno, area pemandangan, museum, kuil dan atraksi spesifik lainnya (seperti Kebun Raya Taiyuan, Taman Jingshan, Kota Air Gubei).\n\nPersyaratan output:\n1. Kembalikan informasi yang diekstrak dalam format JSON\n2. Setiap atraksi sebagai objek terpisah, berisi field poiName\n3. Semua objek atraksi membentuk array\n4. Jangan kembalikan karakter selain format JSON\nAnda perlu mengidentifikasi jenis setiap atraksi (seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.) dan mengembalikan field poiType dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi memiliki pemandangan malam (kembalikan \"Ya\" jika memiliki pemandangan malam, jika tidak \"Tidak\") dan mengembalikan field hasNightView dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi adalah atraksi luar ruangan (Ya/Tidak) dan mengembalikan field isOutdoor dalam json.\nContoh format output:\n[\n  {\"poiName\": \"contoh nilai\", \"poiType\": \"contoh jenis\", \"hasNightView\": \"Ya/Tidak\", \"isOutdoor\": \"Ya/Tidak\"}\n]\n\nKonten artikel:Pemandangan danau dan gunung di Bali:\n1. Danau Beratan memiliki pemandangan malam yang indah, pertunjukan lampu Pura Ulun Danu menawan\n2. Pura Besakih adalah kuil Hindu terkenal\n3. Gunung Batur cocok untuk bersepeda di luar ruangan",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView",
+                    "isOutdoor"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nama atraksi, harus berupa posisi geografis spesifik tingkat lokasi",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Jenis atraksi, seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki pemandangan malam",
+                        "能力项": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah merupakan atraksi luar ruangan",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan senior dan analis artikel profesional. Saya akan memberikan Anda sebuah artikel yang merekomendasikan destinasi wisata yang cocok. Tugas Anda adalah menganalisis artikel ini dan mengekstrak informasi berdasarkan dimensi nama atraksi.\n\n1. poiName: Ekstrak nama-nama atraksi yang disebutkan dalam artikel. Atraksi harus berupa posisi geografis tingkat lokasi, bukan kota atau provinsi. Contoh: kebun raya, taman, kota kuno, area pemandangan, museum, kuil dan atraksi spesifik lainnya (seperti Kebun Raya Taiyuan, Taman Jingshan, Kota Air Gubei).\n\nPersyaratan output:\n1. Kembalikan informasi yang diekstrak dalam format JSON\n2. Setiap atraksi sebagai objek terpisah, berisi field poiName\n3. Semua objek atraksi membentuk array\n4. Jangan kembalikan karakter selain format JSON\nAnda perlu mengidentifikasi jenis setiap atraksi (seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.) dan mengembalikan field poiType dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi memiliki pemandangan malam (kembalikan \"Ya\" jika memiliki pemandangan malam, jika tidak \"Tidak\") dan mengembalikan field hasNightView dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi memiliki pertunjukan budaya (kembalikan \"Ya\" jika ada, jika tidak \"Tidak\") dan mengembalikan field hasCulturalShow dalam json.\nContoh format output:\n[\n  {\"poiName\": \"contoh nilai\", \"poiType\": \"contoh jenis\", \"hasNightView\": \"Ya/Tidak\", \"hasCulturalShow\": \"Ya/Tidak\"}\n]\n\nKonten artikel:Pengalaman tur malam di Surabaya:\n1. Pemandangan malam Jembatan Suramadu menarik banyak wisatawan\n2. Taman Bungkul memiliki platform observasi\n3. Kampung Arab memiliki pertunjukan rakyat yang kaya",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView",
+                    "hasCulturalShow"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nama atraksi, harus berupa posisi geografis spesifik tingkat lokasi",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Jenis atraksi, seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki pemandangan malam",
+                        "能力项": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki pertunjukan budaya",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan senior dan analis artikel profesional. Saya akan memberikan Anda sebuah artikel yang merekomendasikan destinasi wisata yang cocok. Tugas Anda adalah menganalisis artikel ini dan mengekstrak informasi berdasarkan dimensi nama atraksi.\n\n1. poiName: Ekstrak nama-nama atraksi yang disebutkan dalam artikel. Atraksi harus berupa posisi geografis tingkat lokasi, bukan kota atau provinsi. Contoh: kebun raya, taman, kota kuno, area pemandangan, museum, kuil dan atraksi spesifik lainnya (seperti Kebun Raya Taiyuan, Taman Jingshan, Kota Air Gubei).\n\nPersyaratan output:\n1. Kembalikan informasi yang diekstrak dalam format JSON\n2. Setiap atraksi sebagai objek terpisah, berisi field poiName\n3. Semua objek atraksi membentuk array\n4. Jangan kembalikan karakter selain format JSON\nAnda perlu mengidentifikasi jenis setiap atraksi (seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.) dan mengembalikan field poiType dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi memiliki pemandangan malam (kembalikan \"Ya\" jika memiliki pemandangan malam, jika tidak \"Tidak\") dan mengembalikan field hasNightView dalam json.\nContoh format output:\n[\n  {\"poiName\": \"contoh nilai\", \"poiType\": \"contoh jenis\", \"hasNightView\": \"Ya/Tidak\"}\n]\n\nKonten artikel:Tur taman di Medan:\n1. Istana Maimun adalah perwakilan taman Melayu\n2. Masjid Raya Al-Mashun terkenal dengan arsitektur Moorish\n3. Danau Toba memiliki pemandangan malam yang romantis",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nama atraksi, harus berupa posisi geografis spesifik tingkat lokasi",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Jenis atraksi, seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki pemandangan malam",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan senior dan analis artikel profesional. Saya akan memberikan Anda sebuah artikel yang merekomendasikan destinasi wisata yang cocok. Tugas Anda adalah menganalisis artikel ini dan mengekstrak informasi berdasarkan dimensi nama atraksi.\n\n1. poiName: Ekstrak nama-nama atraksi yang disebutkan dalam artikel. Atraksi harus berupa posisi geografis tingkat lokasi, bukan kota atau provinsi. Contoh: kebun raya, taman, kota kuno, area pemandangan, museum, kuil dan atraksi spesifik lainnya (seperti Kebun Raya Taiyuan, Taman Jingshan, Kota Air Gubei).\n\nPersyaratan output:\n1. Kembalikan informasi yang diekstrak dalam format JSON\n2. Setiap atraksi sebagai objek terpisah, berisi field poiName\n3. Semua objek atraksi membentuk array\n4. Jangan kembalikan karakter selain format JSON\nAnda perlu mengidentifikasi jenis setiap atraksi (seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.) dan mengembalikan field poiType dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi adalah atraksi luar ruangan (Ya/Tidak) dan mengembalikan field isOutdoor dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi memiliki pemandangan malam (kembalikan \"Ya\" jika memiliki pemandangan malam, jika tidak \"Tidak\") dan mengembalikan field hasNightView dalam json.\nContoh format output:\n[\n  {\"poiName\": \"contoh nilai\", \"poiType\": \"contoh jenis\", \"isOutdoor\": \"Ya/Tidak\", \"hasNightView\": \"Ya/Tidak\"}\n]\n\nKonten artikel:Tur pemandangan di Lombok:\n1. Pantai Senggigi adalah landmark Lombok\n2. Rafting di Sungai Menangga cocok untuk luar ruangan\n3. Desa Sade memiliki pasar malam dan bar",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "isOutdoor",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nama atraksi, harus berupa posisi geografis spesifik tingkat lokasi",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Jenis atraksi, seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.",
+                        "能力项": "JSON"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah merupakan atraksi luar ruangan",
+                        "能力项": "特定格式"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki pemandangan malam",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan senior dan analis artikel profesional. Saya akan memberikan Anda sebuah artikel yang merekomendasikan destinasi wisata yang cocok. Tugas Anda adalah menganalisis artikel ini dan mengekstrak informasi berdasarkan dimensi nama atraksi.\n\n1. poiName: Ekstrak nama-nama atraksi yang disebutkan dalam artikel. Atraksi harus berupa posisi geografis tingkat lokasi, bukan kota atau provinsi. Contoh: kebun raya, taman, kota kuno, area pemandangan, museum, kuil dan atraksi spesifik lainnya (seperti Kebun Raya Taiyuan, Taman Jingshan, Kota Air Gubei).\n\nPersyaratan output:\n1. Kembalikan informasi yang diekstrak dalam format JSON\n2. Setiap atraksi sebagai objek terpisah, berisi field poiName\n3. Semua objek atraksi membentuk array\n4. Jangan kembalikan karakter selain format JSON\nAnda perlu mengidentifikasi jenis setiap atraksi (seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.) dan mengembalikan field poiType dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi memiliki pertunjukan budaya (kembalikan \"Ya\" jika ada, jika tidak \"Tidak\") dan mengembalikan field hasCulturalShow dalam json.\nContoh format output:\n[\n  {\"poiName\": \"contoh nilai\", \"poiType\": \"contoh jenis\", \"hasCulturalShow\": \"Ya/Tidak\"}\n]\n\nKonten artikel:Rekreasi budaya di Makassar:\n1. Benteng Fort Rotterdam memiliki pertunjukan opera\n2. Masjid Amirul Mukminin memiliki dupa yang berkembang\n3. Pantai Losari memiliki banyak toko sastra",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasCulturalShow"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nama atraksi, harus berupa posisi geografis spesifik tingkat lokasi",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Jenis atraksi, seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.",
+                        "能力项": "JSON"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki pertunjukan budaya",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan senior dan analis artikel profesional. Saya akan memberikan Anda sebuah artikel yang merekomendasikan destinasi wisata yang cocok. Tugas Anda adalah menganalisis artikel ini dan mengekstrak informasi berdasarkan dimensi nama atraksi.\n\n1. poiName: Ekstrak nama-nama atraksi yang disebutkan dalam artikel. Atraksi harus berupa posisi geografis tingkat lokasi, bukan kota atau provinsi. Contoh: kebun raya, taman, kota kuno, area pemandangan, museum, kuil dan atraksi spesifik lainnya (seperti Kebun Raya Taiyuan, Taman Jingshan, Kota Air Gubei).\n\nPersyaratan output:\n1. Kembalikan informasi yang diekstrak dalam format JSON\n2. Setiap atraksi sebagai objek terpisah, berisi field poiName\n3. Semua objek atraksi membentuk array\n4. Jangan kembalikan karakter selain format JSON\nAnda perlu mengidentifikasi jenis setiap atraksi (seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.) dan mengembalikan field poiType dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi memiliki pemandangan malam (kembalikan \"Ya\" jika memiliki pemandangan malam, jika tidak \"Tidak\") dan mengembalikan field hasNightView dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi memiliki mata air panas (kembalikan \"Ya\" jika memiliki mata air panas, jika tidak \"Tidak\") dan mengembalikan field hasHotSpring dalam json.\nContoh format output:\n[\n  {\"poiName\": \"contoh nilai\", \"poiType\": \"contoh jenis\", \"hasNightView\": \"Ya/Tidak\", \"hasHotSpring\": \"Ya/Tidak\"}\n]\n\nKonten artikel:Gaya pantai Manado:\n1. Bunaken Marine Park memiliki pemandangan malam yang menawan\n2. Taman Nasional Bunaken cocok untuk bersepeda\n3. Tomohon memiliki mata air panas alami",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView",
+                    "hasHotSpring"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nama atraksi, harus berupa posisi geografis spesifik tingkat lokasi",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Jenis atraksi, seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki pemandangan malam",
+                        "能力项": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki mata air panas",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan senior dan analis artikel profesional. Saya akan memberikan Anda sebuah artikel yang merekomendasikan destinasi wisata yang cocok. Tugas Anda adalah menganalisis artikel ini dan mengekstrak informasi berdasarkan dimensi nama atraksi.\n\n1. poiName: Ekstrak nama-nama atraksi yang disebutkan dalam artikel. Atraksi harus berupa posisi geografis tingkat lokasi, bukan kota atau provinsi. Contoh: kebun raya, taman, kota kuno, area pemandangan, museum, kuil dan atraksi spesifik lainnya (seperti Kebun Raya Taiyuan, Taman Jingshan, Kota Air Gubei).\n\nPersyaratan output:\n1. Kembalikan informasi yang diekstrak dalam format JSON\n2. Setiap atraksi sebagai objek terpisah, berisi field poiName\n3. Semua objek atraksi membentuk array\n4. Jangan kembalikan karakter selain format JSON\nAnda perlu mengidentifikasi jenis setiap atraksi (seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.) dan mengembalikan field poiType dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi memiliki pemandangan malam (kembalikan \"Ya\" jika memiliki pemandangan malam, jika tidak \"Tidak\") dan mengembalikan field hasNightView dalam json.\nContoh format output:\n[\n  {\"poiName\": \"contoh nilai\", \"poiType\": \"contoh jenis\", \"hasNightView\": \"Ya/Tidak\"}\n]\n\nKonten artikel:Check-in budaya di Palembang:\n1. Tur malam Jembatan Ampera romantis\n2. Masjid Agung Palembang megah\n3. Kampung Kapitan memiliki gaya kolonial",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nama atraksi, harus berupa posisi geografis spesifik tingkat lokasi",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Jenis atraksi, seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki pemandangan malam",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan senior dan analis artikel profesional. Saya akan memberikan Anda sebuah artikel yang merekomendasikan destinasi wisata yang cocok. Tugas Anda adalah menganalisis artikel ini dan mengekstrak informasi berdasarkan dimensi nama atraksi.\n\n1. poiName: Ekstrak nama-nama atraksi yang disebutkan dalam artikel. Atraksi harus berupa posisi geografis tingkat lokasi, bukan kota atau provinsi. Contoh: kebun raya, taman, kota kuno, area pemandangan, museum, kuil dan atraksi spesifik lainnya (seperti Kebun Raya Taiyuan, Taman Jingshan, Kota Air Gubei).\n\nPersyaratan output:\n1. Kembalikan informasi yang diekstrak dalam format JSON\n2. Setiap atraksi sebagai objek terpisah, berisi field poiName\n3. Semua objek atraksi membentuk array\n4. Jangan kembalikan karakter selain format JSON\nAnda perlu mengidentifikasi jenis setiap atraksi (seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.) dan mengembalikan field poiType dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi memiliki pemandangan malam (kembalikan \"Ya\" jika memiliki pemandangan malam, jika tidak \"Tidak\") dan mengembalikan field hasNightView dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi memiliki pertunjukan budaya (kembalikan \"Ya\" jika ada, jika tidak \"Tidak\") dan mengembalikan field hasCulturalShow dalam json.\nContoh format output:\n[\n  {\"poiName\": \"contoh nilai\", \"poiType\": \"contoh jenis\", \"hasNightView\": \"Ya/Tidak\", \"hasCulturalShow\": \"Ya/Tidak\"}\n]\n\nKonten artikel:Gaya Eropa di Malang:\n1. Jalan Ijen memiliki gereja dan kafe\n2. Pasar Besar memiliki kerajinan tradisional\n3. Cruise di Sungai Brantas memiliki pemandangan malam yang cemerlang",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView",
+                    "hasCulturalShow"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nama atraksi, harus berupa posisi geografis spesifik tingkat lokasi",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Jenis atraksi, seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki pemandangan malam",
+                        "能力项": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki pertunjukan budaya",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan senior dan analis artikel profesional. Saya akan memberikan Anda sebuah artikel yang merekomendasikan destinasi wisata yang cocok. Tugas Anda adalah menganalisis artikel ini dan mengekstrak informasi berdasarkan dimensi nama atraksi.\n\n1. poiName: Ekstrak nama-nama atraksi yang disebutkan dalam artikel. Atraksi harus berupa posisi geografis tingkat lokasi, bukan kota atau provinsi. Contoh: kebun raya, taman, kota kuno, area pemandangan, museum, kuil dan atraksi spesifik lainnya (seperti Kebun Raya Taiyuan, Taman Jingshan, Kota Air Gubei).\n\nPersyaratan output:\n1. Kembalikan informasi yang diekstrak dalam format JSON\n2. Setiap atraksi sebagai objek terpisah, berisi field poiName\n3. Semua objek atraksi membentuk array\n4. Jangan kembalikan karakter selain format JSON\nAnda perlu mengidentifikasi jenis setiap atraksi (seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.) dan mengembalikan field poiType dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi memiliki pemandangan malam (kembalikan \"Ya\" jika memiliki pemandangan malam, jika tidak \"Tidak\") dan mengembalikan field hasNightView dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi adalah atraksi luar ruangan (Ya/Tidak) dan mengembalikan field isOutdoor dalam json.\nContoh format output:\n[\n  {\"poiName\": \"contoh nilai\", \"poiType\": \"contoh jenis\", \"hasNightView\": \"Ya/Tidak\", \"isOutdoor\": \"Ya/Tidak\"}\n]\n\nKonten artikel:Dunia pegunungan di Puncak:\n1. Taman Safari memiliki pencahayaan malam yang cemerlang\n2. Masjid At-Ta'awun memiliki arsitektur yang megah\n3. Gunung Gede Pangrango bisa bermain ski di musim dingin",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView",
+                    "isOutdoor"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nama atraksi, harus berupa posisi geografis spesifik tingkat lokasi",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Jenis atraksi, seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki pemandangan malam",
+                        "能力项": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah merupakan atraksi luar ruangan",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan senior dan analis artikel profesional. Saya akan memberikan Anda sebuah artikel yang merekomendasikan destinasi wisata yang cocok. Tugas Anda adalah menganalisis artikel ini dan mengekstrak informasi berdasarkan dimensi nama atraksi.\n\n1. poiName: Ekstrak nama-nama atraksi yang disebutkan dalam artikel. Atraksi harus berupa posisi geografis tingkat lokasi, bukan kota atau provinsi. Contoh: kebun raya, taman, kota kuno, area pemandangan, museum, kuil dan atraksi spesifik lainnya (seperti Kebun Raya Taiyuan, Taman Jingshan, Kota Air Gubei).\n\nPersyaratan output:\n1. Kembalikan informasi yang diekstrak dalam format JSON\n2. Setiap atraksi sebagai objek terpisah, berisi field poiName\n3. Semua objek atraksi membentuk array\n4. Jangan kembalikan karakter selain format JSON\nAnda perlu mengidentifikasi jenis setiap atraksi (seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.) dan mengembalikan field poiType dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi memiliki pemandangan malam (kembalikan \"Ya\" jika memiliki pemandangan malam, jika tidak \"Tidak\") dan mengembalikan field hasNightView dalam json.\nContoh format output:\n[\n  {\"poiName\": \"contoh nilai\", \"poiType\": \"contoh jenis\", \"hasNightView\": \"Ya/Tidak\"}\n]\n\nKonten artikel:Lautan bunga musim semi di Malino:\n1. Taman Bunga Nusantara bunga sakura sedang mekar penuh\n2. Air Terjun Takapala memiliki lanskap unik\n3. Hutan Pinus Malino cocok untuk mengamati burung",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nama atraksi, harus berupa posisi geografis spesifik tingkat lokasi",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Jenis atraksi, seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki pemandangan malam",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan senior dan analis artikel profesional. Saya akan memberikan Anda sebuah artikel yang merekomendasikan destinasi wisata yang cocok. Tugas Anda adalah menganalisis artikel ini dan mengekstrak informasi berdasarkan dimensi nama atraksi.\n\n1. poiName: Ekstrak nama-nama atraksi yang disebutkan dalam artikel. Atraksi harus berupa posisi geografis tingkat lokasi, bukan kota atau provinsi. Contoh: kebun raya, taman, kota kuno, area pemandangan, museum, kuil dan atraksi spesifik lainnya (seperti Kebun Raya Taiyuan, Taman Jingshan, Kota Air Gubei).\n\nPersyaratan output:\n1. Kembalikan informasi yang diekstrak dalam format JSON\n2. Setiap atraksi sebagai objek terpisah, berisi field poiName\n3. Semua objek atraksi membentuk array\n4. Jangan kembalikan karakter selain format JSON\nAnda perlu mengidentifikasi jenis setiap atraksi (seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.) dan mengembalikan field poiType dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi memiliki pertunjukan budaya (kembalikan \"Ya\" jika ada, jika tidak \"Tidak\") dan mengembalikan field hasCulturalShow dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi cocok untuk bermain orang tua-anak (kembalikan \"Ya\" jika cocok, jika tidak \"Tidak\") dan mengembalikan field isParentChildFriendly dalam json.\nContoh format output:\n[\n  {\"poiName\": \"contoh nilai\", \"poiType\": \"contoh jenis\", \"hasCulturalShow\": \"Ya/Tidak\", \"isParentChildFriendly\": \"Ya/Tidak\"}\n]\n\nKonten artikel:Rekreasi perkotaan di Batam:\n1. Barelang Bridge memiliki pertunjukan malam\n2. Pantai Nongsa cocok untuk orang tua-anak\n3. Maha Vihara Duta Maitreya memiliki pertunjukan lampu global",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasCulturalShow",
+                    "isParentChildFriendly"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nama atraksi, harus berupa posisi geografis spesifik tingkat lokasi",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Jenis atraksi, seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.",
+                        "能力项": "JSON"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki pertunjukan budaya",
+                        "能力项": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah cocok untuk orang tua-anak",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan senior dan analis artikel profesional. Saya akan memberikan Anda sebuah artikel yang merekomendasikan destinasi wisata yang cocok. Tugas Anda adalah menganalisis artikel ini dan mengekstrak informasi berdasarkan dimensi nama atraksi.\n\n1. poiName: Ekstrak nama-nama atraksi yang disebutkan dalam artikel. Atraksi harus berupa posisi geografis tingkat lokasi, bukan kota atau provinsi. Contoh: kebun raya, taman, kota kuno, area pemandangan, museum, kuil dan atraksi spesifik lainnya (seperti Kebun Raya Taiyuan, Taman Jingshan, Kota Air Gubei).\n\nPersyaratan output:\n1. Kembalikan informasi yang diekstrak dalam format JSON\n2. Setiap atraksi sebagai objek terpisah, berisi field poiName\n3. Semua objek atraksi membentuk array\n4. Jangan kembalikan karakter selain format JSON\nAnda perlu mengidentifikasi jenis setiap atraksi (seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.) dan mengembalikan field poiType dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi memiliki pemandangan malam (kembalikan \"Ya\" jika memiliki pemandangan malam, jika tidak \"Tidak\") dan mengembalikan field hasNightView dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi adalah atraksi luar ruangan (Ya/Tidak) dan mengembalikan field isOutdoor dalam json.\nContoh format output:\n[\n  {\"poiName\": \"contoh nilai\", \"poiType\": \"contoh jenis\", \"hasNightView\": \"Ya/Tidak\", \"isOutdoor\": \"Ya/Tidak\"}\n]\n\nKonten artikel:Rute pemuda sastra di Padang:\n1. Pantai Air Manis bisa menyaksikan kembang api\n2. Gunung Padang cocok untuk mendaki\n3. Jalan Sudirman memiliki camilan khusus",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView",
+                    "isOutdoor"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nama atraksi, harus berupa posisi geografis spesifik tingkat lokasi",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Jenis atraksi, seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki pemandangan malam",
+                        "能力项": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah merupakan atraksi luar ruangan",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan senior dan analis artikel profesional. Saya akan memberikan Anda sebuah artikel yang merekomendasikan destinasi wisata yang cocok. Tugas Anda adalah menganalisis artikel ini dan mengekstrak informasi berdasarkan dimensi nama atraksi.\n\n1. poiName: Ekstrak nama-nama atraksi yang disebutkan dalam artikel. Atraksi harus berupa posisi geografis tingkat lokasi, bukan kota atau provinsi. Contoh: kebun raya, taman, kota kuno, area pemandangan, museum, kuil dan atraksi spesifik lainnya (seperti Kebun Raya Taiyuan, Taman Jingshan, Kota Air Gubei).\n\nPersyaratan output:\n1. Kembalikan informasi yang diekstrak dalam format JSON\n2. Setiap atraksi sebagai objek terpisah, berisi field poiName\n3. Semua objek atraksi membentuk array\n4. Jangan kembalikan karakter selain format JSON\nAnda perlu mengidentifikasi jenis setiap atraksi (seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.) dan mengembalikan field poiType dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi memiliki pemandangan malam (kembalikan \"Ya\" jika memiliki pemandangan malam, jika tidak \"Tidak\") dan mengembalikan field hasNightView dalam json.\nContoh format output:\n[\n  {\"poiName\": \"contoh nilai\", \"poiType\": \"contoh jenis\", \"hasNightView\": \"Ya/Tidak\"}\n]\n\nKonten artikel:Tur mata air di Ciater:\n1. Pemandian Air Panas Ciater memiliki pameran teratai\n2. Kawah Putih adalah simbol kota spa\n3. Gunung Tangkuban Perahu cocok untuk mendaki dan melihat pemandangan",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nama atraksi, harus berupa posisi geografis spesifik tingkat lokasi",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Jenis atraksi, seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki pemandangan malam",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan senior dan analis artikel profesional. Saya akan memberikan Anda sebuah artikel yang merekomendasikan destinasi wisata yang cocok. Tugas Anda adalah menganalisis artikel ini dan mengekstrak informasi berdasarkan dimensi nama atraksi.\n\n1. poiName: Ekstrak nama-nama atraksi yang disebutkan dalam artikel. Atraksi harus berupa posisi geografis tingkat lokasi, bukan kota atau provinsi. Contoh: kebun raya, taman, kota kuno, area pemandangan, museum, kuil dan atraksi spesifik lainnya (seperti Kebun Raya Taiyuan, Taman Jingshan, Kota Air Gubei).\n\nPersyaratan output:\n1. Kembalikan informasi yang diekstrak dalam format JSON\n2. Setiap atraksi sebagai objek terpisah, berisi field poiName\n3. Semua objek atraksi membentuk array\n4. Jangan kembalikan karakter selain format JSON\nAnda perlu mengidentifikasi jenis setiap atraksi (seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.) dan mengembalikan field poiType dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi cocok untuk bermain orang tua-anak (kembalikan \"Ya\" jika cocok, jika tidak \"Tidak\") dan mengembalikan field isParentChildFriendly dalam json.\nContoh format output:\n[\n  {\"poiName\": \"contoh nilai\", \"poiType\": \"contoh jenis\", \"isParentChildFriendly\": \"Ya/Tidak\"}\n]\n\nKonten artikel:Tur akhir pekan di Cirebon:\n1. Keraton Kasepuhan memiliki pameran budaya\n2. Pasar malam Grage City Mall ramai\n3. Taman Sari Gua Sunyaragi cocok untuk aktivitas orang tua-anak",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "isParentChildFriendly"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nama atraksi, harus berupa posisi geografis spesifik tingkat lokasi",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Jenis atraksi, seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.",
+                        "能力项": "JSON"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah cocok untuk orang tua-anak",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah seorang ahli perjalanan senior dan analis artikel profesional. Saya akan memberikan Anda sebuah artikel yang merekomendasikan destinasi wisata yang cocok. Tugas Anda adalah menganalisis artikel ini dan mengekstrak informasi berdasarkan dimensi nama atraksi.\n\n1. poiName: Ekstrak nama-nama atraksi yang disebutkan dalam artikel. Atraksi harus berupa posisi geografis tingkat lokasi, bukan kota atau provinsi. Contoh: kebun raya, taman, kota kuno, area pemandangan, museum, kuil dan atraksi spesifik lainnya (seperti Kebun Raya Taiyuan, Taman Jingshan, Kota Air Gubei).\n\nPersyaratan output:\n1. Kembalikan informasi yang diekstrak dalam format JSON\n2. Setiap atraksi sebagai objek terpisah, berisi field poiName\n3. Semua objek atraksi membentuk array\n4. Jangan kembalikan karakter selain format JSON\nAnda perlu mengidentifikasi jenis setiap atraksi (seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.) dan mengembalikan field poiType dalam json.\nAnda perlu mengidentifikasi apakah setiap atraksi memiliki pemandangan malam (kembalikan \"Ya\" jika memiliki pemandangan malam, jika tidak \"Tidak\") dan mengembalikan field hasNightView dalam json.\nContoh format output:\n[\n  {\"poiName\": \"contoh nilai\", \"poiType\": \"contoh jenis\", \"hasNightView\": \"Ya/Tidak\"}\n]\n\nKonten artikel:Tur sejarah di Borobudur:\n1. Candi Borobudur memiliki ukiran yang indah\n2. Candi Mendut adalah kuil Buddha tertua di Indonesia\n3. Taman Lumbini memiliki pemandangan malam",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Nama atraksi, harus berupa posisi geografis spesifik tingkat lokasi",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Jenis atraksi, seperti taman, kota kuno, museum, kuil, taman tema, area pemandangan, dll.",
+                        "能力项": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Ya",
+                            "Tidak"
+                        ],
+                        "description": "Apakah memiliki pemandangan malam",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Apakah sesuai dengan skema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    }
+]

@@ -1,0 +1,1092 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Nehmen Sie an, Sie sind ein professioneller Apotheker. Bitte zerlegen Sie \"Vitamin A Acetat, β-Carotin, Vitamin D3, Vitamin E Acetat, Thiaminnitrat, Riboflavin, Pyridoxinhydrochlorid, Ascorbinsäure, Cyanocobalamin, Biotin, Folsäure, Nicotinamid, Calciumpantothenat, Calciumcarbonat, Magnesiumoxid, Eisenfumarat, Kupfersulfat, Zinksulfat, Mangansulfat, Chrompicolinat, mikrokristalline Cellulose, Natriumcarboxymethylstärke, Natriumcarboxymethylcellulose, Siliciumdioxid, Stearinsäure, Magnesiumstearat, Beschichtungspulver.\" in JSON-Format gemäß der folgenden Struktur.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Gewichtskennung pro Portion\": \"XX\",\n        \"Komponentenname\": \"XX\",\n        \"Wirkstoffgehalt Zahl\": \"XX\",\n        \"Wirkstoffgehalt Einheit\": \"SS\"\n     }\n   ]\n}\nAnforderungen:\n1. type gleich 2 als fester Wert. Muss vorhanden sein.\n2. Der Wertebereich von Wirkstoffgehalt Einheit ist g、mg、µg、ml、l、µl、U、IU、Löffel、Teelöffel、%、c㎡、cm、mm、kcal、CFU、LSU、Pille、Korn、Tablette、Stick、Packung、Beutel、Stück、Einheit、Tropfen、Spray、Flasche、Pflaster、Inhalation、Blatt、Rolle、Tube、Lutschtablette、Schachtel、kleine Schachtel、Druck、Einheit、internationale Einheit. Für alle anderen Einheiten ersetzen Sie \"XX\" durch \"\"\n3. Die gleichen funktionalen Komponenten und Inhaltsstrukturdaten sollten als ein Datenobjekt gespeichert werden. Geben Sie das Ergebnis strikt nach dem JSON-Beispieldatenformat zurück. Wenn Daten mehrere Gruppen haben, müssen sie in ein JSON-Format-Array verkettet werden. Nur JSON-Daten werden benötigt, keine zusätzlichen Daten sollten ausgegeben werden.\n4. Entfernen Sie relevante Modifikatoren von der Wirksamkeit\n5. \"XX\" ist das zerlegte Ergebnis. Wenn kein Ergebnis existiert, muss \"XX\" durch \"\" ersetzt werden",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Strukturierter Typ-Identifikator",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Komponenten-strukturierte Details",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Gewichtskennung pro Portion": {
+                                "type": "string",
+                                "description": "Gewichtskennung pro Portion",
+                                "能力项": "主题约束"
+                            },
+                            "Komponentenname": {
+                                "type": "string",
+                                "description": "Komponentenname",
+                                "能力项": "主题约束"
+                            },
+                            "Wirkstoffgehalt Zahl": {
+                                "type": "string",
+                                "description": "Numerischer Teil des Wirkstoffgehalts",
+                                "能力项": "主题约束"
+                            },
+                            "Wirkstoffgehalt Einheit": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "IU",
+                                    "Löffel",
+                                    "Teelöffel",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "CFU",
+                                    "LSU",
+                                    "Pille",
+                                    "Korn",
+                                    "Tablette",
+                                    "Stick",
+                                    "Packung",
+                                    "Beutel",
+                                    "Stück",
+                                    "Einheit",
+                                    "Tropfen",
+                                    "Spray",
+                                    "Flasche",
+                                    "Pflaster",
+                                    "Inhalation",
+                                    "Blatt",
+                                    "Rolle",
+                                    "Tube",
+                                    "Lutschtablette",
+                                    "Schachtel",
+                                    "kleine Schachtel",
+                                    "Druck",
+                                    "Einheit",
+                                    "internationale Einheit",
+                                    ""
+                                ],
+                                "description": "Einheitenteil des Wirkstoffgehalts",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Gewichtskennung pro Portion",
+                            "Komponentenname",
+                            "Wirkstoffgehalt Zahl",
+                            "Wirkstoffgehalt Einheit"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Nehmen Sie an, Sie sind ein professioneller Apotheker. Bitte zerlegen Sie \"Glucose (Gehalt pro Beutel: 10g), Natriumchlorid (9mg), Kaliumchlorid (0,5g), Citronensäure (0,2g), Zitronenaroma, essbarer gelber Farbstoff, Saccharose.\" in JSON-Format gemäß der folgenden Struktur.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Gewichtskennung pro Portion\": \"XX\",\n        \"Komponentenname\": \"XX\",\n        \"Wirkstoffgehalt Zahl\": \"XX\",\n        \"Wirkstoffgehalt Einheit\": \"SS\"\n     }\n   ]\n}\nAnforderungen:\n1. type gleich 2 als fester Wert. Muss vorhanden sein.\n2. Der Wertebereich von Wirkstoffgehalt Einheit ist g、mg、µg、ml、l、µl、U、IU、Löffel、Teelöffel、%、c㎡、cm、mm、kcal、CFU、LSU、Pille、Korn、Tablette、Stick、Packung、Beutel、Stück、Einheit、Tropfen、Spray、Flasche、Pflaster、Inhalation、Blatt、Rolle、Tube、Lutschtablette、Schachtel、kleine Schachtel、Druck、Einheit、internationale Einheit. Für alle anderen Einheiten ersetzen Sie \"XX\" durch \"\"\n3. Die gleichen funktionalen Komponenten und Inhaltsstrukturdaten sollten als ein Datenobjekt gespeichert werden. Geben Sie das Ergebnis strikt nach dem JSON-Beispieldatenformat zurück. Wenn Daten mehrere Gruppen haben, müssen sie in ein JSON-Format-Array verkettet werden. Nur JSON-Daten werden benötigt, keine zusätzlichen Daten sollten ausgegeben werden.\n4. Entfernen Sie relevante Modifikatoren von der Wirksamkeit\n5. \"XX\" ist das zerlegte Ergebnis. Wenn kein Ergebnis existiert, muss \"XX\" durch \"\" ersetzt werden",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Strukturierter Typ-Identifikator",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Komponenten-strukturierte Details",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Gewichtskennung pro Portion": {
+                                "type": "string",
+                                "description": "Gewichtskennung pro Portion",
+                                "能力项": "主题约束"
+                            },
+                            "Komponentenname": {
+                                "type": "string",
+                                "description": "Komponentenname",
+                                "能力项": "主题约束"
+                            },
+                            "Wirkstoffgehalt Zahl": {
+                                "type": "string",
+                                "description": "Numerischer Teil des Wirkstoffgehalts",
+                                "能力项": "主题约束"
+                            },
+                            "Wirkstoffgehalt Einheit": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "IU",
+                                    "Löffel",
+                                    "Teelöffel",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "CFU",
+                                    "LSU",
+                                    "Pille",
+                                    "Korn",
+                                    "Tablette",
+                                    "Stick",
+                                    "Packung",
+                                    "Beutel",
+                                    "Stück",
+                                    "Einheit",
+                                    "Tropfen",
+                                    "Spray",
+                                    "Flasche",
+                                    "Pflaster",
+                                    "Inhalation",
+                                    "Blatt",
+                                    "Rolle",
+                                    "Tube",
+                                    "Lutschtablette",
+                                    "Schachtel",
+                                    "kleine Schachtel",
+                                    "Druck",
+                                    "Einheit",
+                                    "internationale Einheit",
+                                    ""
+                                ],
+                                "description": "Einheitenteil des Wirkstoffgehalts",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Gewichtskennung pro Portion",
+                            "Komponentenname",
+                            "Wirkstoffgehalt Zahl",
+                            "Wirkstoffgehalt Einheit"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Nehmen Sie an, Sie sind ein professioneller Apotheker. Bitte zerlegen Sie \"Cefixim (50mg/Tablette), Lactose, Stärke, Natriumcarboxymethylstärke, Magnesiumstearat.\" in JSON-Format gemäß der folgenden Struktur.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Gewichtskennung pro Portion\": \"XX\",\n        \"Komponentenname\": \"XX\",\n        \"Wirkstoffgehalt Zahl\": \"XX\",\n        \"Wirkstoffgehalt Einheit\": \"SS\"\n     }\n   ]\n}\nAnforderungen:\n1. type gleich 2 als fester Wert. Muss vorhanden sein.\n2. Der Wertebereich von Wirkstoffgehalt Einheit ist g、mg、µg、ml、l、µl、U、IU、Löffel、Teelöffel、%、c㎡、cm、mm、kcal、CFU、LSU、Pille、Korn、Tablette、Stick、Packung、Beutel、Stück、Einheit、Tropfen、Spray、Flasche、Pflaster、Inhalation、Blatt、Rolle、Tube、Lutschtablette、Schachtel、kleine Schachtel、Druck、Einheit、internationale Einheit. Für alle anderen Einheiten ersetzen Sie \"XX\" durch \"\"\n3. Die gleichen funktionalen Komponenten und Inhaltsstrukturdaten sollten als ein Datenobjekt gespeichert werden. Geben Sie das Ergebnis strikt nach dem JSON-Beispieldatenformat zurück. Wenn Daten mehrere Gruppen haben, müssen sie in ein JSON-Format-Array verkettet werden. Nur JSON-Daten werden benötigt, keine zusätzlichen Daten sollten ausgegeben werden.\n4. Entfernen Sie relevante Modifikatoren von der Wirksamkeit\n5. \"XX\" ist das zerlegte Ergebnis. Wenn kein Ergebnis existiert, muss \"XX\" durch \"\" ersetzt werden",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Strukturierter Typ-Identifikator",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Komponenten-strukturierte Details",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Gewichtskennung pro Portion": {
+                                "type": "string",
+                                "description": "Gewichtskennung pro Portion",
+                                "能力项": "主题约束"
+                            },
+                            "Komponentenname": {
+                                "type": "string",
+                                "description": "Komponentenname",
+                                "能力项": "主题约束"
+                            },
+                            "Wirkstoffgehalt Zahl": {
+                                "type": "string",
+                                "description": "Numerischer Teil des Wirkstoffgehalts",
+                                "能力项": "主题约束"
+                            },
+                            "Wirkstoffgehalt Einheit": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "IU",
+                                    "Löffel",
+                                    "Teelöffel",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "CFU",
+                                    "LSU",
+                                    "Pille",
+                                    "Korn",
+                                    "Tablette",
+                                    "Stick",
+                                    "Packung",
+                                    "Beutel",
+                                    "Stück",
+                                    "Einheit",
+                                    "Tropfen",
+                                    "Spray",
+                                    "Flasche",
+                                    "Pflaster",
+                                    "Inhalation",
+                                    "Blatt",
+                                    "Rolle",
+                                    "Tube",
+                                    "Lutschtablette",
+                                    "Schachtel",
+                                    "kleine Schachtel",
+                                    "Druck",
+                                    "Einheit",
+                                    "internationale Einheit",
+                                    ""
+                                ],
+                                "description": "Einheitenteil des Wirkstoffgehalts",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Gewichtskennung pro Portion",
+                            "Komponentenname",
+                            "Wirkstoffgehalt Zahl",
+                            "Wirkstoffgehalt Einheit"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Nehmen Sie an, Sie sind ein professioneller Apotheker. Bitte zerlegen Sie \"Amoxicillin (0,25g/Kapsel), Clavulansäure-Kalium (0,0625g/Kapsel), mikrokristalline Cellulose, Croscarmellose-Natrium, Siliciumdioxid, Hydroxypropylmethylcellulose, Polyethylenglykol 6000.\" in JSON-Format gemäß der folgenden Struktur.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Gewichtskennung pro Portion\": \"XX\",\n        \"Komponentenname\": \"XX\",\n        \"Wirkstoffgehalt Zahl\": \"XX\",\n        \"Wirkstoffgehalt Einheit\": \"SS\"\n     }\n   ]\n}\nAnforderungen:\n1. type gleich 2 als fester Wert. Muss vorhanden sein.\n2. Der Wertebereich von Wirkstoffgehalt Einheit ist g、mg、µg、ml、l、µl、U、IU、Löffel、Teelöffel、%、c㎡、cm、mm、kcal、CFU、LSU、Pille、Korn、Tablette、Stick、Packung、Beutel、Stück、Einheit、Tropfen、Spray、Flasche、Pflaster、Inhalation、Blatt、Rolle、Tube、Lutschtablette、Schachtel、kleine Schachtel、Druck、Einheit、internationale Einheit. Für alle anderen Einheiten ersetzen Sie \"XX\" durch \"\"\n3. Die gleichen funktionalen Komponenten und Inhaltsstrukturdaten sollten als ein Datenobjekt gespeichert werden. Geben Sie das Ergebnis strikt nach dem JSON-Beispieldatenformat zurück. Wenn Daten mehrere Gruppen haben, müssen sie in ein JSON-Format-Array verkettet werden. Nur JSON-Daten werden benötigt, keine zusätzlichen Daten sollten ausgegeben werden.\n4. Entfernen Sie relevante Modifikatoren von der Wirksamkeit\n5. \"XX\" ist das zerlegte Ergebnis. Wenn kein Ergebnis existiert, muss \"XX\" durch \"\" ersetzt werden",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Strukturierter Typ-Identifikator",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Komponenten-strukturierte Details",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Gewichtskennung pro Portion": {
+                                "type": "string",
+                                "description": "Gewichtskennung pro Portion",
+                                "能力项": "主题约束"
+                            },
+                            "Komponentenname": {
+                                "type": "string",
+                                "description": "Komponentenname",
+                                "能力项": "主题约束"
+                            },
+                            "Wirkstoffgehalt Zahl": {
+                                "type": "string",
+                                "description": "Numerischer Teil des Wirkstoffgehalts",
+                                "能力项": "主题约束"
+                            },
+                            "Wirkstoffgehalt Einheit": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "IU",
+                                    "Löffel",
+                                    "Teelöffel",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "CFU",
+                                    "LSU",
+                                    "Pille",
+                                    "Korn",
+                                    "Tablette",
+                                    "Stick",
+                                    "Packung",
+                                    "Beutel",
+                                    "Stück",
+                                    "Einheit",
+                                    "Tropfen",
+                                    "Spray",
+                                    "Flasche",
+                                    "Pflaster",
+                                    "Inhalation",
+                                    "Blatt",
+                                    "Rolle",
+                                    "Tube",
+                                    "Lutschtablette",
+                                    "Schachtel",
+                                    "kleine Schachtel",
+                                    "Druck",
+                                    "Einheit",
+                                    "internationale Einheit",
+                                    ""
+                                ],
+                                "description": "Einheitenteil des Wirkstoffgehalts",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Gewichtskennung pro Portion",
+                            "Komponentenname",
+                            "Wirkstoffgehalt Zahl",
+                            "Wirkstoffgehalt Einheit"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Nehmen Sie an, Sie sind ein professioneller Apotheker. Bitte zerlegen Sie \"Vitamin C (100mg), Vitamin E (10mg), Glucose (5g), Citronensäure, Aroma, Farbstoff.\" in JSON-Format gemäß der folgenden Struktur.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Gewichtskennung pro Portion\": \"XX\",\n        \"Komponentenname\": \"XX\",\n        \"Wirkstoffgehalt Zahl\": \"XX\",\n        \"Wirkstoffgehalt Einheit\": \"SS\"\n     }\n   ]\n}\nAnforderungen:\n1. type gleich 2 als fester Wert. Muss vorhanden sein.\n2. Der Wertebereich von Wirkstoffgehalt Einheit ist g、mg、µg、ml、l、µl、U、IU、Löffel、Teelöffel、%、c㎡、cm、mm、kcal、CFU、LSU、Pille、Korn、Tablette、Stick、Packung、Beutel、Stück、Einheit、Tropfen、Spray、Flasche、Pflaster、Inhalation、Blatt、Rolle、Tube、Lutschtablette、Schachtel、kleine Schachtel、Druck、Einheit、internationale Einheit. Für alle anderen Einheiten ersetzen Sie \"XX\" durch \"\"\n3. Die gleichen funktionalen Komponenten und Inhaltsstrukturdaten sollten als ein Datenobjekt gespeichert werden. Geben Sie das Ergebnis strikt nach dem JSON-Beispieldatenformat zurück. Wenn Daten mehrere Gruppen haben, müssen sie in ein JSON-Format-Array verkettet werden. Nur JSON-Daten werden benötigt, keine zusätzlichen Daten sollten ausgegeben werden.\n4. Entfernen Sie relevante Modifikatoren von der Wirksamkeit\n5. \"XX\" ist das zerlegte Ergebnis. Wenn kein Ergebnis existiert, muss \"XX\" durch \"\" ersetzt werden",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Strukturierter Typ-Identifikator",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Komponenten-strukturierte Details",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Gewichtskennung pro Portion": {
+                                "type": "string",
+                                "description": "Gewichtskennung pro Portion",
+                                "能力项": "主题约束"
+                            },
+                            "Komponentenname": {
+                                "type": "string",
+                                "description": "Komponentenname",
+                                "能力项": "主题约束"
+                            },
+                            "Wirkstoffgehalt Zahl": {
+                                "type": "string",
+                                "description": "Numerischer Teil des Wirkstoffgehalts",
+                                "能力项": "主题约束"
+                            },
+                            "Wirkstoffgehalt Einheit": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "IU",
+                                    "Löffel",
+                                    "Teelöffel",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "CFU",
+                                    "LSU",
+                                    "Pille",
+                                    "Korn",
+                                    "Tablette",
+                                    "Stick",
+                                    "Packung",
+                                    "Beutel",
+                                    "Stück",
+                                    "Einheit",
+                                    "Tropfen",
+                                    "Spray",
+                                    "Flasche",
+                                    "Pflaster",
+                                    "Inhalation",
+                                    "Blatt",
+                                    "Rolle",
+                                    "Tube",
+                                    "Lutschtablette",
+                                    "Schachtel",
+                                    "kleine Schachtel",
+                                    "Druck",
+                                    "Einheit",
+                                    "internationale Einheit",
+                                    ""
+                                ],
+                                "description": "Einheitenteil des Wirkstoffgehalts",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Gewichtskennung pro Portion",
+                            "Komponentenname",
+                            "Wirkstoffgehalt Zahl",
+                            "Wirkstoffgehalt Einheit"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Nehmen Sie an, Sie sind ein professioneller Apotheker. Bitte zerlegen Sie \"Loratadin (10mg/Tablette), Lactose, Stärke, Natriumcarboxymethylstärke, Magnesiumstearat.\" in JSON-Format gemäß der folgenden Struktur.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Gewichtskennung pro Portion\": \"XX\",\n        \"Komponentenname\": \"XX\",\n        \"Wirkstoffgehalt Zahl\": \"XX\",\n        \"Wirkstoffgehalt Einheit\": \"SS\"\n     }\n   ]\n}\nAnforderungen:\n1. type gleich 2 als fester Wert. Muss vorhanden sein.\n2. Der Wertebereich von Wirkstoffgehalt Einheit ist g、mg、µg、ml、l、µl、U、IU、Löffel、Teelöffel、%、c㎡、cm、mm、kcal、CFU、LSU、Pille、Korn、Tablette、Stick、Packung、Beutel、Stück、Einheit、Tropfen、Spray、Flasche、Pflaster、Inhalation、Blatt、Rolle、Tube、Lutschtablette、Schachtel、kleine Schachtel、Druck、Einheit、internationale Einheit. Für alle anderen Einheiten ersetzen Sie \"XX\" durch \"\"\n3. Die gleichen funktionalen Komponenten und Inhaltsstrukturdaten sollten als ein Datenobjekt gespeichert werden. Geben Sie das Ergebnis strikt nach dem JSON-Beispieldatenformat zurück. Wenn Daten mehrere Gruppen haben, müssen sie in ein JSON-Format-Array verkettet werden. Nur JSON-Daten werden benötigt, keine zusätzlichen Daten sollten ausgegeben werden.\n4. Entfernen Sie relevante Modifikatoren von der Wirksamkeit\n5. \"XX\" ist das zerlegte Ergebnis. Wenn kein Ergebnis existiert, muss \"XX\" durch \"\" ersetzt werden",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Strukturierter Typ-Identifikator",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Komponenten-strukturierte Details",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Gewichtskennung pro Portion": {
+                                "type": "string",
+                                "description": "Gewichtskennung pro Portion",
+                                "能力项": "主题约束"
+                            },
+                            "Komponentenname": {
+                                "type": "string",
+                                "description": "Komponentenname",
+                                "能力项": "主题约束"
+                            },
+                            "Wirkstoffgehalt Zahl": {
+                                "type": "string",
+                                "description": "Numerischer Teil des Wirkstoffgehalts",
+                                "能力项": "主题约束"
+                            },
+                            "Wirkstoffgehalt Einheit": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "IU",
+                                    "Löffel",
+                                    "Teelöffel",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "CFU",
+                                    "LSU",
+                                    "Pille",
+                                    "Korn",
+                                    "Tablette",
+                                    "Stick",
+                                    "Packung",
+                                    "Beutel",
+                                    "Stück",
+                                    "Einheit",
+                                    "Tropfen",
+                                    "Spray",
+                                    "Flasche",
+                                    "Pflaster",
+                                    "Inhalation",
+                                    "Blatt",
+                                    "Rolle",
+                                    "Tube",
+                                    "Lutschtablette",
+                                    "Schachtel",
+                                    "kleine Schachtel",
+                                    "Druck",
+                                    "Einheit",
+                                    "internationale Einheit",
+                                    ""
+                                ],
+                                "description": "Einheitenteil des Wirkstoffgehalts",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Gewichtskennung pro Portion",
+                            "Komponentenname",
+                            "Wirkstoffgehalt Zahl",
+                            "Wirkstoffgehalt Einheit"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Nehmen Sie an, Sie sind ein professioneller Apotheker. Bitte zerlegen Sie \"Milchsäurebakterien (1 Milliarde CFU/Beutel), Glucose, Maltodextrin, Citronensäure, Aroma.\" in JSON-Format gemäß der folgenden Struktur.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Gewichtskennung pro Portion\": \"XX\",\n        \"Komponentenname\": \"XX\",\n        \"Wirkstoffgehalt Zahl\": \"XX\",\n        \"Wirkstoffgehalt Einheit\": \"SS\"\n     }\n   ]\n}\nAnforderungen:\n1. type gleich 2 als fester Wert. Muss vorhanden sein.\n2. Der Wertebereich von Wirkstoffgehalt Einheit ist g、mg、µg、ml、l、µl、U、IU、Löffel、Teelöffel、%、c㎡、cm、mm、kcal、CFU、LSU、Pille、Korn、Tablette、Stick、Packung、Beutel、Stück、Einheit、Tropfen、Spray、Flasche、Pflaster、Inhalation、Blatt、Rolle、Tube、Lutschtablette、Schachtel、kleine Schachtel、Druck、Einheit、internationale Einheit. Für alle anderen Einheiten ersetzen Sie \"XX\" durch \"\"\n3. Die gleichen funktionalen Komponenten und Inhaltsstrukturdaten sollten als ein Datenobjekt gespeichert werden. Geben Sie das Ergebnis strikt nach dem JSON-Beispieldatenformat zurück. Wenn Daten mehrere Gruppen haben, müssen sie in ein JSON-Format-Array verkettet werden. Nur JSON-Daten werden benötigt, keine zusätzlichen Daten sollten ausgegeben werden.\n4. Entfernen Sie relevante Modifikatoren von der Wirksamkeit\n5. \"XX\" ist das zerlegte Ergebnis. Wenn kein Ergebnis existiert, muss \"XX\" durch \"\" ersetzt werden",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Strukturierter Typ-Identifikator",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Komponenten-strukturierte Details",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Gewichtskennung pro Portion": {
+                                "type": "string",
+                                "description": "Gewichtskennung pro Portion",
+                                "能力项": "主题约束"
+                            },
+                            "Komponentenname": {
+                                "type": "string",
+                                "description": "Komponentenname",
+                                "能力项": "主题约束"
+                            },
+                            "Wirkstoffgehalt Zahl": {
+                                "type": "string",
+                                "description": "Numerischer Teil des Wirkstoffgehalts",
+                                "能力项": "主题约束"
+                            },
+                            "Wirkstoffgehalt Einheit": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "IU",
+                                    "Löffel",
+                                    "Teelöffel",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "CFU",
+                                    "LSU",
+                                    "Pille",
+                                    "Korn",
+                                    "Tablette",
+                                    "Stick",
+                                    "Packung",
+                                    "Beutel",
+                                    "Stück",
+                                    "Einheit",
+                                    "Tropfen",
+                                    "Spray",
+                                    "Flasche",
+                                    "Pflaster",
+                                    "Inhalation",
+                                    "Blatt",
+                                    "Rolle",
+                                    "Tube",
+                                    "Lutschtablette",
+                                    "Schachtel",
+                                    "kleine Schachtel",
+                                    "Druck",
+                                    "Einheit",
+                                    "internationale Einheit",
+                                    ""
+                                ],
+                                "description": "Einheitenteil des Wirkstoffgehalts",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Gewichtskennung pro Portion",
+                            "Komponentenname",
+                            "Wirkstoffgehalt Zahl",
+                            "Wirkstoffgehalt Einheit"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Nehmen Sie an, Sie sind ein professioneller Apotheker. Bitte zerlegen Sie \"Vitamin B Komplex (Vitamin B1, B2, B6, B12, Nicotinamid, Folsäure, Calciumpantothenat), Lactose, Stärke.\" in JSON-Format gemäß der folgenden Struktur.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Gewichtskennung pro Portion\": \"XX\",\n        \"Komponentenname\": \"XX\",\n        \"Wirkstoffgehalt Zahl\": \"XX\",\n        \"Wirkstoffgehalt Einheit\": \"SS\"\n     }\n   ]\n}\nAnforderungen:\n1. type gleich 2 als fester Wert. Muss vorhanden sein.\n2. Der Wertebereich von Wirkstoffgehalt Einheit ist g、mg、µg、ml、l、µl、U、IU、Löffel、Teelöffel、%、c㎡、cm、mm、kcal、CFU、LSU、Pille、Korn、Tablette、Stick、Packung、Beutel、Stück、Einheit、Tropfen、Spray、Flasche、Pflaster、Inhalation、Blatt、Rolle、Tube、Lutschtablette、Schachtel、kleine Schachtel、Druck、Einheit、internationale Einheit. Für alle anderen Einheiten ersetzen Sie \"XX\" durch \"\"\n3. Die gleichen funktionalen Komponenten und Inhaltsstrukturdaten sollten als ein Datenobjekt gespeichert werden. Geben Sie das Ergebnis strikt nach dem JSON-Beispieldatenformat zurück. Wenn Daten mehrere Gruppen haben, müssen sie in ein JSON-Format-Array verkettet werden. Nur JSON-Daten werden benötigt, keine zusätzlichen Daten sollten ausgegeben werden.\n4. Entfernen Sie relevante Modifikatoren von der Wirksamkeit\n5. \"XX\" ist das zerlegte Ergebnis. Wenn kein Ergebnis existiert, muss \"XX\" durch \"\" ersetzt werden",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Strukturierter Typ-Identifikator",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Komponenten-strukturierte Details",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Gewichtskennung pro Portion": {
+                                "type": "string",
+                                "description": "Gewichtskennung pro Portion",
+                                "能力项": "主题约束"
+                            },
+                            "Komponentenname": {
+                                "type": "string",
+                                "description": "Komponentenname",
+                                "能力项": "主题约束"
+                            },
+                            "Wirkstoffgehalt Zahl": {
+                                "type": "string",
+                                "description": "Numerischer Teil des Wirkstoffgehalts",
+                                "能力项": "主题约束"
+                            },
+                            "Wirkstoffgehalt Einheit": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "IU",
+                                    "Löffel",
+                                    "Teelöffel",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "CFU",
+                                    "LSU",
+                                    "Pille",
+                                    "Korn",
+                                    "Tablette",
+                                    "Stick",
+                                    "Packung",
+                                    "Beutel",
+                                    "Stück",
+                                    "Einheit",
+                                    "Tropfen",
+                                    "Spray",
+                                    "Flasche",
+                                    "Pflaster",
+                                    "Inhalation",
+                                    "Blatt",
+                                    "Rolle",
+                                    "Tube",
+                                    "Lutschtablette",
+                                    "Schachtel",
+                                    "kleine Schachtel",
+                                    "Druck",
+                                    "Einheit",
+                                    "internationale Einheit",
+                                    ""
+                                ],
+                                "description": "Einheitenteil des Wirkstoffgehalts",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Gewichtskennung pro Portion",
+                            "Komponentenname",
+                            "Wirkstoffgehalt Zahl",
+                            "Wirkstoffgehalt Einheit"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Nehmen Sie an, Sie sind ein professioneller Apotheker. Bitte zerlegen Sie \"Calciumcarbonat (500mg/Tablette), Vitamin D3 (200IU/Tablette), Lactose, Stärke, Magnesiumstearat.\" in JSON-Format gemäß der folgenden Struktur.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Gewichtskennung pro Portion\": \"XX\",\n        \"Komponentenname\": \"XX\",\n        \"Wirkstoffgehalt Zahl\": \"XX\",\n        \"Wirkstoffgehalt Einheit\": \"SS\"\n     }\n   ]\n}\nAnforderungen:\n1. type gleich 2 als fester Wert. Muss vorhanden sein.\n2. Der Wertebereich von Wirkstoffgehalt Einheit ist g、mg、µg、ml、l、µl、U、IU、Löffel、Teelöffel、%、c㎡、cm、mm、kcal、CFU、LSU、Pille、Korn、Tablette、Stick、Packung、Beutel、Stück、Einheit、Tropfen、Spray、Flasche、Pflaster、Inhalation、Blatt、Rolle、Tube、Lutschtablette、Schachtel、kleine Schachtel、Druck、Einheit、internationale Einheit. Für alle anderen Einheiten ersetzen Sie \"XX\" durch \"\"\n3. Die gleichen funktionalen Komponenten und Inhaltsstrukturdaten sollten als ein Datenobjekt gespeichert werden. Geben Sie das Ergebnis strikt nach dem JSON-Beispieldatenformat zurück. Wenn Daten mehrere Gruppen haben, müssen sie in ein JSON-Format-Array verkettet werden. Nur JSON-Daten werden benötigt, keine zusätzlichen Daten sollten ausgegeben werden.\n4. Entfernen Sie relevante Modifikatoren von der Wirksamkeit\n5. \"XX\" ist das zerlegte Ergebnis. Wenn kein Ergebnis existiert, muss \"XX\" durch \"\" ersetzt werden",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Strukturierter Typ-Identifikator",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Komponenten-strukturierte Details",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Gewichtskennung pro Portion": {
+                                "type": "string",
+                                "description": "Gewichtskennung pro Portion",
+                                "能力项": "主题约束"
+                            },
+                            "Komponentenname": {
+                                "type": "string",
+                                "description": "Komponentenname",
+                                "能力项": "主题约束"
+                            },
+                            "Wirkstoffgehalt Zahl": {
+                                "type": "string",
+                                "description": "Numerischer Teil des Wirkstoffgehalts",
+                                "能力项": "主题约束"
+                            },
+                            "Wirkstoffgehalt Einheit": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "IU",
+                                    "Löffel",
+                                    "Teelöffel",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "CFU",
+                                    "LSU",
+                                    "Pille",
+                                    "Korn",
+                                    "Tablette",
+                                    "Stick",
+                                    "Packung",
+                                    "Beutel",
+                                    "Stück",
+                                    "Einheit",
+                                    "Tropfen",
+                                    "Spray",
+                                    "Flasche",
+                                    "Pflaster",
+                                    "Inhalation",
+                                    "Blatt",
+                                    "Rolle",
+                                    "Tube",
+                                    "Lutschtablette",
+                                    "Schachtel",
+                                    "kleine Schachtel",
+                                    "Druck",
+                                    "Einheit",
+                                    "internationale Einheit",
+                                    ""
+                                ],
+                                "description": "Einheitenteil des Wirkstoffgehalts",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Gewichtskennung pro Portion",
+                            "Komponentenname",
+                            "Wirkstoffgehalt Zahl",
+                            "Wirkstoffgehalt Einheit"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Nehmen Sie an, Sie sind ein professioneller Apotheker. Bitte zerlegen Sie \"Zinkgluconat (10mg), Lactose, Stärke, Aroma, Farbstoff.\" in JSON-Format gemäß der folgenden Struktur.\n{\n  \"type\": 2,\n  \"data\": [\n     {\n        \"Gewichtskennung pro Portion\": \"XX\",\n        \"Komponentenname\": \"XX\",\n        \"Wirkstoffgehalt Zahl\": \"XX\",\n        \"Wirkstoffgehalt Einheit\": \"SS\"\n     }\n   ]\n}\nAnforderungen:\n1. type gleich 2 als fester Wert. Muss vorhanden sein.\n2. Der Wertebereich von Wirkstoffgehalt Einheit ist g、mg、µg、ml、l、µl、U、IU、Löffel、Teelöffel、%、c㎡、cm、mm、kcal、CFU、LSU、Pille、Korn、Tablette、Stick、Packung、Beutel、Stück、Einheit、Tropfen、Spray、Flasche、Pflaster、Inhalation、Blatt、Rolle、Tube、Lutschtablette、Schachtel、kleine Schachtel、Druck、Einheit、internationale Einheit. Für alle anderen Einheiten ersetzen Sie \"XX\" durch \"\"\n3. Die gleichen funktionalen Komponenten und Inhaltsstrukturdaten sollten als ein Datenobjekt gespeichert werden. Geben Sie das Ergebnis strikt nach dem JSON-Beispieldatenformat zurück. Wenn Daten mehrere Gruppen haben, müssen sie in ein JSON-Format-Array verkettet werden. Nur JSON-Daten werden benötigt, keine zusätzlichen Daten sollten ausgegeben werden.\n4. Entfernen Sie relevante Modifikatoren von der Wirksamkeit\n5. \"XX\" ist das zerlegte Ergebnis. Wenn kein Ergebnis existiert, muss \"XX\" durch \"\" ersetzt werden",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "integer",
+                    "enum": [
+                        2
+                    ],
+                    "description": "Strukturierter Typ-Identifikator",
+                    "能力项": "特定格式"
+                },
+                "data": {
+                    "type": "array",
+                    "description": "Komponenten-strukturierte Details",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Gewichtskennung pro Portion": {
+                                "type": "string",
+                                "description": "Gewichtskennung pro Portion",
+                                "能力项": "主题约束"
+                            },
+                            "Komponentenname": {
+                                "type": "string",
+                                "description": "Komponentenname",
+                                "能力项": "主题约束"
+                            },
+                            "Wirkstoffgehalt Zahl": {
+                                "type": "string",
+                                "description": "Numerischer Teil des Wirkstoffgehalts",
+                                "能力项": "主题约束"
+                            },
+                            "Wirkstoffgehalt Einheit": {
+                                "type": "string",
+                                "enum": [
+                                    "g",
+                                    "mg",
+                                    "µg",
+                                    "ml",
+                                    "l",
+                                    "µl",
+                                    "U",
+                                    "IU",
+                                    "Löffel",
+                                    "Teelöffel",
+                                    "%",
+                                    "c㎡",
+                                    "cm",
+                                    "mm",
+                                    "kcal",
+                                    "CFU",
+                                    "LSU",
+                                    "Pille",
+                                    "Korn",
+                                    "Tablette",
+                                    "Stick",
+                                    "Packung",
+                                    "Beutel",
+                                    "Stück",
+                                    "Einheit",
+                                    "Tropfen",
+                                    "Spray",
+                                    "Flasche",
+                                    "Pflaster",
+                                    "Inhalation",
+                                    "Blatt",
+                                    "Rolle",
+                                    "Tube",
+                                    "Lutschtablette",
+                                    "Schachtel",
+                                    "kleine Schachtel",
+                                    "Druck",
+                                    "Einheit",
+                                    "internationale Einheit",
+                                    ""
+                                ],
+                                "description": "Einheitenteil des Wirkstoffgehalts",
+                                "能力项": "特定格式"
+                            }
+                        },
+                        "required": [
+                            "Gewichtskennung pro Portion",
+                            "Komponentenname",
+                            "Wirkstoffgehalt Zahl",
+                            "Wirkstoffgehalt Einheit"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "data"
+            ]
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Entspricht es dem Schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    }
+]

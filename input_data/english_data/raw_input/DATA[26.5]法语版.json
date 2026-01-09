@@ -1,0 +1,2242 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage. Je vais vous fournir un article de guide de voyage contenant le titre et le contenu de l'article. Veuillez analyser l'article pour déterminer s'il contient des itinéraires de voyage (containRoute), combien d'itinéraires de voyage il contient (routeCount), s'il contient des projets sensibles au temps (containTimelinessProject), et extraire des informations détaillées pour chaque itinéraire (comme le nom de l'itinéraire, les jours, les points de voyage, s'il contient des projets sensibles au temps, les noms des projets sensibles au temps impliqués). Enfin, sortez les résultats dans le format JSON spécifié.\nDéfinitions des termes:\nItinéraire de voyage: Un itinéraire de voyage planifié avec plusieurs points de voyage dans l'ordre chronologique, durant environ 1-3 jours. Habituellement, plusieurs points de voyage dans un itinéraire de voyage sont connectés par séquence temporelle (comme aller au lieu A à 11h, aller au lieu B à 14h) ou séquence de localisation (comme actuellement au lieu A, prochain arrêt au lieu B). Notez que si seulement plusieurs points de voyage indépendants sont introduits, cela ne peut pas constituer un itinéraire de voyage.\nContient des itinéraires de voyage: Si l'article contient au moins un itinéraire de voyage complet, retournez 1, sinon 0.\nNombre d'itinéraires de voyage: Le nombre d'itinéraires de voyage complets contenus dans l'article, 0 s'il n'y en a pas.\nContient des projets sensibles au temps: Les projets sensibles au temps se réfèrent aux projets tenus à des moments spécifiques, tels que concerts, expositions, rassemblements, spectacles de stand-up comedy, festivals de musique et autres activités limitées dans le temps. Si l'itinéraire de voyage contient des projets sensibles au temps, retournez 1, sinon 0.\nChamp routes: Si des itinéraires de voyage sont inclus, des informations structurées détaillées pour chaque itinéraire doivent être sorties, incluant: routeName (nom de l'itinéraire), days (nombre de jours), routePoints (liste des points de voyage), hasTimelinessProject (si cet itinéraire contient des projets sensibles au temps), timelinessProjects (liste des projets sensibles au temps impliqués dans cet itinéraire, tableau vide s'il n'y en a pas, chaque nom de projet fait 9-150 caractères (inclure espace, nombre...)).\nExigences de format de sortie: Veuillez strictement sortir les résultats d'analyse dans le format JSON suivant, n'ajoutez aucune explication textuelle supplémentaire:{\"containRoute\": 0 ou 1,\"routeCount\": nombre(0,1,2...),\"containTimelinessProject\": 0 ou 1, \"routes\": [{\"routeName\": \"nom de l'itinéraire\", \"days\": 1-3, \"routePoints\": [\"point de voyage A\", \"point de voyage B\"], \"hasTimelinessProject\": 0 ou 1, \"timelinessProjects\": [\"nom du projet sensible au temps\"]}]}\nContenu de l'article:\n【Excursion d'une demi-journée】14:00 Rassemblement pour visiter l'usine centenaire (réservation requise) 15:30 Transfert vers le magasin créatif adjacent 16:00 Participation au cours d'artisanat (quotidien 16:00-17:00)",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si l'article contient des itinéraires de voyage, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Nombre d'itinéraires de voyage contenus dans l'article",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si les itinéraires de voyage contiennent des projets sensibles au temps, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Détails de tous les itinéraires de voyage",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nom de l'itinéraire, ne peut pas être vide",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Nombre de jours pour l'itinéraire, plage de valeurs 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste des points de voyage, doit contenir au moins deux points",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si cet itinéraire contient des projets sensibles au temps",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projets sensibles au temps impliqués dans cet itinéraire, chaque nom de projet fait 9-150 caractères",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage. Je vais vous fournir un article de guide de voyage contenant le titre et le contenu de l'article. Veuillez analyser l'article pour déterminer s'il contient des itinéraires de voyage (containRoute), combien d'itinéraires de voyage il contient (routeCount), s'il contient des projets sensibles au temps (containTimelinessProject), et extraire des informations détaillées pour chaque itinéraire (comme le nom de l'itinéraire, les jours, les points de voyage, s'il contient des projets sensibles au temps, les noms des projets sensibles au temps impliqués). Enfin, sortez les résultats dans le format JSON spécifié.\nDéfinitions des termes:\nItinéraire de voyage: Un itinéraire de voyage planifié avec plusieurs points de voyage dans l'ordre chronologique, durant environ 1-3 jours. Habituellement, plusieurs points de voyage dans un itinéraire de voyage sont connectés par séquence temporelle (comme aller au lieu A à 11h, aller au lieu B à 14h) ou séquence de localisation (comme actuellement au lieu A, prochain arrêt au lieu B). Notez que si seulement plusieurs points de voyage indépendants sont introduits, cela ne peut pas constituer un itinéraire de voyage.\nContient des itinéraires de voyage: Si l'article contient au moins un itinéraire de voyage complet, retournez 1, sinon 0.\nNombre d'itinéraires de voyage: Le nombre d'itinéraires de voyage complets contenus dans l'article, 0 s'il n'y en a pas.\nContient des projets sensibles au temps: Les projets sensibles au temps se réfèrent aux projets tenus à des moments spécifiques, tels que concerts, expositions, rassemblements, spectacles de stand-up comedy, festivals de musique et autres activités limitées dans le temps. Si l'itinéraire de voyage contient des projets sensibles au temps, retournez 1, sinon 0.\nChamp routes: Si des itinéraires de voyage sont inclus, des informations structurées détaillées pour chaque itinéraire doivent être sorties, incluant: routeName (nom de l'itinéraire), days (nombre de jours), routePoints (liste des points de voyage), hasTimelinessProject (si cet itinéraire contient des projets sensibles au temps), timelinessProjects (liste des projets sensibles au temps impliqués dans cet itinéraire, tableau vide s'il n'y en a pas, chaque nom de projet fait 9-150 caractères (inclure espace, nombre...)).\nExigences de format de sortie: Veuillez strictement sortir les résultats d'analyse dans le format JSON suivant, n'ajoutez aucune explication textuelle supplémentaire:{\"containRoute\": 0 ou 1,\"routeCount\": nombre(0,1,2...),\"containTimelinessProject\": 0 ou 1, \"routes\": [{\"routeName\": \"nom de l'itinéraire\", \"days\": 1-3, \"routePoints\": [\"point de voyage A\", \"point de voyage B\"], \"hasTimelinessProject\": 0 ou 1, \"timelinessProjects\": [\"nom du projet sensible au temps\"]}]}\nContenu de l'article:\n【Tour approfondi d'une journée】Rassemblement au musée à 10h, puis marche vers la galerie d'art, déjeuner dans un restaurant proche, participation à l'exposition limitée dans le temps l'après-midi, spectacle du festival de musique le soir.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si l'article contient des itinéraires de voyage, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Nombre d'itinéraires de voyage contenus dans l'article",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si les itinéraires de voyage contiennent des projets sensibles au temps, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Détails de tous les itinéraires de voyage",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nom de l'itinéraire, ne peut pas être vide",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Nombre de jours pour l'itinéraire, plage de valeurs 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste des points de voyage, doit contenir au moins deux points",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si cet itinéraire contient des projets sensibles au temps",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projets sensibles au temps impliqués dans cet itinéraire, chaque nom de projet fait 9-150 caractères",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage. Je vais vous fournir un article de guide de voyage contenant le titre et le contenu de l'article. Veuillez analyser l'article pour déterminer s'il contient des itinéraires de voyage (containRoute), combien d'itinéraires de voyage il contient (routeCount), s'il contient des projets sensibles au temps (containTimelinessProject), et extraire des informations détaillées pour chaque itinéraire (comme le nom de l'itinéraire, les jours, les points de voyage, s'il contient des projets sensibles au temps, les noms des projets sensibles au temps impliqués). Enfin, sortez les résultats dans le format JSON spécifié.\nDéfinitions des termes:\nItinéraire de voyage: Un itinéraire de voyage planifié avec plusieurs points de voyage dans l'ordre chronologique, durant environ 1-3 jours. Habituellement, plusieurs points de voyage dans un itinéraire de voyage sont connectés par séquence temporelle (comme aller au lieu A à 11h, aller au lieu B à 14h) ou séquence de localisation (comme actuellement au lieu A, prochain arrêt au lieu B). Notez que si seulement plusieurs points de voyage indépendants sont introduits, cela ne peut pas constituer un itinéraire de voyage.\nContient des itinéraires de voyage: Si l'article contient au moins un itinéraire de voyage complet, retournez 1, sinon 0.\nNombre d'itinéraires de voyage: Le nombre d'itinéraires de voyage complets contenus dans l'article, 0 s'il n'y en a pas.\nContient des projets sensibles au temps: Les projets sensibles au temps se réfèrent aux projets tenus à des moments spécifiques, tels que concerts, expositions, rassemblements, spectacles de stand-up comedy, festivals de musique et autres activités limitées dans le temps. Si l'itinéraire de voyage contient des projets sensibles au temps, retournez 1, sinon 0.\nChamp routes: Si des itinéraires de voyage sont inclus, des informations structurées détaillées pour chaque itinéraire doivent être sorties, incluant: routeName (nom de l'itinéraire), days (nombre de jours), routePoints (liste des points de voyage), hasTimelinessProject (si cet itinéraire contient des projets sensibles au temps), timelinessProjects (liste des projets sensibles au temps impliqués dans cet itinéraire, tableau vide s'il n'y en a pas, chaque nom de projet fait 9-150 caractères (inclure espace, nombre...)).\nExigences de format de sortie: Veuillez strictement sortir les résultats d'analyse dans le format JSON suivant, n'ajoutez aucune explication textuelle supplémentaire:{\"containRoute\": 0 ou 1,\"routeCount\": nombre(0,1,2...),\"containTimelinessProject\": 0 ou 1, \"routes\": [{\"routeName\": \"nom de l'itinéraire\", \"days\": 1-3, \"routePoints\": [\"point de voyage A\", \"point de voyage B\"], \"hasTimelinessProject\": 0 ou 1, \"timelinessProjects\": [\"nom du projet sensible au temps\"]}]}\nContenu de l'article:\n【Recommandations culinaires】La rue des collations locales a plusieurs marques traditionnelles, recommande les stands de petit-déjeuner, pâtisseries, stands de barbecue, pas de séquence temporelle, adapté aux visites décontractées.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si l'article contient des itinéraires de voyage, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Nombre d'itinéraires de voyage contenus dans l'article",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si les itinéraires de voyage contiennent des projets sensibles au temps, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Détails de tous les itinéraires de voyage",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nom de l'itinéraire, ne peut pas être vide",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Nombre de jours pour l'itinéraire, plage de valeurs 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste des points de voyage, doit contenir au moins deux points",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si cet itinéraire contient des projets sensibles au temps",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projets sensibles au temps impliqués dans cet itinéraire, chaque nom de projet fait 9-150 caractères",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage. Je vais vous fournir un article de guide de voyage contenant le titre et le contenu de l'article. Veuillez analyser l'article pour déterminer s'il contient des itinéraires de voyage (containRoute), combien d'itinéraires de voyage il contient (routeCount), s'il contient des projets sensibles au temps (containTimelinessProject), et extraire des informations détaillées pour chaque itinéraire (comme le nom de l'itinéraire, les jours, les points de voyage, s'il contient des projets sensibles au temps, les noms des projets sensibles au temps impliqués). Enfin, sortez les résultats dans le format JSON spécifié.\nDéfinitions des termes:\nItinéraire de voyage: Un itinéraire de voyage planifié avec plusieurs points de voyage dans l'ordre chronologique, durant environ 1-3 jours. Habituellement, plusieurs points de voyage dans un itinéraire de voyage sont connectés par séquence temporelle (comme aller au lieu A à 11h, aller au lieu B à 14h) ou séquence de localisation (comme actuellement au lieu A, prochain arrêt au lieu B). Notez que si seulement plusieurs points de voyage indépendants sont introduits, cela ne peut pas constituer un itinéraire de voyage.\nContient des itinéraires de voyage: Si l'article contient au moins un itinéraire de voyage complet, retournez 1, sinon 0.\nNombre d'itinéraires de voyage: Le nombre d'itinéraires de voyage complets contenus dans l'article, 0 s'il n'y en a pas.\nContient des projets sensibles au temps: Les projets sensibles au temps se réfèrent aux projets tenus à des moments spécifiques, tels que concerts, expositions, rassemblements, spectacles de stand-up comedy, festivals de musique et autres activités limitées dans le temps. Si l'itinéraire de voyage contient des projets sensibles au temps, retournez 1, sinon 0.\nChamp routes: Si des itinéraires de voyage sont inclus, des informations structurées détaillées pour chaque itinéraire doivent être sorties, incluant: routeName (nom de l'itinéraire), days (nombre de jours), routePoints (liste des points de voyage), hasTimelinessProject (si cet itinéraire contient des projets sensibles au temps), timelinessProjects (liste des projets sensibles au temps impliqués dans cet itinéraire, tableau vide s'il n'y en a pas, chaque nom de projet fait 9-150 caractères (inclure espace, nombre...)).\nExigences de format de sortie: Veuillez strictement sortir les résultats d'analyse dans le format JSON suivant, n'ajoutez aucune explication textuelle supplémentaire:{\"containRoute\": 0 ou 1,\"routeCount\": nombre(0,1,2...),\"containTimelinessProject\": 0 ou 1, \"routes\": [{\"routeName\": \"nom de l'itinéraire\", \"days\": 1-3, \"routePoints\": [\"point de voyage A\", \"point de voyage B\"], \"hasTimelinessProject\": 0 ou 1, \"timelinessProjects\": [\"nom du projet sensible au temps\"]}]}\nContenu de l'article:\n【Itinéraire de deux jours】Jour1: Visite de la vieille ville le matin, visite du musée de céramique l'après-midi, participation au spectacle lumineux du marché nocturne le soir. Jour2: Escalade le matin, sources chaudes l'après-midi.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si l'article contient des itinéraires de voyage, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Nombre d'itinéraires de voyage contenus dans l'article",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si les itinéraires de voyage contiennent des projets sensibles au temps, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Détails de tous les itinéraires de voyage",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nom de l'itinéraire, ne peut pas être vide",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Nombre de jours pour l'itinéraire, plage de valeurs 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste des points de voyage, doit contenir au moins deux points",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si cet itinéraire contient des projets sensibles au temps",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projets sensibles au temps impliqués dans cet itinéraire, chaque nom de projet fait 9-150 caractères",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage. Je vais vous fournir un article de guide de voyage contenant le titre et le contenu de l'article. Veuillez analyser l'article pour déterminer s'il contient des itinéraires de voyage (containRoute), combien d'itinéraires de voyage il contient (routeCount), s'il contient des projets sensibles au temps (containTimelinessProject), et extraire des informations détaillées pour chaque itinéraire (comme le nom de l'itinéraire, les jours, les points de voyage, s'il contient des projets sensibles au temps, les noms des projets sensibles au temps impliqués). Enfin, sortez les résultats dans le format JSON spécifié.\nDéfinitions des termes:\nItinéraire de voyage: Un itinéraire de voyage planifié avec plusieurs points de voyage dans l'ordre chronologique, durant environ 1-3 jours. Habituellement, plusieurs points de voyage dans un itinéraire de voyage sont connectés par séquence temporelle (comme aller au lieu A à 11h, aller au lieu B à 14h) ou séquence de localisation (comme actuellement au lieu A, prochain arrêt au lieu B). Notez que si seulement plusieurs points de voyage indépendants sont introduits, cela ne peut pas constituer un itinéraire de voyage.\nContient des itinéraires de voyage: Si l'article contient au moins un itinéraire de voyage complet, retournez 1, sinon 0.\nNombre d'itinéraires de voyage: Le nombre d'itinéraires de voyage complets contenus dans l'article, 0 s'il n'y en a pas.\nContient des projets sensibles au temps: Les projets sensibles au temps se réfèrent aux projets tenus à des moments spécifiques, tels que concerts, expositions, rassemblements, spectacles de stand-up comedy, festivals de musique et autres activités limitées dans le temps. Si l'itinéraire de voyage contient des projets sensibles au temps, retournez 1, sinon 0.\nChamp routes: Si des itinéraires de voyage sont inclus, des informations structurées détaillées pour chaque itinéraire doivent être sorties, incluant: routeName (nom de l'itinéraire), days (nombre de jours), routePoints (liste des points de voyage), hasTimelinessProject (si cet itinéraire contient des projets sensibles au temps), timelinessProjects (liste des projets sensibles au temps impliqués dans cet itinéraire, tableau vide s'il n'y en a pas, chaque nom de projet fait 9-150 caractères (inclure espace, nombre...)).\nExigences de format de sortie: Veuillez strictement sortir les résultats d'analyse dans le format JSON suivant, n'ajoutez aucune explication textuelle supplémentaire:{\"containRoute\": 0 ou 1,\"routeCount\": nombre(0,1,2...),\"containTimelinessProject\": 0 ou 1, \"routes\": [{\"routeName\": \"nom de l'itinéraire\", \"days\": 1-3, \"routePoints\": [\"point de voyage A\", \"point de voyage B\"], \"hasTimelinessProject\": 0 ou 1, \"timelinessProjects\": [\"nom du projet sensible au temps\"]}]}\nContenu de l'article:\n【Tour familial de week-end】Visite du zoo pour voir les pandas géants le matin, exposition de robots au musée des sciences l'après-midi, spectacle de théâtre pour enfants le soir. Visite du jardin botanique le matin du deuxième jour, retour l'après-midi.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si l'article contient des itinéraires de voyage, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Nombre d'itinéraires de voyage contenus dans l'article",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si les itinéraires de voyage contiennent des projets sensibles au temps, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Détails de tous les itinéraires de voyage",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nom de l'itinéraire, ne peut pas être vide",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Nombre de jours pour l'itinéraire, plage de valeurs 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste des points de voyage, doit contenir au moins deux points",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si cet itinéraire contient des projets sensibles au temps",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projets sensibles au temps impliqués dans cet itinéraire, chaque nom de projet fait 9-150 caractères",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage. Je vais vous fournir un article de guide de voyage contenant le titre et le contenu de l'article. Veuillez analyser l'article pour déterminer s'il contient des itinéraires de voyage (containRoute), combien d'itinéraires de voyage il contient (routeCount), s'il contient des projets sensibles au temps (containTimelinessProject), et extraire des informations détaillées pour chaque itinéraire (comme le nom de l'itinéraire, les jours, les points de voyage, s'il contient des projets sensibles au temps, les noms des projets sensibles au temps impliqués). Enfin, sortez les résultats dans le format JSON spécifié.\nDéfinitions des termes:\nItinéraire de voyage: Un itinéraire de voyage planifié avec plusieurs points de voyage dans l'ordre chronologique, durant environ 1-3 jours. Habituellement, plusieurs points de voyage dans un itinéraire de voyage sont connectés par séquence temporelle (comme aller au lieu A à 11h, aller au lieu B à 14h) ou séquence de localisation (comme actuellement au lieu A, prochain arrêt au lieu B). Notez que si seulement plusieurs points de voyage indépendants sont introduits, cela ne peut pas constituer un itinéraire de voyage.\nContient des itinéraires de voyage: Si l'article contient au moins un itinéraire de voyage complet, retournez 1, sinon 0.\nNombre d'itinéraires de voyage: Le nombre d'itinéraires de voyage complets contenus dans l'article, 0 s'il n'y en a pas.\nContient des projets sensibles au temps: Les projets sensibles au temps se réfèrent aux projets tenus à des moments spécifiques, tels que concerts, expositions, rassemblements, spectacles de stand-up comedy, festivals de musique et autres activités limitées dans le temps. Si l'itinéraire de voyage contient des projets sensibles au temps, retournez 1, sinon 0.\nChamp routes: Si des itinéraires de voyage sont inclus, des informations structurées détaillées pour chaque itinéraire doivent être sorties, incluant: routeName (nom de l'itinéraire), days (nombre de jours), routePoints (liste des points de voyage), hasTimelinessProject (si cet itinéraire contient des projets sensibles au temps), timelinessProjects (liste des projets sensibles au temps impliqués dans cet itinéraire, tableau vide s'il n'y en a pas, chaque nom de projet fait 9-150 caractères (inclure espace, nombre...)).\nExigences de format de sortie: Veuillez strictement sortir les résultats d'analyse dans le format JSON suivant, n'ajoutez aucune explication textuelle supplémentaire:{\"containRoute\": 0 ou 1,\"routeCount\": nombre(0,1,2...),\"containTimelinessProject\": 0 ou 1, \"routes\": [{\"routeName\": \"nom de l'itinéraire\", \"days\": 1-3, \"routePoints\": [\"point de voyage A\", \"point de voyage B\"], \"hasTimelinessProject\": 0 ou 1, \"timelinessProjects\": [\"nom du projet sensible au temps\"]}]}\nContenu de l'article:\n【Visite d'exposition】La galerie d'art a une nouvelle exposition ce week-end, rencontre avec l'artiste à 14h samedi, spectacle de stand-up comedy le soir, réservation à l'avance requise.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si l'article contient des itinéraires de voyage, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Nombre d'itinéraires de voyage contenus dans l'article",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si les itinéraires de voyage contiennent des projets sensibles au temps, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Détails de tous les itinéraires de voyage",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nom de l'itinéraire, ne peut pas être vide",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Nombre de jours pour l'itinéraire, plage de valeurs 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste des points de voyage, doit contenir au moins deux points",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si cet itinéraire contient des projets sensibles au temps",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projets sensibles au temps impliqués dans cet itinéraire, chaque nom de projet fait 9-150 caractères",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage. Je vais vous fournir un article de guide de voyage contenant le titre et le contenu de l'article. Veuillez analyser l'article pour déterminer s'il contient des itinéraires de voyage (containRoute), combien d'itinéraires de voyage il contient (routeCount), s'il contient des projets sensibles au temps (containTimelinessProject), et extraire des informations détaillées pour chaque itinéraire (comme le nom de l'itinéraire, les jours, les points de voyage, s'il contient des projets sensibles au temps, les noms des projets sensibles au temps impliqués). Enfin, sortez les résultats dans le format JSON spécifié.\nDéfinitions des termes:\nItinéraire de voyage: Un itinéraire de voyage planifié avec plusieurs points de voyage dans l'ordre chronologique, durant environ 1-3 jours. Habituellement, plusieurs points de voyage dans un itinéraire de voyage sont connectés par séquence temporelle (comme aller au lieu A à 11h, aller au lieu B à 14h) ou séquence de localisation (comme actuellement au lieu A, prochain arrêt au lieu B). Notez que si seulement plusieurs points de voyage indépendants sont introduits, cela ne peut pas constituer un itinéraire de voyage.\nContient des itinéraires de voyage: Si l'article contient au moins un itinéraire de voyage complet, retournez 1, sinon 0.\nNombre d'itinéraires de voyage: Le nombre d'itinéraires de voyage complets contenus dans l'article, 0 s'il n'y en a pas.\nContient des projets sensibles au temps: Les projets sensibles au temps se réfèrent aux projets tenus à des moments spécifiques, tels que concerts, expositions, rassemblements, spectacles de stand-up comedy, festivals de musique et autres activités limitées dans le temps. Si l'itinéraire de voyage contient des projets sensibles au temps, retournez 1, sinon 0.\nChamp routes: Si des itinéraires de voyage sont inclus, des informations structurées détaillées pour chaque itinéraire doivent être sorties, incluant: routeName (nom de l'itinéraire), days (nombre de jours), routePoints (liste des points de voyage), hasTimelinessProject (si cet itinéraire contient des projets sensibles au temps), timelinessProjects (liste des projets sensibles au temps impliqués dans cet itinéraire, tableau vide s'il n'y en a pas, chaque nom de projet fait 9-150 caractères (inclure espace, nombre...)).\nExigences de format de sortie: Veuillez strictement sortir les résultats d'analyse dans le format JSON suivant, n'ajoutez aucune explication textuelle supplémentaire:{\"containRoute\": 0 ou 1,\"routeCount\": nombre(0,1,2...),\"containTimelinessProject\": 0 ou 1, \"routes\": [{\"routeName\": \"nom de l'itinéraire\", \"days\": 1-3, \"routePoints\": [\"point de voyage A\", \"point de voyage B\"], \"hasTimelinessProject\": 0 ou 1, \"timelinessProjects\": [\"nom du projet sensible au temps\"]}]}\nContenu de l'article:\n【Guide de voyage indépendant】Les attractions recommandées incluent les parcs, rues anciennes, musées, marchés nocturnes, chacune peut être visitée indépendamment, pas d'itinéraire fixe.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si l'article contient des itinéraires de voyage, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Nombre d'itinéraires de voyage contenus dans l'article",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si les itinéraires de voyage contiennent des projets sensibles au temps, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Détails de tous les itinéraires de voyage",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nom de l'itinéraire, ne peut pas être vide",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Nombre de jours pour l'itinéraire, plage de valeurs 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste des points de voyage, doit contenir au moins deux points",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si cet itinéraire contient des projets sensibles au temps",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projets sensibles au temps impliqués dans cet itinéraire, chaque nom de projet fait 9-150 caractères",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage. Je vais vous fournir un article de guide de voyage contenant le titre et le contenu de l'article. Veuillez analyser l'article pour déterminer s'il contient des itinéraires de voyage (containRoute), combien d'itinéraires de voyage il contient (routeCount), s'il contient des projets sensibles au temps (containTimelinessProject), et extraire des informations détaillées pour chaque itinéraire (comme le nom de l'itinéraire, les jours, les points de voyage, s'il contient des projets sensibles au temps, les noms des projets sensibles au temps impliqués). Enfin, sortez les résultats dans le format JSON spécifié.\nDéfinitions des termes:\nItinéraire de voyage: Un itinéraire de voyage planifié avec plusieurs points de voyage dans l'ordre chronologique, durant environ 1-3 jours. Habituellement, plusieurs points de voyage dans un itinéraire de voyage sont connectés par séquence temporelle (comme aller au lieu A à 11h, aller au lieu B à 14h) ou séquence de localisation (comme actuellement au lieu A, prochain arrêt au lieu B). Notez que si seulement plusieurs points de voyage indépendants sont introduits, cela ne peut pas constituer un itinéraire de voyage.\nContient des itinéraires de voyage: Si l'article contient au moins un itinéraire de voyage complet, retournez 1, sinon 0.\nNombre d'itinéraires de voyage: Le nombre d'itinéraires de voyage complets contenus dans l'article, 0 s'il n'y en a pas.\nContient des projets sensibles au temps: Les projets sensibles au temps se réfèrent aux projets tenus à des moments spécifiques, tels que concerts, expositions, rassemblements, spectacles de stand-up comedy, festivals de musique et autres activités limitées dans le temps. Si l'itinéraire de voyage contient des projets sensibles au temps, retournez 1, sinon 0.\nChamp routes: Si des itinéraires de voyage sont inclus, des informations structurées détaillées pour chaque itinéraire doivent être sorties, incluant: routeName (nom de l'itinéraire), days (nombre de jours), routePoints (liste des points de voyage), hasTimelinessProject (si cet itinéraire contient des projets sensibles au temps), timelinessProjects (liste des projets sensibles au temps impliqués dans cet itinéraire, tableau vide s'il n'y en a pas, chaque nom de projet fait 9-150 caractères (inclure espace, nombre...)).\nExigences de format de sortie: Veuillez strictement sortir les résultats d'analyse dans le format JSON suivant, n'ajoutez aucune explication textuelle supplémentaire:{\"containRoute\": 0 ou 1,\"routeCount\": nombre(0,1,2...),\"containTimelinessProject\": 0 ou 1, \"routes\": [{\"routeName\": \"nom de l'itinéraire\", \"days\": 1-3, \"routePoints\": [\"point de voyage A\", \"point de voyage B\"], \"hasTimelinessProject\": 0 ou 1, \"timelinessProjects\": [\"nom du projet sensible au temps\"]}]}\nContenu de l'article:\n【Excursion d'une journée】Rassemblement à la gare à 8h, arrivée dans la zone panoramique à 9h, tour du sommet de la montagne à 10h, descente pour le déjeuner à 12h, visite du village folklorique l'après-midi, retour à 16h.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si l'article contient des itinéraires de voyage, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Nombre d'itinéraires de voyage contenus dans l'article",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si les itinéraires de voyage contiennent des projets sensibles au temps, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Détails de tous les itinéraires de voyage",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nom de l'itinéraire, ne peut pas être vide",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Nombre de jours pour l'itinéraire, plage de valeurs 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste des points de voyage, doit contenir au moins deux points",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si cet itinéraire contient des projets sensibles au temps",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projets sensibles au temps impliqués dans cet itinéraire, chaque nom de projet fait 9-150 caractères",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage. Je vais vous fournir un article de guide de voyage contenant le titre et le contenu de l'article. Veuillez analyser l'article pour déterminer s'il contient des itinéraires de voyage (containRoute), combien d'itinéraires de voyage il contient (routeCount), s'il contient des projets sensibles au temps (containTimelinessProject), et extraire des informations détaillées pour chaque itinéraire (comme le nom de l'itinéraire, les jours, les points de voyage, s'il contient des projets sensibles au temps, les noms des projets sensibles au temps impliqués). Enfin, sortez les résultats dans le format JSON spécifié.\nDéfinitions des termes:\nItinéraire de voyage: Un itinéraire de voyage planifié avec plusieurs points de voyage dans l'ordre chronologique, durant environ 1-3 jours. Habituellement, plusieurs points de voyage dans un itinéraire de voyage sont connectés par séquence temporelle (comme aller au lieu A à 11h, aller au lieu B à 14h) ou séquence de localisation (comme actuellement au lieu A, prochain arrêt au lieu B). Notez que si seulement plusieurs points de voyage indépendants sont introduits, cela ne peut pas constituer un itinéraire de voyage.\nContient des itinéraires de voyage: Si l'article contient au moins un itinéraire de voyage complet, retournez 1, sinon 0.\nNombre d'itinéraires de voyage: Le nombre d'itinéraires de voyage complets contenus dans l'article, 0 s'il n'y en a pas.\nContient des projets sensibles au temps: Les projets sensibles au temps se réfèrent aux projets tenus à des moments spécifiques, tels que concerts, expositions, rassemblements, spectacles de stand-up comedy, festivals de musique et autres activités limitées dans le temps. Si l'itinéraire de voyage contient des projets sensibles au temps, retournez 1, sinon 0.\nChamp routes: Si des itinéraires de voyage sont inclus, des informations structurées détaillées pour chaque itinéraire doivent être sorties, incluant: routeName (nom de l'itinéraire), days (nombre de jours), routePoints (liste des points de voyage), hasTimelinessProject (si cet itinéraire contient des projets sensibles au temps), timelinessProjects (liste des projets sensibles au temps impliqués dans cet itinéraire, tableau vide s'il n'y en a pas, chaque nom de projet fait 9-150 caractères (inclure espace, nombre...)).\nExigences de format de sortie: Veuillez strictement sortir les résultats d'analyse dans le format JSON suivant, n'ajoutez aucune explication textuelle supplémentaire:{\"containRoute\": 0 ou 1,\"routeCount\": nombre(0,1,2...),\"containTimelinessProject\": 0 ou 1, \"routes\": [{\"routeName\": \"nom de l'itinéraire\", \"days\": 1-3, \"routePoints\": [\"point de voyage A\", \"point de voyage B\"], \"hasTimelinessProject\": 0 ou 1, \"timelinessProjects\": [\"nom du projet sensible au temps\"]}]}\nContenu de l'article:\n【Itinéraire de tour nocturne】Rassemblement au bord de la rivière à 18:00, tour nocturne en bateau à 18:30, marche vers la place musicale après débarquement à 20:00 pour regarder le concert en plein air.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si l'article contient des itinéraires de voyage, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Nombre d'itinéraires de voyage contenus dans l'article",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si les itinéraires de voyage contiennent des projets sensibles au temps, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Détails de tous les itinéraires de voyage",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nom de l'itinéraire, ne peut pas être vide",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Nombre de jours pour l'itinéraire, plage de valeurs 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste des points de voyage, doit contenir au moins deux points",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si cet itinéraire contient des projets sensibles au temps",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projets sensibles au temps impliqués dans cet itinéraire, chaque nom de projet fait 9-150 caractères",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage. Je vais vous fournir un article de guide de voyage contenant le titre et le contenu de l'article. Veuillez analyser l'article pour déterminer s'il contient des itinéraires de voyage (containRoute), combien d'itinéraires de voyage il contient (routeCount), s'il contient des projets sensibles au temps (containTimelinessProject), et extraire des informations détaillées pour chaque itinéraire (comme le nom de l'itinéraire, les jours, les points de voyage, s'il contient des projets sensibles au temps, les noms des projets sensibles au temps impliqués). Enfin, sortez les résultats dans le format JSON spécifié.\nDéfinitions des termes:\nItinéraire de voyage: Un itinéraire de voyage planifié avec plusieurs points de voyage dans l'ordre chronologique, durant environ 1-3 jours. Habituellement, plusieurs points de voyage dans un itinéraire de voyage sont connectés par séquence temporelle (comme aller au lieu A à 11h, aller au lieu B à 14h) ou séquence de localisation (comme actuellement au lieu A, prochain arrêt au lieu B). Notez que si seulement plusieurs points de voyage indépendants sont introduits, cela ne peut pas constituer un itinéraire de voyage.\nContient des itinéraires de voyage: Si l'article contient au moins un itinéraire de voyage complet, retournez 1, sinon 0.\nNombre d'itinéraires de voyage: Le nombre d'itinéraires de voyage complets contenus dans l'article, 0 s'il n'y en a pas.\nContient des projets sensibles au temps: Les projets sensibles au temps se réfèrent aux projets tenus à des moments spécifiques, tels que concerts, expositions, rassemblements, spectacles de stand-up comedy, festivals de musique et autres activités limitées dans le temps. Si l'itinéraire de voyage contient des projets sensibles au temps, retournez 1, sinon 0.\nChamp routes: Si des itinéraires de voyage sont inclus, des informations structurées détaillées pour chaque itinéraire doivent être sorties, incluant: routeName (nom de l'itinéraire), days (nombre de jours), routePoints (liste des points de voyage), hasTimelinessProject (si cet itinéraire contient des projets sensibles au temps), timelinessProjects (liste des projets sensibles au temps impliqués dans cet itinéraire, tableau vide s'il n'y en a pas, chaque nom de projet fait 9-150 caractères (inclure espace, nombre...)).\nExigences de format de sortie: Veuillez strictement sortir les résultats d'analyse dans le format JSON suivant, n'ajoutez aucune explication textuelle supplémentaire:{\"containRoute\": 0 ou 1,\"routeCount\": nombre(0,1,2...),\"containTimelinessProject\": 0 ou 1, \"routes\": [{\"routeName\": \"nom de l'itinéraire\", \"days\": 1-3, \"routePoints\": [\"point de voyage A\", \"point de voyage B\"], \"hasTimelinessProject\": 0 ou 1, \"timelinessProjects\": [\"nom du projet sensible au temps\"]}]}\nContenu de l'article:\n【Guide】Recommande trois lieux principaux: musée, galerie d'art, musée des sciences, chacun avec des expositions caractéristiques, adapté aux visites familiales, pas d'itinéraire spécifique.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si l'article contient des itinéraires de voyage, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Nombre d'itinéraires de voyage contenus dans l'article",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si les itinéraires de voyage contiennent des projets sensibles au temps, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Détails de tous les itinéraires de voyage",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nom de l'itinéraire, ne peut pas être vide",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Nombre de jours pour l'itinéraire, plage de valeurs 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste des points de voyage, doit contenir au moins deux points",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si cet itinéraire contient des projets sensibles au temps",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projets sensibles au temps impliqués dans cet itinéraire, chaque nom de projet fait 9-150 caractères",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage. Je vais vous fournir un article de guide de voyage contenant le titre et le contenu de l'article. Veuillez analyser l'article pour déterminer s'il contient des itinéraires de voyage (containRoute), combien d'itinéraires de voyage il contient (routeCount), s'il contient des projets sensibles au temps (containTimelinessProject), et extraire des informations détaillées pour chaque itinéraire (comme le nom de l'itinéraire, les jours, les points de voyage, s'il contient des projets sensibles au temps, les noms des projets sensibles au temps impliqués). Enfin, sortez les résultats dans le format JSON spécifié.\nDéfinitions des termes:\nItinéraire de voyage: Un itinéraire de voyage planifié avec plusieurs points de voyage dans l'ordre chronologique, durant environ 1-3 jours. Habituellement, plusieurs points de voyage dans un itinéraire de voyage sont connectés par séquence temporelle (comme aller au lieu A à 11h, aller au lieu B à 14h) ou séquence de localisation (comme actuellement au lieu A, prochain arrêt au lieu B). Notez que si seulement plusieurs points de voyage indépendants sont introduits, cela ne peut pas constituer un itinéraire de voyage.\nContient des itinéraires de voyage: Si l'article contient au moins un itinéraire de voyage complet, retournez 1, sinon 0.\nNombre d'itinéraires de voyage: Le nombre d'itinéraires de voyage complets contenus dans l'article, 0 s'il n'y en a pas.\nContient des projets sensibles au temps: Les projets sensibles au temps se réfèrent aux projets tenus à des moments spécifiques, tels que concerts, expositions, rassemblements, spectacles de stand-up comedy, festivals de musique et autres activités limitées dans le temps. Si l'itinéraire de voyage contient des projets sensibles au temps, retournez 1, sinon 0.\nChamp routes: Si des itinéraires de voyage sont inclus, des informations structurées détaillées pour chaque itinéraire doivent être sorties, incluant: routeName (nom de l'itinéraire), days (nombre de jours), routePoints (liste des points de voyage), hasTimelinessProject (si cet itinéraire contient des projets sensibles au temps), timelinessProjects (liste des projets sensibles au temps impliqués dans cet itinéraire, tableau vide s'il n'y en a pas, chaque nom de projet fait 9-150 caractères (inclure espace, nombre...)).\nExigences de format de sortie: Veuillez strictement sortir les résultats d'analyse dans le format JSON suivant, n'ajoutez aucune explication textuelle supplémentaire:{\"containRoute\": 0 ou 1,\"routeCount\": nombre(0,1,2...),\"containTimelinessProject\": 0 ou 1, \"routes\": [{\"routeName\": \"nom de l'itinéraire\", \"days\": 1-3, \"routePoints\": [\"point de voyage A\", \"point de voyage B\"], \"hasTimelinessProject\": 0 ou 1, \"timelinessProjects\": [\"nom du projet sensible au temps\"]}]}\nContenu de l'article:\n【Tour en voiture de trois jours】Jour1: Départ le matin vers la ville d'eau de Gubei, tour du paysage de la ville d'eau après le déjeuner, participation au spectacle lumineux de la ville d'eau le soir. Jour2: Direction les contreforts de la Grande Muraille le matin, escalade de la Grande Muraille l'après-midi, camping le soir. Jour3: Visite du musée de la Grande Muraille le matin, retour l'après-midi.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si l'article contient des itinéraires de voyage, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Nombre d'itinéraires de voyage contenus dans l'article",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si les itinéraires de voyage contiennent des projets sensibles au temps, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Détails de tous les itinéraires de voyage",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nom de l'itinéraire, ne peut pas être vide",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Nombre de jours pour l'itinéraire, plage de valeurs 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste des points de voyage, doit contenir au moins deux points",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si cet itinéraire contient des projets sensibles au temps",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projets sensibles au temps impliqués dans cet itinéraire, chaque nom de projet fait 9-150 caractères",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage. Je vais vous fournir un article de guide de voyage contenant le titre et le contenu de l'article. Veuillez analyser l'article pour déterminer s'il contient des itinéraires de voyage (containRoute), combien d'itinéraires de voyage il contient (routeCount), s'il contient des projets sensibles au temps (containTimelinessProject), et extraire des informations détaillées pour chaque itinéraire (comme le nom de l'itinéraire, les jours, les points de voyage, s'il contient des projets sensibles au temps, les noms des projets sensibles au temps impliqués). Enfin, sortez les résultats dans le format JSON spécifié.\nDéfinitions des termes:\nItinéraire de voyage: Un itinéraire de voyage planifié avec plusieurs points de voyage dans l'ordre chronologique, durant environ 1-3 jours. Habituellement, plusieurs points de voyage dans un itinéraire de voyage sont connectés par séquence temporelle (comme aller au lieu A à 11h, aller au lieu B à 14h) ou séquence de localisation (comme actuellement au lieu A, prochain arrêt au lieu B). Notez que si seulement plusieurs points de voyage indépendants sont introduits, cela ne peut pas constituer un itinéraire de voyage.\nContient des itinéraires de voyage: Si l'article contient au moins un itinéraire de voyage complet, retournez 1, sinon 0.\nNombre d'itinéraires de voyage: Le nombre d'itinéraires de voyage complets contenus dans l'article, 0 s'il n'y en a pas.\nContient des projets sensibles au temps: Les projets sensibles au temps se réfèrent aux projets tenus à des moments spécifiques, tels que concerts, expositions, rassemblements, spectacles de stand-up comedy, festivals de musique et autres activités limitées dans le temps. Si l'itinéraire de voyage contient des projets sensibles au temps, retournez 1, sinon 0.\nChamp routes: Si des itinéraires de voyage sont inclus, des informations structurées détaillées pour chaque itinéraire doivent être sorties, incluant: routeName (nom de l'itinéraire), days (nombre de jours), routePoints (liste des points de voyage), hasTimelinessProject (si cet itinéraire contient des projets sensibles au temps), timelinessProjects (liste des projets sensibles au temps impliqués dans cet itinéraire, tableau vide s'il n'y en a pas, chaque nom de projet fait 9-150 caractères (inclure espace, nombre...)).\nExigences de format de sortie: Veuillez strictement sortir les résultats d'analyse dans le format JSON suivant, n'ajoutez aucune explication textuelle supplémentaire:{\"containRoute\": 0 ou 1,\"routeCount\": nombre(0,1,2...),\"containTimelinessProject\": 0 ou 1, \"routes\": [{\"routeName\": \"nom de l'itinéraire\", \"days\": 1-3, \"routePoints\": [\"point de voyage A\", \"point de voyage B\"], \"hasTimelinessProject\": 0 ou 1, \"timelinessProjects\": [\"nom du projet sensible au temps\"]}]}\nContenu de l'article:\n【Camp parent-enfant d'été】Premier jour matin rassemblement, visite du musée des sciences, expérience d'expériences scientifiques l'après-midi, spectacle de stand-up comedy scientifique le soir. Deuxième jour développement en plein air toute la journée, troisième jour matin visite du jardin botanique, cérémonie de clôture l'après-midi.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si l'article contient des itinéraires de voyage, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Nombre d'itinéraires de voyage contenus dans l'article",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si les itinéraires de voyage contiennent des projets sensibles au temps, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Détails de tous les itinéraires de voyage",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nom de l'itinéraire, ne peut pas être vide",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Nombre de jours pour l'itinéraire, plage de valeurs 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste des points de voyage, doit contenir au moins deux points",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si cet itinéraire contient des projets sensibles au temps",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projets sensibles au temps impliqués dans cet itinéraire, chaque nom de projet fait 9-150 caractères",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage. Je vais vous fournir un article de guide de voyage contenant le titre et le contenu de l'article. Veuillez analyser l'article pour déterminer s'il contient des itinéraires de voyage (containRoute), combien d'itinéraires de voyage il contient (routeCount), s'il contient des projets sensibles au temps (containTimelinessProject), et extraire des informations détaillées pour chaque itinéraire (comme le nom de l'itinéraire, les jours, les points de voyage, s'il contient des projets sensibles au temps, les noms des projets sensibles au temps impliqués). Enfin, sortez les résultats dans le format JSON spécifié.\nDéfinitions des termes:\nItinéraire de voyage: Un itinéraire de voyage planifié avec plusieurs points de voyage dans l'ordre chronologique, durant environ 1-3 jours. Habituellement, plusieurs points de voyage dans un itinéraire de voyage sont connectés par séquence temporelle (comme aller au lieu A à 11h, aller au lieu B à 14h) ou séquence de localisation (comme actuellement au lieu A, prochain arrêt au lieu B). Notez que si seulement plusieurs points de voyage indépendants sont introduits, cela ne peut pas constituer un itinéraire de voyage.\nContient des itinéraires de voyage: Si l'article contient au moins un itinéraire de voyage complet, retournez 1, sinon 0.\nNombre d'itinéraires de voyage: Le nombre d'itinéraires de voyage complets contenus dans l'article, 0 s'il n'y en a pas.\nContient des projets sensibles au temps: Les projets sensibles au temps se réfèrent aux projets tenus à des moments spécifiques, tels que concerts, expositions, rassemblements, spectacles de stand-up comedy, festivals de musique et autres activités limitées dans le temps. Si l'itinéraire de voyage contient des projets sensibles au temps, retournez 1, sinon 0.\nChamp routes: Si des itinéraires de voyage sont inclus, des informations structurées détaillées pour chaque itinéraire doivent être sorties, incluant: routeName (nom de l'itinéraire), days (nombre de jours), routePoints (liste des points de voyage), hasTimelinessProject (si cet itinéraire contient des projets sensibles au temps), timelinessProjects (liste des projets sensibles au temps impliqués dans cet itinéraire, tableau vide s'il n'y en a pas, chaque nom de projet fait 9-150 caractères (inclure espace, nombre...)).\nExigences de format de sortie: Veuillez strictement sortir les résultats d'analyse dans le format JSON suivant, n'ajoutez aucune explication textuelle supplémentaire:{\"containRoute\": 0 ou 1,\"routeCount\": nombre(0,1,2...),\"containTimelinessProject\": 0 ou 1, \"routes\": [{\"routeName\": \"nom de l'itinéraire\", \"days\": 1-3, \"routePoints\": [\"point de voyage A\", \"point de voyage B\"], \"hasTimelinessProject\": 0 ou 1, \"timelinessProjects\": [\"nom du projet sensible au temps\"]}]}\nContenu de l'article:\n【Itinéraire de course nocturne urbaine】Rassemblement au parc sportif de la ville à 19h, course nocturne le long du sentier riverain passant par la fontaine musicale et le pont lumineux, fin à la place du centre-ville, adapté aux amateurs de sport.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si l'article contient des itinéraires de voyage, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Nombre d'itinéraires de voyage contenus dans l'article",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si les itinéraires de voyage contiennent des projets sensibles au temps, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Détails de tous les itinéraires de voyage",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nom de l'itinéraire, ne peut pas être vide",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Nombre de jours pour l'itinéraire, plage de valeurs 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste des points de voyage, doit contenir au moins deux points",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si cet itinéraire contient des projets sensibles au temps",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projets sensibles au temps impliqués dans cet itinéraire, chaque nom de projet fait 9-150 caractères",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage. Je vais vous fournir un article de guide de voyage contenant le titre et le contenu de l'article. Veuillez analyser l'article pour déterminer s'il contient des itinéraires de voyage (containRoute), combien d'itinéraires de voyage il contient (routeCount), s'il contient des projets sensibles au temps (containTimelinessProject), et extraire des informations détaillées pour chaque itinéraire (comme le nom de l'itinéraire, les jours, les points de voyage, s'il contient des projets sensibles au temps, les noms des projets sensibles au temps impliqués). Enfin, sortez les résultats dans le format JSON spécifié.\nDéfinitions des termes:\nItinéraire de voyage: Un itinéraire de voyage planifié avec plusieurs points de voyage dans l'ordre chronologique, durant environ 1-3 jours. Habituellement, plusieurs points de voyage dans un itinéraire de voyage sont connectés par séquence temporelle (comme aller au lieu A à 11h, aller au lieu B à 14h) ou séquence de localisation (comme actuellement au lieu A, prochain arrêt au lieu B). Notez que si seulement plusieurs points de voyage indépendants sont introduits, cela ne peut pas constituer un itinéraire de voyage.\nContient des itinéraires de voyage: Si l'article contient au moins un itinéraire de voyage complet, retournez 1, sinon 0.\nNombre d'itinéraires de voyage: Le nombre d'itinéraires de voyage complets contenus dans l'article, 0 s'il n'y en a pas.\nContient des projets sensibles au temps: Les projets sensibles au temps se réfèrent aux projets tenus à des moments spécifiques, tels que concerts, expositions, rassemblements, spectacles de stand-up comedy, festivals de musique et autres activités limitées dans le temps. Si l'itinéraire de voyage contient des projets sensibles au temps, retournez 1, sinon 0.\nChamp routes: Si des itinéraires de voyage sont inclus, des informations structurées détaillées pour chaque itinéraire doivent être sorties, incluant: routeName (nom de l'itinéraire), days (nombre de jours), routePoints (liste des points de voyage), hasTimelinessProject (si cet itinéraire contient des projets sensibles au temps), timelinessProjects (liste des projets sensibles au temps impliqués dans cet itinéraire, tableau vide s'il n'y en a pas, chaque nom de projet fait 9-150 caractères (inclure espace, nombre...)).\nExigences de format de sortie: Veuillez strictement sortir les résultats d'analyse dans le format JSON suivant, n'ajoutez aucune explication textuelle supplémentaire:{\"containRoute\": 0 ou 1,\"routeCount\": nombre(0,1,2...),\"containTimelinessProject\": 0 ou 1, \"routes\": [{\"routeName\": \"nom de l'itinéraire\", \"days\": 1-3, \"routePoints\": [\"point de voyage A\", \"point de voyage B\"], \"hasTimelinessProject\": 0 ou 1, \"timelinessProjects\": [\"nom du projet sensible au temps\"]}]}\nContenu de l'article:\n【Tour de couple de week-end】Visite du jardin de roses le matin, exposition de peinture à la galerie d'art l'après-midi, concert de jazz le soir. Deuxième jour matin expérience de poterie, après-midi repos au café de la vieille rue.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si l'article contient des itinéraires de voyage, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Nombre d'itinéraires de voyage contenus dans l'article",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si les itinéraires de voyage contiennent des projets sensibles au temps, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Détails de tous les itinéraires de voyage",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nom de l'itinéraire, ne peut pas être vide",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Nombre de jours pour l'itinéraire, plage de valeurs 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste des points de voyage, doit contenir au moins deux points",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si cet itinéraire contient des projets sensibles au temps",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projets sensibles au temps impliqués dans cet itinéraire, chaque nom de projet fait 9-150 caractères",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage. Je vais vous fournir un article de guide de voyage contenant le titre et le contenu de l'article. Veuillez analyser l'article pour déterminer s'il contient des itinéraires de voyage (containRoute), combien d'itinéraires de voyage il contient (routeCount), s'il contient des projets sensibles au temps (containTimelinessProject), et extraire des informations détaillées pour chaque itinéraire (comme le nom de l'itinéraire, les jours, les points de voyage, s'il contient des projets sensibles au temps, les noms des projets sensibles au temps impliqués). Enfin, sortez les résultats dans le format JSON spécifié.\nDéfinitions des termes:\nItinéraire de voyage: Un itinéraire de voyage planifié avec plusieurs points de voyage dans l'ordre chronologique, durant environ 1-3 jours. Habituellement, plusieurs points de voyage dans un itinéraire de voyage sont connectés par séquence temporelle (comme aller au lieu A à 11h, aller au lieu B à 14h) ou séquence de localisation (comme actuellement au lieu A, prochain arrêt au lieu B). Notez que si seulement plusieurs points de voyage indépendants sont introduits, cela ne peut pas constituer un itinéraire de voyage.\nContient des itinéraires de voyage: Si l'article contient au moins un itinéraire de voyage complet, retournez 1, sinon 0.\nNombre d'itinéraires de voyage: Le nombre d'itinéraires de voyage complets contenus dans l'article, 0 s'il n'y en a pas.\nContient des projets sensibles au temps: Les projets sensibles au temps se réfèrent aux projets tenus à des moments spécifiques, tels que concerts, expositions, rassemblements, spectacles de stand-up comedy, festivals de musique et autres activités limitées dans le temps. Si l'itinéraire de voyage contient des projets sensibles au temps, retournez 1, sinon 0.\nChamp routes: Si des itinéraires de voyage sont inclus, des informations structurées détaillées pour chaque itinéraire doivent être sorties, incluant: routeName (nom de l'itinéraire), days (nombre de jours), routePoints (liste des points de voyage), hasTimelinessProject (si cet itinéraire contient des projets sensibles au temps), timelinessProjects (liste des projets sensibles au temps impliqués dans cet itinéraire, tableau vide s'il n'y en a pas, chaque nom de projet fait 9-150 caractères (inclure espace, nombre...)).\nExigences de format de sortie: Veuillez strictement sortir les résultats d'analyse dans le format JSON suivant, n'ajoutez aucune explication textuelle supplémentaire:{\"containRoute\": 0 ou 1,\"routeCount\": nombre(0,1,2...),\"containTimelinessProject\": 0 ou 1, \"routes\": [{\"routeName\": \"nom de l'itinéraire\", \"days\": 1-3, \"routePoints\": [\"point de voyage A\", \"point de voyage B\"], \"hasTimelinessProject\": 0 ou 1, \"timelinessProjects\": [\"nom du projet sensible au temps\"]}]}\nContenu de l'article:\n【Double itinéraire exposition + concert】Nouvelle exposition à la galerie d'art le matin, conférence d'artiste l'après-midi, participation au concert limité dans le temps le soir. Deuxième jour matin activités libres.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si l'article contient des itinéraires de voyage, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Nombre d'itinéraires de voyage contenus dans l'article",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si les itinéraires de voyage contiennent des projets sensibles au temps, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Détails de tous les itinéraires de voyage",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nom de l'itinéraire, ne peut pas être vide",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Nombre de jours pour l'itinéraire, plage de valeurs 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste des points de voyage, doit contenir au moins deux points",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si cet itinéraire contient des projets sensibles au temps",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projets sensibles au temps impliqués dans cet itinéraire, chaque nom de projet fait 9-150 caractères",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage. Je vais vous fournir un article de guide de voyage contenant le titre et le contenu de l'article. Veuillez analyser l'article pour déterminer s'il contient des itinéraires de voyage (containRoute), combien d'itinéraires de voyage il contient (routeCount), s'il contient des projets sensibles au temps (containTimelinessProject), et extraire des informations détaillées pour chaque itinéraire (comme le nom de l'itinéraire, les jours, les points de voyage, s'il contient des projets sensibles au temps, les noms des projets sensibles au temps impliqués). Enfin, sortez les résultats dans le format JSON spécifié.\nDéfinitions des termes:\nItinéraire de voyage: Un itinéraire de voyage planifié avec plusieurs points de voyage dans l'ordre chronologique, durant environ 1-3 jours. Habituellement, plusieurs points de voyage dans un itinéraire de voyage sont connectés par séquence temporelle (comme aller au lieu A à 11h, aller au lieu B à 14h) ou séquence de localisation (comme actuellement au lieu A, prochain arrêt au lieu B). Notez que si seulement plusieurs points de voyage indépendants sont introduits, cela ne peut pas constituer un itinéraire de voyage.\nContient des itinéraires de voyage: Si l'article contient au moins un itinéraire de voyage complet, retournez 1, sinon 0.\nNombre d'itinéraires de voyage: Le nombre d'itinéraires de voyage complets contenus dans l'article, 0 s'il n'y en a pas.\nContient des projets sensibles au temps: Les projets sensibles au temps se réfèrent aux projets tenus à des moments spécifiques, tels que concerts, expositions, rassemblements, spectacles de stand-up comedy, festivals de musique et autres activités limitées dans le temps. Si l'itinéraire de voyage contient des projets sensibles au temps, retournez 1, sinon 0.\nChamp routes: Si des itinéraires de voyage sont inclus, des informations structurées détaillées pour chaque itinéraire doivent être sorties, incluant: routeName (nom de l'itinéraire), days (nombre de jours), routePoints (liste des points de voyage), hasTimelinessProject (si cet itinéraire contient des projets sensibles au temps), timelinessProjects (liste des projets sensibles au temps impliqués dans cet itinéraire, tableau vide s'il n'y en a pas, chaque nom de projet fait 9-150 caractères (inclure espace, nombre...)).\nExigences de format de sortie: Veuillez strictement sortir les résultats d'analyse dans le format JSON suivant, n'ajoutez aucune explication textuelle supplémentaire:{\"containRoute\": 0 ou 1,\"routeCount\": nombre(0,1,2...),\"containTimelinessProject\": 0 ou 1, \"routes\": [{\"routeName\": \"nom de l'itinéraire\", \"days\": 1-3, \"routePoints\": [\"point de voyage A\", \"point de voyage B\"], \"hasTimelinessProject\": 0 ou 1, \"timelinessProjects\": [\"nom du projet sensible au temps\"]}]}\nContenu de l'article:\n【Itinéraire cycliste de deux jours】Jour1: Cyclisme vers le parc du lac le matin, tour du lac après le déjeuner, arrivée au camping l'après-midi pour camper. Jour2: Observer le lever du soleil le matin, cyclisme vers la vieille ville le matin, fin du voyage l'après-midi.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si l'article contient des itinéraires de voyage, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Nombre d'itinéraires de voyage contenus dans l'article",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si les itinéraires de voyage contiennent des projets sensibles au temps, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Détails de tous les itinéraires de voyage",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nom de l'itinéraire, ne peut pas être vide",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Nombre de jours pour l'itinéraire, plage de valeurs 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste des points de voyage, doit contenir au moins deux points",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si cet itinéraire contient des projets sensibles au temps",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projets sensibles au temps impliqués dans cet itinéraire, chaque nom de projet fait 9-150 caractères",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage. Je vais vous fournir un article de guide de voyage contenant le titre et le contenu de l'article. Veuillez analyser l'article pour déterminer s'il contient des itinéraires de voyage (containRoute), combien d'itinéraires de voyage il contient (routeCount), s'il contient des projets sensibles au temps (containTimelinessProject), et extraire des informations détaillées pour chaque itinéraire (comme le nom de l'itinéraire, les jours, les points de voyage, s'il contient des projets sensibles au temps, les noms des projets sensibles au temps impliqués). Enfin, sortez les résultats dans le format JSON spécifié.\nDéfinitions des termes:\nItinéraire de voyage: Un itinéraire de voyage planifié avec plusieurs points de voyage dans l'ordre chronologique, durant environ 1-3 jours. Habituellement, plusieurs points de voyage dans un itinéraire de voyage sont connectés par séquence temporelle (comme aller au lieu A à 11h, aller au lieu B à 14h) ou séquence de localisation (comme actuellement au lieu A, prochain arrêt au lieu B). Notez que si seulement plusieurs points de voyage indépendants sont introduits, cela ne peut pas constituer un itinéraire de voyage.\nContient des itinéraires de voyage: Si l'article contient au moins un itinéraire de voyage complet, retournez 1, sinon 0.\nNombre d'itinéraires de voyage: Le nombre d'itinéraires de voyage complets contenus dans l'article, 0 s'il n'y en a pas.\nContient des projets sensibles au temps: Les projets sensibles au temps se réfèrent aux projets tenus à des moments spécifiques, tels que concerts, expositions, rassemblements, spectacles de stand-up comedy, festivals de musique et autres activités limitées dans le temps. Si l'itinéraire de voyage contient des projets sensibles au temps, retournez 1, sinon 0.\nChamp routes: Si des itinéraires de voyage sont inclus, des informations structurées détaillées pour chaque itinéraire doivent être sorties, incluant: routeName (nom de l'itinéraire), days (nombre de jours), routePoints (liste des points de voyage), hasTimelinessProject (si cet itinéraire contient des projets sensibles au temps), timelinessProjects (liste des projets sensibles au temps impliqués dans cet itinéraire, tableau vide s'il n'y en a pas, chaque nom de projet fait 9-150 caractères (inclure espace, nombre...)).\nExigences de format de sortie: Veuillez strictement sortir les résultats d'analyse dans le format JSON suivant, n'ajoutez aucune explication textuelle supplémentaire:{\"containRoute\": 0 ou 1,\"routeCount\": nombre(0,1,2...),\"containTimelinessProject\": 0 ou 1, \"routes\": [{\"routeName\": \"nom de l'itinéraire\", \"days\": 1-3, \"routePoints\": [\"point de voyage A\", \"point de voyage B\"], \"hasTimelinessProject\": 0 ou 1, \"timelinessProjects\": [\"nom du projet sensible au temps\"]}]}\nContenu de l'article:\n【Tour scientifique parent-enfant d'une journée】Visite du zoo le matin, regarder le spectacle de l'aquarium, expérience du parc scientifique pour enfants l'après-midi, assister au drame interactif parent-enfant le soir.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si l'article contient des itinéraires de voyage, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Nombre d'itinéraires de voyage contenus dans l'article",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si les itinéraires de voyage contiennent des projets sensibles au temps, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Détails de tous les itinéraires de voyage",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nom de l'itinéraire, ne peut pas être vide",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Nombre de jours pour l'itinéraire, plage de valeurs 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste des points de voyage, doit contenir au moins deux points",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si cet itinéraire contient des projets sensibles au temps",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projets sensibles au temps impliqués dans cet itinéraire, chaque nom de projet fait 9-150 caractères",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage. Je vais vous fournir un article de guide de voyage contenant le titre et le contenu de l'article. Veuillez analyser l'article pour déterminer s'il contient des itinéraires de voyage (containRoute), combien d'itinéraires de voyage il contient (routeCount), s'il contient des projets sensibles au temps (containTimelinessProject), et extraire des informations détaillées pour chaque itinéraire (comme le nom de l'itinéraire, les jours, les points de voyage, s'il contient des projets sensibles au temps, les noms des projets sensibles au temps impliqués). Enfin, sortez les résultats dans le format JSON spécifié.\nDéfinitions des termes:\nItinéraire de voyage: Un itinéraire de voyage planifié avec plusieurs points de voyage dans l'ordre chronologique, durant environ 1-3 jours. Habituellement, plusieurs points de voyage dans un itinéraire de voyage sont connectés par séquence temporelle (comme aller au lieu A à 11h, aller au lieu B à 14h) ou séquence de localisation (comme actuellement au lieu A, prochain arrêt au lieu B). Notez que si seulement plusieurs points de voyage indépendants sont introduits, cela ne peut pas constituer un itinéraire de voyage.\nContient des itinéraires de voyage: Si l'article contient au moins un itinéraire de voyage complet, retournez 1, sinon 0.\nNombre d'itinéraires de voyage: Le nombre d'itinéraires de voyage complets contenus dans l'article, 0 s'il n'y en a pas.\nContient des projets sensibles au temps: Les projets sensibles au temps se réfèrent aux projets tenus à des moments spécifiques, tels que concerts, expositions, rassemblements, spectacles de stand-up comedy, festivals de musique et autres activités limitées dans le temps. Si l'itinéraire de voyage contient des projets sensibles au temps, retournez 1, sinon 0.\nChamp routes: Si des itinéraires de voyage sont inclus, des informations structurées détaillées pour chaque itinéraire doivent être sorties, incluant: routeName (nom de l'itinéraire), days (nombre de jours), routePoints (liste des points de voyage), hasTimelinessProject (si cet itinéraire contient des projets sensibles au temps), timelinessProjects (liste des projets sensibles au temps impliqués dans cet itinéraire, tableau vide s'il n'y en a pas, chaque nom de projet fait 9-150 caractères (inclure espace, nombre...)).\nExigences de format de sortie: Veuillez strictement sortir les résultats d'analyse dans le format JSON suivant, n'ajoutez aucune explication textuelle supplémentaire:{\"containRoute\": 0 ou 1,\"routeCount\": nombre(0,1,2...),\"containTimelinessProject\": 0 ou 1, \"routes\": [{\"routeName\": \"nom de l'itinéraire\", \"days\": 1-3, \"routePoints\": [\"point de voyage A\", \"point de voyage B\"], \"hasTimelinessProject\": 0 ou 1, \"timelinessProjects\": [\"nom du projet sensible au temps\"]}]}\nContenu de l'article:\n【Itinéraire d'observation des fleurs de printemps】Visite du Parc du Siècle pour voir les cerisiers en fleurs le matin, aller au jardin botanique pour les tulipes l'après-midi, promenade le long du sentier riverain le soir.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si l'article contient des itinéraires de voyage, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Nombre d'itinéraires de voyage contenus dans l'article",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si les itinéraires de voyage contiennent des projets sensibles au temps, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Détails de tous les itinéraires de voyage",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nom de l'itinéraire, ne peut pas être vide",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Nombre de jours pour l'itinéraire, plage de valeurs 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste des points de voyage, doit contenir au moins deux points",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si cet itinéraire contient des projets sensibles au temps",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projets sensibles au temps impliqués dans cet itinéraire, chaque nom de projet fait 9-150 caractères",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage. Je vais vous fournir un article de guide de voyage contenant le titre et le contenu de l'article. Veuillez analyser l'article pour déterminer s'il contient des itinéraires de voyage (containRoute), combien d'itinéraires de voyage il contient (routeCount), s'il contient des projets sensibles au temps (containTimelinessProject), et extraire des informations détaillées pour chaque itinéraire (comme le nom de l'itinéraire, les jours, les points de voyage, s'il contient des projets sensibles au temps, les noms des projets sensibles au temps impliqués). Enfin, sortez les résultats dans le format JSON spécifié.\nDéfinitions des termes:\nItinéraire de voyage: Un itinéraire de voyage planifié avec plusieurs points de voyage dans l'ordre chronologique, durant environ 1-3 jours. Habituellement, plusieurs points de voyage dans un itinéraire de voyage sont connectés par séquence temporelle (comme aller au lieu A à 11h, aller au lieu B à 14h) ou séquence de localisation (comme actuellement au lieu A, prochain arrêt au lieu B). Notez que si seulement plusieurs points de voyage indépendants sont introduits, cela ne peut pas constituer un itinéraire de voyage.\nContient des itinéraires de voyage: Si l'article contient au moins un itinéraire de voyage complet, retournez 1, sinon 0.\nNombre d'itinéraires de voyage: Le nombre d'itinéraires de voyage complets contenus dans l'article, 0 s'il n'y en a pas.\nContient des projets sensibles au temps: Les projets sensibles au temps se réfèrent aux projets tenus à des moments spécifiques, tels que concerts, expositions, rassemblements, spectacles de stand-up comedy, festivals de musique et autres activités limitées dans le temps. Si l'itinéraire de voyage contient des projets sensibles au temps, retournez 1, sinon 0.\nChamp routes: Si des itinéraires de voyage sont inclus, des informations structurées détaillées pour chaque itinéraire doivent être sorties, incluant: routeName (nom de l'itinéraire), days (nombre de jours), routePoints (liste des points de voyage), hasTimelinessProject (si cet itinéraire contient des projets sensibles au temps), timelinessProjects (liste des projets sensibles au temps impliqués dans cet itinéraire, tableau vide s'il n'y en a pas, chaque nom de projet fait 9-150 caractères (inclure espace, nombre...)).\nExigences de format de sortie: Veuillez strictement sortir les résultats d'analyse dans le format JSON suivant, n'ajoutez aucune explication textuelle supplémentaire:{\"containRoute\": 0 ou 1,\"routeCount\": nombre(0,1,2...),\"containTimelinessProject\": 0 ou 1, \"routes\": [{\"routeName\": \"nom de l'itinéraire\", \"days\": 1-3, \"routePoints\": [\"point de voyage A\", \"point de voyage B\"], \"hasTimelinessProject\": 0 ou 1, \"timelinessProjects\": [\"nom du projet sensible au temps\"]}]}\nContenu de l'article:\n【Expérience complète du festival d'art】Cérémonie d'ouverture de l'exposition de peinture le matin, participation à l'atelier de sculpture l'après-midi, spectacle du festival de théâtre en plein air le soir, participation à la cérémonie de clôture du festival de musique le lendemain.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si l'article contient des itinéraires de voyage, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Nombre d'itinéraires de voyage contenus dans l'article",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si les itinéraires de voyage contiennent des projets sensibles au temps, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Détails de tous les itinéraires de voyage",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nom de l'itinéraire, ne peut pas être vide",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Nombre de jours pour l'itinéraire, plage de valeurs 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste des points de voyage, doit contenir au moins deux points",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si cet itinéraire contient des projets sensibles au temps",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projets sensibles au temps impliqués dans cet itinéraire, chaque nom de projet fait 9-150 caractères",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un expert en voyage. Je vais vous fournir un article de guide de voyage contenant le titre et le contenu de l'article. Veuillez analyser l'article pour déterminer s'il contient des itinéraires de voyage (containRoute), combien d'itinéraires de voyage il contient (routeCount), s'il contient des projets sensibles au temps (containTimelinessProject), et extraire des informations détaillées pour chaque itinéraire (comme le nom de l'itinéraire, les jours, les points de voyage, s'il contient des projets sensibles au temps, les noms des projets sensibles au temps impliqués). Enfin, sortez les résultats dans le format JSON spécifié.\nDéfinitions des termes:\nItinéraire de voyage: Un itinéraire de voyage planifié avec plusieurs points de voyage dans l'ordre chronologique, durant environ 1-3 jours. Habituellement, plusieurs points de voyage dans un itinéraire de voyage sont connectés par séquence temporelle (comme aller au lieu A à 11h, aller au lieu B à 14h) ou séquence de localisation (comme actuellement au lieu A, prochain arrêt au lieu B). Notez que si seulement plusieurs points de voyage indépendants sont introduits, cela ne peut pas constituer un itinéraire de voyage.\nContient des itinéraires de voyage: Si l'article contient au moins un itinéraire de voyage complet, retournez 1, sinon 0.\nNombre d'itinéraires de voyage: Le nombre d'itinéraires de voyage complets contenus dans l'article, 0 s'il n'y en a pas.\nContient des projets sensibles au temps: Les projets sensibles au temps se réfèrent aux projets tenus à des moments spécifiques, tels que concerts, expositions, rassemblements, spectacles de stand-up comedy, festivals de musique et autres activités limitées dans le temps. Si l'itinéraire de voyage contient des projets sensibles au temps, retournez 1, sinon 0.\nChamp routes: Si des itinéraires de voyage sont inclus, des informations structurées détaillées pour chaque itinéraire doivent être sorties, incluant: routeName (nom de l'itinéraire), days (nombre de jours), routePoints (liste des points de voyage), hasTimelinessProject (si cet itinéraire contient des projets sensibles au temps), timelinessProjects (liste des projets sensibles au temps impliqués dans cet itinéraire, tableau vide s'il n'y en a pas, chaque nom de projet fait 9-150 caractères (inclure espace, nombre...)).\nExigences de format de sortie: Veuillez strictement sortir les résultats d'analyse dans le format JSON suivant, n'ajoutez aucune explication textuelle supplémentaire:{\"containRoute\": 0 ou 1,\"routeCount\": nombre(0,1,2...),\"containTimelinessProject\": 0 ou 1, \"routes\": [{\"routeName\": \"nom de l'itinéraire\", \"days\": 1-3, \"routePoints\": [\"point de voyage A\", \"point de voyage B\"], \"hasTimelinessProject\": 0 ou 1, \"timelinessProjects\": [\"nom du projet sensible au temps\"]}]}\nContenu de l'article:\n【Itinéraire d'aventure en plein air】Escalade à l'aube, randonnée en forêt le matin, traçage de ruisseau l'après-midi, fête autour du feu de camp le soir, camping et observation des étoiles la nuit.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si l'article contient des itinéraires de voyage, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Nombre d'itinéraires de voyage contenus dans l'article",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Si les itinéraires de voyage contiennent des projets sensibles au temps, 1 signifie oui, 0 signifie non",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "Détails de tous les itinéraires de voyage",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "Nom de l'itinéraire, ne peut pas être vide",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "Nombre de jours pour l'itinéraire, plage de valeurs 1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "Liste des points de voyage, doit contenir au moins deux points",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "Si cet itinéraire contient des projets sensibles au temps",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "Projets sensibles au temps impliqués dans cet itinéraire, chaque nom de projet fait 9-150 caractères",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Satisfait le schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    }
+]

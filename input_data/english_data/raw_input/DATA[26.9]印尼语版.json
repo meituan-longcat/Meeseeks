@@ -1,0 +1,382 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah asisten produk yang membantu pengguna menganalisis rasa produk.\nFormat input saya adalah: [{\"cspu\":\"Nama Produk 1\"}, {\"cspu\":\"Nama Produk 2\"}], di mana cspu adalah nama produk yang akan dianalisis.\nFormat respons Anda adalah (harus mengikuti persyaratan format JSON dengan ketat):[{\"cspu\":\"Nama Produk 1\", \"type\":\"Rasa 1\"}, {\"cspu\":\"Nama Produk 2\",\"type\":\"Rasa 2\"}], di mana type mewakili rasa produk.\nContoh:\nJika input saya adalah [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}]\nSaya berharap output Anda adalah [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mangga\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Cabai pedas dan jeruk nipis\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Bawang\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Daging sapi pedas, Daging sapi tomat\"}]\nCatatan 1: Hasil rasa produk harus ada dalam nama produk, jangan mengabstraksi atau mengkonversi secara sembarangan, dan rasa harus sesuai dengan jenis makanan atau bumbu yang nyata, seperti rasa mangga, rasa pedas, rasa daging sapi rebus, dll.\nCatatan 2: Kadang-kadang rasa adalah kata deskriptif, misalnya, bubur kurma merah memiliki rasa kurma merah, keripik mentimun memiliki rasa mentimun, soda leci memiliki rasa leci, teh melati memiliki rasa melati\nBedakan antara jenis produk dan rasa. Jika ada beberapa rasa, keluarkan semua rasa yang dipisahkan dengan koma\nJangan mencampur jenis produk! Jangan mencampur jenis produk!\nRasa tidak boleh termasuk camilan, rekreasi, nama tempat, dll.\nRasa tidak akan termasuk kata-kata seperti lembaran mie, pangsit nasi, ramen\nJika nama produk tidak mengandung rasa, kembalikan NULL untuk nilai type\nTidak ada hubungan antara beberapa produk, dan konteks tidak akan mempengaruhi hasil analisis rasa produk individual\nSilakan analisis daftar produk berikut dan kembalikan hasil (format JSON ketat):\n[{\"cspu\": \"Keripik Lay's rasa barbeque 150g\"}, {\"cspu\": \"Cokelat Silverqueen kacang mete 100g\"}, {\"cspu\": \"Mie instan rasa daging sapi 85g\"}, {\"cspu\": \"Coca-Cola Zero gula 330ml paket 6\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah asisten produk yang membantu pengguna menganalisis rasa produk.\nFormat input saya adalah: [{\"cspu\":\"Nama Produk 1\"}, {\"cspu\":\"Nama Produk 2\"}], di mana cspu adalah nama produk yang akan dianalisis.\nFormat respons Anda adalah (harus mengikuti persyaratan format JSON dengan ketat):[{\"cspu\":\"Nama Produk 1\", \"type\":\"Rasa 1\"}, {\"cspu\":\"Nama Produk 2\",\"type\":\"Rasa 2\"}], di mana type mewakili rasa produk.\nContoh:\nJika input saya adalah [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}]\nSaya berharap output Anda adalah [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mangga\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Cabai pedas dan jeruk nipis\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Bawang\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Daging sapi pedas, Daging sapi tomat\"}]\nCatatan 1: Hasil rasa produk harus ada dalam nama produk, jangan mengabstraksi atau mengkonversi secara sembarangan, dan rasa harus sesuai dengan jenis makanan atau bumbu yang nyata, seperti rasa mangga, rasa pedas, rasa daging sapi rebus, dll.\nCatatan 2: Kadang-kadang rasa adalah kata deskriptif, misalnya, bubur kurma merah memiliki rasa kurma merah, keripik mentimun memiliki rasa mentimun, soda leci memiliki rasa leci, teh melati memiliki rasa melati\nBedakan antara jenis produk dan rasa. Jika ada beberapa rasa, keluarkan semua rasa yang dipisahkan dengan koma\nJangan mencampur jenis produk! Jangan mencampur jenis produk!\nRasa tidak boleh termasuk camilan, rekreasi, nama tempat, dll.\nRasa tidak akan termasuk kata-kata seperti lembaran mie, pangsit nasi, ramen\nJika nama produk tidak mengandung rasa, kembalikan NULL untuk nilai type\nTidak ada hubungan antara beberapa produk, dan konteks tidak akan mempengaruhi hasil analisis rasa produk individual\nSilakan analisis daftar produk berikut dan kembalikan hasil (format JSON ketat):\n[{\"cspu\": \"Es teh Sosro lemon 500ml\"}, {\"cspu\": \"Pringles paprika 165g\"}, {\"cspu\": \"Biji bunga matahari asin 200g\"}, {\"cspu\": \"Yogurt Cimory vanilla 125g paket 8\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah asisten produk yang membantu pengguna menganalisis rasa produk.\nFormat input saya adalah: [{\"cspu\":\"Nama Produk 1\"}, {\"cspu\":\"Nama Produk 2\"}], di mana cspu adalah nama produk yang akan dianalisis.\nFormat respons Anda adalah (harus mengikuti persyaratan format JSON dengan ketat):[{\"cspu\":\"Nama Produk 1\", \"type\":\"Rasa 1\"}, {\"cspu\":\"Nama Produk 2\",\"type\":\"Rasa 2\"}], di mana type mewakili rasa produk.\nContoh:\nJika input saya adalah [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}]\nSaya berharap output Anda adalah [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mangga\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Cabai pedas dan jeruk nipis\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Bawang\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Daging sapi pedas, Daging sapi tomat\"}]\nCatatan 1: Hasil rasa produk harus ada dalam nama produk, jangan mengabstraksi atau mengkonversi secara sembarangan, dan rasa harus sesuai dengan jenis makanan atau bumbu yang nyata, seperti rasa mangga, rasa pedas, rasa daging sapi rebus, dll.\nCatatan 2: Kadang-kadang rasa adalah kata deskriptif, misalnya, bubur kurma merah memiliki rasa kurma merah, keripik mentimun memiliki rasa mentimun, soda leci memiliki rasa leci, teh melati memiliki rasa melati\nBedakan antara jenis produk dan rasa. Jika ada beberapa rasa, keluarkan semua rasa yang dipisahkan dengan koma\nJangan mencampur jenis produk! Jangan mencampur jenis produk!\nRasa tidak boleh termasuk camilan, rekreasi, nama tempat, dll.\nRasa tidak akan termasuk kata-kata seperti lembaran mie, pangsit nasi, ramen\nJika nama produk tidak mengandung rasa, kembalikan NULL untuk nilai type\nTidak ada hubungan antara beberapa produk, dan konteks tidak akan mempengaruhi hasil analisis rasa produk individual\nSilakan analisis daftar produk berikut dan kembalikan hasil (format JSON ketat):\n[{\"cspu\": \"Mie instan rasa ayam 85g\"}, {\"cspu\": \"Corn Flakes Kellogg's original 375g\"}, {\"cspu\": \"Keripik kentang rasa keju bawang 150g\"}, {\"cspu\": \"Jus apel murni 1L\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah asisten produk yang membantu pengguna menganalisis rasa produk.\nFormat input saya adalah: [{\"cspu\":\"Nama Produk 1\"}, {\"cspu\":\"Nama Produk 2\"}], di mana cspu adalah nama produk yang akan dianalisis.\nFormat respons Anda adalah (harus mengikuti persyaratan format JSON dengan ketat):[{\"cspu\":\"Nama Produk 1\", \"type\":\"Rasa 1\"}, {\"cspu\":\"Nama Produk 2\",\"type\":\"Rasa 2\"}], di mana type mewakili rasa produk.\nContoh:\nJika input saya adalah [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}]\nSaya berharap output Anda adalah [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mangga\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Cabai pedas dan jeruk nipis\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Bawang\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Daging sapi pedas, Daging sapi tomat\"}]\nCatatan 1: Hasil rasa produk harus ada dalam nama produk, jangan mengabstraksi atau mengkonversi secara sembarangan, dan rasa harus sesuai dengan jenis makanan atau bumbu yang nyata, seperti rasa mangga, rasa pedas, rasa daging sapi rebus, dll.\nCatatan 2: Kadang-kadang rasa adalah kata deskriptif, misalnya, bubur kurma merah memiliki rasa kurma merah, keripik mentimun memiliki rasa mentimun, soda leci memiliki rasa leci, teh melati memiliki rasa melati\nBedakan antara jenis produk dan rasa. Jika ada beberapa rasa, keluarkan semua rasa yang dipisahkan dengan koma\nJangan mencampur jenis produk! Jangan mencampur jenis produk!\nRasa tidak boleh termasuk camilan, rekreasi, nama tempat, dll.\nRasa tidak akan termasuk kata-kata seperti lembaran mie, pangsit nasi, ramen\nJika nama produk tidak mengandung rasa, kembalikan NULL untuk nilai type\nTidak ada hubungan antara beberapa produk, dan konteks tidak akan mempengaruhi hasil analisis rasa produk individual\nSilakan analisis daftar produk berikut dan kembalikan hasil (format JSON ketat):\n[{\"cspu\": \"Biskuit TUC keju 100g\"}, {\"cspu\": \"Minuman protein vanilla 500ml paket 12\"}, {\"cspu\": \"Air mineral Aqua 750ml\"}, {\"cspu\": \"Kacang almond campuran alami 200g\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah asisten produk yang membantu pengguna menganalisis rasa produk.\nFormat input saya adalah: [{\"cspu\":\"Nama Produk 1\"}, {\"cspu\":\"Nama Produk 2\"}], di mana cspu adalah nama produk yang akan dianalisis.\nFormat respons Anda adalah (harus mengikuti persyaratan format JSON dengan ketat):[{\"cspu\":\"Nama Produk 1\", \"type\":\"Rasa 1\"}, {\"cspu\":\"Nama Produk 2\",\"type\":\"Rasa 2\"}], di mana type mewakili rasa produk.\nContoh:\nJika input saya adalah [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}]\nSaya berharap output Anda adalah [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mangga\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Cabai pedas dan jeruk nipis\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Bawang\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Daging sapi pedas, Daging sapi tomat\"}]\nCatatan 1: Hasil rasa produk harus ada dalam nama produk, jangan mengabstraksi atau mengkonversi secara sembarangan, dan rasa harus sesuai dengan jenis makanan atau bumbu yang nyata, seperti rasa mangga, rasa pedas, rasa daging sapi rebus, dll.\nCatatan 2: Kadang-kadang rasa adalah kata deskriptif, misalnya, bubur kurma merah memiliki rasa kurma merah, keripik mentimun memiliki rasa mentimun, soda leci memiliki rasa leci, teh melati memiliki rasa melati\nBedakan antara jenis produk dan rasa. Jika ada beberapa rasa, keluarkan semua rasa yang dipisahkan dengan koma\nJangan mencampur jenis produk! Jangan mencampur jenis produk!\nRasa tidak boleh termasuk camilan, rekreasi, nama tempat, dll.\nRasa tidak akan termasuk kata-kata seperti lembaran mie, pangsit nasi, ramen\nJika nama produk tidak mengandung rasa, kembalikan NULL untuk nilai type\nTidak ada hubungan antara beberapa produk, dan konteks tidak akan mempengaruhi hasil analisis rasa produk individual\nSilakan analisis daftar produk berikut dan kembalikan hasil (format JSON ketat):\n[{\"cspu\": \"Keripik Lay's barbeque 150g\"}, {\"cspu\": \"Teh hijau madu 500ml\"}, {\"cspu\": \"Pepsi-Cola klasik 330ml\"}, {\"cspu\": \"Biji bunga matahari ranch 150g\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah asisten produk yang membantu pengguna menganalisis rasa produk.\nFormat input saya adalah: [{\"cspu\":\"Nama Produk 1\"}, {\"cspu\":\"Nama Produk 2\"}], di mana cspu adalah nama produk yang akan dianalisis.\nFormat respons Anda adalah (harus mengikuti persyaratan format JSON dengan ketat):[{\"cspu\":\"Nama Produk 1\", \"type\":\"Rasa 1\"}, {\"cspu\":\"Nama Produk 2\",\"type\":\"Rasa 2\"}], di mana type mewakili rasa produk.\nContoh:\nJika input saya adalah [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}]\nSaya berharap output Anda adalah [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mangga\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Cabai pedas dan jeruk nipis\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Bawang\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Daging sapi pedas, Daging sapi tomat\"}]\nCatatan 1: Hasil rasa produk harus ada dalam nama produk, jangan mengabstraksi atau mengkonversi secara sembarangan, dan rasa harus sesuai dengan jenis makanan atau bumbu yang nyata, seperti rasa mangga, rasa pedas, rasa daging sapi rebus, dll.\nCatatan 2: Kadang-kadang rasa adalah kata deskriptif, misalnya, bubur kurma merah memiliki rasa kurma merah, keripik mentimun memiliki rasa mentimun, soda leci memiliki rasa leci, teh melati memiliki rasa melati\nBedakan antara jenis produk dan rasa. Jika ada beberapa rasa, keluarkan semua rasa yang dipisahkan dengan koma\nJangan mencampur jenis produk! Jangan mencampur jenis produk!\nRasa tidak boleh termasuk camilan, rekreasi, nama tempat, dll.\nRasa tidak akan termasuk kata-kata seperti lembaran mie, pangsit nasi, ramen\nJika nama produk tidak mengandung rasa, kembalikan NULL untuk nilai type\nTidak ada hubungan antara beberapa produk, dan konteks tidak akan mempengaruhi hasil analisis rasa produk individual\nSilakan analisis daftar produk berikut dan kembalikan hasil (format JSON ketat):\n[{\"cspu\": \"Daging sapi kering original 25g\"}, {\"cspu\": \"Pistachio panggang madu 150g\"}, {\"cspu\": \"Pringles barbeque 165g\"}, {\"cspu\": \"Susu rendah lemak 1L\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah asisten produk yang membantu pengguna menganalisis rasa produk.\nFormat input saya adalah: [{\"cspu\":\"Nama Produk 1\"}, {\"cspu\":\"Nama Produk 2\"}], di mana cspu adalah nama produk yang akan dianalisis.\nFormat respons Anda adalah (harus mengikuti persyaratan format JSON dengan ketat):[{\"cspu\":\"Nama Produk 1\", \"type\":\"Rasa 1\"}, {\"cspu\":\"Nama Produk 2\",\"type\":\"Rasa 2\"}], di mana type mewakili rasa produk.\nContoh:\nJika input saya adalah [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}]\nSaya berharap output Anda adalah [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mangga\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Cabai pedas dan jeruk nipis\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Bawang\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Daging sapi pedas, Daging sapi tomat\"}]\nCatatan 1: Hasil rasa produk harus ada dalam nama produk, jangan mengabstraksi atau mengkonversi secara sembarangan, dan rasa harus sesuai dengan jenis makanan atau bumbu yang nyata, seperti rasa mangga, rasa pedas, rasa daging sapi rebus, dll.\nCatatan 2: Kadang-kadang rasa adalah kata deskriptif, misalnya, bubur kurma merah memiliki rasa kurma merah, keripik mentimun memiliki rasa mentimun, soda leci memiliki rasa leci, teh melati memiliki rasa melati\nBedakan antara jenis produk dan rasa. Jika ada beberapa rasa, keluarkan semua rasa yang dipisahkan dengan koma\nJangan mencampur jenis produk! Jangan mencampur jenis produk!\nRasa tidak boleh termasuk camilan, rekreasi, nama tempat, dll.\nRasa tidak akan termasuk kata-kata seperti lembaran mie, pangsit nasi, ramen\nJika nama produk tidak mengandung rasa, kembalikan NULL untuk nilai type\nTidak ada hubungan antara beberapa produk, dan konteks tidak akan mempengaruhi hasil analisis rasa produk individual\nSilakan analisis daftar produk berikut dan kembalikan hasil (format JSON ketat):\n[{\"cspu\": \"Puding cokelat paket 4 500g\"}, {\"cspu\": \"Mie instan rasa babi 85g\"}, {\"cspu\": \"Kacang almond asap 200g\"}, {\"cspu\": \"Air tawar 1L\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah asisten produk yang membantu pengguna menganalisis rasa produk.\nFormat input saya adalah: [{\"cspu\":\"Nama Produk 1\"}, {\"cspu\":\"Nama Produk 2\"}], di mana cspu adalah nama produk yang akan dianalisis.\nFormat respons Anda adalah (harus mengikuti persyaratan format JSON dengan ketat):[{\"cspu\":\"Nama Produk 1\", \"type\":\"Rasa 1\"}, {\"cspu\":\"Nama Produk 2\",\"type\":\"Rasa 2\"}], di mana type mewakili rasa produk.\nContoh:\nJika input saya adalah [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}]\nSaya berharap output Anda adalah [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mangga\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Cabai pedas dan jeruk nipis\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Bawang\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Daging sapi pedas, Daging sapi tomat\"}]\nCatatan 1: Hasil rasa produk harus ada dalam nama produk, jangan mengabstraksi atau mengkonversi secara sembarangan, dan rasa harus sesuai dengan jenis makanan atau bumbu yang nyata, seperti rasa mangga, rasa pedas, rasa daging sapi rebus, dll.\nCatatan 2: Kadang-kadang rasa adalah kata deskriptif, misalnya, bubur kurma merah memiliki rasa kurma merah, keripik mentimun memiliki rasa mentimun, soda leci memiliki rasa leci, teh melati memiliki rasa melati\nBedakan antara jenis produk dan rasa. Jika ada beberapa rasa, keluarkan semua rasa yang dipisahkan dengan koma\nJangan mencampur jenis produk! Jangan mencampur jenis produk!\nRasa tidak boleh termasuk camilan, rekreasi, nama tempat, dll.\nRasa tidak akan termasuk kata-kata seperti lembaran mie, pangsit nasi, ramen\nJika nama produk tidak mengandung rasa, kembalikan NULL untuk nilai type\nTidak ada hubungan antara beberapa produk, dan konteks tidak akan mempengaruhi hasil analisis rasa produk individual\nSilakan analisis daftar produk berikut dan kembalikan hasil (format JSON ketat):\n[{\"cspu\": \"Nesquik susu cokelat 250ml paket 4\"}, {\"cspu\": \"Coca-Cola cherry 500ml\"}, {\"cspu\": \"Biskuit cokelat hitam 200g\"}, {\"cspu\": \"Keripik Lay's original 150g\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah asisten produk yang membantu pengguna menganalisis rasa produk.\nFormat input saya adalah: [{\"cspu\":\"Nama Produk 1\"}, {\"cspu\":\"Nama Produk 2\"}], di mana cspu adalah nama produk yang akan dianalisis.\nFormat respons Anda adalah (harus mengikuti persyaratan format JSON dengan ketat):[{\"cspu\":\"Nama Produk 1\", \"type\":\"Rasa 1\"}, {\"cspu\":\"Nama Produk 2\",\"type\":\"Rasa 2\"}], di mana type mewakili rasa produk.\nContoh:\nJika input saya adalah [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}]\nSaya berharap output Anda adalah [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mangga\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Cabai pedas dan jeruk nipis\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Bawang\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Daging sapi pedas, Daging sapi tomat\"}]\nCatatan 1: Hasil rasa produk harus ada dalam nama produk, jangan mengabstraksi atau mengkonversi secara sembarangan, dan rasa harus sesuai dengan jenis makanan atau bumbu yang nyata, seperti rasa mangga, rasa pedas, rasa daging sapi rebus, dll.\nCatatan 2: Kadang-kadang rasa adalah kata deskriptif, misalnya, bubur kurma merah memiliki rasa kurma merah, keripik mentimun memiliki rasa mentimun, soda leci memiliki rasa leci, teh melati memiliki rasa melati\nBedakan antara jenis produk dan rasa. Jika ada beberapa rasa, keluarkan semua rasa yang dipisahkan dengan koma\nJangan mencampur jenis produk! Jangan mencampur jenis produk!\nRasa tidak boleh termasuk camilan, rekreasi, nama tempat, dll.\nRasa tidak akan termasuk kata-kata seperti lembaran mie, pangsit nasi, ramen\nJika nama produk tidak mengandung rasa, kembalikan NULL untuk nilai type\nTidak ada hubungan antara beberapa produk, dan konteks tidak akan mempengaruhi hasil analisis rasa produk individual\nSilakan analisis daftar produk berikut dan kembalikan hasil (format JSON ketat):\n[{\"cspu\": \"Permen jelly strawberry 125g\"}, {\"cspu\": \"Es teh persik 500ml\"}, {\"cspu\": \"Kacang almond alami 400g\"}, {\"cspu\": \"Susu organik strawberry 250ml\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Anda adalah asisten produk yang membantu pengguna menganalisis rasa produk.\nFormat input saya adalah: [{\"cspu\":\"Nama Produk 1\"}, {\"cspu\":\"Nama Produk 2\"}], di mana cspu adalah nama produk yang akan dianalisis.\nFormat respons Anda adalah (harus mengikuti persyaratan format JSON dengan ketat):[{\"cspu\":\"Nama Produk 1\", \"type\":\"Rasa 1\"}, {\"cspu\":\"Nama Produk 2\",\"type\":\"Rasa 2\"}], di mana type mewakili rasa produk.\nContoh:\nJika input saya adalah [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}]\nSaya berharap output Anda adalah [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mangga\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Cabai pedas dan jeruk nipis\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Bawang\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Daging sapi pedas, Daging sapi tomat\"}]\nCatatan 1: Hasil rasa produk harus ada dalam nama produk, jangan mengabstraksi atau mengkonversi secara sembarangan, dan rasa harus sesuai dengan jenis makanan atau bumbu yang nyata, seperti rasa mangga, rasa pedas, rasa daging sapi rebus, dll.\nCatatan 2: Kadang-kadang rasa adalah kata deskriptif, misalnya, bubur kurma merah memiliki rasa kurma merah, keripik mentimun memiliki rasa mentimun, soda leci memiliki rasa leci, teh melati memiliki rasa melati\nBedakan antara jenis produk dan rasa. Jika ada beberapa rasa, keluarkan semua rasa yang dipisahkan dengan koma\nJangan mencampur jenis produk! Jangan mencampur jenis produk!\nRasa tidak boleh termasuk camilan, rekreasi, nama tempat, dll.\nRasa tidak akan termasuk kata-kata seperti lembaran mie, pangsit nasi, ramen\nJika nama produk tidak mengandung rasa, kembalikan NULL untuk nilai type\nTidak ada hubungan antara beberapa produk, dan konteks tidak akan mempengaruhi hasil analisis rasa produk individual\nSilakan analisis daftar produk berikut dan kembalikan hasil (format JSON ketat):\n[{\"cspu\": \"Mie instan ayam + daging sapi campuran paket 12\"}, {\"cspu\": \"Keripik sayuran ubi jalar 150g\"}, {\"cspu\": \"Air soda jeruk nipis 330ml\"}, {\"cspu\": \"Biskuit keju original 350g\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    }
+]

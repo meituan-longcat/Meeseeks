@@ -1,0 +1,552 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un assistant commercial. Veuillez d'abord résumer le scénario du contenu d'appel suivant, et réécrire le contenu d'appel en un flux de conversation fluide. Le contenu réécrit ne doit pas dépasser 200 caractères.\nNote :\n1. Vous devez assurer la fluidité du dialogue réécrit.\n2. Vous devez assurer la pertinence du dialogue réécrit : le thème de la conversation réécrite ne peut pas s'écarter de la conversation originale.\n3. Notez que la conversation réécrite ne peut pas contenir d'informations non incluses dans la conversation originale.\n4. Vous devez vous assurer que la conversation réécrite est logiquement claire, concise et de meilleure qualité.\n5. Notez que dans la conversation réécrite, le ton des commerçants et des vendeurs doit être familier, suivant leurs rôles respectifs, et les vendeurs doivent faire attention à la politesse.\n6. Sortie au format JSON, par exemple : {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nExigences de sortie :\n1. Utilisez le format JSON pour retourner les informations extraites ;\n2. \"scenario_summary\" est une description de scénario en une phrase, \"dialogue_rewrite\" est un tableau de flux de dialogue, les vendeurs et les commerçants parlent à tour de rôle, chacun pas plus de 50 mots, longueur totale pas plus de 200 caractères ;\n3. Ne retournez aucun caractère autre que le format JSON.\nCe qui suit est le contenu d'appel entre les vendeurs Meituan et les commerçants :\nCommerçant : Bonjour, ici le restaurant du Sichuan.\nVendeur : Bonjour, je suis de Meituan. J'aimerais savoir si votre magasin a des besoins de promotion en ligne récemment ?\nCommerçant : Nous comptons principalement sur les clients réguliers récemment et n'avons pas fait beaucoup de promotion.\nVendeur : Meituan a de nouvelles activités maintenant avec des coûts publicitaires très favorables, qui peuvent vous aider à attirer plus de nouveaux clients.\nCommerçant : Notre patron est en voyage d'affaires, nous devons attendre qu'il revienne pour en discuter.\nVendeur : Je comprends, je vous recontacterai la semaine prochaine. Je souhaite la prospérité à votre entreprise !\nCommerçant : D'accord, merci.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Résumé en une phrase du scénario d'appel",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Flux de dialogue réécrit",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Déclaration du vendeur",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Déclaration du commerçant",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Est-ce conforme au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un assistant commercial. Veuillez d'abord résumer le scénario du contenu d'appel suivant, et réécrire le contenu d'appel en un flux de conversation fluide. Le contenu réécrit ne doit pas dépasser 200 caractères.\nNote :\n1. Vous devez assurer la fluidité du dialogue réécrit.\n2. Vous devez assurer la pertinence du dialogue réécrit : le thème de la conversation réécrite ne peut pas s'écarter de la conversation originale.\n3. Notez que la conversation réécrite ne peut pas contenir d'informations non incluses dans la conversation originale.\n4. Vous devez vous assurer que la conversation réécrite est logiquement claire, concise et de meilleure qualité.\n5. Notez que dans la conversation réécrite, le ton des commerçants et des vendeurs doit être familier, suivant leurs rôles respectifs, et les vendeurs doivent faire attention à la politesse.\n6. Sortie au format JSON, par exemple : {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nExigences de sortie :\n1. Utilisez le format JSON pour retourner les informations extraites ;\n2. \"scenario_summary\" est une description de scénario en une phrase, \"dialogue_rewrite\" est un tableau de flux de dialogue, les vendeurs et les commerçants parlent à tour de rôle, chacun pas plus de 50 mots, longueur totale pas plus de 200 caractères ;\n3. Ne retournez aucun caractère autre que le format JSON.\nCe qui suit est le contenu d'appel entre les vendeurs Meituan et les commerçants :\nCommerçant : Bonjour, ici Yuedong Fitness.\nVendeur : Bonjour, j'aimerais demander si votre magasin fait actuellement des achats groupés ou de la promotion en ligne ?\nCommerçant : Nous comptons principalement sur les recommandations de membres maintenant, nous ne faisons pas d'achats groupés en ligne.\nVendeur : Les activités d'achats groupés de Meituan sont très fortes maintenant, et les centres de fitness de la même industrie le font tous avec de bons résultats.\nCommerçant : Pouvez-vous ajouter mon WeChat pour discuter en détail ?\nVendeur : Bien sûr, veuillez m'envoyer votre ID WeChat.\nCommerçant : D'accord, je vous l'enverrai plus tard.\nVendeur : Merci, j'attends avec impatience la coopération !",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Résumé en une phrase du scénario d'appel",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Flux de dialogue réécrit",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Déclaration du vendeur",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Déclaration du commerçant",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Est-ce conforme au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un assistant commercial. Veuillez d'abord résumer le scénario du contenu d'appel suivant, et réécrire le contenu d'appel en un flux de conversation fluide. Le contenu réécrit ne doit pas dépasser 200 caractères.\nNote :\n1. Vous devez assurer la fluidité du dialogue réécrit.\n2. Vous devez assurer la pertinence du dialogue réécrit : le thème de la conversation réécrite ne peut pas s'écarter de la conversation originale.\n3. Notez que la conversation réécrite ne peut pas contenir d'informations non incluses dans la conversation originale.\n4. Vous devez vous assurer que la conversation réécrite est logiquement claire, concise et de meilleure qualité.\n5. Notez que dans la conversation réécrite, le ton des commerçants et des vendeurs doit être familier, suivant leurs rôles respectifs, et les vendeurs doivent faire attention à la politesse.\n6. Sortie au format JSON, par exemple : {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nExigences de sortie :\n1. Utilisez le format JSON pour retourner les informations extraites ;\n2. \"scenario_summary\" est une description de scénario en une phrase, \"dialogue_rewrite\" est un tableau de flux de dialogue, les vendeurs et les commerçants parlent à tour de rôle, chacun pas plus de 50 mots, longueur totale pas plus de 200 caractères ;\n3. Ne retournez aucun caractère autre que le format JSON.\nCe qui suit est le contenu d'appel entre les vendeurs Meituan et les commerçants :\nCommerçant : Bonjour.\nVendeur : Bonjour, est-ce le B&B Huatian Xiaozhu ?\nCommerçant : Oui, qui est-ce ?\nVendeur : Je suis de Meituan. J'aimerais savoir si votre B&B veut faire de la promotion publicitaire Meituan ?\nCommerçant : Nos commandes vont bien pour le moment, nous n'y pensons pas pour l'instant.\nVendeur : Je comprends, n'hésitez pas à me contacter si vous en avez besoin à l'avenir.\nCommerçant : D'accord, merci.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Résumé en une phrase du scénario d'appel",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Flux de dialogue réécrit",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Déclaration du vendeur",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Déclaration du commerçant",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Est-ce conforme au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un assistant commercial. Veuillez d'abord résumer le scénario du contenu d'appel suivant, et réécrire le contenu d'appel en un flux de conversation fluide. Le contenu réécrit ne doit pas dépasser 200 caractères.\nNote :\n1. Vous devez assurer la fluidité du dialogue réécrit.\n2. Vous devez assurer la pertinence du dialogue réécrit : le thème de la conversation réécrite ne peut pas s'écarter de la conversation originale.\n3. Notez que la conversation réécrite ne peut pas contenir d'informations non incluses dans la conversation originale.\n4. Vous devez vous assurer que la conversation réécrite est logiquement claire, concise et de meilleure qualité.\n5. Notez que dans la conversation réécrite, le ton des commerçants et des vendeurs doit être familier, suivant leurs rôles respectifs, et les vendeurs doivent faire attention à la politesse.\n6. Sortie au format JSON, par exemple : {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nExigences de sortie :\n1. Utilisez le format JSON pour retourner les informations extraites ;\n2. \"scenario_summary\" est une description de scénario en une phrase, \"dialogue_rewrite\" est un tableau de flux de dialogue, les vendeurs et les commerçants parlent à tour de rôle, chacun pas plus de 50 mots, longueur totale pas plus de 200 caractères ;\n3. Ne retournez aucun caractère autre que le format JSON.\nCe qui suit est le contenu d'appel entre les vendeurs Meituan et les commerçants :\nCommerçant : Bonjour.\nVendeur : Bonjour, je suis de Meituan. J'aimerais demander si votre magasin fait de la promotion en ligne ?\nCommerçant : Pas pour le moment, le patron n'a pas encore organisé cela.\nVendeur : Si vous êtes intéressé, vous pouvez me contacter à tout moment. Meituan a des politiques préférentielles récemment.\nCommerçant : D'accord, compris.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Résumé en une phrase du scénario d'appel",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Flux de dialogue réécrit",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Déclaration du vendeur",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Déclaration du commerçant",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Est-ce conforme au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un assistant commercial. Veuillez d'abord résumer le scénario du contenu d'appel suivant, et réécrire le contenu d'appel en un flux de conversation fluide. Le contenu réécrit ne doit pas dépasser 200 caractères.\nNote :\n1. Vous devez assurer la fluidité du dialogue réécrit.\n2. Vous devez assurer la pertinence du dialogue réécrit : le thème de la conversation réécrite ne peut pas s'écarter de la conversation originale.\n3. Notez que la conversation réécrite ne peut pas contenir d'informations non incluses dans la conversation originale.\n4. Vous devez vous assurer que la conversation réécrite est logiquement claire, concise et de meilleure qualité.\n5. Notez que dans la conversation réécrite, le ton des commerçants et des vendeurs doit être familier, suivant leurs rôles respectifs, et les vendeurs doivent faire attention à la politesse.\n6. Sortie au format JSON, par exemple : {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nExigences de sortie :\n1. Utilisez le format JSON pour retourner les informations extraites ;\n2. \"scenario_summary\" est une description de scénario en une phrase, \"dialogue_rewrite\" est un tableau de flux de dialogue, les vendeurs et les commerçants parlent à tour de rôle, chacun pas plus de 50 mots, longueur totale pas plus de 200 caractères ;\n3. Ne retournez aucun caractère autre que le format JSON.\nCe qui suit est le contenu d'appel entre les vendeurs Meituan et les commerçants :\nCommerçant : Bonjour, ici Lexiang KTV.\nVendeur : Bonjour, Meituan fait des activités de promotion exclusives KTV maintenant. J'aimerais demander si votre magasin est intéressé à participer ?\nCommerçant : Nous n'avons pas de plans pour l'instant, le patron y réfléchit.\nVendeur : Je comprends, vous pouvez me contacter à tout moment si vous avez des idées plus tard.\nCommerçant : D'accord, merci.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Résumé en une phrase du scénario d'appel",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Flux de dialogue réécrit",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Déclaration du vendeur",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Déclaration du commerçant",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Est-ce conforme au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un assistant commercial. Veuillez d'abord résumer le scénario du contenu d'appel suivant, et réécrire le contenu d'appel en un flux de conversation fluide. Le contenu réécrit ne doit pas dépasser 200 caractères.\nNote :\n1. Vous devez assurer la fluidité du dialogue réécrit.\n2. Vous devez assurer la pertinence du dialogue réécrit : le thème de la conversation réécrite ne peut pas s'écarter de la conversation originale.\n3. Notez que la conversation réécrite ne peut pas contenir d'informations non incluses dans la conversation originale.\n4. Vous devez vous assurer que la conversation réécrite est logiquement claire, concise et de meilleure qualité.\n5. Notez que dans la conversation réécrite, le ton des commerçants et des vendeurs doit être familier, suivant leurs rôles respectifs, et les vendeurs doivent faire attention à la politesse.\n6. Sortie au format JSON, par exemple : {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nExigences de sortie :\n1. Utilisez le format JSON pour retourner les informations extraites ;\n2. \"scenario_summary\" est une description de scénario en une phrase, \"dialogue_rewrite\" est un tableau de flux de dialogue, les vendeurs et les commerçants parlent à tour de rôle, chacun pas plus de 50 mots, longueur totale pas plus de 200 caractères ;\n3. Ne retournez aucun caractère autre que le format JSON.\nCe qui suit est le contenu d'appel entre les vendeurs Meituan et les commerçants :\nCommerçant : Bonjour, September Coffee.\nVendeur : Bonjour, j'aimerais savoir si votre magasin a fait de la promotion en ligne récemment ?\nCommerçant : Nous l'avons fait, mais notre budget est limité récemment.\nVendeur : Meituan a des activités récemment avec des coûts publicitaires plus favorables.\nCommerçant : D'accord, nous vous contacterons si nécessaire.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Résumé en une phrase du scénario d'appel",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Flux de dialogue réécrit",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Déclaration du vendeur",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Déclaration du commerçant",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Est-ce conforme au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un assistant commercial. Veuillez d'abord résumer le scénario du contenu d'appel suivant, et réécrire le contenu d'appel en un flux de conversation fluide. Le contenu réécrit ne doit pas dépasser 200 caractères.\nNote :\n1. Vous devez assurer la fluidité du dialogue réécrit.\n2. Vous devez assurer la pertinence du dialogue réécrit : le thème de la conversation réécrite ne peut pas s'écarter de la conversation originale.\n3. Notez que la conversation réécrite ne peut pas contenir d'informations non incluses dans la conversation originale.\n4. Vous devez vous assurer que la conversation réécrite est logiquement claire, concise et de meilleure qualité.\n5. Notez que dans la conversation réécrite, le ton des commerçants et des vendeurs doit être familier, suivant leurs rôles respectifs, et les vendeurs doivent faire attention à la politesse.\n6. Sortie au format JSON, par exemple : {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nExigences de sortie :\n1. Utilisez le format JSON pour retourner les informations extraites ;\n2. \"scenario_summary\" est une description de scénario en une phrase, \"dialogue_rewrite\" est un tableau de flux de dialogue, les vendeurs et les commerçants parlent à tour de rôle, chacun pas plus de 50 mots, longueur totale pas plus de 200 caractères ;\n3. Ne retournez aucun caractère autre que le format JSON.\nCe qui suit est le contenu d'appel entre les vendeurs Meituan et les commerçants :\nCommerçant : Bonjour.\nVendeur : Bonjour, est-ce Happy Florist ?\nCommerçant : Oui, qui est-ce ?\nVendeur : Je suis de Meituan. J'aimerais demander si vous avez fait de la promotion publicitaire en ligne ?\nCommerçant : Pas pour l'instant, nous vous contacterons si nécessaire.\nVendeur : D'accord, je souhaite la prospérité à votre entreprise !",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Résumé en une phrase du scénario d'appel",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Flux de dialogue réécrit",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Déclaration du vendeur",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Déclaration du commerçant",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Est-ce conforme au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un assistant commercial. Veuillez d'abord résumer le scénario du contenu d'appel suivant, et réécrire le contenu d'appel en un flux de conversation fluide. Le contenu réécrit ne doit pas dépasser 200 caractères.\nNote :\n1. Vous devez assurer la fluidité du dialogue réécrit.\n2. Vous devez assurer la pertinence du dialogue réécrit : le thème de la conversation réécrite ne peut pas s'écarter de la conversation originale.\n3. Notez que la conversation réécrite ne peut pas contenir d'informations non incluses dans la conversation originale.\n4. Vous devez vous assurer que la conversation réécrite est logiquement claire, concise et de meilleure qualité.\n5. Notez que dans la conversation réécrite, le ton des commerçants et des vendeurs doit être familier, suivant leurs rôles respectifs, et les vendeurs doivent faire attention à la politesse.\n6. Sortie au format JSON, par exemple : {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nExigences de sortie :\n1. Utilisez le format JSON pour retourner les informations extraites ;\n2. \"scenario_summary\" est une description de scénario en une phrase, \"dialogue_rewrite\" est un tableau de flux de dialogue, les vendeurs et les commerçants parlent à tour de rôle, chacun pas plus de 50 mots, longueur totale pas plus de 200 caractères ;\n3. Ne retournez aucun caractère autre que le format JSON.\nCe qui suit est le contenu d'appel entre les vendeurs Meituan et les commerçants :\nCommerçant : Bonjour.\nVendeur : Bonjour, est-ce l'hôtel Sunshine ?\nCommerçant : Oui.\nVendeur : Je suis de Meituan. J'aimerais savoir si votre magasin fait de la promotion en ligne ?\nCommerçant : Nous comptons principalement sur les clients réguliers maintenant, nous ne faisons pas de promotion.\nVendeur : Je comprends, vous pouvez me contacter à tout moment si nécessaire.\nCommerçant : D'accord, merci.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Résumé en une phrase du scénario d'appel",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Flux de dialogue réécrit",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Déclaration du vendeur",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Déclaration du commerçant",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Est-ce conforme au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un assistant commercial. Veuillez d'abord résumer le scénario du contenu d'appel suivant, et réécrire le contenu d'appel en un flux de conversation fluide. Le contenu réécrit ne doit pas dépasser 200 caractères.\nNote :\n1. Vous devez assurer la fluidité du dialogue réécrit.\n2. Vous devez assurer la pertinence du dialogue réécrit : le thème de la conversation réécrite ne peut pas s'écarter de la conversation originale.\n3. Notez que la conversation réécrite ne peut pas contenir d'informations non incluses dans la conversation originale.\n4. Vous devez vous assurer que la conversation réécrite est logiquement claire, concise et de meilleure qualité.\n5. Notez que dans la conversation réécrite, le ton des commerçants et des vendeurs doit être familier, suivant leurs rôles respectifs, et les vendeurs doivent faire attention à la politesse.\n6. Sortie au format JSON, par exemple : {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nExigences de sortie :\n1. Utilisez le format JSON pour retourner les informations extraites ;\n2. \"scenario_summary\" est une description de scénario en une phrase, \"dialogue_rewrite\" est un tableau de flux de dialogue, les vendeurs et les commerçants parlent à tour de rôle, chacun pas plus de 50 mots, longueur totale pas plus de 200 caractères ;\n3. Ne retournez aucun caractère autre que le format JSON.\nCe qui suit est le contenu d'appel entre les vendeurs Meituan et les commerçants :\nCommerçant : Bonjour, restaurant Fumanlou.\nVendeur : Bonjour, je suis de Meituan. J'aimerais demander si votre magasin a des besoins de promotion en ligne récemment ?\nCommerçant : Nous avons moins d'activités récemment, nous n'y pensons pas pour l'instant.\nVendeur : D'accord, n'hésitez pas à nous contacter si vous en avez besoin à l'avenir.\nCommerçant : Merci.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Résumé en une phrase du scénario d'appel",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Flux de dialogue réécrit",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Déclaration du vendeur",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Déclaration du commerçant",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Est-ce conforme au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Vous êtes un assistant commercial. Veuillez d'abord résumer le scénario du contenu d'appel suivant, et réécrire le contenu d'appel en un flux de conversation fluide. Le contenu réécrit ne doit pas dépasser 200 caractères.\nNote :\n1. Vous devez assurer la fluidité du dialogue réécrit.\n2. Vous devez assurer la pertinence du dialogue réécrit : le thème de la conversation réécrite ne peut pas s'écarter de la conversation originale.\n3. Notez que la conversation réécrite ne peut pas contenir d'informations non incluses dans la conversation originale.\n4. Vous devez vous assurer que la conversation réécrite est logiquement claire, concise et de meilleure qualité.\n5. Notez que dans la conversation réécrite, le ton des commerçants et des vendeurs doit être familier, suivant leurs rôles respectifs, et les vendeurs doivent faire attention à la politesse.\n6. Sortie au format JSON, par exemple : {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\nExigences de sortie :\n1. Utilisez le format JSON pour retourner les informations extraites ;\n2. \"scenario_summary\" est une description de scénario en une phrase, \"dialogue_rewrite\" est un tableau de flux de dialogue, les vendeurs et les commerçants parlent à tour de rôle, chacun pas plus de 50 mots, longueur totale pas plus de 200 caractères ;\n3. Ne retournez aucun caractère autre que le format JSON.\nCe qui suit est le contenu d'appel entre les vendeurs Meituan et les commerçants :\nCommerçant : Bonjour.\nVendeur : Bonjour, je suis de Meituan. J'aimerais savoir si votre magasin fait des achats groupés en ligne ?\nCommerçant : Pas pour le moment, le patron n'a pas encore décidé.\nVendeur : Je comprends, vous pouvez me contacter à tout moment si nécessaire.\nCommerçant : D'accord.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "Résumé en une phrase du scénario d'appel",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "Flux de dialogue réécrit",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "Déclaration du vendeur",
+                                "能力项": "范围、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "Déclaration du commerçant",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Est-ce conforme au schéma",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    }
+]

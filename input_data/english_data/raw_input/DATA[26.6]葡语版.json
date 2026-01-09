@@ -1,0 +1,552 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Você é um assistente de vendas. Por favor, primeiro resuma o cenário do seguinte conteúdo da chamada e reescreva o conteúdo da chamada em um fluxo de conversa fluido. O conteúdo reescrito não deve exceder 200 caracteres.\nObservações:\n1. Você deve garantir a fluidez do diálogo reescrito.\n2. Você deve garantir a relevância do diálogo reescrito: o tema da conversa reescrita não pode se desviar da conversa original.\n3. Note que a conversa reescrita não pode conter informações não incluídas na conversa original.\n4. Você deve garantir que a conversa reescrita seja logicamente clara, concisa e de maior qualidade.\n5. Note que na conversa reescrita, o tom dos comerciantes e vendedores deve ser coloquial, seguindo seus respectivos papéis, e os vendedores devem prestar atenção à polidez.\n6. Saída em formato JSON, por exemplo: {\"resumo_cenario\": \"xxx\", \"dialogo_reescrito\": [{\"vendedor\": \"xxx\"}, {\"comerciante\": \"xxx\"}]}\n\nRequisitos de saída:\n1. Use formato JSON para retornar as informações extraídas;\n2. \"resumo_cenario\" descreve o cenário; \"dialogo_reescrito\" é um array de diálogos alternados entre vendedor e comerciante, total até 200 caracteres.\n3. Não retorne nenhum caractere além do formato JSON.\nO seguinte é o conteúdo da chamada entre vendedores do iFood e comerciantes:\nComerciante: Olá, aqui é o Restaurante Sichuan.\nVendedor: Olá, sou do iFood. Gostaria de saber se sua loja tem alguma necessidade de promoção online recentemente?\nComerciante: Dependemos principalmente de clientes regulares recentemente e não fizemos muita promoção.\nVendedor: O iFood tem novas atividades agora com custos de publicidade muito favoráveis, que podem ajudá-lo a atrair mais novos clientes.\nComerciante: Nosso chefe está em viagem de negócios, precisamos esperar ele voltar para discutir isso.\nVendedor: Entendo, entrarei em contato novamente na próxima semana. Desejo prosperidade ao seu negócio!\nComerciante: Ok, obrigado.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "resumo_cenario": {
+                    "type": "string",
+                    "description": "Resumo de uma frase do cenário da chamada",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogo_reescrito": {
+                    "type": "array",
+                    "description": "Fluxo de diálogo reescrito",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "vendedor": {
+                                "type": "string",
+                                "description": "Declaração do vendedor",
+                                "能力项": "范围、0~50字"
+                            },
+                            "comerciante": {
+                                "type": "string",
+                                "description": "Declaração do comerciante",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "resumo_cenario",
+                "dialogo_reescrito"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Atende ao schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um assistente de vendas. Por favor, primeiro resuma o cenário do seguinte conteúdo da chamada e reescreva o conteúdo da chamada em um fluxo de conversa fluido. O conteúdo reescrito não deve exceder 200 caracteres.\nObservações:\n1. Você deve garantir a fluidez do diálogo reescrito.\n2. Você deve garantir a relevância do diálogo reescrito: o tema da conversa reescrita não pode se desviar da conversa original.\n3. Note que a conversa reescrita não pode conter informações não incluídas na conversa original.\n4. Você deve garantir que a conversa reescrita seja logicamente clara, concisa e de maior qualidade.\n5. Note que na conversa reescrita, o tom dos comerciantes e vendedores deve ser coloquial, seguindo seus respectivos papéis, e os vendedores devem prestar atenção à polidez.\n6. Saída em formato JSON, por exemplo: {\"resumo_cenario\": \"xxx\", \"dialogo_reescrito\": [{\"vendedor\": \"xxx\"}, {\"comerciante\": \"xxx\"}]}\n\nRequisitos de saída:\n1. Use formato JSON para retornar as informações extraídas;\n2. \"resumo_cenario\" descreve o cenário; \"dialogo_reescrito\" é um array de diálogos alternados entre vendedor e comerciante, total até 200 caracteres.\n3. Não retorne nenhum caractere além do formato JSON.\nO seguinte é o conteúdo da chamada entre vendedores do iFood e comerciantes:\nComerciante: Olá, aqui é a Academia Yuedong.\nVendedor: Olá, gostaria de perguntar se sua loja está fazendo compras em grupo ou promoção online atualmente?\nComerciante: Dependemos principalmente de indicações de membros agora, não fazemos compras em grupo online.\nVendedor: As atividades de compras em grupo do iFood são muito fortes agora, e academias do mesmo setor estão todas fazendo com bons resultados.\nComerciante: Você pode adicionar meu WhatsApp para conversar em detalhes?\nVendedor: Claro, por favor me envie seu WhatsApp.\nComerciante: Ok, vou enviar para você mais tarde.\nVendedor: Obrigado, aguardo nossa cooperação!",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "resumo_cenario": {
+                    "type": "string",
+                    "description": "Resumo de uma frase do cenário da chamada",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogo_reescrito": {
+                    "type": "array",
+                    "description": "Fluxo de diálogo reescrito",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "vendedor": {
+                                "type": "string",
+                                "description": "Declaração do vendedor",
+                                "能力项": "范围、0~50字"
+                            },
+                            "comerciante": {
+                                "type": "string",
+                                "description": "Declaração do comerciante",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "resumo_cenario",
+                "dialogo_reescrito"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Atende ao schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um assistente de vendas. Por favor, primeiro resuma o cenário do seguinte conteúdo da chamada e reescreva o conteúdo da chamada em um fluxo de conversa fluido. O conteúdo reescrito não deve exceder 200 caracteres.\nObservações:\n1. Você deve garantir a fluidez do diálogo reescrito.\n2. Você deve garantir a relevância do diálogo reescrito: o tema da conversa reescrita não pode se desviar da conversa original.\n3. Note que a conversa reescrita não pode conter informações não incluídas na conversa original.\n4. Você deve garantir que a conversa reescrita seja logicamente clara, concisa e de maior qualidade.\n5. Note que na conversa reescrita, o tom dos comerciantes e vendedores deve ser coloquial, seguindo seus respectivos papéis, e os vendedores devem prestar atenção à polidez.\n6. Saída em formato JSON, por exemplo: {\"resumo_cenario\": \"xxx\", \"dialogo_reescrito\": [{\"vendedor\": \"xxx\"}, {\"comerciante\": \"xxx\"}]}\n\nRequisitos de saída:\n1. Use formato JSON para retornar as informações extraídas;\n2. \"resumo_cenario\" descreve o cenário; \"dialogo_reescrito\" é um array de diálogos alternados entre vendedor e comerciante, total até 200 caracteres.\n3. Não retorne nenhum caractere além do formato JSON.\nO seguinte é o conteúdo da chamada entre vendedores do iFood e comerciantes:\nComerciante: Olá.\nVendedor: Olá, é a Pousada Huatian Xiaozhu?\nComerciante: Sim, quem está falando?\nVendedor: Sou do iFood. Gostaria de saber se sua pousada quer fazer promoção publicitária no iFood?\nComerciante: Nossos pedidos estão ok no momento, não estamos considerando por enquanto.\nVendedor: Entendo, por favor sinta-se à vontade para me contatar se precisar no futuro.\nComerciante: Ok, obrigado.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "resumo_cenario": {
+                    "type": "string",
+                    "description": "Resumo de uma frase do cenário da chamada",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogo_reescrito": {
+                    "type": "array",
+                    "description": "Fluxo de diálogo reescrito",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "vendedor": {
+                                "type": "string",
+                                "description": "Declaração do vendedor",
+                                "能力项": "范围、0~50字"
+                            },
+                            "comerciante": {
+                                "type": "string",
+                                "description": "Declaração do comerciante",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "resumo_cenario",
+                "dialogo_reescrito"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Atende ao schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um assistente de vendas. Por favor, primeiro resuma o cenário do seguinte conteúdo da chamada e reescreva o conteúdo da chamada em um fluxo de conversa fluido. O conteúdo reescrito não deve exceder 200 caracteres.\nObservações:\n1. Você deve garantir a fluidez do diálogo reescrito.\n2. Você deve garantir a relevância do diálogo reescrito: o tema da conversa reescrita não pode se desviar da conversa original.\n3. Note que a conversa reescrita não pode conter informações não incluídas na conversa original.\n4. Você deve garantir que a conversa reescrita seja logicamente clara, concisa e de maior qualidade.\n5. Note que na conversa reescrita, o tom dos comerciantes e vendedores deve ser coloquial, seguindo seus respectivos papéis, e os vendedores devem prestar atenção à polidez.\n6. Saída em formato JSON, por exemplo: {\"resumo_cenario\": \"xxx\", \"dialogo_reescrito\": [{\"vendedor\": \"xxx\"}, {\"comerciante\": \"xxx\"}]}\n\nRequisitos de saída:\n1. Use formato JSON para retornar as informações extraídas;\n2. \"resumo_cenario\" descreve o cenário; \"dialogo_reescrito\" é um array de diálogos alternados entre vendedor e comerciante, total até 200 caracteres.\n3. Não retorne nenhum caractere além do formato JSON.\nO seguinte é o conteúdo da chamada entre vendedores do iFood e comerciantes:\nComerciante: Olá.\nVendedor: Olá, sou do iFood. Gostaria de perguntar se sua loja está fazendo promoção online?\nComerciante: Não no momento, o chefe ainda não organizou isso.\nVendedor: Se tiver interesse, pode me contatar a qualquer momento. O iFood tem políticas preferenciais recentemente.\nComerciante: Ok, entendi.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "resumo_cenario": {
+                    "type": "string",
+                    "description": "Resumo de uma frase do cenário da chamada",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogo_reescrito": {
+                    "type": "array",
+                    "description": "Fluxo de diálogo reescrito",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "vendedor": {
+                                "type": "string",
+                                "description": "Declaração do vendedor",
+                                "能力项": "范围、0~50字"
+                            },
+                            "comerciante": {
+                                "type": "string",
+                                "description": "Declaração do comerciante",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "resumo_cenario",
+                "dialogo_reescrito"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Atende ao schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um assistente de vendas. Por favor, primeiro resuma o cenário do seguinte conteúdo da chamada e reescreva o conteúdo da chamada em um fluxo de conversa fluido. O conteúdo reescrito não deve exceder 200 caracteres.\nObservações:\n1. Você deve garantir a fluidez do diálogo reescrito.\n2. Você deve garantir a relevância do diálogo reescrito: o tema da conversa reescrita não pode se desviar da conversa original.\n3. Note que a conversa reescrita não pode conter informações não incluídas na conversa original.\n4. Você deve garantir que a conversa reescrita seja logicamente clara, concisa e de maior qualidade.\n5. Note que na conversa reescrita, o tom dos comerciantes e vendedores deve ser coloquial, seguindo seus respectivos papéis, e os vendedores devem prestar atenção à polidez.\n6. Saída em formato JSON, por exemplo: {\"resumo_cenario\": \"xxx\", \"dialogo_reescrito\": [{\"vendedor\": \"xxx\"}, {\"comerciante\": \"xxx\"}]}\n\nRequisitos de saída:\n1. Use formato JSON para retornar as informações extraídas;\n2. \"resumo_cenario\" descreve o cenário; \"dialogo_reescrito\" é um array de diálogos alternados entre vendedor e comerciante, total até 200 caracteres.\n3. Não retorne nenhum caractere além do formato JSON.\nO seguinte é o conteúdo da chamada entre vendedores do iFood e comerciantes:\nComerciante: Olá, aqui é o KTV Lexiang.\nVendedor: Olá, o iFood está fazendo atividades de promoção exclusiva para KTV agora. Gostaria de perguntar se sua loja tem interesse em participar?\nComerciante: Não temos planos por enquanto, o chefe está considerando.\nVendedor: Entendo, pode me contatar a qualquer momento se tiver ideias mais tarde.\nComerciante: Ok, obrigado.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "resumo_cenario": {
+                    "type": "string",
+                    "description": "Resumo de uma frase do cenário da chamada",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogo_reescrito": {
+                    "type": "array",
+                    "description": "Fluxo de diálogo reescrito",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "vendedor": {
+                                "type": "string",
+                                "description": "Declaração do vendedor",
+                                "能力项": "范围、0~50字"
+                            },
+                            "comerciante": {
+                                "type": "string",
+                                "description": "Declaração do comerciante",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "resumo_cenario",
+                "dialogo_reescrito"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Atende ao schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um assistente de vendas. Por favor, primeiro resuma o cenário do seguinte conteúdo da chamada e reescreva o conteúdo da chamada em um fluxo de conversa fluido. O conteúdo reescrito não deve exceder 200 caracteres.\nObservações:\n1. Você deve garantir a fluidez do diálogo reescrito.\n2. Você deve garantir a relevância do diálogo reescrito: o tema da conversa reescrita não pode se desviar da conversa original.\n3. Note que a conversa reescrita não pode conter informações não incluídas na conversa original.\n4. Você deve garantir que a conversa reescrita seja logicamente clara, concisa e de maior qualidade.\n5. Note que na conversa reescrita, o tom dos comerciantes e vendedores deve ser coloquial, seguindo seus respectivos papéis, e os vendedores devem prestar atenção à polidez.\n6. Saída em formato JSON, por exemplo: {\"resumo_cenario\": \"xxx\", \"dialogo_reescrito\": [{\"vendedor\": \"xxx\"}, {\"comerciante\": \"xxx\"}]}\n\nRequisitos de saída:\n1. Use formato JSON para retornar as informações extraídas;\n2. \"resumo_cenario\" descreve o cenário; \"dialogo_reescrito\" é um array de diálogos alternados entre vendedor e comerciante, total até 200 caracteres.\n3. Não retorne nenhum caractere além do formato JSON.\nO seguinte é o conteúdo da chamada entre vendedores do iFood e comerciantes:\nComerciante: Olá, Café Setembro.\nVendedor: Olá, gostaria de saber se sua loja tem feito promoção online recentemente?\nComerciante: Temos feito, mas nosso orçamento está limitado recentemente.\nVendedor: O iFood tem atividades recentemente com custos de publicidade mais favoráveis.\nComerciante: Ok, entraremos em contato se precisarmos.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "resumo_cenario": {
+                    "type": "string",
+                    "description": "Resumo de uma frase do cenário da chamada",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogo_reescrito": {
+                    "type": "array",
+                    "description": "Fluxo de diálogo reescrito",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "vendedor": {
+                                "type": "string",
+                                "description": "Declaração do vendedor",
+                                "能力项": "范围、0~50字"
+                            },
+                            "comerciante": {
+                                "type": "string",
+                                "description": "Declaração do comerciante",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "resumo_cenario",
+                "dialogo_reescrito"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Atende ao schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um assistente de vendas. Por favor, primeiro resuma o cenário do seguinte conteúdo da chamada e reescreva o conteúdo da chamada em um fluxo de conversa fluido. O conteúdo reescrito não deve exceder 200 caracteres.\nObservações:\n1. Você deve garantir a fluidez do diálogo reescrito.\n2. Você deve garantir a relevância do diálogo reescrito: o tema da conversa reescrita não pode se desviar da conversa original.\n3. Note que a conversa reescrita não pode conter informações não incluídas na conversa original.\n4. Você deve garantir que a conversa reescrita seja logicamente clara, concisa e de maior qualidade.\n5. Note que na conversa reescrita, o tom dos comerciantes e vendedores deve ser coloquial, seguindo seus respectivos papéis, e os vendedores devem prestar atenção à polidez.\n6. Saída em formato JSON, por exemplo: {\"resumo_cenario\": \"xxx\", \"dialogo_reescrito\": [{\"vendedor\": \"xxx\"}, {\"comerciante\": \"xxx\"}]}\n\nRequisitos de saída:\n1. Use formato JSON para retornar as informações extraídas;\n2. \"resumo_cenario\" descreve o cenário; \"dialogo_reescrito\" é um array de diálogos alternados entre vendedor e comerciante, total até 200 caracteres.\n3. Não retorne nenhum caractere além do formato JSON.\nO seguinte é o conteúdo da chamada entre vendedores do iFood e comerciantes:\nComerciante: Olá.\nVendedor: Olá, é a Floricultura Feliz?\nComerciante: Sim, quem está falando?\nVendedor: Sou do iFood. Gostaria de perguntar se vocês fizeram promoção publicitária online?\nComerciante: Não por enquanto, entraremos em contato se precisarmos.\nVendedor: Ok, desejo prosperidade ao seu negócio!",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "resumo_cenario": {
+                    "type": "string",
+                    "description": "Resumo de uma frase do cenário da chamada",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogo_reescrito": {
+                    "type": "array",
+                    "description": "Fluxo de diálogo reescrito",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "vendedor": {
+                                "type": "string",
+                                "description": "Declaração do vendedor",
+                                "能力项": "范围、0~50字"
+                            },
+                            "comerciante": {
+                                "type": "string",
+                                "description": "Declaração do comerciante",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "resumo_cenario",
+                "dialogo_reescrito"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Atende ao schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um assistente de vendas. Por favor, primeiro resuma o cenário do seguinte conteúdo da chamada e reescreva o conteúdo da chamada em um fluxo de conversa fluido. O conteúdo reescrito não deve exceder 200 caracteres.\nObservações:\n1. Você deve garantir a fluidez do diálogo reescrito.\n2. Você deve garantir a relevância do diálogo reescrito: o tema da conversa reescrita não pode se desviar da conversa original.\n3. Note que a conversa reescrita não pode conter informações não incluídas na conversa original.\n4. Você deve garantir que a conversa reescrita seja logicamente clara, concisa e de maior qualidade.\n5. Note que na conversa reescrita, o tom dos comerciantes e vendedores deve ser coloquial, seguindo seus respectivos papéis, e os vendedores devem prestar atenção à polidez.\n6. Saída em formato JSON, por exemplo: {\"resumo_cenario\": \"xxx\", \"dialogo_reescrito\": [{\"vendedor\": \"xxx\"}, {\"comerciante\": \"xxx\"}]}\n\nRequisitos de saída:\n1. Use formato JSON para retornar as informações extraídas;\n2. \"resumo_cenario\" descreve o cenário; \"dialogo_reescrito\" é um array de diálogos alternados entre vendedor e comerciante, total até 200 caracteres.\n3. Não retorne nenhum caractere além do formato JSON.\nO seguinte é o conteúdo da chamada entre vendedores do iFood e comerciantes:\nComerciante: Olá.\nVendedor: Olá, é o Hotel Sunshine?\nComerciante: Sim.\nVendedor: Sou do iFood. Gostaria de saber se sua loja está fazendo promoção online?\nComerciante: Dependemos principalmente de clientes regulares agora, não fazemos promoção.\nVendedor: Entendo, pode me contatar a qualquer momento se precisar.\nComerciante: Ok, obrigado.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "resumo_cenario": {
+                    "type": "string",
+                    "description": "Resumo de uma frase do cenário da chamada",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogo_reescrito": {
+                    "type": "array",
+                    "description": "Fluxo de diálogo reescrito",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "vendedor": {
+                                "type": "string",
+                                "description": "Declaração do vendedor",
+                                "能力项": "范围、0~50字"
+                            },
+                            "comerciante": {
+                                "type": "string",
+                                "description": "Declaração do comerciante",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "resumo_cenario",
+                "dialogo_reescrito"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Atende ao schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um assistente de vendas. Por favor, primeiro resuma o cenário do seguinte conteúdo da chamada e reescreva o conteúdo da chamada em um fluxo de conversa fluido. O conteúdo reescrito não deve exceder 200 caracteres.\nObservações:\n1. Você deve garantir a fluidez do diálogo reescrito.\n2. Você deve garantir a relevância do diálogo reescrito: o tema da conversa reescrita não pode se desviar da conversa original.\n3. Note que a conversa reescrita não pode conter informações não incluídas na conversa original.\n4. Você deve garantir que a conversa reescrita seja logicamente clara, concisa e de maior qualidade.\n5. Note que na conversa reescrita, o tom dos comerciantes e vendedores deve ser coloquial, seguindo seus respectivos papéis, e os vendedores devem prestar atenção à polidez.\n6. Saída em formato JSON, por exemplo: {\"resumo_cenario\": \"xxx\", \"dialogo_reescrito\": [{\"vendedor\": \"xxx\"}, {\"comerciante\": \"xxx\"}]}\n\nRequisitos de saída:\n1. Use formato JSON para retornar as informações extraídas;\n2. \"resumo_cenario\" descreve o cenário; \"dialogo_reescrito\" é um array de diálogos alternados entre vendedor e comerciante, total até 200 caracteres.\n3. Não retorne nenhum caractere além do formato JSON.\nO seguinte é o conteúdo da chamada entre vendedores do iFood e comerciantes:\nComerciante: Olá, Restaurante Fumanlou.\nVendedor: Olá, sou do iFood. Gostaria de perguntar se sua loja tem alguma necessidade de promoção online recentemente?\nComerciante: Temos menos atividades recentemente, não estamos considerando por enquanto.\nVendedor: Ok, por favor sinta-se à vontade para nos contatar se precisar no futuro.\nComerciante: Obrigado.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "resumo_cenario": {
+                    "type": "string",
+                    "description": "Resumo de uma frase do cenário da chamada",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogo_reescrito": {
+                    "type": "array",
+                    "description": "Fluxo de diálogo reescrito",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "vendedor": {
+                                "type": "string",
+                                "description": "Declaração do vendedor",
+                                "能力项": "范围、0~50字"
+                            },
+                            "comerciante": {
+                                "type": "string",
+                                "description": "Declaração do comerciante",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "resumo_cenario",
+                "dialogo_reescrito"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Atende ao schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Você é um assistente de vendas. Por favor, primeiro resuma o cenário do seguinte conteúdo da chamada e reescreva o conteúdo da chamada em um fluxo de conversa fluido. O conteúdo reescrito não deve exceder 200 caracteres.\nObservações:\n1. Você deve garantir a fluidez do diálogo reescrito.\n2. Você deve garantir a relevância do diálogo reescrito: o tema da conversa reescrita não pode se desviar da conversa original.\n3. Note que a conversa reescrita não pode conter informações não incluídas na conversa original.\n4. Você deve garantir que a conversa reescrita seja logicamente clara, concisa e de maior qualidade.\n5. Note que na conversa reescrita, o tom dos comerciantes e vendedores deve ser coloquial, seguindo seus respectivos papéis, e os vendedores devem prestar atenção à polidez.\n6. Saída em formato JSON, por exemplo: {\"resumo_cenario\": \"xxx\", \"dialogo_reescrito\": [{\"vendedor\": \"xxx\"}, {\"comerciante\": \"xxx\"}]}\n\nRequisitos de saída:\n1. Use formato JSON para retornar as informações extraídas;\n2. \"resumo_cenario\" descreve o cenário; \"dialogo_reescrito\" é um array de diálogos alternados entre vendedor e comerciante, total até 200 caracteres.\n3. Não retorne nenhum caractere além do formato JSON.\nO seguinte é o conteúdo da chamada entre vendedores do iFood e comerciantes:\nComerciante: Olá.\nVendedor: Olá, sou do iFood. Gostaria de saber se sua loja está fazendo compras em grupo online?\nComerciante: Não no momento, o chefe ainda não decidiu.\nVendedor: Entendo, pode me contatar a qualquer momento se precisar.\nComerciante: Ok.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "resumo_cenario": {
+                    "type": "string",
+                    "description": "Resumo de uma frase do cenário da chamada",
+                    "能力项": "范围、10~50字"
+                },
+                "dialogo_reescrito": {
+                    "type": "array",
+                    "description": "Fluxo de diálogo reescrito",
+                    "能力项": "范围、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "vendedor": {
+                                "type": "string",
+                                "description": "Declaração do vendedor",
+                                "能力项": "范围、0~50字"
+                            },
+                            "comerciante": {
+                                "type": "string",
+                                "description": "Declaração do comerciante",
+                                "能力项": "范围、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "resumo_cenario",
+                "dialogo_reescrito"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Atende ao schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    }
+]

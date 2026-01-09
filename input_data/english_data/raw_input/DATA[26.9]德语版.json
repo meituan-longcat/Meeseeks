@@ -1,0 +1,382 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Produktassistent, der Benutzern hilft, die Geschmacksrichtungen von Produkten zu analysieren.\nMein Eingabeformat ist: [{\"cspu\":\"Produktname 1\"}, {\"cspu\":\"Produktname 2\"}], wobei cspu der zu analysierende Produktname ist.\nIhr Antwortformat ist (muss strikt den JSON-Formatanforderungen folgen):[{\"cspu\":\"Produktname 1\", \"type\":\"Geschmack 1\"}, {\"cspu\":\"Produktname 2\",\"type\":\"Geschmack 2\"}], wobei type die Produktgeschmacksrichtung darstellt.\nZum Beispiel:\nWenn meine Eingabe [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}] ist\nIch hoffe, Ihre Ausgabe ist [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mango\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Hot Chili Pepper & Lime\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Onion\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Spicy Beef, Tomato Beef\"}]\nHinweis 1: Produktgeschmacksergebnisse müssen im Produktnamen vorhanden sein, abstrahieren oder äquivalent umwandeln Sie nicht willkürlich, und Geschmacksrichtungen müssen echten Lebensmittel- oder Gewürztypen entsprechen, wie Mango-Geschmack, würziger Geschmack, geschmorter Rindfleisch-Geschmack usw.\nHinweis 2: Manchmal ist Geschmack ein beschreibendes Wort, zum Beispiel hat roter Dattel-Brei roten Dattel-Geschmack, Gurken-Chips haben Gurken-Geschmack, Litschi-Limonade hat Litschi-Geschmack, Jasmin-Tee hat Jasmin-Geschmack\nUnterscheiden Sie zwischen Produkttyp und Geschmack. Wenn es mehrere Geschmacksrichtungen gibt, geben Sie alle Geschmacksrichtungen durch Kommas getrennt aus\nMischen Sie keine Produkttypen ein! Mischen Sie keine Produkttypen ein!\nGeschmacksrichtungen sollten keine Snacks, Freizeit, Ortsnamen usw. enthalten.\nGeschmacksrichtungen werden keine Wörter wie Nudelblätter, Reisknödel, Ramen enthalten\nWenn der Produktname keinen Geschmack enthält, geben Sie NULL für den type-Wert zurück\nEs gibt keine Beziehung zwischen mehreren Produkten, und der Kontext wird die Geschmacksanalyseergebnisse einzelner Produkte nicht beeinflussen\nBitte analysieren Sie die folgende Produktliste und geben Sie Ergebnisse zurück (striktes JSON-Format):\n[{\"cspu\": \"Jack Link's Würziges Enten-Jerky 6.35oz\"}, {\"cspu\": \"Wonderful Pistazien Süße Chili 5.5oz\"}, {\"cspu\": \"Nature Valley Müsliriegel Hafer & Honig 17.7oz\"}, {\"cspu\": \"Coca-Cola Zero Zucker 12fl oz 6er-Pack\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Produktassistent, der Benutzern hilft, die Geschmacksrichtungen von Produkten zu analysieren.\nMein Eingabeformat ist: [{\"cspu\":\"Produktname 1\"}, {\"cspu\":\"Produktname 2\"}], wobei cspu der zu analysierende Produktname ist.\nIhr Antwortformat ist (muss strikt den JSON-Formatanforderungen folgen):[{\"cspu\":\"Produktname 1\", \"type\":\"Geschmack 1\"}, {\"cspu\":\"Produktname 2\",\"type\":\"Geschmack 2\"}], wobei type die Produktgeschmacksrichtung darstellt.\nZum Beispiel:\nWenn meine Eingabe [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}] ist\nIch hoffe, Ihre Ausgabe ist [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mango\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Hot Chili Pepper & Lime\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Onion\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Spicy Beef, Tomato Beef\"}]\nHinweis 1: Produktgeschmacksergebnisse müssen im Produktnamen vorhanden sein, abstrahieren oder äquivalent umwandeln Sie nicht willkürlich, und Geschmacksrichtungen müssen echten Lebensmittel- oder Gewürztypen entsprechen, wie Mango-Geschmack, würziger Geschmack, geschmorter Rindfleisch-Geschmack usw.\nHinweis 2: Manchmal ist Geschmack ein beschreibendes Wort, zum Beispiel hat roter Dattel-Brei roten Dattel-Geschmack, Gurken-Chips haben Gurken-Geschmack, Litschi-Limonade hat Litschi-Geschmack, Jasmin-Tee hat Jasmin-Geschmack\nUnterscheiden Sie zwischen Produkttyp und Geschmack. Wenn es mehrere Geschmacksrichtungen gibt, geben Sie alle Geschmacksrichtungen durch Kommas getrennt aus\nMischen Sie keine Produkttypen ein! Mischen Sie keine Produkttypen ein!\nGeschmacksrichtungen sollten keine Snacks, Freizeit, Ortsnamen usw. enthalten.\nGeschmacksrichtungen werden keine Wörter wie Nudelblätter, Reisknödel, Ramen enthalten\nWenn der Produktname keinen Geschmack enthält, geben Sie NULL für den type-Wert zurück\nEs gibt keine Beziehung zwischen mehreren Produkten, und der Kontext wird die Geschmacksanalyseergebnisse einzelner Produkte nicht beeinflussen\nBitte analysieren Sie die folgende Produktliste und geben Sie Ergebnisse zurück (striktes JSON-Format):\n[{\"cspu\": \"Arizona Eistee Zitrone 23fl oz\"}, {\"cspu\": \"Flamin' Hot Cheetos Knusprig 8.5oz 3er-Pack\"}, {\"cspu\": \"David Sonnenblumenkerne Original 5.25oz\"}, {\"cspu\": \"Dannon Two Good Griechischer Joghurt Vanille 5.3oz 12er-Pack\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Produktassistent, der Benutzern hilft, die Geschmacksrichtungen von Produkten zu analysieren.\nMein Eingabeformat ist: [{\"cspu\":\"Produktname 1\"}, {\"cspu\":\"Produktname 2\"}], wobei cspu der zu analysierende Produktname ist.\nIhr Antwortformat ist (muss strikt den JSON-Formatanforderungen folgen):[{\"cspu\":\"Produktname 1\", \"type\":\"Geschmack 1\"}, {\"cspu\":\"Produktname 2\",\"type\":\"Geschmack 2\"}], wobei type die Produktgeschmacksrichtung darstellt.\nZum Beispiel:\nWenn meine Eingabe [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}] ist\nIch hoffe, Ihre Ausgabe ist [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mango\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Hot Chili Pepper & Lime\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Onion\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Spicy Beef, Tomato Beef\"}]\nHinweis 1: Produktgeschmacksergebnisse müssen im Produktnamen vorhanden sein, abstrahieren oder äquivalent umwandeln Sie nicht willkürlich, und Geschmacksrichtungen müssen echten Lebensmittel- oder Gewürztypen entsprechen, wie Mango-Geschmack, würziger Geschmack, geschmorter Rindfleisch-Geschmack usw.\nHinweis 2: Manchmal ist Geschmack ein beschreibendes Wort, zum Beispiel hat roter Dattel-Brei roten Dattel-Geschmack, Gurken-Chips haben Gurken-Geschmack, Litschi-Limonade hat Litschi-Geschmack, Jasmin-Tee hat Jasmin-Geschmack\nUnterscheiden Sie zwischen Produkttyp und Geschmack. Wenn es mehrere Geschmacksrichtungen gibt, geben Sie alle Geschmacksrichtungen durch Kommas getrennt aus\nMischen Sie keine Produkttypen ein! Mischen Sie keine Produkttypen ein!\nGeschmacksrichtungen sollten keine Snacks, Freizeit, Ortsnamen usw. enthalten.\nGeschmacksrichtungen werden keine Wörter wie Nudelblätter, Reisknödel, Ramen enthalten\nWenn der Produktname keinen Geschmack enthält, geben Sie NULL für den type-Wert zurück\nEs gibt keine Beziehung zwischen mehreren Produkten, und der Kontext wird die Geschmacksanalyseergebnisse einzelner Produkte nicht beeinflussen\nBitte analysieren Sie die folgende Produktliste und geben Sie Ergebnisse zurück (striktes JSON-Format):\n[{\"cspu\": \"Maruchan Ramen Rindfleisch-Geschmack 3oz\"}, {\"cspu\": \"Kellogg's Rice Krispies Treats 8er-Pack\"}, {\"cspu\": \"Lay's Kartoffelchips Dill-Gurke 7.75oz\"}, {\"cspu\": \"Simply Apfelsaft 52fl oz\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Produktassistent, der Benutzern hilft, die Geschmacksrichtungen von Produkten zu analysieren.\nMein Eingabeformat ist: [{\"cspu\":\"Produktname 1\"}, {\"cspu\":\"Produktname 2\"}], wobei cspu der zu analysierende Produktname ist.\nIhr Antwortformat ist (muss strikt den JSON-Formatanforderungen folgen):[{\"cspu\":\"Produktname 1\", \"type\":\"Geschmack 1\"}, {\"cspu\":\"Produktname 2\",\"type\":\"Geschmack 2\"}], wobei type die Produktgeschmacksrichtung darstellt.\nZum Beispiel:\nWenn meine Eingabe [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}] ist\nIch hoffe, Ihre Ausgabe ist [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mango\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Hot Chili Pepper & Lime\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Onion\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Spicy Beef, Tomato Beef\"}]\nHinweis 1: Produktgeschmacksergebnisse müssen im Produktnamen vorhanden sein, abstrahieren oder äquivalent umwandeln Sie nicht willkürlich, und Geschmacksrichtungen müssen echten Lebensmittel- oder Gewürztypen entsprechen, wie Mango-Geschmack, würziger Geschmack, geschmorter Rindfleisch-Geschmack usw.\nHinweis 2: Manchmal ist Geschmack ein beschreibendes Wort, zum Beispiel hat roter Dattel-Brei roten Dattel-Geschmack, Gurken-Chips haben Gurken-Geschmack, Litschi-Limonade hat Litschi-Geschmack, Jasmin-Tee hat Jasmin-Geschmack\nUnterscheiden Sie zwischen Produkttyp und Geschmack. Wenn es mehrere Geschmacksrichtungen gibt, geben Sie alle Geschmacksrichtungen durch Kommas getrennt aus\nMischen Sie keine Produkttypen ein! Mischen Sie keine Produkttypen ein!\nGeschmacksrichtungen sollten keine Snacks, Freizeit, Ortsnamen usw. enthalten.\nGeschmacksrichtungen werden keine Wörter wie Nudelblätter, Reisknödel, Ramen enthalten\nWenn der Produktname keinen Geschmack enthält, geben Sie NULL für den type-Wert zurück\nEs gibt keine Beziehung zwischen mehreren Produkten, und der Kontext wird die Geschmacksanalyseergebnisse einzelner Produkte nicht beeinflussen\nBitte analysieren Sie die folgende Produktliste und geben Sie Ergebnisse zurück (striktes JSON-Format):\n[{\"cspu\": \"Pepperidge Farm Goldfish Cheddar Cracker 6.6oz\"}, {\"cspu\": \"Fairlife Core Power Protein-Shake Vanille 14fl oz 12er-Pack\"}, {\"cspu\": \"LaCroix Sprudelwasser Weiße Traube 12fl oz\"}, {\"cspu\": \"Blue Diamond Mandeln Variety Pack\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Produktassistent, der Benutzern hilft, die Geschmacksrichtungen von Produkten zu analysieren.\nMein Eingabeformat ist: [{\"cspu\":\"Produktname 1\"}, {\"cspu\":\"Produktname 2\"}], wobei cspu der zu analysierende Produktname ist.\nIhr Antwortformat ist (muss strikt den JSON-Formatanforderungen folgen):[{\"cspu\":\"Produktname 1\", \"type\":\"Geschmack 1\"}, {\"cspu\":\"Produktname 2\",\"type\":\"Geschmack 2\"}], wobei type die Produktgeschmacksrichtung darstellt.\nZum Beispiel:\nWenn meine Eingabe [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}] ist\nIch hoffe, Ihre Ausgabe ist [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mango\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Hot Chili Pepper & Lime\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Onion\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Spicy Beef, Tomato Beef\"}]\nHinweis 1: Produktgeschmacksergebnisse müssen im Produktnamen vorhanden sein, abstrahieren oder äquivalent umwandeln Sie nicht willkürlich, und Geschmacksrichtungen müssen echten Lebensmittel- oder Gewürztypen entsprechen, wie Mango-Geschmack, würziger Geschmack, geschmorter Rindfleisch-Geschmack usw.\nHinweis 2: Manchmal ist Geschmack ein beschreibendes Wort, zum Beispiel hat roter Dattel-Brei roten Dattel-Geschmack, Gurken-Chips haben Gurken-Geschmack, Litschi-Limonade hat Litschi-Geschmack, Jasmin-Tee hat Jasmin-Geschmack\nUnterscheiden Sie zwischen Produkttyp und Geschmack. Wenn es mehrere Geschmacksrichtungen gibt, geben Sie alle Geschmacksrichtungen durch Kommas getrennt aus\nMischen Sie keine Produkttypen ein! Mischen Sie keine Produkttypen ein!\nGeschmacksrichtungen sollten keine Snacks, Freizeit, Ortsnamen usw. enthalten.\nGeschmacksrichtungen werden keine Wörter wie Nudelblätter, Reisknödel, Ramen enthalten\nWenn der Produktname keinen Geschmack enthält, geben Sie NULL für den type-Wert zurück\nEs gibt keine Beziehung zwischen mehreren Produkten, und der Kontext wird die Geschmacksanalyseergebnisse einzelner Produkte nicht beeinflussen\nBitte analysieren Sie die folgende Produktliste und geben Sie Ergebnisse zurück (striktes JSON-Format):\n[{\"cspu\": \"Lay's Kartoffelchips BBQ 7.75oz\"}, {\"cspu\": \"Arizona Grüner Tee mit Honig 23fl oz\"}, {\"cspu\": \"Pepsi Cola Classic 12fl oz\"}, {\"cspu\": \"David Sonnenblumenkerne Ranch 5.25oz\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Produktassistent, der Benutzern hilft, die Geschmacksrichtungen von Produkten zu analysieren.\nMein Eingabeformat ist: [{\"cspu\":\"Produktname 1\"}, {\"cspu\":\"Produktname 2\"}], wobei cspu der zu analysierende Produktname ist.\nIhr Antwortformat ist (muss strikt den JSON-Formatanforderungen folgen):[{\"cspu\":\"Produktname 1\", \"type\":\"Geschmack 1\"}, {\"cspu\":\"Produktname 2\",\"type\":\"Geschmack 2\"}], wobei type die Produktgeschmacksrichtung darstellt.\nZum Beispiel:\nWenn meine Eingabe [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}] ist\nIch hoffe, Ihre Ausgabe ist [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mango\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Hot Chili Pepper & Lime\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Onion\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Spicy Beef, Tomato Beef\"}]\nHinweis 1: Produktgeschmacksergebnisse müssen im Produktnamen vorhanden sein, abstrahieren oder äquivalent umwandeln Sie nicht willkürlich, und Geschmacksrichtungen müssen echten Lebensmittel- oder Gewürztypen entsprechen, wie Mango-Geschmack, würziger Geschmack, geschmorter Rindfleisch-Geschmack usw.\nHinweis 2: Manchmal ist Geschmack ein beschreibendes Wort, zum Beispiel hat roter Dattel-Brei roten Dattel-Geschmack, Gurken-Chips haben Gurken-Geschmack, Litschi-Limonade hat Litschi-Geschmack, Jasmin-Tee hat Jasmin-Geschmack\nUnterscheiden Sie zwischen Produkttyp und Geschmack. Wenn es mehrere Geschmacksrichtungen gibt, geben Sie alle Geschmacksrichtungen durch Kommas getrennt aus\nMischen Sie keine Produkttypen ein! Mischen Sie keine Produkttypen ein!\nGeschmacksrichtungen sollten keine Snacks, Freizeit, Ortsnamen usw. enthalten.\nGeschmacksrichtungen werden keine Wörter wie Nudelblätter, Reisknödel, Ramen enthalten\nWenn der Produktname keinen Geschmack enthält, geben Sie NULL für den type-Wert zurück\nEs gibt keine Beziehung zwischen mehreren Produkten, und der Kontext wird die Geschmacksanalyseergebnisse einzelner Produkte nicht beeinflussen\nBitte analysieren Sie die folgende Produktliste und geben Sie Ergebnisse zurück (striktes JSON-Format):\n[{\"cspu\": \"Slim Jim Original Rindfleisch-Jerky 0.28oz\"}, {\"cspu\": \"Wonderful Pistazien Honig Geröstet 5.5oz\"}, {\"cspu\": \"Pringles BBQ Kartoffel-Chips 5.5oz\"}, {\"cspu\": \"Fairlife 2% Milch 52fl oz\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Produktassistent, der Benutzern hilft, die Geschmacksrichtungen von Produkten zu analysieren.\nMein Eingabeformat ist: [{\"cspu\":\"Produktname 1\"}, {\"cspu\":\"Produktname 2\"}], wobei cspu der zu analysierende Produktname ist.\nIhr Antwortformat ist (muss strikt den JSON-Formatanforderungen folgen):[{\"cspu\":\"Produktname 1\", \"type\":\"Geschmack 1\"}, {\"cspu\":\"Produktname 2\",\"type\":\"Geschmack 2\"}], wobei type die Produktgeschmacksrichtung darstellt.\nZum Beispiel:\nWenn meine Eingabe [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}] ist\nIch hoffe, Ihre Ausgabe ist [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mango\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Hot Chili Pepper & Lime\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Onion\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Spicy Beef, Tomato Beef\"}]\nHinweis 1: Produktgeschmacksergebnisse müssen im Produktnamen vorhanden sein, abstrahieren oder äquivalent umwandeln Sie nicht willkürlich, und Geschmacksrichtungen müssen echten Lebensmittel- oder Gewürztypen entsprechen, wie Mango-Geschmack, würziger Geschmack, geschmorter Rindfleisch-Geschmack usw.\nHinweis 2: Manchmal ist Geschmack ein beschreibendes Wort, zum Beispiel hat roter Dattel-Brei roten Dattel-Geschmack, Gurken-Chips haben Gurken-Geschmack, Litschi-Limonade hat Litschi-Geschmack, Jasmin-Tee hat Jasmin-Geschmack\nUnterscheiden Sie zwischen Produkttyp und Geschmack. Wenn es mehrere Geschmacksrichtungen gibt, geben Sie alle Geschmacksrichtungen durch Kommas getrennt aus\nMischen Sie keine Produkttypen ein! Mischen Sie keine Produkttypen ein!\nGeschmacksrichtungen sollten keine Snacks, Freizeit, Ortsnamen usw. enthalten.\nGeschmacksrichtungen werden keine Wörter wie Nudelblätter, Reisknödel, Ramen enthalten\nWenn der Produktname keinen Geschmack enthält, geben Sie NULL für den type-Wert zurück\nEs gibt keine Beziehung zwischen mehreren Produkten, und der Kontext wird die Geschmacksanalyseergebnisse einzelner Produkte nicht beeinflussen\nBitte analysieren Sie die folgende Produktliste und geben Sie Ergebnisse zurück (striktes JSON-Format):\n[{\"cspu\": \"Jell-O Pudding-Becher Schokolade 4er-Pack 15.5oz\"}, {\"cspu\": \"Maruchan Ramen Schweinefleisch-Geschmack 3oz\"}, {\"cspu\": \"Blue Diamond Mandeln Smokehouse 6oz\"}, {\"cspu\": \"Smartwater Dampf-Destilliertes Wasser 33.8fl oz\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Produktassistent, der Benutzern hilft, die Geschmacksrichtungen von Produkten zu analysieren.\nMein Eingabeformat ist: [{\"cspu\":\"Produktname 1\"}, {\"cspu\":\"Produktname 2\"}], wobei cspu der zu analysierende Produktname ist.\nIhr Antwortformat ist (muss strikt den JSON-Formatanforderungen folgen):[{\"cspu\":\"Produktname 1\", \"type\":\"Geschmack 1\"}, {\"cspu\":\"Produktname 2\",\"type\":\"Geschmack 2\"}], wobei type die Produktgeschmacksrichtung darstellt.\nZum Beispiel:\nWenn meine Eingabe [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}] ist\nIch hoffe, Ihre Ausgabe ist [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mango\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Hot Chili Pepper & Lime\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Onion\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Spicy Beef, Tomato Beef\"}]\nHinweis 1: Produktgeschmacksergebnisse müssen im Produktnamen vorhanden sein, abstrahieren oder äquivalent umwandeln Sie nicht willkürlich, und Geschmacksrichtungen müssen echten Lebensmittel- oder Gewürztypen entsprechen, wie Mango-Geschmack, würziger Geschmack, geschmorter Rindfleisch-Geschmack usw.\nHinweis 2: Manchmal ist Geschmack ein beschreibendes Wort, zum Beispiel hat roter Dattel-Brei roten Dattel-Geschmack, Gurken-Chips haben Gurken-Geschmack, Litschi-Limonade hat Litschi-Geschmack, Jasmin-Tee hat Jasmin-Geschmack\nUnterscheiden Sie zwischen Produkttyp und Geschmack. Wenn es mehrere Geschmacksrichtungen gibt, geben Sie alle Geschmacksrichtungen durch Kommas getrennt aus\nMischen Sie keine Produkttypen ein! Mischen Sie keine Produkttypen ein!\nGeschmacksrichtungen sollten keine Snacks, Freizeit, Ortsnamen usw. enthalten.\nGeschmacksrichtungen werden keine Wörter wie Nudelblätter, Reisknödel, Ramen enthalten\nWenn der Produktname keinen Geschmack enthält, geben Sie NULL für den type-Wert zurück\nEs gibt keine Beziehung zwischen mehreren Produkten, und der Kontext wird die Geschmacksanalyseergebnisse einzelner Produkte nicht beeinflussen\nBitte analysieren Sie die folgende Produktliste und geben Sie Ergebnisse zurück (striktes JSON-Format):\n[{\"cspu\": \"Nestle Nesquik Schokoladen-Milch 8fl oz 4er-Pack\"}, {\"cspu\": \"Coca-Cola Kirsche 16.9fl oz\"}, {\"cspu\": \"Pepperidge Farm Milano Kekse Dunkle Schokolade 7oz\"}, {\"cspu\": \"Lay's Kartoffelchips Original 7.75oz\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Produktassistent, der Benutzern hilft, die Geschmacksrichtungen von Produkten zu analysieren.\nMein Eingabeformat ist: [{\"cspu\":\"Produktname 1\"}, {\"cspu\":\"Produktname 2\"}], wobei cspu der zu analysierende Produktname ist.\nIhr Antwortformat ist (muss strikt den JSON-Formatanforderungen folgen):[{\"cspu\":\"Produktname 1\", \"type\":\"Geschmack 1\"}, {\"cspu\":\"Produktname 2\",\"type\":\"Geschmack 2\"}], wobei type die Produktgeschmacksrichtung darstellt.\nZum Beispiel:\nWenn meine Eingabe [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}] ist\nIch hoffe, Ihre Ausgabe ist [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mango\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Hot Chili Pepper & Lime\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Onion\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Spicy Beef, Tomato Beef\"}]\nHinweis 1: Produktgeschmacksergebnisse müssen im Produktnamen vorhanden sein, abstrahieren oder äquivalent umwandeln Sie nicht willkürlich, und Geschmacksrichtungen müssen echten Lebensmittel- oder Gewürztypen entsprechen, wie Mango-Geschmack, würziger Geschmack, geschmorter Rindfleisch-Geschmack usw.\nHinweis 2: Manchmal ist Geschmack ein beschreibendes Wort, zum Beispiel hat roter Dattel-Brei roten Dattel-Geschmack, Gurken-Chips haben Gurken-Geschmack, Litschi-Limonade hat Litschi-Geschmack, Jasmin-Tee hat Jasmin-Geschmack\nUnterscheiden Sie zwischen Produkttyp und Geschmack. Wenn es mehrere Geschmacksrichtungen gibt, geben Sie alle Geschmacksrichtungen durch Kommas getrennt aus\nMischen Sie keine Produkttypen ein! Mischen Sie keine Produkttypen ein!\nGeschmacksrichtungen sollten keine Snacks, Freizeit, Ortsnamen usw. enthalten.\nGeschmacksrichtungen werden keine Wörter wie Nudelblätter, Reisknödel, Ramen enthalten\nWenn der Produktname keinen Geschmack enthält, geben Sie NULL für den type-Wert zurück\nEs gibt keine Beziehung zwischen mehreren Produkten, und der Kontext wird die Geschmacksanalyseergebnisse einzelner Produkte nicht beeinflussen\nBitte analysieren Sie die folgende Produktliste und geben Sie Ergebnisse zurück (striktes JSON-Format):\n[{\"cspu\": \"Fruit by the Foot Erdbeere 4.5oz\"}, {\"cspu\": \"Arizona Arnold Palmer Half & Half 23fl oz\"}, {\"cspu\": \"Blue Diamond Mandeln Roh 16oz\"}, {\"cspu\": \"Horizon Bio-Milch Erdbeere 8fl oz\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "Sie sind ein Produktassistent, der Benutzern hilft, die Geschmacksrichtungen von Produkten zu analysieren.\nMein Eingabeformat ist: [{\"cspu\":\"Produktname 1\"}, {\"cspu\":\"Produktname 2\"}], wobei cspu der zu analysierende Produktname ist.\nIhr Antwortformat ist (muss strikt den JSON-Formatanforderungen folgen):[{\"cspu\":\"Produktname 1\", \"type\":\"Geschmack 1\"}, {\"cspu\":\"Produktname 2\",\"type\":\"Geschmack 2\"}], wobei type die Produktgeschmacksrichtung darstellt.\nZum Beispiel:\nWenn meine Eingabe [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\"}] ist\nIch hoffe, Ihre Ausgabe ist [{\"cspu\":\"Lay's Mango Burst Chips 7.4oz\",\"type\":\"Mango\"},{\"cspu\":\"Takis Fuego Hot Chili Pepper & Lime 4oz\",\"type\":\"Hot Chili Pepper & Lime\"},{\"cspu\":\"Tyson Onion Chicken Rings 11.6oz\",\"type\":\"Onion\"},{\"cspu\":\"Maruchan Spicy Beef Ramen + Tomato Beef Ramen Variety Pack 12 cups\",\"type\":\"Spicy Beef, Tomato Beef\"}]\nHinweis 1: Produktgeschmacksergebnisse müssen im Produktnamen vorhanden sein, abstrahieren oder äquivalent umwandeln Sie nicht willkürlich, und Geschmacksrichtungen müssen echten Lebensmittel- oder Gewürztypen entsprechen, wie Mango-Geschmack, würziger Geschmack, geschmorter Rindfleisch-Geschmack usw.\nHinweis 2: Manchmal ist Geschmack ein beschreibendes Wort, zum Beispiel hat roter Dattel-Brei roten Dattel-Geschmack, Gurken-Chips haben Gurken-Geschmack, Litschi-Limonade hat Litschi-Geschmack, Jasmin-Tee hat Jasmin-Geschmack\nUnterscheiden Sie zwischen Produkttyp und Geschmack. Wenn es mehrere Geschmacksrichtungen gibt, geben Sie alle Geschmacksrichtungen durch Kommas getrennt aus\nMischen Sie keine Produkttypen ein! Mischen Sie keine Produkttypen ein!\nGeschmacksrichtungen sollten keine Snacks, Freizeit, Ortsnamen usw. enthalten.\nGeschmacksrichtungen werden keine Wörter wie Nudelblätter, Reisknödel, Ramen enthalten\nWenn der Produktname keinen Geschmack enthält, geben Sie NULL für den type-Wert zurück\nEs gibt keine Beziehung zwischen mehreren Produkten, und der Kontext wird die Geschmacksanalyseergebnisse einzelner Produkte nicht beeinflussen\nBitte analysieren Sie die folgende Produktliste und geben Sie Ergebnisse zurück (striktes JSON-Format):\n[{\"cspu\": \"Maruchan Ramen Hähnchen + Rindfleisch-Geschmack Variety Pack 12er-Pack\"}, {\"cspu\": \"Terra Gemüse-Chips Süßkartoffel 6oz\"}, {\"cspu\": \"LaCroix Sprudelwasser Limette 12fl oz\"}, {\"cspu\": \"Cheez-Its Original Cracker 12.4oz\"}]",
+        "json_schema": {
+            "$schema": "http://json-schema.org/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "cspu": {
+                        "type": "string",
+                        "能力项": "主题约束"
+                    },
+                    "type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "能力项": "主题约束"
+                    }
+                },
+                "required": [
+                    "cspu",
+                    "type"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "能力项": "json",
+                "被依赖": false
+            }
+        ]
+    }
+]
