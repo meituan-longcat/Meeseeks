@@ -7,7 +7,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import re
-from rule_utils_eng._detect_primary_language import detect_primary_language
+from ._detect_primary_language import detect_primary_language
 
 def clean_up_text(text):
     """

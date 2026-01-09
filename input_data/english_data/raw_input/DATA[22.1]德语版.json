@@ -1,0 +1,499 @@
+[
+    {
+        "category": "general_multi",
+        "question": "Wenn Sie auf kurze Videos zur Erkundung von Speisen stoßen, geben Sie bitte insgesamt 10 authentische und gesprächige Kommentare aus der Sicht eines gewöhnlichen Verbrauchers aus, die Ihr Interesse an Essen, Geschmacksvorstellung, Umgebungserfahrung und andere Dimensionen kombinieren. Die Kommentare sollten Bewertungen des Aussehens, Geschmacks, Preises, Services und anderer Aspekte der Gerichte enthalten. Das Verhältnis von langen zu kurzen Kommentaren sollte 3:2 betragen. Bitte geben Sie lange und kurze Kommentare getrennt aus, wobei kurze Kommentare auf 10 Wörter und lange Kommentare auf 30 Wörter begrenzt sind. Jeder Kommentar muss Einzigartigkeit in Wortwahl und Ausdrucksstil bewahren und wiederholende Vokabeln und Satzstrukturen vermeiden. Der Kommentarinhalt sollte nicht nur bei oberflächlicher Beschreibung bleiben, sondern persönliche Emotionen oder Vorschläge haben und keine wiederholenden oder ähnlichen Fragen stellen. Bitte markieren Sie beim Ausgeben deutlich 'Langer Kommentar' oder 'Kurzer Kommentar' und stellen Sie sicher, dass beide mit klarer Formatierung getrennt sind, um einfaches Lesen und Unterscheiden zu ermöglichen.\nHinweis: Die Wortzählung gilt nur für Deutsch Wörter",
+        "corresponding_parts": {
+            "短评论": "请你按照python list的形式，将model_response中的短评论分割并提取出来。比如:[\"Wirklich gut!\",\"Der Service ist so rücksichtsvoll.\",\"Die Umgebung ist so elegant.\",\"Es sieht so warm aus.\",\"Es scheint ziemlich professionell.\",\"Geeignet für ältere Menschen.\",\"Interessante Aktivitäten!\",\"Das Pflegepersonal ist wirklich enthusiastisch.\",\"Ich fühle mich beruhigt.\",\"Die Einrichtungen sind vollständig.\"]",
+            "长评论": "请你按照python list的形式，将model_response中的长评论分割并提取出来。比如:[\"Die Umgebung im Video sieht sehr komfortabel aus, und ältere Menschen werden einen solchen Ort definitiv mögen.\",\"Ich denke, diese Art von Altenpflegeservice achtet besonders auf Details und lässt Menschen sich beruhigt fühlen.\",\"Die Aktivitäten sind gut arrangiert, was ältere Menschen aktiv und sozial halten kann.\",\"Das Pflegeteam scheint sehr erfahren zu sein, was für die Gesundheit älterer Menschen entscheidend ist.\",\"So viele glückliche lächelnde Gesichter zu sehen zeigt, dass die Atmosphäre hier sehr freundlich ist!\",\"Für ältere Menschen, die Pflege benötigen, ist ein solcher Service wirklich eine gute Wahl.\",\"Es fühlt sich an, als ob diese Institution sehr aufmerksam gegenüber jedem Bewohner ist und sehr vertrauenswürdig ist!\",\"Eine Vielzahl von Unterhaltungsaktivitäten anzubieten, um das Leben bunter zu machen, ist großartig!\",\"Personalisierte Pflegepläne anbieten zu können klingt sehr professionell und sicher.\",\"Das Video zeigt viele interaktive Verbindungen, ich glaube, ältere Menschen werden es genießen.\"]"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "长短评论（lange kurze Kommentare）是否是分隔开输出的，例如:#长评论#: 1. xxx, 2. xxx; #短评论#: 1. xxx, 2. xxx，且是否存在长评论和短评论？",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "长评论（langer Kommentar）数量是否为6条",
+                "corresponding_part": "长评论",
+                "rule": "item_count:[6,6]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "短评论（kurzer Kommentar）数量是否为4条",
+                "corresponding_part": "短评论",
+                "rule": "item_count:[4,4]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "长评论（langer Kommentar）是否都在30字以内",
+                "corresponding_part": "长评论",
+                "rule": "german_each_length:[1,30]",
+                "dep": [0],
+                "能力项": "10～50字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "短评论（kurzer Kommentar）是否都在10字以内",
+                "corresponding_part": "短评论",
+                "rule": "german_each_length:[1,10]",
+                "dep": [0],
+                "能力项": "10～50字",
+                "被依赖": false
+            },
+            {
+                "point_id": 7,
+                "question": "长评论（langer Kommentar）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "长评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 8,
+                "question": "短评论（kurzer Kommentar）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "短评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Wenn Sie auf kurze Videos von Reiselandschaften stoßen, geben Sie als Zuschauer, der das Reisen liebt, insgesamt 15 umgangssprachliche Kommentare aus mehreren Perspektiven aus, einschließlich Sehenswürdigkeitsmerkmalen, Filmtechniken, Atmosphärengestaltung, persönlichen Bestrebungen usw. Der Kommentarinhalt sollte Ansichten über landschaftliche Schönheit, Reiseerfahrung, Verkehrskomfort, lokale Eigenschaften usw. abdecken. Das Verhältnis von langen zu kurzen Kommentaren sollte 2:3 betragen. Bitte geben Sie lange und kurze Kommentare getrennt aus. Kurze Kommentare sollten innerhalb von 8 Wörtern und lange Kommentare innerhalb von 20 Wörtern liegen. Jeder Kommentar sollte unterschiedliche Vokabeln, Tonfall und Ausdrucksstil haben und verschiedene persönliche Erfahrungen oder Vorschläge widerspiegeln. Inhaltswiederholung oder ähnliche Stile sind streng verboten. Bitte markieren Sie deutlich 'Lange Kommentare' und 'Kurze Kommentare', um eine klare Inhaltsteilung und einfache Identifizierung zu gewährleisten.\nHinweis: Die Wortzählung gilt nur für Deutsch Wörter",
+        "corresponding_parts": {
+            "短评论": "请你按照python list的形式，将model_response中的短评论分割并提取出来。比如:[\"Wirklich gut!\",\"Der Service ist so rücksichtsvoll.\",\"Die Umgebung ist so elegant.\",\"Es sieht so warm aus.\",\"Es scheint ziemlich professionell.\",\"Geeignet für ältere Menschen.\",\"Interessante Aktivitäten!\",\"Das Pflegepersonal ist wirklich enthusiastisch.\",\"Ich fühle mich beruhigt.\",\"Die Einrichtungen sind vollständig.\"]",
+            "长评论": "请你按照python list的形式，将model_response中的长评论分割并提取出来。比如:[\"Die Umgebung im Video sieht sehr komfortabel aus, und ältere Menschen werden einen solchen Ort definitiv mögen.\",\"Ich denke, diese Art von Altenpflegeservice achtet besonders auf Details und lässt Menschen sich beruhigt fühlen.\",\"Die Aktivitäten sind gut arrangiert, was ältere Menschen aktiv und sozial halten kann.\",\"Das Pflegeteam scheint sehr erfahren zu sein, was für die Gesundheit älterer Menschen entscheidend ist.\",\"So viele glückliche lächelnde Gesichter zu sehen zeigt, dass die Atmosphäre hier sehr freundlich ist!\",\"Für ältere Menschen, die Pflege benötigen, ist ein solcher Service wirklich eine gute Wahl.\",\"Es fühlt sich an, als ob diese Institution sehr aufmerksam gegenüber jedem Bewohner ist und sehr vertrauenswürdig ist!\",\"Eine Vielzahl von Unterhaltungsaktivitäten anzubieten, um das Leben bunter zu machen, ist großartig!\",\"Personalisierte Pflegepläne anbieten zu können klingt sehr professionell und sicher.\",\"Das Video zeigt viele interaktive Verbindungen, ich glaube, ältere Menschen werden es genießen.\"]"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "长短评论（lange kurze Kommentare）是否是分隔开输出的，例如:#长评论#: 1. xxx, 2. xxx; #短评论#: 1. xxx, 2. xxx，且是否存在长评论和短评论？",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "长评论（langer Kommentar）数量是否为6条",
+                "corresponding_part": "长评论",
+                "rule": "item_count:[6,6]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "短评论（kurzer Kommentar）数量是否为9条",
+                "corresponding_part": "短评论",
+                "rule": "item_count:[9,9]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "长评论（langer Kommentar）是否都在20字以内",
+                "corresponding_part": "长评论",
+                "rule": "german_each_length:[1,20]",
+                "dep": [0],
+                "能力项": "10～50字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "短评论（kurzer Kommentar）是否都在8字以内",
+                "corresponding_part": "短评论",
+                "rule": "german_each_length:[1,8]",
+                "dep": [0],
+                "能力项": "0～10字",
+                "被依赖": false
+            },
+            {
+                "point_id": 7,
+                "question": "长评论（langer Kommentar）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "长评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 8,
+                "question": "短评论（kurzer Kommentar）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "短评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Wenn Sie auf kurze Videos über den süßen Alltag von Haustieren stoßen, handeln Sie bitte als gewöhnlicher Tierliebhaber und geben Sie insgesamt 24 umgangssprachliche Kommentare aus mehreren Perspektiven aus, einschließlich Ihrer Vorlieben für Haustiere, interaktive Erfahrungen, interessante Beobachtungen usw. Die Kommentare sollten Bewertungen des Aussehens, Verhaltens, der Besitzer-Interaktion, der Video-Atmosphäre und anderer Aspekte der Haustiere abdecken. Das Verhältnis von langen zu kurzen Kommentaren sollte 3:1 betragen. Bitte geben Sie lange und kurze Kommentare getrennt aus. Kurze Kommentare dürfen 5 Wörter nicht überschreiten, und lange Kommentare dürfen 10 Wörter nicht überschreiten. Jeder Kommentar muss unterschiedliche Vokabeln und Ausdrucksstile verwenden und wiederholende Beschreibungen und Fragen vermeiden. Der Inhalt muss persönliche Emotionen oder Vorschläge enthalten und kann nicht einheitlich sein. Beim Ausgeben markieren Sie bitte deutlich 'Langer Kommentar' oder 'Kurzer Kommentar', um die beiden Arten von Kommentaren deutlich und leicht unterscheidbar zu machen.\nHinweis: Die Wortzählung gilt nur für Deutsch Wörter",
+        "corresponding_parts": {
+            "短评论": "请你按照python list的形式，将model_response中的短评论分割并提取出来。比如:[\"Wirklich gut!\",\"Der Service ist so rücksichtsvoll.\",\"Die Umgebung ist so elegant.\",\"Es sieht so warm aus.\",\"Es scheint ziemlich professionell.\",\"Geeignet für ältere Menschen.\",\"Interessante Aktivitäten!\",\"Das Pflegepersonal ist wirklich enthusiastisch.\",\"Ich fühle mich beruhigt.\",\"Die Einrichtungen sind vollständig.\"]",
+            "长评论": "请你按照python list的形式，将model_response中的长评论分割并提取出来。比如:[\"Die Umgebung im Video sieht sehr komfortabel aus, und ältere Menschen werden einen solchen Ort definitiv mögen.\",\"Ich denke, diese Art von Altenpflegeservice achtet besonders auf Details und lässt Menschen sich beruhigt fühlen.\",\"Die Aktivitäten sind gut arrangiert, was ältere Menschen aktiv und sozial halten kann.\",\"Das Pflegeteam scheint sehr erfahren zu sein, was für die Gesundheit älterer Menschen entscheidend ist.\",\"So viele glückliche lächelnde Gesichter zu sehen zeigt, dass die Atmosphäre hier sehr freundlich ist!\",\"Für ältere Menschen, die Pflege benötigen, ist ein solcher Service wirklich eine gute Wahl.\",\"Es fühlt sich an, als ob diese Institution sehr aufmerksam gegenüber jedem Bewohner ist und sehr vertrauenswürdig ist!\",\"Eine Vielzahl von Unterhaltungsaktivitäten anzubieten, um das Leben bunter zu machen, ist großartig!\",\"Personalisierte Pflegepläne anbieten zu können klingt sehr professionell und sicher.\",\"Das Video zeigt viele interaktive Verbindungen, ich glaube, ältere Menschen werden es genießen.\"]"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "长短评论（lange kurze Kommentare）是否是分隔开输出的，例如:#长评论#: 1. xxx, 2. xxx; #短评论#: 1. xxx, 2. xxx，且是否存在长评论和短评论？",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "长评论（langer Kommentar）数量是否为18条",
+                "corresponding_part": "长评论",
+                "rule": "item_count:[18,18]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "短评论（kurzer Kommentar）数量是否为6条",
+                "corresponding_part": "短评论",
+                "rule": "item_count:[6,6]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "长评论（langer Kommentar）是否都在10字以内",
+                "corresponding_part": "长评论",
+                "rule": "german_each_length:[1,10]",
+                "dep": [0],
+                "能力项": "0～10字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "短评论（kurzer Kommentar）是否都在5字以内",
+                "corresponding_part": "短评论",
+                "rule": "german_each_length:[1,5]",
+                "dep": [0],
+                "能力项": "0～10字",
+                "被依赖": false
+            },
+            {
+                "point_id": 7,
+                "question": "长评论（langer Kommentar）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "长评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 8,
+                "question": "短评论（kurzer Kommentar）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "短评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Wenn Sie auf motivierende Fitness-Kurzvideo stoßen, geben Sie bitte insgesamt 18 umgangssprachliche Kommentare aus der Sicht eines Fitness-Enthusiasten oder gewöhnlichen Zuschauers aus, die mehrere Dimensionen wie Fitness-Bewegungen, motivierende Atmosphäre, persönliche Motivation und wissenschaftliche Aspekte abdecken. Der Kommentarinhalt sollte Bewegungsstandards, Fitness-Effekte, Video-Inspirationsqualität, persönliche Resonanz und andere Aspekte umfassen. Das Verhältnis von langen zu kurzen Kommentaren sollte 1:2 betragen. Bitte geben Sie lange und kurze Kommentare getrennt aus. Kurze Kommentare dürfen 5 Wörter nicht überschreiten, und lange Kommentare dürfen 10 Wörter nicht überschreiten. Jeder Kommentar muss unterschiedliche Vokabeln und Ausdrücke verwenden, wobei der Inhalt verschiedene persönliche Gedanken oder Vorschläge zeigt und wiederholende Beschreibungen und ähnliche Fragen verbietet. Bitte markieren Sie beim Ausgeben 'Langer Kommentar' oder 'Kurzer Kommentar', um eine klare Formatierung und leicht unterscheidbaren Inhalt zu gewährleisten.\nHinweis: Die Wortzählung gilt nur für Deutsch Wörter",
+        "corresponding_parts": {
+            "短评论": "请你按照python list的形式，将model_response中的短评论分割并提取出来。比如:[\"Wirklich gut!\",\"Der Service ist so rücksichtsvoll.\",\"Die Umgebung ist so elegant.\",\"Es sieht so warm aus.\",\"Es scheint ziemlich professionell.\",\"Geeignet für ältere Menschen.\",\"Interessante Aktivitäten!\",\"Das Pflegepersonal ist wirklich enthusiastisch.\",\"Ich fühle mich beruhigt.\",\"Die Einrichtungen sind vollständig.\"]",
+            "长评论": "请你按照python list的形式，将model_response中的长评论分割并提取出来。比如:[\"Die Umgebung im Video sieht sehr komfortabel aus, und ältere Menschen werden einen solchen Ort definitiv mögen.\",\"Ich denke, diese Art von Altenpflegeservice achtet besonders auf Details und lässt Menschen sich beruhigt fühlen.\",\"Die Aktivitäten sind gut arrangiert, was ältere Menschen aktiv und sozial halten kann.\",\"Das Pflegeteam scheint sehr erfahren zu sein, was für die Gesundheit älterer Menschen entscheidend ist.\",\"So viele glückliche lächelnde Gesichter zu sehen zeigt, dass die Atmosphäre hier sehr freundlich ist!\",\"Für ältere Menschen, die Pflege benötigen, ist ein solcher Service wirklich eine gute Wahl.\",\"Es fühlt sich an, als ob diese Institution sehr aufmerksam gegenüber jedem Bewohner ist und sehr vertrauenswürdig ist!\",\"Eine Vielzahl von Unterhaltungsaktivitäten anzubieten, um das Leben bunter zu machen, ist großartig!\",\"Personalisierte Pflegepläne anbieten zu können klingt sehr professionell und sicher.\",\"Das Video zeigt viele interaktive Verbindungen, ich glaube, ältere Menschen werden es genießen.\"]"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "长短评论（lange kurze Kommentare）是否是分隔开输出的，例如:#长评论#: 1. xxx, 2. xxx; #短评论#: 1. xxx, 2. xxx，且是否存在长评论和短评论？",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "长评论（langer Kommentar）数量是否为6条",
+                "corresponding_part": "长评论",
+                "rule": "item_count:[6,6]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "短评论（kurzer Kommentar）数量是否为12条",
+                "corresponding_part": "短评论",
+                "rule": "item_count:[12,12]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "长评论（lang）是否都在10字以内",
+                "corresponding_part": "长评论",
+                "rule": "german_each_length:[1,10]",
+                "dep": [0],
+                "能力项": "0～10字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "短评论（kurzer Kommentar）是否都在5字以内",
+                "corresponding_part": "短评论",
+                "rule": "german_each_length:[1,5]",
+                "dep": [0],
+                "能力项": "0～10字",
+                "被依赖": false
+            },
+            {
+                "point_id": 7,
+                "question": "长评论（langer Kommentar）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "长评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 8,
+                "question": "短评论（kurzer Kommentar）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "短评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Wenn Sie auf kurze Videos zur Technik-Wissenschaftspopularisierung stoßen, handeln Sie bitte als gewöhnlicher Zuschauer oder Technik-Enthusiast und geben Sie insgesamt 16 gesprächige Kommentare aus mehreren Perspektiven aus, wie der Zugänglichkeit, Innovation, Praktikabilität und dem Unterhaltungswert des Wissenschaftspopularisierungsinhalts. Die Kommentare sollten das Verständnis von Technikwissen, praktische Anwendungen, Wissenschaftspopularisierungsmethoden, persönliche Gewinne und andere Aspekte umfassen. Das Verhältnis von langen zu kurzen Kommentaren sollte 1:3 betragen. Bitte geben Sie lange und kurze Kommentare getrennt aus. Kurze Kommentare dürfen 8 Wörter nicht überschreiten, und lange Kommentare dürfen 20 Wörter nicht überschreiten. Jeder Kommentar muss unterschiedliche Vokabeln, Ausdrucksstile und Strukturen verwenden, und der Inhalt muss persönliche Meinungen oder Vorschläge enthalten, ohne wiederholende Beschreibungen oder ähnliche Probleme. Bitte markieren Sie deutlich 'Lange Kommentare' und 'Kurze Kommentare', um sicherzustellen, dass die beiden Arten von Kommentaren unabhängig und leicht lesbar sind.\nHinweis: Die Wortzählung gilt nur für Deutsch Wörter.",
+        "corresponding_parts": {
+            "短评论": "请你按照python list的形式，将model_response中的短评论分割并提取出来。比如:[\"Wirklich gut!\",\"Der Service ist so rücksichtsvoll.\",\"Die Umgebung ist so elegant.\",\"Es sieht so warm aus.\",\"Es scheint ziemlich professionell.\",\"Geeignet für ältere Menschen.\",\"Interessante Aktivitäten!\",\"Das Pflegepersonal ist wirklich enthusiastisch.\",\"Ich fühle mich beruhigt.\",\"Die Einrichtungen sind vollständig.\"]",
+            "长评论": "请你按照python list的形式，将model_response中的长评论分割并提取出来。比如:[\"Die Umgebung im Video sieht sehr komfortabel aus, und ältere Menschen werden einen solchen Ort definitiv mögen.\",\"Ich denke, diese Art von Altenpflegeservice achtet besonders auf Details und lässt Menschen sich beruhigt fühlen.\",\"Die Aktivitäten sind gut arrangiert, was ältere Menschen aktiv und sozial halten kann.\",\"Das Pflegeteam scheint sehr erfahren zu sein, was für die Gesundheit älterer Menschen entscheidend ist.\",\"So viele glückliche lächelnde Gesichter zu sehen zeigt, dass die Atmosphäre hier sehr freundlich ist!\",\"Für ältere Menschen, die Pflege benötigen, ist ein solcher Service wirklich eine gute Wahl.\",\"Es fühlt sich an, als ob diese Institution sehr aufmerksam gegenüber jedem Bewohner ist und sehr vertrauenswürdig ist!\",\"Eine Vielzahl von Unterhaltungsaktivitäten anzubieten, um das Leben bunter zu machen, ist großartig!\",\"Personalisierte Pflegepläne anbieten zu können klingt sehr professionell und sicher.\",\"Das Video zeigt viele interaktive Verbindungen, ich glaube, ältere Menschen werden es genießen.\"]"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "长短评论（lange kurze Kommentare）是否是分隔开输出的，例如:#长评论#: 1. xxx, 2. xxx; #短评论#: 1. xxx, 2. xxx，且是否存在长评论和短评论？",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "长评论（langer Kommentar）数量是否为4条",
+                "corresponding_part": "长评论",
+                "rule": "item_count:[4,4]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "短评论（kurzer Kommentar）数量是否为12条",
+                "corresponding_part": "短评论",
+                "rule": "item_count:[12,12]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "长评论（langer Kommentar）是否都在20字以内",
+                "corresponding_part": "长评论",
+                "rule": "german_each_length:[1,20]",
+                "dep": [0],
+                "能力项": "10～50字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "短评论（kurzer Kommentar）是否都在8字以内",
+                "corresponding_part": "短评论",
+                "rule": "german_each_length:[1,8]",
+                "dep": [0],
+                "能力项": "0～10字",
+                "被依赖": false
+            },
+            {
+                "point_id": 7,
+                "question": "长评论（langer Kommentar）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "长评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 8,
+                "question": "短评论（kurzer Kommentar）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "短评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Wenn Sie auf kurze Videos über interessante Campus-Lebensgeschichten stoßen, antworten Sie bitte als aktueller Student oder Absolvent und geben Sie insgesamt 21 gesprächige Kommentare aus mehreren Dimensionen aus, einschließlich Campus-Atmosphäre, Schülerinteraktionen, Kurserfahrungen und jugendlichen Erinnerungen. Der Kommentarinhalt sollte Bewertungen der Campus-Kultur, Lehrer-Schüler-Beziehungen, Lernatmosphäre, Lebensdetails und andere Aspekte abdecken. Das Verhältnis von langen zu kurzen Kommentaren sollte 3:4 betragen. Bitte geben Sie lange und kurze Kommentare getrennt aus. Kurze Kommentare sollten innerhalb von 8 Wörtern und lange Kommentare innerhalb von 20 Wörtern liegen. Jeder Kommentar muss unterschiedliche Vokabeln und Ausdrücke verwenden und verschiedene persönliche Erfahrungen oder Vorschläge widerspiegeln, wobei wiederholende Inhalte oder ähnliche Stile streng verboten sind. Bitte kennzeichnen Sie deutlich 'Lange Kommentare' und 'Kurze Kommentare', um eine klare Inhaltsteilung und einfache Identifizierung zu gewährleisten.\nHinweis: Die Wortzählung gilt nur für Deutsch Wörter.",
+        "corresponding_parts": {
+            "短评论": "请你按照python list的形式，将model_response中的短评论分割并提取出来。比如:[\"Wirklich gut!\",\"Der Service ist so rücksichtsvoll.\",\"Die Umgebung ist so elegant.\",\"Es sieht so warm aus.\",\"Es scheint ziemlich professionell.\",\"Geeignet für ältere Menschen.\",\"Interessante Aktivitäten!\",\"Das Pflegepersonal ist wirklich enthusiastisch.\",\"Ich fühle mich beruhigt.\",\"Die Einrichtungen sind vollständig.\"]",
+            "长评论": "请你按照python list的形式，将model_response中的长评论分割并提取出来。比如:[\"Die Umgebung im Video sieht sehr komfortabel aus, und ältere Menschen werden einen solchen Ort definitiv mögen.\",\"Ich denke, diese Art von Altenpflegeservice achtet besonders auf Details und lässt Menschen sich beruhigt fühlen.\",\"Die Aktivitäten sind gut arrangiert, was ältere Menschen aktiv und sozial halten kann.\",\"Das Pflegeteam scheint sehr erfahren zu sein, was für die Gesundheit älterer Menschen entscheidend ist.\",\"So viele glückliche lächelnde Gesichter zu sehen zeigt, dass die Atmosphäre hier sehr freundlich ist!\",\"Für ältere Menschen, die Pflege benötigen, ist ein solcher Service wirklich eine gute Wahl.\",\"Es fühlt sich an, als ob diese Institution sehr aufmerksam gegenüber jedem Bewohner ist und sehr vertrauenswürdig ist!\",\"Eine Vielzahl von Unterhaltungsaktivitäten anzubieten, um das Leben bunter zu machen, ist großartig!\",\"Personalisierte Pflegepläne anbieten zu können klingt sehr professionell und sicher.\",\"Das Video zeigt viele interaktive Verbindungen, ich glaube, ältere Menschen werden es genießen.\"]"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "长短评论（lange kurze Kommentare）是否是分隔开输出的，例如:#长评论#: 1. xxx, 2. xxx; #短评论#: 1. xxx, 2. xxx，且是否存在长评论和短评论？",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "长评论（langer Kommentar）数量是否为9条",
+                "corresponding_part": "长评论",
+                "rule": "item_count:[9,9]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "短评论（kurzer Kommentar）数量是否为12条",
+                "corresponding_part": "短评论",
+                "rule": "item_count:[12,12]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "长评论（langer Kommentar）是否都在20字以内",
+                "corresponding_part": "长评论",
+                "rule": "german_each_length:[1,20]",
+                "dep": [0],
+                "能力项": "10～50字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "短评论（kurzer Kommentar）是否都在8字以内",
+                "corresponding_part": "短评论",
+                "rule": "german_each_length:[1,8]",
+                "dep": [0],
+                "能力项": "0～10字",
+                "被依赖": false
+            },
+            {
+                "point_id": 7,
+                "question": "长评论（langer Kommentar）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "长评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 8,
+                "question": "短评论（kurzer Kommentar）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "短评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Wenn Sie auf ein kurzes Video über Nachtmarkt-Essen in einer Stadt stoßen, antworten Sie bitte als Einheimischer oder auswärtiger Tourist und geben Sie insgesamt 21 gesprächige Kommentare aus mehreren Dimensionen aus, einschließlich Essensvielfalt, Verkäuferservice, Nachtmarkt-Atmosphäre und Preiserfahrung. Die Kommentare sollten Bewertungen der Nachtmarkt-Kultur, Lebensmittelsicherheit, Menschenlebendigkeit, Konsumerfahrung und andere Aspekte abdecken. Das Verhältnis von langen zu kurzen Kommentaren sollte 4:3 betragen. Bitte geben Sie lange und kurze Kommentare getrennt aus, wobei kurze Kommentare innerhalb von 8 Wörtern und lange Kommentare innerhalb von 20 Wörtern liegen. Jeder Kommentar muss unterschiedliche Vokabeln und Ausdrücke verwenden und verschiedene persönliche Erfahrungen oder Vorschläge widerspiegeln, und wiederholende Inhalte oder ähnliche Stile sind streng verboten. Bitte kennzeichnen Sie deutlich 'Lange Kommentare' und 'Kurze Kommentare', um eine klare Inhaltsteilung und einfache Identifizierung zu gewährleisten.\nHinweis: Die Wortzählung gilt nur für Deutsch Wörter.",
+        "corresponding_parts": {
+            "短评论": "请你按照python list的形式，将model_response中的短评论分割并提取出来。比如:[\"Ich möchte wirklich einkaufen gehen!\",\"Die Snacks sind so verlockend.\",\"Die Preise sind sehr erschwinglich.\",\"Der Nachtmarkt ist sehr lebhaft.\",\"Die Standbesitzer sind sehr enthusiastisch.\",\"Die Atmosphäre ist voller Feuerwerk.\",\"Es gibt so viele leckere Speisen.\",\"Die Atmosphäre ist großartig.\",\"Es ist sehr beliebt.\",\"Ich war sehr zufrieden mit dem Essen.\"]",
+            "长评论": "请你按照python list的形式，将model_response中的长评论分割并提取出来。比如:[\"Es gibt so viele Arten von Snacks auf dem Nachtmarkt, und ich finde jedes Mal neue Sachen, wenn ich dorthin gehe.\",\"Die Standbesitzer sind sehr enthusiastisch und die Serviceeinstellung ist sehr gut. Die Erfahrung ist großartig.\",\"Die Atmosphäre des Nachtmarkts ist sehr lebhaft und geeignet zum Einkaufen mit Freunden.\",\"Die Preise sind vernünftig und man kann viel essen, ohne sich um die Brieftasche zu sorgen.\",\"Jedes Mal, wenn ich zum Nachtmarkt gehe, kann ich das Feuerwerk der Stadt spüren.\",\"Das Essen ist sicher und hygienisch, und es ist sehr beruhigend anzusehen. Es ist empfehlenswert.\",\"Der Nachtmarkt ist überfüllt, aber ordentlich, und es ist sehr angenehm zu besuchen.\",\"Das Standdesign ist einzigartig und es ist sehr interessant zu besuchen.\",\"Es gibt nicht nur Essen auf dem Nachtmarkt, sondern auch viele interessante Gadgets.\"]"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "长短评论（lange kurze Kommentare）是否是分隔开输出的，例如:#长评论#: 1. xxx, 2. xxx; #短评论#: 1. xxx, 2. xxx，且是否存在长评论和短评论？",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "长评论（langer Kommentar）数量是否为12条",
+                "corresponding_part": "长评论",
+                "rule": "item_count:[12,12]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "短评论（kurzer Kommentar）数量是否为9条",
+                "corresponding_part": "短评论",
+                "rule": "item_count:[9,9]",
+                "dep": [0],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "长评论（langer Kommentar）是否都在20字以内",
+                "corresponding_part": "长评论",
+                "rule": "german_each_length:[1,20]",
+                "dep": [0],
+                "能力项": "10～50字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "短评论（kurzer Kommentar）是否都在8字以内",
+                "corresponding_part": "短评论",
+                "rule": "german_each_length:[1,8]",
+                "dep": [0],
+                "能力项": "0～10字",
+                "被依赖": false
+            },
+            {
+                "point_id": 7,
+                "question": "长评论（langer Kommentar）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "长评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 8,
+                "question": "短评论（kurzer Kommentar）是否没有出现一样的词汇和样式或是问重复的类似问题",
+                "corresponding_part": "短评论",
+                "rule": "non_very_similar",
+                "dep": [0],
+                "能力项": "重复",
+                "被依赖": false
+            }
+        ]
+    }
+]

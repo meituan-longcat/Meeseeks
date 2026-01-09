@@ -1,0 +1,1342 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "당신은 전문 여행 명소 기사 분석가입니다. 기사 내용과 기사 유형을 제공하겠습니다. 다양한 기사 유형에 따라 다른 식별 전략을 실행해야 합니다. 추출된 놀이 정보만 반환하고 다른 불필요한 정보는 반환하지 마십시오.\n기사 유형: 자동 식별\n다음 규칙에 따라 정보를 추출하십시오:\n1. playName: 놀이 이름, 기사에서 언급된 구체적인 놀이나 활동 이름을 가리킵니다.\n2. briefDesc: 한 문장 설명, 놀이의 하이라이트와 특징을 요약해야 하며, 운영 시간, 실용 정보, 부정적 설명을 제외하고 68-100자(공백, 숫자 포함).\n3. location: 놀이 지리적 위치, 관광지나 장소 내의 구체적인 참조점이나 랜드마크를 가리키며, 도시나 성은 불가.\n4. startDate/endDate: 놀이 시간 범위, 날짜 형식은 xxxx-xx-xx, 식별되지 않으면 빈 문자열 반환.\n5. detailDesc: 상세한 놀이 소개, 315-400자(공백, 숫자 포함) 필요, 놀이의 하이라이트와 특징을 설명하며, 제3자 관점의 단어 제외.\n6. price: 티켓 가격 정보, 반환 형식 [\"\",\"\"], 식별되지 않으면 빈 목록 반환.\n7. issueTime: 놀이가 콘서트, 음악 축제, 라이브하우스, 만담 등 유형에 속하면 티켓 발매 시간을 식별해야 하며, 날짜 형식은 xxxx-xx-xx, 없으면 빈 문자열 반환.\n8. hasNightView: 야간 활동인지 여부(예/아니오).\n9. isParentChildFriendly: 부모-자녀에게 적합한지 여부(예/아니오).\n10. isOutdoor: 야외 놀이인지 여부(예/아니오).\n11. hasCulturalShow: 문화 공연이 포함되어 있는지 여부(예/아니오).\n12. hasHotSpring: 온천 프로젝트가 있는지 여부(예/아니오).\n출력 요구사항:\n1. JSON 형식으로 추출된 정보 반환\n2. 각 놀이를 하나의 객체로, 모든 필드 포함\n3. 모든 놀이 객체로 배열 형성\n4. JSON 형식 이외의 문자는 반환하지 않음\n출력 형식 예시:\n[\n  {\"playName\":\"놀이 이름\",\"briefDesc\":\"한 문장 설명\",\"location\":\"지리적 위치\",\"startDate\":\"시작 시간\",\"endDate\":\"종료 시간\",\"detailDesc\":\"상세한 놀이 소개\",\"price\":[],\"issueTime\":\"티켓 발매 시간\",\"hasNightView\":\"예/아니오\",\"isParentChildFriendly\":\"예/아니오\",\"isOutdoor\":\"예/아니오\",\"hasCulturalShow\":\"예/아니오\",\"hasHotSpring\":\"예/아니오\"}\n]\n기사 내용:삼리툰 기계전기학원의 크리스마스 야시장이 열렸습니다! Wood Eats Talk 겨울 시장, 야간 디저트 퍼레이드, 인디 음악 레이블 공연, 90시간 논스톱 음악 체험, 크리스마스 분위기와 음식이 모였습니다. 부모-자녀 상호작용 구역과 시장 워크숍도 있습니다.",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "놀이 이름",
+                        "能力項": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "한 문장 설명",
+                        "能力項": "범위、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "놀이 지리적 위치",
+                        "能力項": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "시작 시간"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "종료 시간"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "상세한 놀이 소개",
+                        "能力項": "범위、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "티켓 가격 정보",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力項": "主题约束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "티켓 발매 시간"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야간 활동인지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "부모-자녀에게 적합한지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야외 놀이인지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "문화 공연이 포함되어 있는지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "온천 프로젝트가 있는지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마에 부합하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 전문 여행 명소 기사 분석가입니다. 기사 내용과 기사 유형을 제공하겠습니다. 다양한 기사 유형에 따라 다른 식별 전략을 실행해야 합니다. 추출된 놀이 정보만 반환하고 다른 불필요한 정보는 반환하지 마십시오.\n기사 유형: 자동 식별\n다음 규칙에 따라 정보를 추출하십시오:\n1. playName: 놀이 이름, 기사에서 언급된 구체적인 놀이나 활동 이름을 가리킵니다.\n2. briefDesc: 한 문장 설명, 놀이의 하이라이트와 특징을 요약해야 하며, 운영 시간, 실용 정보, 부정적 설명을 제외하고 68-100자(공백, 숫자 포함).\n3. location: 놀이 지리적 위치, 관광지나 장소 내의 구체적인 참조점이나 랜드마크를 가리키며, 도시나 성은 불가.\n4. startDate/endDate: 놀이 시간 범위, 날짜 형식은 xxxx-xx-xx, 식별되지 않으면 빈 문자열 반환.\n5. detailDesc: 상세한 놀이 소개, 315-400자(공백, 숫자 포함) 필요, 놀이의 하이라이트와 특징을 설명하며, 제3자 관점의 단어 제외.\n6. price: 티켓 가격 정보, 반환 형식 [\"\",\"\"], 식별되지 않으면 빈 목록 반환.\n7. issueTime: 놀이가 콘서트, 음악 축제, 라이브하우스, 만담 등 유형에 속하면 티켓 발매 시간을 식별해야 하며, 날짜 형식은 xxxx-xx-xx, 없으면 빈 문자열 반환.\n8. hasNightView: 야간 활동인지 여부(예/아니오).\n9. isParentChildFriendly: 부모-자녀에게 적합한지 여부(예/아니오).\n10. isOutdoor: 야외 놀이인지 여부(예/아니오).\n11. hasCulturalShow: 문화 공연이 포함되어 있는지 여부(예/아니오).\n12. hasHotSpring: 온천 프로젝트가 있는지 여부(예/아니오).\n출력 요구사항:\n1. JSON 형식으로 추출된 정보 반환\n2. 각 놀이를 하나의 객체로, 모든 필드 포함\n3. 모든 놀이 객체로 배열 형성\n4. JSON 형식 이외의 문자는 반환하지 않음\n출력 형식 예시:\n[\n  {\"playName\":\"놀이 이름\",\"briefDesc\":\"한 문장 설명\",\"location\":\"지리적 위치\",\"startDate\":\"시작 시간\",\"endDate\":\"종료 시간\",\"detailDesc\":\"상세한 놀이 소개\",\"price\":[],\"issueTime\":\"티켓 발매 시간\",\"hasNightView\":\"예/아니오\",\"isParentChildFriendly\":\"예/아니오\",\"isOutdoor\":\"예/아니오\",\"hasCulturalShow\":\"예/아니오\",\"hasHotSpring\":\"예/아니오\"}\n]\n기사 내용:해피밸리 크리스마스 라이트 쇼가 열리며, 밤에는 대규모 퍼레이드 공연과 크리스마스 테마 시장이 있어 부모-자녀, 커플, 친구들이 즐길 수 있고, 야외 야경은 잊을 수 없습니다.",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "놀이 이름",
+                        "能力項": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "한 문장 설명",
+                        "能力項": "범위、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "놀이 지리적 위치",
+                        "能力項": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "시작 시간"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "종료 시간"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "상세한 놀이 소개",
+                        "能力項": "범위、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "티켓 가격 정보",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力項": "主题约束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "티켓 발매 시간"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야간 활동인지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "부모-자녀에게 적합한지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야외 놀이인지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "문화 공연이 포함되어 있는지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "온천 프로젝트가 있는지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마에 부합하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 전문 여행 명소 기사 분석가입니다. 기사 내용과 기사 유형을 제공하겠습니다. 다양한 기사 유형에 따라 다른 식별 전략을 실행해야 합니다. 추출된 놀이 정보만 반환하고 다른 불필요한 정보는 반환하지 마십시오.\n기사 유형: 자동 식별\n다음 규칙에 따라 정보를 추출하십시오:\n1. playName: 놀이 이름, 기사에서 언급된 구체적인 놀이나 활동 이름을 가리킵니다.\n2. briefDesc: 한 문장 설명, 놀이의 하이라이트와 특징을 요약해야 하며, 운영 시간, 실용 정보, 부정적 설명을 제외하고 68-100자(공백, 숫자 포함).\n3. location: 놀이 지리적 위치, 관광지나 장소 내의 구체적인 참조점이나 랜드마크를 가리키며, 도시나 성은 불가.\n4. startDate/endDate: 놀이 시간 범위, 날짜 형식은 xxxx-xx-xx, 식별되지 않으면 빈 문자열 반환.\n5. detailDesc: 상세한 놀이 소개, 315-400자(공백, 숫자 포함) 필요, 놀이의 하이라이트와 특징을 설명하며, 제3자 관점의 단어 제외.\n6. price: 티켓 가격 정보, 반환 형식 [\"\",\"\"], 식별되지 않으면 빈 목록 반환.\n7. issueTime: 놀이가 콘서트, 음악 축제, 라이브하우스, 만담 등 유형에 속하면 티켓 발매 시간을 식별해야 하며, 날짜 형식은 xxxx-xx-xx, 없으면 빈 문자열 반환.\n8. hasNightView: 야간 활동인지 여부(예/아니오).\n9. isParentChildFriendly: 부모-자녀에게 적합한지 여부(예/아니오).\n10. isOutdoor: 야외 놀이인지 여부(예/아니오).\n11. hasCulturalShow: 문화 공연이 포함되어 있는지 여부(예/아니오).\n12. hasHotSpring: 온천 프로젝트가 있는지 여부(예/아니오).\n출력 요구사항:\n1. JSON 형식으로 추출된 정보 반환\n2. 각 놀이를 하나의 객체로, 모든 필드 포함\n3. 모든 놀이 객체로 배열 형성\n4. JSON 형식 이외의 문자는 반환하지 않음\n출력 형식 예시:\n[\n  {\"playName\":\"놀이 이름\",\"briefDesc\":\"한 문장 설명\",\"location\":\"지리적 위치\",\"startDate\":\"시작 시간\",\"endDate\":\"종료 시간\",\"detailDesc\":\"상세한 놀이 소개\",\"price\":[],\"issueTime\":\"티켓 발매 시간\",\"hasNightView\":\"예/아니오\",\"isParentChildFriendly\":\"예/아니오\",\"isOutdoor\":\"예/아니오\",\"hasCulturalShow\":\"예/아니오\",\"hasHotSpring\":\"예/아니오\"}\n]\n기사 내용:자금성 빙설축제가 개막하며, 빙조각 전시, 눈 미끄럼틀, 얼음 자전거 등 풍부한 놀이 방법이 여러분을 기다리고 있습니다. 야간 라이트 쇼는 로맨틱하고 꿈같습니다. 온 가족이 즐길 수 있습니다.",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "놀이 이름",
+                        "能力項": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "한 문장 설명",
+                        "能力項": "범위、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "놀이 지리적 위치",
+                        "能力項": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "시작 시간"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "종료 시간"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "상세한 놀이 소개",
+                        "能力項": "범위、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "티켓 가격 정보",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力項": "主题约束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "티켓 발매 시간"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야간 활동인지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "부모-자녀에게 적합한지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야외 놀이인지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "문화 공연이 포함되어 있는지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "온천 프로젝트가 있는지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마에 부합하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 전문 여행 명소 기사 분석가입니다. 기사 내용과 기사 유형을 제공하겠습니다. 다양한 기사 유형에 따라 다른 식별 전략을 실행해야 합니다. 추출된 놀이 정보만 반환하고 다른 불필요한 정보는 반환하지 마십시오.\n기사 유형: 자동 식별\n다음 규칙에 따라 정보를 추출하십시오:\n1. playName: 놀이 이름, 기사에서 언급된 구체적인 놀이나 활동 이름을 가리킵니다.\n2. briefDesc: 한 문장 설명, 놀이의 하이라이트와 특징을 요약해야 하며, 운영 시간, 실용 정보, 부정적 설명을 제외하고 68-100자(공백, 숫자 포함).\n3. location: 놀이 지리적 위치, 관광지나 장소 내의 구체적인 참조점이나 랜드마크를 가리키며, 도시나 성은 불가.\n4. startDate/endDate: 놀이 시간 범위, 날짜 형식은 xxxx-xx-xx, 식별되지 않으면 빈 문자열 반환.\n5. detailDesc: 상세한 놀이 소개, 315-400자(공백, 숫자 포함) 필요, 놀이의 하이라이트와 특징을 설명하며, 제3자 관점의 단어 제외.\n6. price: 티켓 가격 정보, 반환 형식 [\"\",\"\"], 식별되지 않으면 빈 목록 반환.\n7. issueTime: 놀이가 콘서트, 음악 축제, 라이브하우스, 만담 등 유형에 속하면 티켓 발매 시간을 식별해야 하며, 날짜 형식은 xxxx-xx-xx, 없으면 빈 문자열 반환.\n8. hasNightView: 야간 활동인지 여부(예/아니오).\n9. isParentChildFriendly: 부모-자녀에게 적합한지 여부(예/아니오).\n10. isOutdoor: 야외 놀이인지 여부(예/아니오).\n11. hasCulturalShow: 문화 공연이 포함되어 있는지 여부(예/아니오).\n12. hasHotSpring: 온천 프로젝트가 있는지 여부(예/아니오).\n출력 요구사항:\n1. JSON 형식으로 추출된 정보 반환\n2. 각 놀이를 하나의 객체로, 모든 필드 포함\n3. 모든 놀이 객체로 배열 형성\n4. JSON 형식 이외의 문자는 반환하지 않음\n출력 형식 예시:\n[\n  {\"playName\":\"놀이 이름\",\"briefDesc\":\"한 문장 설명\",\"location\":\"지리적 위치\",\"startDate\":\"시작 시간\",\"endDate\":\"종료 시간\",\"detailDesc\":\"상세한 놀이 소개\",\"price\":[],\"issueTime\":\"티켓 발매 시간\",\"hasNightView\":\"예/아니오\",\"isParentChildFriendly\":\"예/아니오\",\"isOutdoor\":\"예/아니오\",\"hasCulturalShow\":\"예/아니오\",\"hasHotSpring\":\"예/아니오\"}\n]\n기사 내용:유니버설 스튜디오 신년 불꽃쇼, 최고의 관람 포인트는 할리우드 블러바드, 불꽃과 테마 건물이 같은 프레임에, 분위기 최고, 커플 데이트와 부모-자녀 체험에 적합합니다.",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "놀이 이름",
+                        "能力項": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "한 문장 설명",
+                        "能力項": "범위、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "놀이 지리적 위치",
+                        "能力項": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "시작 시간"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "종료 시간"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "상세한 놀이 소개",
+                        "能力項": "범위、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "티켓 가격 정보",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力項": "主题约束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "티켓 발매 시간"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야간 활동인지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "부모-자녀에게 적합한지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야외 놀이인지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "문화 공연이 포함되어 있는지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "온천 프로젝트가 있는지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마에 부합하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 전문 여행 명소 기사 분석가입니다. 기사 내용과 기사 유형을 제공하겠습니다. 다양한 기사 유형에 따라 다른 식별 전략을 실행해야 합니다. 추출된 놀이 정보만 반환하고 다른 불필요한 정보는 반환하지 마십시오.\n기사 유형: 자동 식별\n다음 규칙에 따라 정보를 추출하십시오:\n1. playName: 놀이 이름, 기사에서 언급된 구체적인 놀이나 활동 이름을 가리킵니다.\n2. briefDesc: 한 문장 설명, 놀이의 하이라이트와 특징을 요약해야 하며, 운영 시간, 실용 정보, 부정적 설명을 제외하고 68-100자(공백, 숫자 포함).\n3. location: 놀이 지리적 위치, 관광지나 장소 내의 구체적인 참조점이나 랜드마크를 가리키며, 도시나 성은 불가.\n4. startDate/endDate: 놀이 시간 범위, 날짜 형식은 xxxx-xx-xx, 식별되지 않으면 빈 문자열 반환.\n5. detailDesc: 상세한 놀이 소개, 315-400자(공백, 숫자 포함) 필요, 놀이의 하이라이트와 특징을 설명하며, 제3자 관점의 단어 제외.\n6. price: 티켓 가격 정보, 반환 형식 [\"\",\"\"], 식별되지 않으면 빈 목록 반환.\n7. issueTime: 놀이가 콘서트, 음악 축제, 라이브하우스, 만담 등 유형에 속하면 티켓 발매 시간을 식별해야 하며, 날짜 형식은 xxxx-xx-xx, 없으면 빈 문자열 반환.\n8. hasNightView: 야간 활동인지 여부(예/아니오).\n9. isParentChildFriendly: 부모-자녀에게 적합한지 여부(예/아니오).\n10. isOutdoor: 야외 놀이인지 여부(예/아니오).\n11. hasCulturalShow: 문화 공연이 포함되어 있는지 여부(예/아니오).\n12. hasHotSpring: 온천 프로젝트가 있는지 여부(예/아니오).\n출력 요구사항:\n1. JSON 형식으로 추출된 정보 반환\n2. 각 놀이를 하나의 객체로, 모든 필드 포함\n3. 모든 놀이 객체로 배열 형성\n4. JSON 형식 이외의 문자는 반환하지 않음\n출력 형식 예시:\n[\n  {\"playName\":\"놀이 이름\",\"briefDesc\":\"한 문장 설명\",\"location\":\"지리적 위치\",\"startDate\":\"시작 시간\",\"endDate\":\"종료 시간\",\"detailDesc\":\"상세한 놀이 소개\",\"price\":[],\"issueTime\":\"티켓 발매 시간\",\"hasNightView\":\"예/아니오\",\"isParentChildFriendly\":\"예/아니오\",\"isOutdoor\":\"예/아니오\",\"hasCulturalShow\":\"예/아니오\",\"hasHotSpring\":\"예/아니오\"}\n]\n기사 내용:서호 단오절 용선 축제가 단오절에 시작되며, 용선 경주, 민속 공연, 단오절 음식이 모두 있고, 해안 관람 체험이 훌륭하며, 밤에는 빛과 물의 쇼가 있습니다.",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "놀이 이름",
+                        "能力項": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "한 문장 설명",
+                        "能力項": "범위、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "놀이 지리적 위치",
+                        "能力項": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "시작 시간"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "종료 시간"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "상세한 놀이 소개",
+                        "能力項": "범위、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "티켓 가격 정보",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力項": "主题约束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "티켓 발매 시간"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야간 활동인지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "부모-자녀에게 적합한지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야외 놀이인지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "문화 공연이 포함되어 있는지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "온천 프로젝트가 있는지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마에 부합하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 전문 여행 명소 기사 분석가입니다. 기사 내용과 기사 유형을 제공하겠습니다. 다양한 기사 유형에 따라 다른 식별 전략을 실행해야 합니다. 추출된 놀이 정보만 반환하고 다른 불필요한 정보는 반환하지 마십시오.\n기사 유형: 자동 식별\n다음 규칙에 따라 정보를 추출하십시오:\n1. playName: 놀이 이름, 기사에서 언급된 구체적인 놀이나 활동 이름을 가리킵니다.\n2. briefDesc: 한 문장 설명, 놀이의 하이라이트와 특징을 요약해야 하며, 운영 시간, 실용 정보, 부정적 설명을 제외하고 68-100자(공백, 숫자 포함).\n3. location: 놀이 지리적 위치, 관광지나 장소 내의 구체적인 참조점이나 랜드마크를 가리키며, 도시나 성은 불가.\n4. startDate/endDate: 놀이 시간 범위, 날짜 형식은 xxxx-xx-xx, 식별되지 않으면 빈 문자열 반환.\n5. detailDesc: 상세한 놀이 소개, 315-400자(공백, 숫자 포함) 필요, 놀이의 하이라이트와 특징을 설명하며, 제3자 관점의 단어 제외.\n6. price: 티켓 가격 정보, 반환 형식 [\"\",\"\"], 식별되지 않으면 빈 목록 반환.\n7. issueTime: 놀이가 콘서트, 음악 축제, 라이브하우스, 만담 등 유형에 속하면 티켓 발매 시간을 식별해야 하며, 날짜 형식은 xxxx-xx-xx, 없으면 빈 문자열 반환.\n8. hasNightView: 야간 활동인지 여부(예/아니오).\n9. isParentChildFriendly: 부모-자녀에게 적합한지 여부(예/아니오).\n10. isOutdoor: 야외 놀이인지 여부(예/아니오).\n11. hasCulturalShow: 문화 공연이 포함되어 있는지 여부(예/아니오).\n12. hasHotSpring: 온천 프로젝트가 있는지 여부(예/아니오).\n출력 요구사항:\n1. JSON 형식으로 추출된 정보 반환\n2. 각 놀이를 하나의 객체로, 모든 필드 포함\n3. 모든 놀이 객체로 배열 형성\n4. JSON 형식 이외의 문자는 반환하지 않음\n출력 형식 예시:\n[\n  {\"playName\":\"놀이 이름\",\"briefDesc\":\"한 문장 설명\",\"location\":\"지리적 위치\",\"startDate\":\"시작 시간\",\"endDate\":\"종료 시간\",\"detailDesc\":\"상세한 놀이 소개\",\"price\":[],\"issueTime\":\"티켓 발매 시간\",\"hasNightView\":\"예/아니오\",\"isParentChildFriendly\":\"예/아니오\",\"isOutdoor\":\"예/아니오\",\"hasCulturalShow\":\"예/아니오\",\"hasHotSpring\":\"예/아니오\"}\n]\n기사 내용:창롱 워터파크가 여름 밤에 개장합니다. 워터 파티와 빛·전자음악 쇼로 전체 장소가 흥분합니다. 야간 투어 체험은 독특하고 부모-자녀와 젊은이들에게 적합합니다.",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "놀이 이름",
+                        "能力項": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "한 문장 설명",
+                        "能力項": "범위、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "놀이 지리적 위치",
+                        "能力項": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "시작 시간"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "종료 시간"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "상세한 놀이 소개",
+                        "能力項": "범위、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "티켓 가격 정보",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力項": "主题约束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "티켓 발매 시간"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야간 활동인지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "부모-자녀에게 적합한지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야외 놀이인지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "문화 공연이 포함되어 있는지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "온천 프로젝트가 있는지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마에 부합하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 전문 여행 명소 기사 분석가입니다. 기사 내용과 기사 유형을 제공하겠습니다. 다양한 기사 유형에 따라 다른 식별 전략을 실행해야 합니다. 추출된 놀이 정보만 반환하고 다른 불필요한 정보는 반환하지 마십시오.\n기사 유형: 자동 식별\n다음 규칙에 따라 정보를 추출하십시오:\n1. playName: 놀이 이름, 기사에서 언급된 구체적인 놀이나 활동 이름을 가리킵니다.\n2. briefDesc: 한 문장 설명, 놀이의 하이라이트와 특징을 요약해야 하며, 운영 시간, 실용 정보, 부정적 설명을 제외하고 68-100자(공백, 숫자 포함).\n3. location: 놀이 지리적 위치, 관광지나 장소 내의 구체적인 참조점이나 랜드마크를 가리키며, 도시나 성은 불가.\n4. startDate/endDate: 놀이 시간 범위, 날짜 형식은 xxxx-xx-xx, 식별되지 않으면 빈 문자열 반환.\n5. detailDesc: 상세한 놀이 소개, 315-400자(공백, 숫자 포함) 필요, 놀이의 하이라이트와 특징을 설명하며, 제3자 관점의 단어 제외.\n6. price: 티켓 가격 정보, 반환 형식 [\"\",\"\"], 식별되지 않으면 빈 목록 반환.\n7. issueTime: 놀이가 콘서트, 음악 축제, 라이브하우스, 만담 등 유형에 속하면 티켓 발매 시간을 식별해야 하며, 날짜 형식은 xxxx-xx-xx, 없으면 빈 문자열 반환.\n8. hasNightView: 야간 활동인지 여부(예/아니오).\n9. isParentChildFriendly: 부모-자녀에게 적합한지 여부(예/아니오).\n10. isOutdoor: 야외 놀이인지 여부(예/아니오).\n11. hasCulturalShow: 문화 공연이 포함되어 있는지 여부(예/아니오).\n12. hasHotSpring: 온천 프로젝트가 있는지 여부(예/아니오).\n출력 요구사항:\n1. JSON 형식으로 추출된 정보 반환\n2. 각 놀이를 하나의 객체로, 모든 필드 포함\n3. 모든 놀이 객체로 배열 형성\n4. JSON 형식 이외의 문자는 반환하지 않음\n출력 형식 예시:\n[\n  {\"playName\":\"놀이 이름\",\"briefDesc\":\"한 문장 설명\",\"location\":\"지리적 위치\",\"startDate\":\"시작 시간\",\"endDate\":\"종료 시간\",\"detailDesc\":\"상세한 놀이 소개\",\"price\":[],\"issueTime\":\"티켓 발매 시간\",\"hasNightView\":\"예/아니오\",\"isParentChildFriendly\":\"예/아니오\",\"isOutdoor\":\"예/아니오\",\"hasCulturalShow\":\"예/아니오\",\"hasHotSpring\":\"예/아니오\"}\n]\n기사 내용:상하이 디즈니랜드 크리스마스 퍼레이드, 미키 가족 전원이 출연, 크리스마스 트리 점등식은 따뜻하고 로맨틱합니다. 야간 불꽃쇼와 라이트 쇼가 서로를 돋보이게 합니다.",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "놀이 이름",
+                        "能力項": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "한 문장 설명",
+                        "能力項": "범위、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "놀이 지리적 위치",
+                        "能力項": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "시작 시간"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "종료 시간"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "상세한 놀이 소개",
+                        "能力項": "범위、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "티켓 가격 정보",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力項": "主题约束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "티켓 발매 시간"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야간 활동인지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "부모-자녀에게 적합한지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야외 놀이인지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "문화 공연이 포함되어 있는지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "온천 프로젝트가 있는지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마에 부합하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 전문 여행 명소 기사 분석가입니다. 기사 내용과 기사 유형을 제공하겠습니다. 다양한 기사 유형에 따라 다른 식별 전략을 실행해야 합니다. 추출된 놀이 정보만 반환하고 다른 불필요한 정보는 반환하지 마십시오.\n기사 유형: 자동 식별\n다음 규칙에 따라 정보를 추출하십시오:\n1. playName: 놀이 이름, 기사에서 언급된 구체적인 놀이나 활동 이름을 가리킵니다.\n2. briefDesc: 한 문장 설명, 놀이의 하이라이트와 특징을 요약해야 하며, 운영 시간, 실용 정보, 부정적 설명을 제외하고 68-100자(공백, 숫자 포함).\n3. location: 놀이 지리적 위치, 관광지나 장소 내의 구체적인 참조점이나 랜드마크를 가리키며, 도시나 성은 불가.\n4. startDate/endDate: 놀이 시간 범위, 날짜 형식은 xxxx-xx-xx, 식별되지 않으면 빈 문자열 반환.\n5. detailDesc: 상세한 놀이 소개, 315-400자(공백, 숫자 포함) 필요, 놀이의 하이라이트와 특징을 설명하며, 제3자 관점의 단어 제외.\n6. price: 티켓 가격 정보, 반환 형식 [\"\",\"\"], 식별되지 않으면 빈 목록 반환.\n7. issueTime: 놀이가 콘서트, 음악 축제, 라이브하우스, 만담 등 유형에 속하면 티켓 발매 시간을 식별해야 하며, 날짜 형식은 xxxx-xx-xx, 없으면 빈 문자열 반환.\n8. hasNightView: 야간 활동인지 여부(예/아니오).\n9. isParentChildFriendly: 부모-자녀에게 적합한지 여부(예/아니오).\n10. isOutdoor: 야외 놀이인지 여부(예/아니오).\n11. hasCulturalShow: 문화 공연이 포함되어 있는지 여부(예/아니오).\n12. hasHotSpring: 온천 프로젝트가 있는지 여부(예/아니오).\n출력 요구사항:\n1. JSON 형식으로 추출된 정보 반환\n2. 각 놀이를 하나의 객체로, 모든 필드 포함\n3. 모든 놀이 객체로 배열 형성\n4. JSON 형식 이외의 문자는 반환하지 않음\n출력 형식 예시:\n[\n  {\"playName\":\"놀이 이름\",\"briefDesc\":\"한 문장 설명\",\"location\":\"지리적 위치\",\"startDate\":\"시작 시간\",\"endDate\":\"종료 시간\",\"detailDesc\":\"상세한 놀이 소개\",\"price\":[],\"issueTime\":\"티켓 발매 시간\",\"hasNightView\":\"예/아니오\",\"isParentChildFriendly\":\"예/아니오\",\"isOutdoor\":\"예/아니오\",\"hasCulturalShow\":\"예/아니오\",\"hasHotSpring\":\"예/아니오\"}\n]\n기사 내용:충칭 홍야동 야시장 음악축제, 인디 밴드들이 교대로 공연, 강변의 야경과 음악이 완벽하게 융합, 부모-자녀, 커플이 야간 체크인에 적합합니다.",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "놀이 이름",
+                        "能力項": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "한 문장 설명",
+                        "能力項": "범위、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "놀이 지리적 위치",
+                        "能力項": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "시작 시간"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "종료 시간"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "상세한 놀이 소개",
+                        "能力項": "범위、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "티켓 가격 정보",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力項": "主题约束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "티켓 발매 시간"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야간 활동인지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "부모-자녀에게 적합한지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야외 놀이인지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "문화 공연이 포함되어 있는지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "온천 프로젝트가 있는지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마에 부합하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 전문 여행 명소 기사 분석가입니다. 기사 내용과 기사 유형을 제공하겠습니다. 다양한 기사 유형에 따라 다른 식별 전략을 실행해야 합니다. 추출된 놀이 정보만 반환하고 다른 불필요한 정보는 반환하지 마십시오.\n기사 유형: 자동 식별\n다음 규칙에 따라 정보를 추출하십시오:\n1. playName: 놀이 이름, 기사에서 언급된 구체적인 놀이나 활동 이름을 가리킵니다.\n2. briefDesc: 한 문장 설명, 놀이의 하이라이트와 특징을 요약해야 하며, 운영 시간, 실용 정보, 부정적 설명을 제외하고 68-100자(공백, 숫자 포함).\n3. location: 놀이 지리적 위치, 관광지나 장소 내의 구체적인 참조점이나 랜드마크를 가리키며, 도시나 성은 불가.\n4. startDate/endDate: 놀이 시간 범위, 날짜 형식은 xxxx-xx-xx, 식별되지 않으면 빈 문자열 반환.\n5. detailDesc: 상세한 놀이 소개, 315-400자(공백, 숫자 포함) 필요, 놀이의 하이라이트와 특징을 설명하며, 제3자 관점의 단어 제외.\n6. price: 티켓 가격 정보, 반환 형식 [\"\",\"\"], 식별되지 않으면 빈 목록 반환.\n7. issueTime: 놀이가 콘서트, 음악 축제, 라이브하우스, 만담 등 유형에 속하면 티켓 발매 시간을 식별해야 하며, 날짜 형식은 xxxx-xx-xx, 없으면 빈 문자열 반환.\n8. hasNightView: 야간 활동인지 여부(예/아니오).\n9. isParentChildFriendly: 부모-자녀에게 적합한지 여부(예/아니오).\n10. isOutdoor: 야외 놀이인지 여부(예/아니오).\n11. hasCulturalShow: 문화 공연이 포함되어 있는지 여부(예/아니오).\n12. hasHotSpring: 온천 프로젝트가 있는지 여부(예/아니오).\n출력 요구사항:\n1. JSON 형식으로 추출된 정보 반환\n2. 각 놀이를 하나의 객체로, 모든 필드 포함\n3. 모든 놀이 객체로 배열 형성\n4. JSON 형식 이외의 문자는 반환하지 않음\n출력 형식 예시:\n[\n  {\"playName\":\"놀이 이름\",\"briefDesc\":\"한 문장 설명\",\"location\":\"지리적 위치\",\"startDate\":\"시작 시간\",\"endDate\":\"종료 시간\",\"detailDesc\":\"상세한 놀이 소개\",\"price\":[],\"issueTime\":\"티켓 발매 시간\",\"hasNightView\":\"예/아니오\",\"isParentChildFriendly\":\"예/아니오\",\"isOutdoor\":\"예/아니오\",\"hasCulturalShow\":\"예/아니오\",\"hasHotSpring\":\"예/아니오\"}\n]\n기사 내용:다리 고성 신년 사원 축제, 바이족 춤, 민속 시장, 불꽃쇼가 고성의 밤하늘을 밝히고, 온천 체험과 야시장 음식이 풍부하고 다채롭습니다.",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "놀이 이름",
+                        "能力項": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "한 문장 설명",
+                        "能力項": "범위、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "놀이 지리적 위치",
+                        "能力項": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "시작 시간"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "종료 시간"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "상세한 놀이 소개",
+                        "能力項": "범위、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "티켓 가격 정보",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力項": "主题约束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "티켓 발매 시간"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야간 활동인지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "부모-자녀에게 적합한지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야외 놀이인지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "문화 공연이 포함되어 있는지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "온천 프로젝트가 있는지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마에 부합하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 전문 여행 명소 기사 분석가입니다. 기사 내용과 기사 유형을 제공하겠습니다. 다양한 기사 유형에 따라 다른 식별 전략을 실행해야 합니다. 추출된 놀이 정보만 반환하고 다른 불필요한 정보는 반환하지 마십시오.\n기사 유형: 자동 식별\n다음 규칙에 따라 정보를 추출하십시오:\n1. playName: 놀이 이름, 기사에서 언급된 구체적인 놀이나 활동 이름을 가리킵니다.\n2. briefDesc: 한 문장 설명, 놀이의 하이라이트와 특징을 요약해야 하며, 운영 시간, 실용 정보, 부정적 설명을 제외하고 68-100자(공백, 숫자 포함).\n3. location: 놀이 지리적 위치, 관광지나 장소 내의 구체적인 참조점이나 랜드마크를 가리키며, 도시나 성은 불가.\n4. startDate/endDate: 놀이 시간 범위, 날짜 형식은 xxxx-xx-xx, 식별되지 않으면 빈 문자열 반환.\n5. detailDesc: 상세한 놀이 소개, 315-400자(공백, 숫자 포함) 필요, 놀이의 하이라이트와 특징을 설명하며, 제3자 관점의 단어 제외.\n6. price: 티켓 가격 정보, 반환 형식 [\"\",\"\"], 식별되지 않으면 빈 목록 반환.\n7. issueTime: 놀이가 콘서트, 음악 축제, 라이브하우스, 만담 등 유형에 속하면 티켓 발매 시간을 식별해야 하며, 날짜 형식은 xxxx-xx-xx, 없으면 빈 문자열 반환.\n8. hasNightView: 야간 활동인지 여부(예/아니오).\n9. isParentChildFriendly: 부모-자녀에게 적합한지 여부(예/아니오).\n10. isOutdoor: 야외 놀이인지 여부(예/아니오).\n11. hasCulturalShow: 문화 공연이 포함되어 있는지 여부(예/아니오).\n12. hasHotSpring: 온천 프로젝트가 있는지 여부(예/아니오).\n출력 요구사항:\n1. JSON 형식으로 추출된 정보 반환\n2. 각 놀이를 하나의 객체로, 모든 필드 포함\n3. 모든 놀이 객체로 배열 형성\n4. JSON 형식 이외의 문자는 반환하지 않음\n출력 형식 예시:\n[\n  {\"playName\":\"놀이 이름\",\"briefDesc\":\"한 문장 설명\",\"location\":\"지리적 위치\",\"startDate\":\"시작 시간\",\"endDate\":\"종료 시간\",\"detailDesc\":\"상세한 놀이 소개\",\"price\":[],\"issueTime\":\"티켓 발매 시간\",\"hasNightView\":\"예/아니오\",\"isParentChildFriendly\":\"예/아니오\",\"isOutdoor\":\"예/아니오\",\"hasCulturalShow\":\"예/아니오\",\"hasHotSpring\":\"예/아니오\"}\n]\n기사 내용:청두 판다 기지 부모-자녀 과학 투어, 판다 해설, 수공예 체험, 풍부하고 다채로운 테마 기념품, 공원에는 작은 야간 라이트 쇼가 있습니다.",
+        "json_schema": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "playName": {
+                        "type": "string",
+                        "description": "놀이 이름",
+                        "能力項": "JSON"
+                    },
+                    "briefDesc": {
+                        "type": "string",
+                        "description": "한 문장 설명",
+                        "能力項": "범위、50~200字",
+                        "pattern": "^.*$|^$",
+                        "minLength": 68,
+                        "maxLength": 100
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "놀이 지리적 위치",
+                        "能力項": "JSON"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "시작 시간"
+                    },
+                    "endDate": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "종료 시간"
+                    },
+                    "detailDesc": {
+                        "type": "string",
+                        "description": "상세한 놀이 소개",
+                        "能力項": "범위、200字以上",
+                        "pattern": "^.*$|^$",
+                        "minLength": 315,
+                        "maxLength": 400
+                    },
+                    "price": {
+                        "type": "array",
+                        "description": "티켓 가격 정보",
+                        "items": {
+                            "type": "string"
+                        },
+                        "能力項": "主题约束"
+                    },
+                    "issueTime": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$|^$",
+                        "能力項": "日期格式",
+                        "description": "티켓 발매 시간"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야간 활동인지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "부모-자녀에게 적합한지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야외 놀이인지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "문화 공연이 포함되어 있는지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "온천 프로젝트가 있는지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "required": [
+                    "playName",
+                    "briefDesc",
+                    "location",
+                    "startDate",
+                    "endDate",
+                    "detailDesc",
+                    "price",
+                    "issueTime",
+                    "hasNightView",
+                    "isParentChildFriendly",
+                    "isOutdoor",
+                    "hasCulturalShow",
+                    "hasHotSpring"
+                ]
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마에 부합하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    }
+]

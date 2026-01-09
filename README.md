@@ -84,58 +84,150 @@ This benchmark provides a realistic evaluation of a model’s **adaptability, in
 
 ## 🚀 Quick Start
 
-We provide three example scripts to help you get started quickly:
+### Step 1: Environment Setup
 
-- **`example_run_chinese.sh`** → Run Meeseeks (Chinese) dataset  
-- **`example_run_english.sh`** → Run Meeseeks (English) dataset  
-- **`example_run_custom.sh`** → Run your own dataset  
+#### 1.1 Install Dependencies
 
-> ℹ️ **Note:**  
-> Meeseeks (English) and Meeseeks (Chinese) share the **same content**, but their **evaluation pipelines are different**.
+Run the automated installation script:
+
+```bash
+bash install_deps.sh
+```
+
+This script will:
+- Detect your Python version (3.9 or 3.10+)
+- Install all required dependencies
+- Resolve version conflicts automatically
+- Install language-specific NLP libraries (Chinese, Japanese, Korean, Arabic, German, French, etc.)
+
+> **Requirements**: Python 3.9+ (Python 3.10+ recommended)
+
+#### 1.2 Configure API Keys
+
+Create a `.env` file in the project root with your API configurations:
+
+```bash
+# Qwen API Configuration (Extract Model)
+QWEN_API_KEY=your_api_key_here
+QWEN_BASE_URL=your_api_base_url_here
+QWEN_MODEL=your_model_name_here
+
+# Qwen Coder API Configuration (Score Model)
+QWEN_CODER_API_KEY=your_api_key_here
+QWEN_CODER_BASE_URL=your_api_base_url_here
+QWEN_CODER_MODEL=your_model_name_here
+
+# Tested Model API Configuration (Model Under Evaluation)
+TESTED_MODEL_API_KEY=your_api_key_here
+TESTED_MODEL_BASE_URL=your_api_base_url_here
+TESTED_MODEL_NAME=your_model_name_here
+```
+
+> 💡 **Tip**: All three models support OpenAI-compatible API format. You can use the same model for all three roles if needed.
 
 ---
 
-## ⚙️ Requirements
+### Step 2: Run Evaluation
 
-Before running any script, you must implement **three model APIs**:
+#### 2.1 Asia Languages Evaluation (Chinese, Japanese, Korean)
 
-1. **Test Model**  
-   - Argument: `--tested_model_url`  
-   - The model you want to evaluate.  
+Run evaluation for all Asia languages:
 
-2. **Extract Model** *(Recommended: `Qwen2.5-Coder-32B-Instruct`)*  
-   - Argument: `--qwen_url`  
-   - Used to extract structured outputs from model responses.  
+```bash
+python default_run_asia.py
+```
 
-3. **Score Model** *(Recommended: `Qwen2.5-32B-Instruct`)*  
-   - Argument: `--qwen_coder_url`  
-   - Used to evaluate and score the extracted results.  
+Or filter specific languages:
+
+```bash
+# Evaluate only Chinese data
+python default_run_asia.py --chinese
+
+# Evaluate only Japanese data
+python default_run_asia.py --japanese
+
+# Evaluate only Korean data
+python default_run_asia.py --korean
+
+# Combine multiple languages
+python default_run_asia.py --chinese --japanese
+```
+
+#### 2.2 English & Multi-language Evaluation
+
+Run evaluation for all supported languages:
+
+```bash
+python default_run_eng.py
+```
+
+Or filter specific languages:
+
+```bash
+# Evaluate only English data
+python default_run_eng.py --english
+
+# Evaluate only German data
+python default_run_eng.py --german
+
+# Evaluate other languages
+python default_run_eng.py --french    # French
+python default_run_eng.py --spanish   # Spanish
+python default_run_eng.py --portuguese # Portuguese
+python default_run_eng.py --russian   # Russian
+python default_run_eng.py --arabic    # Arabic
+python default_run_eng.py --indonesian # Indonesian
+
+# Combine multiple languages
+python default_run_eng.py --english --german --french
+```
+
+---
+
+## ⚙️ Model Requirements
+
+Before running any evaluation, you need to configure **three model APIs**:
+
+1. **Tested Model** (`TESTED_MODEL_*` in `.env`)  
+   - The model you want to evaluate
+   - Must support OpenAI-compatible Chat Completions API
+
+2. **Extract Model** (`QWEN_*` in `.env`)  
+   - *Recommended: Qwen2.5-Coder-32B-Instruct*
+   - Used to extract structured outputs from model responses
+   - Requires strong code generation and structure understanding
+
+3. **Score Model** (`QWEN_CODER_*` in `.env`)  
+   - *Recommended: Qwen2.5-32B-Instruct*
+   - Used to evaluate and score the extracted results
+   - Requires strong reasoning and judgment capabilities
 
 ---
 
 ## 💡 Hardware & API Options
 
-- If you **have a GPU**:  
-  We recommend using the open-source **Qwen2.5 series** models for extraction and scoring.  
+- **If you have a GPU**:  
+  Deploy open-source **Qwen2.5 series** models locally using vLLM, TGI, or similar frameworks.
 
-- If you **don’t have a GPU**:  
-  You can use **commercial APIs** instead.  
-  - ✅ *Highly recommended:* **Claude 3.7 Sonnet**  
-  - Alternative APIs may also be integrated as long as they follow the input/output format.  
+- **If you don't have a GPU**:  
+  Use **commercial APIs** instead:
+  - ✅ *Highly recommended:* **Claude 3.7 Sonnet** or **GPT-4**
+  - Any OpenAI-compatible API endpoint will work
 
 ---
 
-## 📂 Results
+## 📂 Evaluation Results
 
-- Chinese evaluation results will be stored in:  
-evaluation_results_chinese/
-- English evaluation results will be stored in:  
-evaluation_results_english/
+Results will be automatically saved to:
 
+- **Asia languages**: `evaluation_results_asia/`
+- **English & others**: `evaluation_results_english/`
 
-Each directory contains structured logs, extracted outputs, and scoring results for further analysis.
+Each directory contains:
+- `round_1.json`, `round_2.json`: Detailed evaluation results per round
+- `round_1_stats.json`, `round_2_stats.json`: Statistical summaries
+- Structured logs and scoring information for analysis
 
 
 ## 🙏 Contributors behind the scenes
 Temporarily removed for ICLR submitting
-

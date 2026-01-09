@@ -1,0 +1,407 @@
+[
+    {
+        "category": "general_multi",
+        "question": "당신은 호텔 프론트 직원입니다. 최근은 여행 성수기이며, 사장님께서 호텔을 위해 3개의 환영 인사말을 디자인할 것을 요청하셨습니다. 모든 방문객이 호텔 직원의 열정을 느낄 수 있도록 해야 합니다. 각 인사말에는 반드시 2개의 이중 자음이 들어간 한글 글자가 포함되어야 합니다. 각 인사말은 반드시 【제주도】로 시작하고, 임의의 위치에 【슬리퍼】를 포함해야 합니다. 키워드는 제공된 그대로 사용해야 하며, 수정은 허용되지 않습니다. 각 환영 인사말은 서로 중복되지 않아야 합니다. 다음 형식으로 작성해주세요:1.메시지 1 \n2.메시지 2   \n3.메시지 3  \n4.메시지 4  \n5.메시지 5",
+        "corresponding_parts": {
+            "欢迎语": "请你按照python list的格式，一一抓取模型回复生成的每条欢迎语。不要提取欢迎语以外的信息，如【메시지 1】"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了欢迎语",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "内容是否符合酒店迎宾",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "主题约束",
+                "被依赖": true
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了3条欢迎语",
+                "corresponding_part": "欢迎语",
+                "rule": "item_count:[3,3]",
+                "dep": [
+                    1
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "欢迎语是否避免重复",
+                "corresponding_part": "欢迎语",
+                "rule": "repeat_each",
+                "dep": [
+                    1
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "每条欢迎语是否刚好包含2个任何双辅音",
+                "corresponding_part": "欢迎语",
+                "rule": "each_has_double_consonants:2",
+                "dep": [
+                    1
+                ],
+                "能力项": "韩语：双辅音",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "每条欢迎语是否以关键词\"제주도\"开头",
+                "corresponding_part": "欢迎语",
+                "rule": "startswith_each:[\"제주도\"],",
+                "dep": [
+                    1
+                ],
+                "能力项": "特定格式",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "每条欢迎语是否包含关键词\"슬리퍼\"",
+                "corresponding_part": "欢迎语",
+                "rule": "keywords:[\"슬리퍼\"]",
+                "dep": [
+                    1
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "당신은 호텔 프론트 직원입니다. 최근은 여행 성수기이며, 사장님께서 호텔을 위해 5개의 환영 인사말을 디자인할 것을 요청하셨습니다. 모든 방문객이 호텔 직원의 열정을 느낄 수 있도록 해야 합니다. 각 인사말에는 반드시 2개의 이중 자음이 들어간 한글 글자가 포함되어야 합니다. 각 인사말은 반드시 【제주도】로 시작하고, 임의의 위치에 【슬리퍼】를 포함해야 합니다. 키워드는 제공된 그대로 사용해야 하며, 수정은 허용되지 않습니다. 각 환영 인사말은 서로 중복되지 않아야 합니다. 다음 형식으로 작성해주세요:1.메시지 1 \n2.메시지 2   \n3.메시지 3  \n4.메시지 4  \n5.메시지 5",
+        "corresponding_parts": {
+            "欢迎语": "请你按照python list的格式，一一抓取模型回复生成的每条欢迎语。不要提取欢迎语以外的信息，如【메시지 1】"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了欢迎语",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "内容是否符合酒店迎宾",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "主题约束",
+                "被依赖": true
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了5条欢迎语",
+                "corresponding_part": "欢迎语",
+                "rule": "item_count:[5,5]",
+                "dep": [
+                    1
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "欢迎语是否避免重复",
+                "corresponding_part": "欢迎语",
+                "rule": "repeat_each",
+                "dep": [
+                    1
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "每条欢迎语是否刚好包含2个任何双辅音",
+                "corresponding_part": "欢迎语",
+                "rule": "each_has_double_consonants:2",
+                "dep": [
+                    1
+                ],
+                "能力项": "韩语：双辅音",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "每条欢迎语是否以关键词\"제주도\"开头",
+                "corresponding_part": "欢迎语",
+                "rule": "startswith_each:[\"제주도\"],",
+                "dep": [
+                    1
+                ],
+                "能力项": "特定格式",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "每条欢迎语是否包含关键词\"슬리퍼\"",
+                "corresponding_part": "欢迎语",
+                "rule": "keywords:[\"슬리퍼\"]",
+                "dep": [
+                    1
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "당신은 호텔 프론트 직원입니다. 최근은 여행 성수기이며, 사장님께서 호텔을 위해 2개의 환영 인사말을 디자인할 것을 요청하셨습니다. 모든 방문객이 호텔 직원의 열정을 느낄 수 있도록 해야 합니다. 각 인사말에는 반드시 2개의 이중 자음이 들어간 한글 글자가 포함되어야 합니다. 각 인사말은 반드시 【제주도】로 시작하고, 임의의 위치에 【슬리퍼】를 포함해야 합니다. 키워드는 제공된 그대로 사용해야 하며, 수정은 허용되지 않습니다. 각 환영 인사말은 서로 중복되지 않아야 합니다. 다음 형식으로 작성해주세요:1.메시지 1 \n2.메시지 2   \n3.메시지 3  \n4.메시지 4  \n5.메시지 5",
+        "corresponding_parts": {
+            "欢迎语": "请你按照python list的格式，一一抓取模型回复生成的每条欢迎语。不要提取欢迎语以外的信息，如【메시지 1】"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了欢迎语",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "内容是否符合酒店迎宾",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "主题约束",
+                "被依赖": true
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了2条欢迎语",
+                "corresponding_part": "欢迎语",
+                "rule": "item_count:[2,2]",
+                "dep": [
+                    1
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "欢迎语是否避免重复",
+                "corresponding_part": "欢迎语",
+                "rule": "repeat_each",
+                "dep": [
+                    1
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "每条欢迎语是否刚好包含2个任何双辅音",
+                "corresponding_part": "欢迎语",
+                "rule": "each_has_double_consonants:2",
+                "dep": [
+                    1
+                ],
+                "能力项": "韩语：双辅音",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "每条欢迎语是否以关键词\"제주도\"开头",
+                "corresponding_part": "欢迎语",
+                "rule": "startswith_each:[\"제주도\"],",
+                "dep": [
+                    1
+                ],
+                "能力项": "特定格式",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "每条欢迎语是否包含关键词\"슬리퍼\"",
+                "corresponding_part": "欢迎语",
+                "rule": "keywords:[\"슬리퍼\"]",
+                "dep": [
+                    1
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "당신은 호텔 프론트 직원입니다. 최근은 여행 성수기이며, 사장님께서 호텔을 위해 4개의 환영 인사말을 디자인할 것을 요청하셨습니다. 모든 방문객이 호텔 직원의 열정을 느낄 수 있도록 해야 합니다. 각 인사말에는 반드시 2개의 이중 자음이 들어간 한글 글자가 포함되어야 합니다. 각 인사말은 반드시 【제주도】로 시작하고, 임의의 위치에 【슬리퍼】를 포함해야 합니다. 키워드는 제공된 그대로 사용해야 하며, 수정은 허용되지 않습니다. 각 환영 인사말은 서로 중복되지 않아야 합니다. 다음 형식으로 작성해주세요:1.메시지 1 \n2.메시지 2   \n3.메시지 3  \n4.메시지 4  \n5.메시지 5",
+        "corresponding_parts": {
+            "欢迎语": "请你按照python list的格式，一一抓取模型回复生成的每条欢迎语。不要提取欢迎语以外的信息，如【메시지 1】"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了欢迎语",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "内容是否符合酒店迎宾",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "主题约束",
+                "被依赖": true
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了4条欢迎语",
+                "corresponding_part": "欢迎语",
+                "rule": "item_count:[4,4]",
+                "dep": [
+                    1
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "欢迎语是否避免重复",
+                "corresponding_part": "欢迎语",
+                "rule": "repeat_each",
+                "dep": [
+                    1
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "每条欢迎语是否刚好包含2个任何双辅音",
+                "corresponding_part": "欢迎语",
+                "rule": "each_has_double_consonants:2",
+                "dep": [
+                    1
+                ],
+                "能力项": "韩语：双辅音",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "每条欢迎语是否以关键词\"제주도\"开头",
+                "corresponding_part": "欢迎语",
+                "rule": "startswith_each:[\"제주도\"],",
+                "dep": [
+                    1
+                ],
+                "能力项": "特定格式",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "每条欢迎语是否包含关键词\"슬리퍼\"",
+                "corresponding_part": "欢迎语",
+                "rule": "keywords:[\"슬리퍼\"]",
+                "dep": [
+                    1
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "당신은 호텔 프론트 직원입니다. 최근은 여행 성수기이며, 사장님께서 호텔을 위해 6개의 환영 인사말을 디자인할 것을 요청하셨습니다. 모든 방문객이 호텔 직원의 열정을 느낄 수 있도록 해야 합니다. 각 인사말에는 반드시 2개의 이중 자음이 들어간 한글 글자가 포함되어야 합니다. 각 인사말은 반드시 【제주도】로 시작하고, 임의의 위치에 【슬리퍼】를 포함해야 합니다. 키워드는 제공된 그대로 사용해야 하며, 수정은 허용되지 않습니다. 각 환영 인사말은 서로 중복되지 않아야 합니다. 다음 형식으로 작성해주세요:1.메시지 1 \n2.메시지 2   \n3.메시지 3  \n4.메시지 4  \n5.메시지 5",
+        "corresponding_parts": {
+            "欢迎语": "请你按照python list的格式，一一抓取模型回复生成的每条欢迎语。不要提取欢迎语以外的信息，如【메시지 1】"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了欢迎语",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "内容是否符合酒店迎宾",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "主题约束",
+                "被依赖": true
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了6条欢迎语",
+                "corresponding_part": "欢迎语",
+                "rule": "item_count:[6,6]",
+                "dep": [
+                    1
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "欢迎语是否避免重复",
+                "corresponding_part": "欢迎语",
+                "rule": "repeat_each",
+                "dep": [
+                    1
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "每条欢迎语是否刚好包含2个任何双辅音",
+                "corresponding_part": "欢迎语",
+                "rule": "each_has_double_consonants:2",
+                "dep": [
+                    1
+                ],
+                "能力项": "韩语：双辅音",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "每条欢迎语是否以关键词\"제주도\"开头",
+                "corresponding_part": "欢迎语",
+                "rule": "startswith_each:[\"제주도\"],",
+                "dep": [
+                    1
+                ],
+                "能力项": "特定格式",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "每条欢迎语是否包含关键词\"슬리퍼\"",
+                "corresponding_part": "欢迎语",
+                "rule": "keywords:[\"슬리퍼\"]",
+                "dep": [
+                    1
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    }
+]

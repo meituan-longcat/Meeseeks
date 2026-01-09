@@ -1,0 +1,552 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "당신은 영업 어시스턴트입니다. 다음 통화 내용의 시나리오를 먼저 요약하고, 통화 내용을 매끄러운 대화 흐름으로 다시 작성해 주세요. 다시 작성한 내용은 200자를 초과하면 안 됩니다.\n주의사항:\n1. 다시 작성한 대화의 유창성을 보장해야 합니다.\n2. 다시 작성한 대화의 관련성을 보장해야 합니다: 다시 작성한 대화의 주제는 원래 대화에서 벗어나면 안 됩니다.\n3. 다시 작성한 대화에는 원래 대화에 포함되지 않은 정보가 포함되면 안 됩니다.\n4. 다시 작성한 대화가 논리적으로 명확하고, 간결하며, 더 높은 품질임을 보장해야 합니다.\n5. 다시 작성한 대화에서 상인과 영업의 어조는 구어체여야 하며, 각자의 역할에 따라 영업은 예의에 주의해야 합니다.\n6. JSON 형식으로 출력하세요. 예: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\n출력 요구사항:\n1. JSON 형식을 사용하여 추출한 정보를 반환하세요;\n2. \"scenario_summary\"는 한 문장의 시나리오 설명, \"dialogue_rewrite\"는 대화 흐름 배열로, 영업과 상인이 번갈아 말하며, 각각 50자 이내, 총 길이 200자 이내;\n3. JSON 형식 이외의 문자는 반환하지 마세요.\n다음은 메이투안 영업과 상인의 통화 내용입니다:\n상인: 안녕하세요, 사천요리점입니다.\n영업: 안녕하세요, 메이투안에서 왔습니다. 최근 매장에서 온라인 프로모션 필요가 있으신지 알고 싶습니다.\n상인: 최근에는 주로 단골손님에 의존하고 있어서 프로모션을 많이 하지 않았습니다.\n영업: 메이투안에서 새로운 활동이 있어서 광고비용이 매우 유리하며, 새로운 고객 유치에 도움이 됩니다.\n상인: 저희 사장님이 출장 중이라 돌아오시면 상의해야 합니다.\n영업: 알겠습니다. 다음 주에 다시 연락드리겠습니다. 사업 번창하시길 바랍니다!\n상인: 네, 감사합니다.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "통화 시나리오의 한 문장 요약",
+                    "能力項": "範囲、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "다시 작성된 대화 흐름",
+                    "能力項": "範囲、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "영업 발언",
+                                "能力項": "範囲、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "상인 발언",
+                                "能力項": "範囲、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 영업 어시스턴트입니다. 다음 통화 내용의 시나리오를 먼저 요약하고, 통화 내용을 매끄러운 대화 흐름으로 다시 작성해 주세요. 다시 작성한 내용은 200자를 초과하면 안 됩니다.\n주의사항:\n1. 다시 작성한 대화의 유창성을 보장해야 합니다.\n2. 다시 작성한 대화의 관련성을 보장해야 합니다: 다시 작성한 대화의 주제는 원래 대화에서 벗어나면 안 됩니다.\n3. 다시 작성한 대화에는 원래 대화에 포함되지 않은 정보가 포함되면 안 됩니다.\n4. 다시 작성한 대화가 논리적으로 명확하고, 간결하며, 더 높은 품질임을 보장해야 합니다.\n5. 다시 작성한 대화에서 상인과 영업의 어조는 구어체여야 하며, 각자의 역할에 따라 영업은 예의에 주의해야 합니다.\n6. JSON 형식으로 출력하세요. 예: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\n출력 요구사항:\n1. JSON 형식을 사용하여 추출한 정보를 반환하세요;\n2. \"scenario_summary\"는 한 문장의 시나리오 설명, \"dialogue_rewrite\"는 대화 흐름 배열로, 영업과 상인이 번갈아 말하며, 각각 50자 이내, 총 길이 200자 이내;\n3. JSON 형식 이외의 문자는 반환하지 마세요.\n다음은 메이투안 영업과 상인의 통화 내용입니다:\n상인: 안녕하세요, 위동피트니스입니다.\n영업: 안녕하세요, 매장에서 현재 그룹구매나 온라인 프로모션을 하고 계신지 문의드립니다.\n상인: 지금은 주로 회원 추천에 의존하고 있어서 온라인 그룹구매는 하지 않습니다.\n영업: 메이투안의 그룹구매 활동이 매우 강력해서 같은 업계의 피트니스센터들이 모두 좋은 결과를 얻고 있습니다.\n상인: 위챗 추가해서 자세히 이야기할 수 있나요?\n영업: 물론입니다. 위챗 ID를 알려주세요.\n상인: 네, 나중에 보내드리겠습니다.\n영업: 감사합니다. 협력을 기대하겠습니다!",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "통화 시나리오의 한 문장 요약",
+                    "能力項": "範囲、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "다시 작성된 대화 흐름",
+                    "能力項": "範囲、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "영업 발언",
+                                "能力項": "範囲、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "상인 발언",
+                                "能力項": "範囲、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 영업 어시스턴트입니다. 다음 통화 내용의 시나리오를 먼저 요약하고, 통화 내용을 매끄러운 대화 흐름으로 다시 작성해 주세요. 다시 작성한 내용은 200자를 초과하면 안 됩니다.\n주의사항:\n1. 다시 작성한 대화의 유창성을 보장해야 합니다.\n2. 다시 작성한 대화의 관련성을 보장해야 합니다: 다시 작성한 대화의 주제는 원래 대화에서 벗어나면 안 됩니다.\n3. 다시 작성한 대화에는 원래 대화에 포함되지 않은 정보가 포함되면 안 됩니다.\n4. 다시 작성한 대화가 논리적으로 명확하고, 간결하며, 더 높은 품질임을 보장해야 합니다.\n5. 다시 작성한 대화에서 상인과 영업의 어조는 구어체여야 하며, 각자의 역할에 따라 영업은 예의에 주의해야 합니다.\n6. JSON 형식으로 출력하세요. 예: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\n출력 요구사항:\n1. JSON 형식을 사용하여 추출한 정보를 반환하세요;\n2. \"scenario_summary\"는 한 문장의 시나리오 설명, \"dialogue_rewrite\"는 대화 흐름 배열로, 영업과 상인이 번갈아 말하며, 각각 50자 이내, 총 길이 200자 이내;\n3. JSON 형식 이외의 문자는 반환하지 마세요.\n다음은 메이투안 영업과 상인의 통화 내용입니다:\n상인: 안녕하세요.\n영업: 안녕하세요, 화천소축 민박이신가요?\n상인: 네, 누구세요?\n영업: 메이투안에서 왔습니다. 민박에서 메이투안 광고 프로모션을 원하시는지 알고 싶습니다.\n상인: 현재 주문이 괜찮아서 지금은 고려하지 않습니다.\n영업: 알겠습니다. 나중에 필요하시면 언제든 연락주세요.\n상인: 네, 감사합니다.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "통화 시나리오의 한 문장 요약",
+                    "能力項": "範囲、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "다시 작성된 대화 흐름",
+                    "能力項": "範囲、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "영업 발언",
+                                "能力項": "範囲、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "상인 발언",
+                                "能力項": "範囲、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 영업 어시스턴트입니다. 다음 통화 내용의 시나리오를 먼저 요약하고, 통화 내용을 매끄러운 대화 흐름으로 다시 작성해 주세요. 다시 작성한 내용은 200자를 초과하면 안 됩니다.\n주의사항:\n1. 다시 작성한 대화의 유창성을 보장해야 합니다.\n2. 다시 작성한 대화의 관련성을 보장해야 합니다: 다시 작성한 대화의 주제는 원래 대화에서 벗어나면 안 됩니다.\n3. 다시 작성한 대화에는 원래 대화에 포함되지 않은 정보가 포함되면 안 됩니다.\n4. 다시 작성한 대화가 논리적으로 명확하고, 간결하며, 더 높은 품질임을 보장해야 합니다.\n5. 다시 작성한 대화에서 상인과 영업의 어조는 구어체여야 하며, 각자의 역할에 따라 영업은 예의에 주의해야 합니다.\n6. JSON 형식으로 출력하세요. 예: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\n출력 요구사항:\n1. JSON 형식을 사용하여 추출한 정보를 반환하세요;\n2. \"scenario_summary\"는 한 문장의 시나리오 설명, \"dialogue_rewrite\"는 대화 흐름 배열로, 영업과 상인이 번갈아 말하며, 각각 50자 이내, 총 길이 200자 이내;\n3. JSON 형식 이외의 문자는 반환하지 마세요.\n다음은 메이투안 영업과 상인의 통화 내용입니다:\n상인: 안녕하세요.\n영업: 안녕하세요, 메이투안에서 왔습니다. 매장에서 온라인 프로모션을 하고 계신지 문의드립니다.\n상인: 지금은 하지 않습니다. 사장님이 아직 안배하지 않았습니다.\n영업: 관심이 있으시면 언제든 연락주세요. 메이투안에서 최근 우대정책이 있습니다.\n상인: 네, 알겠습니다.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "통화 시나리오의 한 문장 요약",
+                    "能力項": "範囲、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "다시 작성된 대화 흐름",
+                    "能力項": "範囲、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "영업 발언",
+                                "能力項": "範囲、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "상인 발언",
+                                "能力項": "範囲、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 영업 어시스턴트입니다. 다음 통화 내용의 시나리오를 먼저 요약하고, 통화 내용을 매끄러운 대화 흐름으로 다시 작성해 주세요. 다시 작성한 내용은 200자를 초과하면 안 됩니다.\n주의사항:\n1. 다시 작성한 대화의 유창성을 보장해야 합니다.\n2. 다시 작성한 대화의 관련성을 보장해야 합니다: 다시 작성한 대화의 주제는 원래 대화에서 벗어나면 안 됩니다.\n3. 다시 작성한 대화에는 원래 대화에 포함되지 않은 정보가 포함되면 안 됩니다.\n4. 다시 작성한 대화가 논리적으로 명확하고, 간결하며, 더 높은 품질임을 보장해야 합니다.\n5. 다시 작성한 대화에서 상인과 영업의 어조는 구어체여야 하며, 각자의 역할에 따라 영업은 예의에 주의해야 합니다.\n6. JSON 형식으로 출력하세요. 예: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\n출력 요구사항:\n1. JSON 형식을 사용하여 추출한 정보를 반환하세요;\n2. \"scenario_summary\"는 한 문장의 시나리오 설명, \"dialogue_rewrite\"는 대화 흐름 배열로, 영업과 상인이 번갈아 말하며, 각각 50자 이내, 총 길이 200자 이내;\n3. JSON 형식 이외의 문자는 반환하지 마세요.\n다음은 메이투안 영업과 상인의 통화 내용입니다:\n상인: 안녕하세요, 러샹KTV입니다.\n영업: 안녕하세요, 메이투안에서 KTV 전용 프로모션 활동을 하고 있습니다. 매장에서 참여에 관심이 있으신지 문의드립니다.\n상인: 지금은 계획이 없습니다. 사장님이 고려 중입니다.\n영업: 알겠습니다. 나중에 생각이 있으시면 언제든 연락주세요.\n상인: 네, 감사합니다.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "통화 시나리오의 한 문장 요약",
+                    "能力項": "範囲、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "다시 작성된 대화 흐름",
+                    "能力項": "範囲、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "영업 발언",
+                                "能力項": "範囲、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "상인 발언",
+                                "能力項": "範囲、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 영업 어시스턴트입니다. 다음 통화 내용의 시나리오를 먼저 요약하고, 통화 내용을 매끄러운 대화 흐름으로 다시 작성해 주세요. 다시 작성한 내용은 200자를 초과하면 안 됩니다.\n주의사항:\n1. 다시 작성한 대화의 유창성을 보장해야 합니다.\n2. 다시 작성한 대화의 관련성을 보장해야 합니다: 다시 작성한 대화의 주제는 원래 대화에서 벗어나면 안 됩니다.\n3. 다시 작성한 대화에는 원래 대화에 포함되지 않은 정보가 포함되면 안 됩니다.\n4. 다시 작성한 대화가 논리적으로 명확하고, 간결하며, 더 높은 품질임을 보장해야 합니다.\n5. 다시 작성한 대화에서 상인과 영업의 어조는 구어체여야 하며, 각자의 역할에 따라 영업은 예의에 주의해야 합니다.\n6. JSON 형식으로 출력하세요. 예: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\n출력 요구사항:\n1. JSON 형식을 사용하여 추출한 정보를 반환하세요;\n2. \"scenario_summary\"는 한 문장의 시나리오 설명, \"dialogue_rewrite\"는 대화 흐름 배열로, 영업과 상인이 번갈아 말하며, 각각 50자 이내, 총 길이 200자 이내;\n3. JSON 형식 이외의 문자는 반환하지 마세요.\n다음은 메이투안 영업과 상인의 통화 내용입니다:\n상인: 안녕하세요, 구월커피입니다.\n영업: 안녕하세요, 매장에서 최근 온라인 프로모션을 하고 계신지 알고 싶습니다.\n상인: 하고 있지만 최근 예산이 제한적입니다.\n영업: 메이투안에서 최근 활동이 있어서 광고비용이 더 유리합니다.\n상인: 네, 필요하면 연락드리겠습니다.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "통화 시나리오의 한 문장 요약",
+                    "能力項": "範囲、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "다시 작성된 대화 흐름",
+                    "能力項": "範囲、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "영업 발언",
+                                "能力項": "範囲、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "상인 발언",
+                                "能力項": "範囲、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 영업 어시스턴트입니다. 다음 통화 내용의 시나리오를 먼저 요약하고, 통화 내용을 매끄러운 대화 흐름으로 다시 작성해 주세요. 다시 작성한 내용은 200자를 초과하면 안 됩니다.\n주의사항:\n1. 다시 작성한 대화의 유창성을 보장해야 합니다.\n2. 다시 작성한 대화의 관련성을 보장해야 합니다: 다시 작성한 대화의 주제는 원래 대화에서 벗어나면 안 됩니다.\n3. 다시 작성한 대화에는 원래 대화에 포함되지 않은 정보가 포함되면 안 됩니다.\n4. 다시 작성한 대화가 논리적으로 명확하고, 간결하며, 더 높은 품질임을 보장해야 합니다.\n5. 다시 작성한 대화에서 상인과 영업의 어조는 구어체여야 하며, 각자의 역할에 따라 영업은 예의에 주의해야 합니다.\n6. JSON 형식으로 출력하세요. 예: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\n출력 요구사항:\n1. JSON 형식을 사용하여 추출한 정보를 반환하세요;\n2. \"scenario_summary\"는 한 문장의 시나리오 설명, \"dialogue_rewrite\"는 대화 흐름 배열로, 영업과 상인이 번갈아 말하며, 각각 50자 이내, 총 길이 200자 이내;\n3. JSON 형식 이외의 문자는 반환하지 마세요.\n다음은 메이투안 영업과 상인의 통화 내용입니다:\n상인: 안녕하세요.\n영업: 안녕하세요, 해피플라워샵이신가요?\n상인: 네, 누구세요?\n영업: 메이투안에서 왔습니다. 온라인 광고 프로모션을 해보신 적이 있으신지 문의드립니다.\n상인: 지금은 없습니다. 필요하면 연락드리겠습니다.\n영업: 네, 사업 번창하시길 바랍니다!",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "통화 시나리오의 한 문장 요약",
+                    "能力項": "範囲、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "다시 작성된 대화 흐름",
+                    "能力項": "範囲、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "영업 발언",
+                                "能力項": "範囲、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "상인 발언",
+                                "能力項": "範囲、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 영업 어시스턴트입니다. 다음 통화 내용의 시나리오를 먼저 요약하고, 통화 내용을 매끄러운 대화 흐름으로 다시 작성해 주세요. 다시 작성한 내용은 200자를 초과하면 안 됩니다.\n주의사항:\n1. 다시 작성한 대화의 유창성을 보장해야 합니다.\n2. 다시 작성한 대화의 관련성을 보장해야 합니다: 다시 작성한 대화의 주제는 원래 대화에서 벗어나면 안 됩니다.\n3. 다시 작성한 대화에는 원래 대화에 포함되지 않은 정보가 포함되면 안 됩니다.\n4. 다시 작성한 대화가 논리적으로 명확하고, 간결하며, 더 높은 품질임을 보장해야 합니다.\n5. 다시 작성한 대화에서 상인과 영업의 어조는 구어체여야 하며, 각자의 역할에 따라 영업은 예의에 주의해야 합니다.\n6. JSON 형식으로 출력하세요. 예: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\n출력 요구사항:\n1. JSON 형식을 사용하여 추출한 정보를 반환하세요;\n2. \"scenario_summary\"는 한 문장의 시나리오 설명, \"dialogue_rewrite\"는 대화 흐름 배열로, 영업과 상인이 번갈아 말하며, 각각 50자 이내, 총 길이 200자 이내;\n3. JSON 형식 이외의 문자는 반환하지 마세요.\n다음은 메이투안 영업과 상인의 통화 내용입니다:\n상인: 안녕하세요.\n영업: 안녕하세요, 선샤인호텔이신가요?\n상인: 네.\n영업: 메이투안에서 왔습니다. 매장에서 온라인 프로모션을 하고 계신지 알고 싶습니다.\n상인: 지금은 주로 단골손님에 의존하고 있어서 프로모션은 하지 않습니다.\n영업: 알겠습니다. 필요하시면 언제든 연락주세요.\n상인: 네, 감사합니다.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "통화 시나리오의 한 문장 요약",
+                    "能力項": "範囲、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "다시 작성된 대화 흐름",
+                    "能力項": "範囲、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "영업 발언",
+                                "能力項": "範囲、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "상인 발언",
+                                "能力項": "範囲、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 영업 어시스턴트입니다. 다음 통화 내용의 시나리오를 먼저 요약하고, 통화 내용을 매끄러운 대화 흐름으로 다시 작성해 주세요. 다시 작성한 내용은 200자를 초과하면 안 됩니다.\n주의사항:\n1. 다시 작성한 대화의 유창성을 보장해야 합니다.\n2. 다시 작성한 대화의 관련성을 보장해야 합니다: 다시 작성한 대화의 주제는 원래 대화에서 벗어나면 안 됩니다.\n3. 다시 작성한 대화에는 원래 대화에 포함되지 않은 정보가 포함되면 안 됩니다.\n4. 다시 작성한 대화가 논리적으로 명확하고, 간결하며, 더 높은 품질임을 보장해야 합니다.\n5. 다시 작성한 대화에서 상인과 영업의 어조는 구어체여야 하며, 각자의 역할에 따라 영업은 예의에 주의해야 합니다.\n6. JSON 형식으로 출력하세요. 예: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\n출력 요구사항:\n1. JSON 형식을 사용하여 추출한 정보를 반환하세요;\n2. \"scenario_summary\"는 한 문장의 시나리오 설명, \"dialogue_rewrite\"는 대화 흐름 배열로, 영업과 상인이 번갈아 말하며, 각각 50자 이내, 총 길이 200자 이내;\n3. JSON 형식 이외의 문자는 반환하지 마세요.\n다음은 메이투안 영업과 상인의 통화 내용입니다:\n상인: 안녕하세요, 복만루레스토랑입니다.\n영업: 안녕하세요, 메이투안에서 왔습니다. 최근 매장에서 온라인 프로모션 필요가 있으신지 문의드립니다.\n상인: 최근 활동이 적어서 지금은 고려하지 않습니다.\n영업: 네, 나중에 필요하시면 언제든 연락주세요.\n상인: 감사합니다.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "통화 시나리오의 한 문장 요약",
+                    "能力項": "範囲、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "다시 작성된 대화 흐름",
+                    "能力項": "範囲、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "영업 발언",
+                                "能力項": "範囲、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "상인 발언",
+                                "能力項": "範囲、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 영업 어시스턴트입니다. 다음 통화 내용의 시나리오를 먼저 요약하고, 통화 내용을 매끄러운 대화 흐름으로 다시 작성해 주세요. 다시 작성한 내용은 200자를 초과하면 안 됩니다.\n주의사항:\n1. 다시 작성한 대화의 유창성을 보장해야 합니다.\n2. 다시 작성한 대화의 관련성을 보장해야 합니다: 다시 작성한 대화의 주제는 원래 대화에서 벗어나면 안 됩니다.\n3. 다시 작성한 대화에는 원래 대화에 포함되지 않은 정보가 포함되면 안 됩니다.\n4. 다시 작성한 대화가 논리적으로 명확하고, 간결하며, 더 높은 품질임을 보장해야 합니다.\n5. 다시 작성한 대화에서 상인과 영업의 어조는 구어체여야 하며, 각자의 역할에 따라 영업은 예의에 주의해야 합니다.\n6. JSON 형식으로 출력하세요. 예: {\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\n출력 요구사항:\n1. JSON 형식을 사용하여 추출한 정보를 반환하세요;\n2. \"scenario_summary\"는 한 문장의 시나리오 설명, \"dialogue_rewrite\"는 대화 흐름 배열로, 영업과 상인이 번갈아 말하며, 각각 50자 이내, 총 길이 200자 이내;\n3. JSON 형식 이외의 문자는 반환하지 마세요.\n다음은 메이투안 영업과 상인의 통화 내용입니다:\n상인: 안녕하세요.\n영업: 안녕하세요, 메이투안에서 왔습니다. 매장에서 온라인 그룹구매를 하고 계신지 알고 싶습니다.\n상인: 지금은 하지 않습니다. 사장님이 아직 결정하지 않았습니다.\n영업: 알겠습니다. 필요하시면 언제든 연락주세요.\n상인: 네.",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "통화 시나리오의 한 문장 요약",
+                    "能力項": "範囲、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "다시 작성된 대화 흐름",
+                    "能力項": "範囲、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "영업 발언",
+                                "能力項": "範囲、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "상인 발언",
+                                "能力項": "範囲、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    }
+]

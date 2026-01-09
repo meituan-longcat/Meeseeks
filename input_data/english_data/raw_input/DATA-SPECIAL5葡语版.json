@@ -1,0 +1,832 @@
+[
+    {
+        "category": "general_multi",
+        "question": "Mudei-me recentemente para Portugal e muitas vezes não consigo entender o preço quando vou à Costco comprar coisas, quero pedir que você faça um exercício de preço comigo, você precisa usar os itens e preços que dou para desenhar 20 declarações que o balconista dirá no caixa, com uma proporção de 3:1 entre frases longas e frases curtas. O número de palavras em português para frases longas é de pelo menos 60 palavras, e o número de palavras em português para frases curtas não pode exceder 15 palavras. Aqui está uma lista de itens:[1.Um cabo de carregamento: 12 €\n2.Um power bank: 30 €\n3.Um pacote de meias: 8 €\n4.Um frasco de shampoo: 5 €\n5.Um frasco de limpador facial: 7 €\n6.Um pacote de grãos de café: 11 €\n7.Um pacote de massa: 5 €\n8.Uma dúzia de ovos: 13 €\n9.Um frasvco de pasta de dente: 2,5 €\n10.Um frasco de azeite: 6 €\n11.Um pedaço de costeletas de cordeiro: 18 €\n12.Um pacote de camarão: 15 € \n13.Uma caixa de fatias de presunto: 5,5 €\n14.Um pedaço de queijo: 4 €\n15.Um pacote de manteiga: 2,5 €] Quando você cria um extrato, você pode dizer quais itens foram comprados nesta compra, quais foram seus preços e quanto foram gastos no total. Agora vamos fazer esse exercício, cada uma de suas frases precisa conter exatamente 5 expressão numérica, observe que a expressão dos números não deve ser escrita diretamente em algarismos arábicos, mas sim em algarismos portugueses do texto oficial. Por favor, produza-o no seguinte formato padrão: [Frase Longa]: 1. Frase 1 \n2. Frase 2 \n3. Frase 3...... [Frase curta]: 1.Frase 1 \n2.Frase 2\n3.Frase 3......",
+        "corresponding_parts": {
+            "长句子": "请你按照python list的格式，一一抓取模型回复生成的每个[Frase Longa]生成的句子，不要修改模型给出的单词。",
+            "短句子": "请你按照python list的格式，一一抓取模型回复生成的每个[Frase curta]生成的句子，不要修改模型给出的单词。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了句子",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "是否给出了15.0个长句子",
+                "corresponding_part": "长句子",
+                "rule": "item_count:[15.0,15.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否给出了5.0个短句子",
+                "corresponding_part": "短句子",
+                "rule": "item_count:[5.0,5.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "长句子是否不少于60个单词",
+                "corresponding_part": "长句子",
+                "rule": "portuguese_each_length:[60,10000]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "短句子是否不超过15个单词",
+                "corresponding_part": "短句子",
+                "rule": "portuguese_each_length:[1,15]",
+                "dep": [
+                    0
+                ],
+                "能力项": "10~50字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "每个长句子是否使用了5个完整拼写的葡语数字",
+                "corresponding_part": "长句子",
+                "rule": "portuguese_number_spelling:[5,5]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：数字表达",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "每个短句子是否使用了5个完整拼写的葡语数字",
+                "corresponding_part": "短句子",
+                "rule": "portuguese_number_spelling:[5,5]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：数字表达",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Mudei-me recentemente para Portugal e muitas vezes não consigo entender o preço quando vou à Costco comprar coisas, quero pedir que você faça um exercício de preço comigo, você precisa usar os itens e preços que dou para desenhar 20 declarações que o balconista dirá no caixa, com uma proporção de 3:1 entre frases longas e frases curtas. O número de palavras em português para frases longas é de pelo menos 60 palavras, e o número de palavras em português para frases curtas não pode exceder 20 palavras. Aqui está uma lista de itens:[1.Um cabo de carregamento: 12 €\n2.Um power bank: 30 €\n3.Um pacote de meias: 8 €\n4.Um frasco de shampoo: 5 €\n5.Um frasco de limpador facial: 7 €\n6.Um pacote de grãos de café: 11 €\n7.Um pacote de massa: 5 €\n8.Uma dúzia de ovos: 13 €\n9.Um frasvco de pasta de dente: 2,5 €\n10.Um frasco de azeite: 6 €\n11.Um pedaço de costeletas de cordeiro: 18 €\n12.Um pacote de camarão: 15 € \n13.Uma caixa de fatias de presunto: 5,5 €\n14.Um pedaço de queijo: 4 €\n15.Um pacote de manteiga: 2,5 €] Quando você cria um extrato, você pode dizer quais itens foram comprados nesta compra, quais foram seus preços e quanto foram gastos no total. Agora vamos fazer esse exercício, cada uma de suas frases precisa conter exatamente 5 expressão numérica, observe que a expressão dos números não deve ser escrita diretamente em algarismos arábicos, mas sim em algarismos portugueses do texto oficial. Por favor, produza-o no seguinte formato padrão: [Frase Longa]: 1. Frase 1 \n2. Frase 2 \n3. Frase 3...... [Frase curta]: 1.Frase 1 \n2.Frase 2\n3.Frase 3......",
+        "corresponding_parts": {
+            "长句子": "请你按照python list的格式，一一抓取模型回复生成的每个[Frase Longa]生成的句子，不要修改模型给出的单词。",
+            "短句子": "请你按照python list的格式，一一抓取模型回复生成的每个[Frase curta]生成的句子，不要修改模型给出的单词。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了句子",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "是否给出了15.0个长句子",
+                "corresponding_part": "长句子",
+                "rule": "item_count:[15.0,15.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否给出了5.0个短句子",
+                "corresponding_part": "短句子",
+                "rule": "item_count:[5.0,5.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "长句子是否不少于60个单词",
+                "corresponding_part": "长句子",
+                "rule": "portuguese_each_length:[60,10000]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "短句子是否不超过20个单词",
+                "corresponding_part": "短句子",
+                "rule": "portuguese_each_length:[1,20]",
+                "dep": [
+                    0
+                ],
+                "能力项": "10~50字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "每个长句子是否使用了5个完整拼写的葡语数字",
+                "corresponding_part": "长句子",
+                "rule": "portuguese_number_spelling:[5,5]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：数字表达",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "每个短句子是否使用了5个完整拼写的葡语数字",
+                "corresponding_part": "短句子",
+                "rule": "portuguese_number_spelling:[5,5]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：数字表达",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Mudei-me recentemente para Portugal e muitas vezes não consigo entender o preço quando vou à Costco comprar coisas, quero pedir que você faça um exercício de preço comigo, você precisa usar os itens e preços que dou para desenhar 30 declarações que o balconista dirá no caixa, com uma proporção de 2:3 entre frases longas e frases curtas. O número de palavras em português para frases longas é de pelo menos 77 palavras, e o número de palavras em português para frases curtas não pode exceder 15 palavras. Aqui está uma lista de itens:[1.Um cabo de carregamento: 12 €\n2.Um power bank: 30 €\n3.Um pacote de meias: 8 €\n4.Um frasco de shampoo: 5 €\n5.Um frasco de limpador facial: 7 €\n6.Um pacote de grãos de café: 11 €\n7.Um pacote de massa: 5 €\n8.Uma dúzia de ovos: 13 €\n9.Um frasvco de pasta de dente: 2,5 €\n10.Um frasco de azeite: 6 €\n11.Um pedaço de costeletas de cordeiro: 18 €\n12.Um pacote de camarão: 15 € \n13.Uma caixa de fatias de presunto: 5,5 €\n14.Um pedaço de queijo: 4 €\n15.Um pacote de manteiga: 2,5 €] Quando você cria um extrato, você pode dizer quais itens foram comprados nesta compra, quais foram seus preços e quanto foram gastos no total. Agora vamos fazer esse exercício, cada uma de suas frases precisa conter exatamente 6 expressão numérica, observe que a expressão dos números não deve ser escrita diretamente em algarismos arábicos, mas sim em algarismos portugueses do texto oficial. Por favor, produza-o no seguinte formato padrão: [Frase Longa]: 1. Frase 1 \n2. Frase 2 \n3. Frase 3...... [Frase curta]: 1.Frase 1 \n2.Frase 2\n3.Frase 3......",
+        "corresponding_parts": {
+            "长句子": "请你按照python list的格式，一一抓取模型回复生成的每个[Frase Longa]生成的句子，不要修改模型给出的单词。",
+            "短句子": "请你按照python list的格式，一一抓取模型回复生成的每个[Frase curta]生成的句子，不要修改模型给出的单词。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了句子",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "是否给出了12.0个长句子",
+                "corresponding_part": "长句子",
+                "rule": "item_count:[12.0,12.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否给出了18.0个短句子",
+                "corresponding_part": "短句子",
+                "rule": "item_count:[18.0,18.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "长句子是否不少于77个单词",
+                "corresponding_part": "长句子",
+                "rule": "portuguese_each_length:[77,10000]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "短句子是否不超过15个单词",
+                "corresponding_part": "短句子",
+                "rule": "portuguese_each_length:[1,15]",
+                "dep": [
+                    0
+                ],
+                "能力项": "10~50字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "每个长句子是否使用了6个完整拼写的葡语数字",
+                "corresponding_part": "长句子",
+                "rule": "portuguese_number_spelling:[6,6]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：数字表达",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "每个短句子是否使用了6个完整拼写的葡语数字",
+                "corresponding_part": "短句子",
+                "rule": "portuguese_number_spelling:[6,6]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：数字表达",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Mudei-me recentemente para Portugal e muitas vezes não consigo entender o preço quando vou à Costco comprar coisas, quero pedir que você faça um exercício de preço comigo, você precisa usar os itens e preços que dou para desenhar 30 declarações que o balconista dirá no caixa, com uma proporção de 2:3 entre frases longas e frases curtas. O número de palavras em português para frases longas é de pelo menos 77 palavras, e o número de palavras em português para frases curtas não pode exceder 20 palavras. Aqui está uma lista de itens:[1.Um cabo de carregamento: 12 €\n2.Um power bank: 30 €\n3.Um pacote de meias: 8 €\n4.Um frasco de shampoo: 5 €\n5.Um frasco de limpador facial: 7 €\n6.Um pacote de grãos de café: 11 €\n7.Um pacote de massa: 5 €\n8.Uma dúzia de ovos: 13 €\n9.Um frasvco de pasta de dente: 2,5 €\n10.Um frasco de azeite: 6 €\n11.Um pedaço de costeletas de cordeiro: 18 €\n12.Um pacote de camarão: 15 € \n13.Uma caixa de fatias de presunto: 5,5 €\n14.Um pedaço de queijo: 4 €\n15.Um pacote de manteiga: 2,5 €] Quando você cria um extrato, você pode dizer quais itens foram comprados nesta compra, quais foram seus preços e quanto foram gastos no total. Agora vamos fazer esse exercício, cada uma de suas frases precisa conter exatamente 6 expressão numérica, observe que a expressão dos números não deve ser escrita diretamente em algarismos arábicos, mas sim em algarismos portugueses do texto oficial. Por favor, produza-o no seguinte formato padrão: [Frase Longa]: 1. Frase 1 \n2. Frase 2 \n3. Frase 3...... [Frase curta]: 1.Frase 1 \n2.Frase 2\n3.Frase 3......",
+        "corresponding_parts": {
+            "长句子": "请你按照python list的格式，一一抓取模型回复生成的每个[Frase Longa]生成的句子，不要修改模型给出的单词。",
+            "短句子": "请你按照python list的格式，一一抓取模型回复生成的每个[Frase curta]生成的句子，不要修改模型给出的单词。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了句子",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "是否给出了12.0个长句子",
+                "corresponding_part": "长句子",
+                "rule": "item_count:[12.0,12.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否给出了18.0个短句子",
+                "corresponding_part": "短句子",
+                "rule": "item_count:[18.0,18.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "长句子是否不少于77个单词",
+                "corresponding_part": "长句子",
+                "rule": "portuguese_each_length:[77,10000]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "短句子是否不超过20个单词",
+                "corresponding_part": "短句子",
+                "rule": "portuguese_each_length:[1,20]",
+                "dep": [
+                    0
+                ],
+                "能力项": "10~50字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "每个长句子是否使用了6个完整拼写的葡语数字",
+                "corresponding_part": "长句子",
+                "rule": "portuguese_number_spelling:[6,6]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：数字表达",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "每个短句子是否使用了6个完整拼写的葡语数字",
+                "corresponding_part": "短句子",
+                "rule": "portuguese_number_spelling:[6,6]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：数字表达",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Mudei-me recentemente para Portugal e muitas vezes não consigo entender o preço quando vou à Costco comprar coisas, quero pedir que você faça um exercício de preço comigo, você precisa usar os itens e preços que dou para desenhar 25 declarações que o balconista dirá no caixa, com uma proporção de 3:2 entre frases longas e frases curtas. O número de palavras em português para frases longas é de pelo menos 82 palavras, e o número de palavras em português para frases curtas não pode exceder 15 palavras. Aqui está uma lista de itens:[1.Um cabo de carregamento: 12 €\n2.Um power bank: 30 €\n3.Um pacote de meias: 8 €\n4.Um frasco de shampoo: 5 €\n5.Um frasco de limpador facial: 7 €\n6.Um pacote de grãos de café: 11 €\n7.Um pacote de massa: 5 €\n8.Uma dúzia de ovos: 13 €\n9.Um frasvco de pasta de dente: 2,5 €\n10.Um frasco de azeite: 6 €\n11.Um pedaço de costeletas de cordeiro: 18 €\n12.Um pacote de camarão: 15 € \n13.Uma caixa de fatias de presunto: 5,5 €\n14.Um pedaço de queijo: 4 €\n15.Um pacote de manteiga: 2,5 €] Quando você cria um extrato, você pode dizer quais itens foram comprados nesta compra, quais foram seus preços e quanto foram gastos no total. Agora vamos fazer esse exercício, cada uma de suas frases precisa conter exatamente 8 expressão numérica, observe que a expressão dos números não deve ser escrita diretamente em algarismos arábicos, mas sim em algarismos portugueses do texto oficial. Por favor, produza-o no seguinte formato padrão: [Frase Longa]: 1. Frase 1 \n2. Frase 2 \n3. Frase 3...... [Frase curta]: 1.Frase 1 \n2.Frase 2\n3.Frase 3......",
+        "corresponding_parts": {
+            "长句子": "请你按照python list的格式，一一抓取模型回复生成的每个[Frase Longa]生成的句子，不要修改模型给出的单词。",
+            "短句子": "请你按照python list的格式，一一抓取模型回复生成的每个[Frase curta]生成的句子，不要修改模型给出的单词。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了句子",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "是否给出了15.0个长句子",
+                "corresponding_part": "长句子",
+                "rule": "item_count:[15.0,15.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否给出了10.0个短句子",
+                "corresponding_part": "短句子",
+                "rule": "item_count:[10.0,10.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "长句子是否不少于82个单词",
+                "corresponding_part": "长句子",
+                "rule": "portuguese_each_length:[82,10000]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "短句子是否不超过15个单词",
+                "corresponding_part": "短句子",
+                "rule": "portuguese_each_length:[1,15]",
+                "dep": [
+                    0
+                ],
+                "能力项": "10~50字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "每个长句子是否使用了8个完整拼写的葡语数字",
+                "corresponding_part": "长句子",
+                "rule": "portuguese_number_spelling:[8,8]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：数字表达",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "每个短句子是否使用了8个完整拼写的葡语数字",
+                "corresponding_part": "短句子",
+                "rule": "portuguese_number_spelling:[8,8]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：数字表达",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Mudei-me recentemente para Portugal e muitas vezes não consigo entender o preço quando vou à Costco comprar coisas, quero pedir que você faça um exercício de preço comigo, você precisa usar os itens e preços que dou para desenhar 25 declarações que o balconista dirá no caixa, com uma proporção de 3:2 entre frases longas e frases curtas. O número de palavras em português para frases longas é de pelo menos 82 palavras, e o número de palavras em português para frases curtas não pode exceder 20 palavras. Aqui está uma lista de itens:[1.Um cabo de carregamento: 12 €\n2.Um power bank: 30 €\n3.Um pacote de meias: 8 €\n4.Um frasco de shampoo: 5 €\n5.Um frasco de limpador facial: 7 €\n6.Um pacote de grãos de café: 11 €\n7.Um pacote de massa: 5 €\n8.Uma dúzia de ovos: 13 €\n9.Um frasvco de pasta de dente: 2,5 €\n10.Um frasco de azeite: 6 €\n11.Um pedaço de costeletas de cordeiro: 18 €\n12.Um pacote de camarão: 15 € \n13.Uma caixa de fatias de presunto: 5,5 €\n14.Um pedaço de queijo: 4 €\n15.Um pacote de manteiga: 2,5 €] Quando você cria um extrato, você pode dizer quais itens foram comprados nesta compra, quais foram seus preços e quanto foram gastos no total. Agora vamos fazer esse exercício, cada uma de suas frases precisa conter exatamente 8 expressão numérica, observe que a expressão dos números não deve ser escrita diretamente em algarismos arábicos, mas sim em algarismos portugueses do texto oficial. Por favor, produza-o no seguinte formato padrão: [Frase Longa]: 1. Frase 1 \n2. Frase 2 \n3. Frase 3...... [Frase curta]: 1.Frase 1 \n2.Frase 2\n3.Frase 3......",
+        "corresponding_parts": {
+            "长句子": "请你按照python list的格式，一一抓取模型回复生成的每个[Frase Longa]生成的句子，不要修改模型给出的单词。",
+            "短句子": "请你按照python list的格式，一一抓取模型回复生成的每个[Frase curta]生成的句子，不要修改模型给出的单词。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了句子",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "是否给出了15.0个长句子",
+                "corresponding_part": "长句子",
+                "rule": "item_count:[15.0,15.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否给出了10.0个短句子",
+                "corresponding_part": "短句子",
+                "rule": "item_count:[10.0,10.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "长句子是否不少于82个单词",
+                "corresponding_part": "长句子",
+                "rule": "portuguese_each_length:[82,10000]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "短句子是否不超过20个单词",
+                "corresponding_part": "短句子",
+                "rule": "portuguese_each_length:[1,20]",
+                "dep": [
+                    0
+                ],
+                "能力项": "10~50字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "每个长句子是否使用了8个完整拼写的葡语数字",
+                "corresponding_part": "长句子",
+                "rule": "portuguese_number_spelling:[8,8]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：数字表达",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "每个短句子是否使用了8个完整拼写的葡语数字",
+                "corresponding_part": "短句子",
+                "rule": "portuguese_number_spelling:[8,8]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：数字表达",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Mudei-me recentemente para Portugal e muitas vezes não consigo entender o preço quando vou à Costco comprar coisas, quero pedir que você faça um exercício de preço comigo, você precisa usar os itens e preços que dou para desenhar 30 declarações que o balconista dirá no caixa, com uma proporção de 4:2 entre frases longas e frases curtas. O número de palavras em português para frases longas é de pelo menos 90 palavras, e o número de palavras em português para frases curtas não pode exceder 15 palavras. Aqui está uma lista de itens:[1.Um cabo de carregamento: 12 €\n2.Um power bank: 30 €\n3.Um pacote de meias: 8 €\n4.Um frasco de shampoo: 5 €\n5.Um frasco de limpador facial: 7 €\n6.Um pacote de grãos de café: 11 €\n7.Um pacote de massa: 5 €\n8.Uma dúzia de ovos: 13 €\n9.Um frasvco de pasta de dente: 2,5 €\n10.Um frasco de azeite: 6 €\n11.Um pedaço de costeletas de cordeiro: 18 €\n12.Um pacote de camarão: 15 € \n13.Uma caixa de fatias de presunto: 5,5 €\n14.Um pedaço de queijo: 4 €\n15.Um pacote de manteiga: 2,5 €] Quando você cria um extrato, você pode dizer quais itens foram comprados nesta compra, quais foram seus preços e quanto foram gastos no total. Agora vamos fazer esse exercício, cada uma de suas frases precisa conter exatamente 4 expressão numérica, observe que a expressão dos números não deve ser escrita diretamente em algarismos arábicos, mas sim em algarismos portugueses do texto oficial. Por favor, produza-o no seguinte formato padrão: [Frase Longa]: 1. Frase 1 \n2. Frase 2 \n3. Frase 3...... [Frase curta]: 1.Frase 1 \n2.Frase 2\n3.Frase 3......",
+        "corresponding_parts": {
+            "长句子": "请你按照python list的格式，一一抓取模型回复生成的每个[Frase Longa]生成的句子，不要修改模型给出的单词。",
+            "短句子": "请你按照python list的格式，一一抓取模型回复生成的每个[Frase curta]生成的句子，不要修改模型给出的单词。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了句子",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "是否给出了20.0个长句子",
+                "corresponding_part": "长句子",
+                "rule": "item_count:[20.0,20.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否给出了10.0个短句子",
+                "corresponding_part": "短句子",
+                "rule": "item_count:[10.0,10.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "长句子是否不少于90个单词",
+                "corresponding_part": "长句子",
+                "rule": "portuguese_each_length:[90,10000]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "短句子是否不超过15个单词",
+                "corresponding_part": "短句子",
+                "rule": "portuguese_each_length:[1,15]",
+                "dep": [
+                    0
+                ],
+                "能力项": "10~50字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "每个长句子是否使用了4个完整拼写的葡语数字",
+                "corresponding_part": "长句子",
+                "rule": "portuguese_number_spelling:[4,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：数字表达",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "每个短句子是否使用了4个完整拼写的葡语数字",
+                "corresponding_part": "短句子",
+                "rule": "portuguese_number_spelling:[4,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：数字表达",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Mudei-me recentemente para Portugal e muitas vezes não consigo entender o preço quando vou à Costco comprar coisas, quero pedir que você faça um exercício de preço comigo, você precisa usar os itens e preços que dou para desenhar 30 declarações que o balconista dirá no caixa, com uma proporção de 4:2 entre frases longas e frases curtas. O número de palavras em português para frases longas é de pelo menos 90 palavras, e o número de palavras em português para frases curtas não pode exceder 20 palavras. Aqui está uma lista de itens:[1.Um cabo de carregamento: 12 €\n2.Um power bank: 30 €\n3.Um pacote de meias: 8 €\n4.Um frasco de shampoo: 5 €\n5.Um frasco de limpador facial: 7 €\n6.Um pacote de grãos de café: 11 €\n7.Um pacote de massa: 5 €\n8.Uma dúzia de ovos: 13 €\n9.Um frasvco de pasta de dente: 2,5 €\n10.Um frasco de azeite: 6 €\n11.Um pedaço de costeletas de cordeiro: 18 €\n12.Um pacote de camarão: 15 € \n13.Uma caixa de fatias de presunto: 5,5 €\n14.Um pedaço de queijo: 4 €\n15.Um pacote de manteiga: 2,5 €] Quando você cria um extrato, você pode dizer quais itens foram comprados nesta compra, quais foram seus preços e quanto foram gastos no total. Agora vamos fazer esse exercício, cada uma de suas frases precisa conter exatamente 4 expressão numérica, observe que a expressão dos números não deve ser escrita diretamente em algarismos arábicos, mas sim em algarismos portugueses do texto oficial. Por favor, produza-o no seguinte formato padrão: [Frase Longa]: 1. Frase 1 \n2. Frase 2 \n3. Frase 3...... [Frase curta]: 1.Frase 1 \n2.Frase 2\n3.Frase 3......",
+        "corresponding_parts": {
+            "长句子": "请你按照python list的格式，一一抓取模型回复生成的每个[Frase Longa]生成的句子，不要修改模型给出的单词。",
+            "短句子": "请你按照python list的格式，一一抓取模型回复生成的每个[Frase curta]生成的句子，不要修改模型给出的单词。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了句子",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "是否给出了20.0个长句子",
+                "corresponding_part": "长句子",
+                "rule": "item_count:[20.0,20.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否给出了10.0个短句子",
+                "corresponding_part": "短句子",
+                "rule": "item_count:[10.0,10.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "长句子是否不少于90个单词",
+                "corresponding_part": "长句子",
+                "rule": "portuguese_each_length:[90,10000]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "短句子是否不超过20个单词",
+                "corresponding_part": "短句子",
+                "rule": "portuguese_each_length:[1,20]",
+                "dep": [
+                    0
+                ],
+                "能力项": "10~50字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "每个长句子是否使用了4个完整拼写的葡语数字",
+                "corresponding_part": "长句子",
+                "rule": "portuguese_number_spelling:[4,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：数字表达",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "每个短句子是否使用了4个完整拼写的葡语数字",
+                "corresponding_part": "短句子",
+                "rule": "portuguese_number_spelling:[4,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：数字表达",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Mudei-me recentemente para Portugal e muitas vezes não consigo entender o preço quando vou à Costco comprar coisas, quero pedir que você faça um exercício de preço comigo, você precisa usar os itens e preços que dou para desenhar 35 declarações que o balconista dirá no caixa, com uma proporção de 2:5 entre frases longas e frases curtas. O número de palavras em português para frases longas é de pelo menos 100 palavras, e o número de palavras em português para frases curtas não pode exceder 15 palavras. Aqui está uma lista de itens:[1.Um cabo de carregamento: 12 €\n2.Um power bank: 30 €\n3.Um pacote de meias: 8 €\n4.Um frasco de shampoo: 5 €\n5.Um frasco de limpador facial: 7 €\n6.Um pacote de grãos de café: 11 €\n7.Um pacote de massa: 5 €\n8.Uma dúzia de ovos: 13 €\n9.Um frasvco de pasta de dente: 2,5 €\n10.Um frasco de azeite: 6 €\n11.Um pedaço de costeletas de cordeiro: 18 €\n12.Um pacote de camarão: 15 € \n13.Uma caixa de fatias de presunto: 5,5 €\n14.Um pedaço de queijo: 4 €\n15.Um pacote de manteiga: 2,5 €] Quando você cria um extrato, você pode dizer quais itens foram comprados nesta compra, quais foram seus preços e quanto foram gastos no total. Agora vamos fazer esse exercício, cada uma de suas frases precisa conter exatamente 7 expressão numérica, observe que a expressão dos números não deve ser escrita diretamente em algarismos arábicos, mas sim em algarismos portugueses do texto oficial. Por favor, produza-o no seguinte formato padrão: [Frase Longa]: 1. Frase 1 \n2. Frase 2 \n3. Frase 3...... [Frase curta]: 1.Frase 1 \n2.Frase 2\n3.Frase 3......",
+        "corresponding_parts": {
+            "长句子": "请你按照python list的格式，一一抓取模型回复生成的每个[Frase Longa]生成的句子，不要修改模型给出的单词。",
+            "短句子": "请你按照python list的格式，一一抓取模型回复生成的每个[Frase curta]生成的句子，不要修改模型给出的单词。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了句子",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "是否给出了10.0个长句子",
+                "corresponding_part": "长句子",
+                "rule": "item_count:[10.0,10.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否给出了25.0个短句子",
+                "corresponding_part": "短句子",
+                "rule": "item_count:[25.0,25.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "长句子是否不少于100个单词",
+                "corresponding_part": "长句子",
+                "rule": "portuguese_each_length:[100,10000]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "短句子是否不超过15个单词",
+                "corresponding_part": "短句子",
+                "rule": "portuguese_each_length:[1,15]",
+                "dep": [
+                    0
+                ],
+                "能力项": "10~50字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "每个长句子是否使用了7个完整拼写的葡语数字",
+                "corresponding_part": "长句子",
+                "rule": "portuguese_number_spelling:[7,7]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：数字表达",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "每个短句子是否使用了7个完整拼写的葡语数字",
+                "corresponding_part": "短句子",
+                "rule": "portuguese_number_spelling:[7,7]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：数字表达",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Mudei-me recentemente para Portugal e muitas vezes não consigo entender o preço quando vou à Costco comprar coisas, quero pedir que você faça um exercício de preço comigo, você precisa usar os itens e preços que dou para desenhar 35 declarações que o balconista dirá no caixa, com uma proporção de 2:5 entre frases longas e frases curtas. O número de palavras em português para frases longas é de pelo menos 100 palavras, e o número de palavras em português para frases curtas não pode exceder 20 palavras. Aqui está uma lista de itens:[1.Um cabo de carregamento: 12 €\n2.Um power bank: 30 €\n3.Um pacote de meias: 8 €\n4.Um frasco de shampoo: 5 €\n5.Um frasco de limpador facial: 7 €\n6.Um pacote de grãos de café: 11 €\n7.Um pacote de massa: 5 €\n8.Uma dúzia de ovos: 13 €\n9.Um frasvco de pasta de dente: 2,5 €\n10.Um frasco de azeite: 6 €\n11.Um pedaço de costeletas de cordeiro: 18 €\n12.Um pacote de camarão: 15 € \n13.Uma caixa de fatias de presunto: 5,5 €\n14.Um pedaço de queijo: 4 €\n15.Um pacote de manteiga: 2,5 €] Quando você cria um extrato, você pode dizer quais itens foram comprados nesta compra, quais foram seus preços e quanto foram gastos no total. Agora vamos fazer esse exercício, cada uma de suas frases precisa conter exatamente 7 expressão numérica, observe que a expressão dos números não deve ser escrita diretamente em algarismos arábicos, mas sim em algarismos portugueses do texto oficial. Por favor, produza-o no seguinte formato padrão: [Frase Longa]: 1. Frase 1 \n2. Frase 2 \n3. Frase 3...... [Frase curta]: 1.Frase 1 \n2.Frase 2\n3.Frase 3......",
+        "corresponding_parts": {
+            "长句子": "请你按照python list的格式，一一抓取模型回复生成的每个[Frase Longa]生成的句子，不要修改模型给出的单词。",
+            "短句子": "请你按照python list的格式，一一抓取模型回复生成的每个[Frase curta]生成的句子，不要修改模型给出的单词。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了句子",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "是否给出了10.0个长句子",
+                "corresponding_part": "长句子",
+                "rule": "item_count:[10.0,10.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否给出了25.0个短句子",
+                "corresponding_part": "短句子",
+                "rule": "item_count:[25.0,25.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "长句子是否不少于100个单词",
+                "corresponding_part": "长句子",
+                "rule": "portuguese_each_length:[100,10000]",
+                "dep": [
+                    0
+                ],
+                "能力项": "50~200字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "短句子是否不超过20个单词",
+                "corresponding_part": "短句子",
+                "rule": "portuguese_each_length:[1,20]",
+                "dep": [
+                    0
+                ],
+                "能力项": "10~50字、范围",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "每个长句子是否使用了7个完整拼写的葡语数字",
+                "corresponding_part": "长句子",
+                "rule": "portuguese_number_spelling:[7,7]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：数字表达",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "每个短句子是否使用了7个完整拼写的葡语数字",
+                "corresponding_part": "短句子",
+                "rule": "portuguese_number_spelling:[7,7]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：数字表达",
+                "被依赖": false
+            }
+        ]
+    }
+]

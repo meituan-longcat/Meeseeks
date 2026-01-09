@@ -4,8 +4,8 @@ import sys
 
 # 添加父目录到Python路径
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils_eng import to_lowercase_list
-from rule_utils_eng._clean_up_text import clean_up_text
+from src_code.utils_eng import to_lowercase_list
+from ._clean_up_text import clean_up_text
 
 # 根据接收的language不同，只保留对应language的内容
 def model_repeat_each(model_response):
@@ -24,10 +24,10 @@ def model_repeat_each(model_response):
     duplicates = [item for item, count in item_count.items() if count > 1]
     
     if duplicates:
-        duplicate_info = ", ".join([f"'{item}' (appears {item_count[item]} times)" for item in duplicates])
-        return 0, f"❌ Duplicates found: {duplicate_info}"
+        duplicate_info = ", ".join([f"'{item}' (出现{item_count[item]}次)" for item in duplicates])
+        return 0, f"❌ 有重复：{duplicate_info}"
     
-    return 1, "✅ No duplicates"
+    return 1, "✅ 无重复"
 
 def model_no_word_repeat(model_response):
     model_response = [clean_up_text(item) for item in model_response]

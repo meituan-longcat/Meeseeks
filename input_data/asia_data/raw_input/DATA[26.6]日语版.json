@@ -1,0 +1,552 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "あなたは営業アシスタントです。以下の通話内容のシナリオをまず要約し、通話内容を流暢な会話の流れに書き直してください。書き直した内容は200文字を超えてはいけません。\n注意：\n1. 書き直した対話の流暢性を確保する必要があります。\n2. 書き直した対話の関連性を確保する必要があります：書き直した会話のテーマは元の会話から逸脱してはいけません。\n3. 書き直した会話には元の会話に含まれていない情報を含めてはいけません。\n4. 書き直した会話が論理的に明確で、簡潔で、より高品質であることを確保する必要があります。\n5. 書き直した会話では、商店主と営業の口調は口語的で、それぞれの役割に従い、営業は礼儀正しさに注意する必要があります。\n6. JSON形式で出力してください。例：{\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\n出力要件：\n1. JSON形式を使用して抽出した情報を返してください；\n2. \"scenario_summary\"は一文のシナリオ説明、\"dialogue_rewrite\"は対話フロー配列で、営業と商店主が交互に話し、それぞれ50文字以内、総長200文字以内；\n3. JSON形式以外の文字は返さないでください。\n以下は美団営業と商店主の通話内容です：\n商店主：こんにちは、四川料理店です。\n営業：こんにちは、美団の者です。最近、お店でオンラインプロモーションのご需要はございますか？\n商店主：最近は常連客に頼っていて、あまりプロモーションはしていません。\n営業：美団では新しい活動があり、広告費用が非常にお得で、新規顧客の獲得にお役立ていただけます。\n商店主：うちの社長が出張中なので、戻ってから相談する必要があります。\n営業：承知いたしました。来週また連絡させていただきます。お商売繁盛をお祈りしております！\n商店主：はい、ありがとうございます。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "通話シナリオの一文要約",
+                    "能力項": "範囲、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "書き直された対話フロー",
+                    "能力項": "範囲、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "営業の発言",
+                                "能力項": "範囲、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "商店主の発言",
+                                "能力項": "範囲、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは営業アシスタントです。以下の通話内容のシナリオをまず要約し、通話内容を流暢な会話の流れに書き直してください。書き直した内容は200文字を超えてはいけません。\n注意：\n1. 書き直した対話の流暢性を確保する必要があります。\n2. 書き直した対話の関連性を確保する必要があります：書き直した会話のテーマは元の会話から逸脱してはいけません。\n3. 書き直した会話には元の会話に含まれていない情報を含めてはいけません。\n4. 書き直した会話が論理的に明確で、簡潔で、より高品質であることを確保する必要があります。\n5. 書き直した会話では、商店主と営業の口調は口語的で、それぞれの役割に従い、営業は礼儀正しさに注意する必要があります。\n6. JSON形式で出力してください。例：{\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\n出力要件：\n1. JSON形式を使用して抽出した情報を返してください；\n2. \"scenario_summary\"は一文のシナリオ説明、\"dialogue_rewrite\"は対話フロー配列で、営業と商店主が交互に話し、それぞれ50文字以内、総長200文字以内；\n3. JSON形式以外の文字は返さないでください。\n以下は美団営業と商店主の通話内容です：\n商店主：こんにちは、悦動フィットネスです。\n営業：こんにちは、お店で現在グループ購入やオンラインプロモーションをされていますか？\n商店主：今は主に会員の紹介に頼っていて、オンライングループ購入はしていません。\n営業：美団のグループ購入活動は非常に強力で、同業界のフィットネスセンターはみな良い結果を出しています。\n商店主：WeChat追加して詳しく話せますか？\n営業：もちろんです。WeChat IDを教えてください。\n商店主：はい、後で送ります。\n営業：ありがとうございます。協力をお待ちしております！",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "通話シナリオの一文要約",
+                    "能力項": "範囲、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "書き直された対話フロー",
+                    "能力項": "範囲、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "営業の発言",
+                                "能力項": "範囲、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "商店主の発言",
+                                "能力項": "範囲、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは営業アシスタントです。以下の通話内容のシナリオをまず要約し、通話内容を流暢な会話の流れに書き直してください。書き直した内容は200文字を超えてはいけません。\n注意：\n1. 書き直した対話の流暢性を確保する必要があります。\n2. 書き直した対話の関連性を確保する必要があります：書き直した会話のテーマは元の会話から逸脱してはいけません。\n3. 書き直した会話には元の会話に含まれていない情報を含めてはいけません。\n4. 書き直した会話が論理的に明確で、簡潔で、より高品質であることを確保する必要があります。\n5. 書き直した会話では、商店主と営業の口調は口語的で、それぞれの役割に従い、営業は礼儀正しさに注意する必要があります。\n6. JSON形式で出力してください。例：{\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\n出力要件：\n1. JSON形式を使用して抽出した情報を返してください；\n2. \"scenario_summary\"は一文のシナリオ説明、\"dialogue_rewrite\"は対話フロー配列で、営業と商店主が交互に話し、それぞれ50文字以内、総長200文字以内；\n3. JSON形式以外の文字は返さないでください。\n以下は美団営業と商店主の通話内容です：\n商店主：こんにちは。\n営業：こんにちは、華天小築民宿さんですか？\n商店主：はい、どちら様ですか？\n営業：美団の者です。民宿で美団の広告プロモーションをご希望でしょうか？\n商店主：現在注文は順調なので、今のところ考えていません。\n営業：承知いたしました。今後必要でしたらお気軽にご連絡ください。\n商店主：はい、ありがとうございます。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "通話シナリオの一文要約",
+                    "能力項": "範囲、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "書き直された対話フロー",
+                    "能力項": "範囲、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "営業の発言",
+                                "能力項": "範囲、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "商店主の発言",
+                                "能力項": "範囲、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは営業アシスタントです。以下の通話内容のシナリオをまず要約し、通話内容を流暢な会話の流れに書き直してください。書き直した内容は200文字を超えてはいけません。\n注意：\n1. 書き直した対話の流暢性を確保する必要があります。\n2. 書き直した対話の関連性を確保する必要があります：書き直した会話のテーマは元の会話から逸脱してはいけません。\n3. 書き直した会話には元の会話に含まれていない情報を含めてはいけません。\n4. 書き直した会話が論理的に明確で、簡潔で、より高品質であることを確保する必要があります。\n5. 書き直した会話では、商店主と営業の口調は口語的で、それぞれの役割に従い、営業は礼儀正しさに注意する必要があります。\n6. JSON形式で出力してください。例：{\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\n出力要件：\n1. JSON形式を使用して抽出した情報を返してください；\n2. \"scenario_summary\"は一文のシナリオ説明、\"dialogue_rewrite\"は対話フロー配列で、営業と商店主が交互に話し、それぞれ50文字以内、総長200文字以内；\n3. JSON形式以外の文字は返さないでください。\n以下は美団営業と商店主の通話内容です：\n商店主：こんにちは。\n営業：こんにちは、美団の者です。お店でオンラインプロモーションをされていますか？\n商店主：今のところしていません。社長がまだ手配していません。\n営業：ご興味がございましたら、いつでもご連絡ください。美団では最近優遇政策があります。\n商店主：はい、承知しました。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "通話シナリオの一文要約",
+                    "能力項": "範囲、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "書き直された対話フロー",
+                    "能力項": "範囲、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "営業の発言",
+                                "能力項": "範囲、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "商店主の発言",
+                                "能力項": "範囲、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは営業アシスタントです。以下の通話内容のシナリオをまず要約し、通話内容を流暢な会話の流れに書き直してください。書き直した内容は200文字を超えてはいけません。\n注意：\n1. 書き直した対話の流暢性を確保する必要があります。\n2. 書き直した対話の関連性を確保する必要があります：書き直した会話のテーマは元の会話から逸脱してはいけません。\n3. 書き直した会話には元の会話に含まれていない情報を含めてはいけません。\n4. 書き直した会話が論理的に明確で、簡潔で、より高品質であることを確保する必要があります。\n5. 書き直した会話では、商店主と営業の口調は口語的で、それぞれの役割に従い、営業は礼儀正しさに注意する必要があります。\n6. JSON形式で出力してください。例：{\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\n出力要件：\n1. JSON形式を使用して抽出した情報を返してください；\n2. \"scenario_summary\"は一文のシナリオ説明、\"dialogue_rewrite\"は対話フロー配列で、営業と商店主が交互に話し、それぞれ50文字以内、総長200文字以内；\n3. JSON形式以外の文字は返さないでください。\n以下は美団営業と商店主の通話内容です：\n商店主：こんにちは、楽享KTVです。\n営業：こんにちは、美団でKTV専用プロモーション活動を行っています。お店で参加にご興味はございますか？\n商店主：今のところ予定はありません。社長が検討中です。\n営業：承知いたしました。後でお考えがございましたらいつでもご連絡ください。\n商店主：はい、ありがとうございます。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "通話シナリオの一文要約",
+                    "能力項": "範囲、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "書き直された対話フロー",
+                    "能力項": "範囲、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "営業の発言",
+                                "能力項": "範囲、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "商店主の発言",
+                                "能力項": "範囲、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは営業アシスタントです。以下の通話内容のシナリオをまず要約し、通話内容を流暢な会話の流れに書き直してください。書き直した内容は200文字を超えてはいけません。\n注意：\n1. 書き直した対話の流暢性を確保する必要があります。\n2. 書き直した対話の関連性を確保する必要があります：書き直した会話のテーマは元の会話から逸脱してはいけません。\n3. 書き直した会話には元の会話に含まれていない情報を含めてはいけません。\n4. 書き直した会話が論理的に明確で、簡潔で、より高品質であることを確保する必要があります。\n5. 書き直した会話では、商店主と営業の口調は口語的で、それぞれの役割に従い、営業は礼儀正しさに注意する必要があります。\n6. JSON形式で出力してください。例：{\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\n出力要件：\n1. JSON形式を使用して抽出した情報を返してください；\n2. \"scenario_summary\"は一文のシナリオ説明、\"dialogue_rewrite\"は対話フロー配列で、営業と商店主が交互に話し、それぞれ50文字以内、総長200文字以内；\n3. JSON形式以外の文字は返さないでください。\n以下は美団営業と商店主の通話内容です：\n商店主：こんにちは、九月珈琲です。\n営業：こんにちは、お店で最近オンラインプロモーションをされていますか？\n商店主：やっていますが、最近予算が限られています。\n営業：美団では最近活動があり、広告費用がより優遇されています。\n商店主：はい、必要でしたら連絡します。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "通話シナリオの一文要約",
+                    "能力項": "範囲、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "書き直された対話フロー",
+                    "能力項": "範囲、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "営業の発言",
+                                "能力項": "範囲、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "商店主の発言",
+                                "能力項": "範囲、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは営業アシスタントです。以下の通話内容のシナリオをまず要約し、通話内容を流暢な会話の流れに書き直してください。書き直した内容は200文字を超えてはいけません。\n注意：\n1. 書き直した対話の流暢性を確保する必要があります。\n2. 書き直した対話の関連性を確保する必要があります：書き直した会話のテーマは元の会話から逸脱してはいけません。\n3. 書き直した会話には元の会話に含まれていない情報を含めてはいけません。\n4. 書き直した会話が論理的に明確で、簡潔で、より高品質であることを確保する必要があります。\n5. 書き直した会話では、商店主と営業の口調は口語的で、それぞれの役割に従い、営業は礼儀正しさに注意する必要があります。\n6. JSON形式で出力してください。例：{\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\n出力要件：\n1. JSON形式を使用して抽出した情報を返してください；\n2. \"scenario_summary\"は一文のシナリオ説明、\"dialogue_rewrite\"は対話フロー配列で、営業と商店主が交互に話し、それぞれ50文字以内、総長200文字以内；\n3. JSON形式以外の文字は返さないでください。\n以下は美団営業と商店主の通話内容です：\n商店主：こんにちは。\n営業：こんにちは、ハッピー花屋さんですか？\n商店主：はい、どちら様ですか？\n営業：美団の者です。オンライン広告プロモーションをされたことはありますか？\n商店主：今のところありません。必要でしたら連絡します。\n営業：はい、お商売繁盛をお祈りしております！",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "通話シナリオの一文要約",
+                    "能力項": "範囲、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "書き直された対話フロー",
+                    "能力項": "範囲、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "営業の発言",
+                                "能力項": "範囲、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "商店主の発言",
+                                "能力項": "範囲、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは営業アシスタントです。以下の通話内容のシナリオをまず要約し、通話内容を流暢な会話の流れに書き直してください。書き直した内容は200文字を超えてはいけません。\n注意：\n1. 書き直した対話の流暢性を確保する必要があります。\n2. 書き直した対話の関連性を確保する必要があります：書き直した会話のテーマは元の会話から逸脱してはいけません。\n3. 書き直した会話には元の会話に含まれていない情報を含めてはいけません。\n4. 書き直した会話が論理的に明確で、簡潔で、より高品質であることを確保する必要があります。\n5. 書き直した会話では、商店主と営業の口調は口語的で、それぞれの役割に従い、営業は礼儀正しさに注意する必要があります。\n6. JSON形式で出力してください。例：{\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\n出力要件：\n1. JSON形式を使用して抽出した情報を返してください；\n2. \"scenario_summary\"は一文のシナリオ説明、\"dialogue_rewrite\"は対話フロー配列で、営業と商店主が交互に話し、それぞれ50文字以内、総長200文字以内；\n3. JSON形式以外の文字は返さないでください。\n以下は美団営業と商店主の通話内容です：\n商店主：こんにちは。\n営業：こんにちは、サンシャインホテルさんですか？\n商店主：はい。\n営業：美団の者です。お店でオンラインプロモーションをされていますか？\n商店主：今は主に常連客に頼っていて、プロモーションはしていません。\n営業：承知いたしました。必要でしたらいつでもご連絡ください。\n商店主：はい、ありがとうございます。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "通話シナリオの一文要約",
+                    "能力項": "範囲、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "書き直された対話フロー",
+                    "能力項": "範囲、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "営業の発言",
+                                "能力項": "範囲、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "商店主の発言",
+                                "能力項": "範囲、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは営業アシスタントです。以下の通話内容のシナリオをまず要約し、通話内容を流暢な会話の流れに書き直してください。書き直した内容は200文字を超えてはいけません。\n注意：\n1. 書き直した対話の流暢性を確保する必要があります。\n2. 書き直した対話の関連性を確保する必要があります：書き直した会話のテーマは元の会話から逸脱してはいけません。\n3. 書き直した会話には元の会話に含まれていない情報を含めてはいけません。\n4. 書き直した会話が論理的に明確で、簡潔で、より高品質であることを確保する必要があります。\n5. 書き直した会話では、商店主と営業の口調は口語的で、それぞれの役割に従い、営業は礼儀正しさに注意する必要があります。\n6. JSON形式で出力してください。例：{\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\n出力要件：\n1. JSON形式を使用して抽出した情報を返してください；\n2. \"scenario_summary\"は一文のシナリオ説明、\"dialogue_rewrite\"は対話フロー配列で、営業と商店主が交互に話し、それぞれ50文字以内、総長200文字以内；\n3. JSON形式以外の文字は返さないでください。\n以下は美団営業と商店主の通話内容です：\n商店主：こんにちは、福満楼レストランです。\n営業：こんにちは、美団の者です。最近、お店でオンラインプロモーションのご需要はございますか？\n商店主：最近活動が少なく、今のところ考えていません。\n営業：はい、今後必要でしたらお気軽にご連絡ください。\n商店主：ありがとうございます。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "通話シナリオの一文要約",
+                    "能力項": "範囲、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "書き直された対話フロー",
+                    "能力項": "範囲、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "営業の発言",
+                                "能力項": "範囲、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "商店主の発言",
+                                "能力項": "範囲、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは営業アシスタントです。以下の通話内容のシナリオをまず要約し、通話内容を流暢な会話の流れに書き直してください。書き直した内容は200文字を超えてはいけません。\n注意：\n1. 書き直した対話の流暢性を確保する必要があります。\n2. 書き直した対話の関連性を確保する必要があります：書き直した会話のテーマは元の会話から逸脱してはいけません。\n3. 書き直した会話には元の会話に含まれていない情報を含めてはいけません。\n4. 書き直した会話が論理的に明確で、簡潔で、より高品質であることを確保する必要があります。\n5. 書き直した会話では、商店主と営業の口調は口語的で、それぞれの役割に従い、営業は礼儀正しさに注意する必要があります。\n6. JSON形式で出力してください。例：{\"scenario_summary\": \"xxx\", \"dialogue_rewrite\": [{\"sales\": \"xxx\"}, {\"merchant\": \"xxx\"}]}\n\n出力要件：\n1. JSON形式を使用して抽出した情報を返してください；\n2. \"scenario_summary\"は一文のシナリオ説明、\"dialogue_rewrite\"は対話フロー配列で、営業と商店主が交互に話し、それぞれ50文字以内、総長200文字以内；\n3. JSON形式以外の文字は返さないでください。\n以下は美団営業と商店主の通話内容です：\n商店主：こんにちは。\n営業：こんにちは、美団の者です。お店でオンライングループ購入をされていますか？\n商店主：今のところしていません。社長がまだ決めていません。\n営業：承知いたしました。必要でしたらいつでもご連絡ください。\n商店主：はい。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "scenario_summary": {
+                    "type": "string",
+                    "description": "通話シナリオの一文要約",
+                    "能力項": "範囲、10~50字"
+                },
+                "dialogue_rewrite": {
+                    "type": "array",
+                    "description": "書き直された対話フロー",
+                    "能力項": "範囲、50~200字",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sales": {
+                                "type": "string",
+                                "description": "営業の発言",
+                                "能力項": "範囲、0~50字"
+                            },
+                            "merchant": {
+                                "type": "string",
+                                "description": "商店主の発言",
+                                "能力項": "範囲、0~50字"
+                            }
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "additionalProperties": false
+                    },
+                    "minItems": 2,
+                    "maxItems": 10
+                }
+            },
+            "required": [
+                "scenario_summary",
+                "dialogue_rewrite"
+            ],
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "Does it meet the schema",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    }
+]

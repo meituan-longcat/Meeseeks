@@ -1,182 +1,199 @@
 import os
 import sys
 
-# Add parent directory to Python path
+# 添加父目录到Python路径
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from collections import Counter
-from utils import clean_up_text
+from ..utils import clean_up_text
 
 try:
     import hgtk
     hgtk_AVAILABLE = True
 except ImportError:
     hgtk_AVAILABLE = False
-    print("hgtk library not installed, installing automatically...")
+    print("hgtk库未安装，正在自动安装...")
     try:
         import subprocess
         import sys
         subprocess.check_call([sys.executable, "-m", "pip", "install", "hgtk"])
-        print("hgtk library installed successfully, importing...")
+        print("hgtk库安装成功，正在导入...")
         import hgtk
         hgtk_AVAILABLE = True
-        print("✅ hgtk library imported successfully")
+        print("✅ hgtk库已成功导入")
     except Exception as e:
-        print(f"❌ Automatic installation failed: {e}")
-        print("Please run manually: pip install hgtk")
+        print(f"❌ 自动安装失败: {e}")
+        print("请手动运行: pip install hgtk")
         hgtk_AVAILABLE = False
 
-import hgtk  # Korean toolkit for Korean text processing
+import hgtk  # 한글 toolkit for Korean text processing
 
 
 def extract_korean_rhyme(words):
-    """Extract Korean word's rhyme (based on vowel and final consonant of last syllable)"""
+    """提取韩文单词的韵脚（基于最后一个音节的元音和韵尾）"""
     rhyme_elements = []
     
     for word in words:
-        if word:  # Ensure not empty string
-            # Get last character
+        if word:  # 确保不是空字符串
+            # 获取最后一个字符
             last_char = word[-1]
             
-            # Check if it's Korean character
+            # 检查是否为韩文字符
             if hgtk.checker.is_hangul(last_char):
                 try:
-                    # Decompose Korean character into initial, medial, final consonants
+                    # 分解韩文字符为初声、中声、终声
                     decomposed = hgtk.letter.decompose(last_char)
                     
-                    # Extract medial (vowel) and final (consonant) as rhyme
+                    # 提取中声（元音）和终声（韵尾）作为韵脚
                     vowel = decomposed[1] if len(decomposed) > 1 else ''
                     final = decomposed[2] if len(decomposed) > 2 else ''
                     
-                    # Combine vowel and final consonant as rhyme feature
+                    # 组合元音和韵尾作为韵脚特征
                     rhyme = vowel + final
                     rhyme_elements.append(rhyme)
                 except:
-                    # If decomposition fails, skip this character
+                    # 如果分解失败，跳过该字符
                     continue
     
     return rhyme_elements
 
 
 def calculate_rhyme_proportion(rhyme_vowels):
-    # Count occurrences of each rhyme
+    # 统计每个韵母出现的次数
     rhyme_count = Counter(rhyme_vowels)
     total_rhymes = sum(rhyme_count.values())
     
-    # Calculate proportion of each rhyme
+    # 计算每个韵母的比例
     rhyme_proportion = {rhyme: count / total_rhymes for rhyme, count in rhyme_count.items()}
     return rhyme_proportion
 
 
 def kor_yayun(text):
-    """Korean rhyme detection function"""
+    """韩文押韵检测函数"""
     for i in range(len(text)):
         text[i] = clean_up_text(text[i])
 
     rhyme_elements = extract_korean_rhyme(text)
     
     if not rhyme_elements:
-        return 0, "❌ No Korean characters detected or unable to extract rhymes"
+        return 0, "❌ 未检测到韩文字符或无法提取韵脚"
     
     rhyme_proportion = calculate_rhyme_proportion(rhyme_elements)
     
     if max(rhyme_proportion.values()) > 0.5:
-        return 1, f"✅ Match, rhyme proportion details: {str(rhyme_proportion)}"
+        return 1, f"✅ 匹配，韵脚比例详情为：{str(rhyme_proportion)}"
     else:
-        return 0, f"❌ Not match, rhyme proportion details: {str(rhyme_proportion)}, none of the rhyme proportions exceed 50%, rhyme proportion over 50% considered as rhyming"
+        return 0, f"❌ 不匹配，韵脚比例详情为：{str(rhyme_proportion)}，没有一个韵脚比例超过50%，韵脚比例超过50%视为押韵"
 
 
 def extract_korean_even_rhyme(text):
-    """Extract Korean even sentence's rhyme"""
+    """提取韩文偶数句的韵脚"""
     rhyme_elements = []
     
-    # Traverse even sentences
-    for i in range(1, len(text), 2):  # From second sentence, step size of 2
+    # 遍历偶数句
+    for i in range(1, len(text), 2):  # 从第二句开始，步长为2
         word = text[i]
-        if word:  # Ensure not empty string
-            # Get last character
+        if word:  # 确保不是空字符串
+            # 获取最后一个字符
             last_char = word[-1]
             
-            # Check if it's Korean character
+            # 检查是否为韩文字符
             if hgtk.checker.is_hangul(last_char):
                 try:
-                    # Decompose Korean character into initial, medial, final consonants
+                    # 分解韩文字符为初声、中声、终声
                     decomposed = hgtk.letter.decompose(last_char)
                     
-                    # Extract medial (vowel) and final (consonant) as rhyme
+                    # 提取中声（元音）和终声（韵尾）作为韵脚
                     vowel = decomposed[1] if len(decomposed) > 1 else ''
                     final = decomposed[2] if len(decomposed) > 2 else ''
                     
-                    # Combine vowel and final consonant as rhyme feature
+                    # 组合元音和韵尾作为韵脚特征
                     rhyme = vowel + final
                     rhyme_elements.append(rhyme)
                 except:
-                    # If decomposition fails, skip this character
+                    # 如果分解失败，跳过该字符
                     continue
     
     return rhyme_elements
 
 
-def kor_sijo_yayun(text):
-    """Korean sijo rhyme detection (even sentence rhymes)"""
+def korean_lvshi_yayun(text):
+    """韩文律诗押韵检测（偶数句押韵）"""
     for i in range(len(text)):
         text[i] = clean_up_text(text[i])
 
-    # Extract even sentence's rhyme
+    # 提取偶数句的韵母
     rhyme_elements = extract_korean_even_rhyme(text)
     
     if not rhyme_elements:
-        return 0, "❌ No Korean characters detected or unable to extract rhymes"
+        return 0, "❌ 未检测到韩文字符或无法提取韵脚"
     
-    # Judge even sentence's rhyme is consistent
-    if len(set(rhyme_elements)) == 1:  # If set length is 1, meaning rhymes are consistent
-        return 1, f"✅ Even sentence rhymes are consistent, even sentence rhymes: {rhyme_elements}"
+    # 判断偶数句的韵母是否一致
+    if len(set(rhyme_elements)) == 1:  # 如果集合长度为1，说明韵母一致
+        return 1, f"✅ 偶数句韵母一致，偶数句韵母为：{rhyme_elements}"
     else:
-        return 0, f"❌ Even sentence rhymes are inconsistent, even sentence rhymes: {rhyme_elements}"
+        return 0, f"❌ 偶数句韵母不一致，偶数句韵母为：{rhyme_elements}"
 
 
-def kor_jielong(text_list):
-    """Korean rhyme chain (like idiom chain)"""
-    for i in range(len(text_list)):
-        text_list[i] = clean_up_text(text_list[i])
-    
-    for i in range(len(text_list) - 1):
-        last_char = text_list[i][-1]
-        next_first_char = text_list[i + 1][0]
-        if last_char != next_first_char:
-            return 0, f"❌ Not match, sentence: {str(text_list[i])}'s last character and sentence: {str(text_list[i + 1])}'s first character are not the same"
-    return 1, f"✅ Match, sentence: {str(text_list)}"
-    
-    
 if __name__ == "__main__":
-    # Test case 1: Basic rhyme - same vowel ending
-    print("=== Test case 1: Basic rhyme ===")
-    test1 = ["사랑", "희망", "꿈", "행복"]  # All ends with same vowel
-    result1, msg1 = kor_yayun(test1)
-    print(f"Test 1 result: {result1}, message: {msg1}")
+    # 测试用例1: 基本押韵 - 相同韵尾
+    print("=== 测试用例1: 基本押韵 ===")
+    test1 = ["사랑", "희망", "꿈장", "마음"]  # 都以 'ㅏㅇ' 韵脚结尾
+    result1, msg1 = korean_yayun(test1)
+    print(f"测试1结果: {result1}, 消息: {msg1}")
     
-    # Test case 2: Not rhyme - different vowel ending
-    print("\n=== Test case 2: Not rhyme ===")
-    test2 = ["봄", "여름", "가을", "겨울"]  # Different vowel ending
-    result2, msg2 = kor_yayun(test2)
-    print(f"Test 2 result: {result2}, message: {msg2}")
+    # 测试用例2: 不押韵 - 不同韵尾
+    print("\n=== 测试用例2: 不押韵 ===")
+    test2 = ["사람", "하늘", "바다", "산"]  # 不同韵脚
+    result2, msg2 = korean_yayun(test2)
+    print(f"测试2结果: {result2}, 消息: {msg2}")
     
-    # Test case 3: Sijo rhyme - even sentence rhymes
-    print("\n=== Test case 3: Sijo even sentence rhymes ===")
-    test3 = ["봄이 오면", "꽃이 핀다", "새가 울고", "바람 분다"]  # Even sentence rhymes
-    result3, msg3 = kor_sijo_yayun(test3)
-    print(f"Test 3 result: {result3}, message: {msg3}")
+    # 测试用例3: 律诗押韵 - 偶数句押韵
+    print("\n=== 测试用例3: 律诗偶数句押韵 ===")
+    test3 = ["봄이 온다", "꽃이 핀다", "새가 운다", "바람 분다"]  # 偶数句(2,4句)押韵
+    result3, msg3 = korean_lvshi_yayun(test3)
+    print(f"测试3结果: {result3}, 消息: {msg3}")
     
-    # Test case 4: Sijo not rhyme - even sentence not rhymes
-    print("\n=== Test case 4: Sijo even sentence not rhymes ===")
-    test4 = ["하늘은 푸르고", "바다는 깊고", "산은 높고", "강은 길다"]  # Even sentence not rhymes
-    result4, msg4 = kor_sijo_yayun(test4)
-    print(f"Test 4 result: {result4}, message: {msg4}")
+    # 测试用例4: 律诗不押韵 - 偶数句不押韵
+    print("\n=== 测试용례4: 律诗偶数句不押韵 ===")
+    test4 = ["하늘이 높다", "바다가 깊다", "산이 크다", "강이 길다"]  # 偶数句不押韵
+    result4, msg4 = korean_lvshi_yayun(test4)
+    print(f"测试4结果: {result4}, 消息: {msg4}")
     
-    # Test case 5: Rhyme chain
-    print("\n=== Test case 5: Rhyme chain ===")
-    test5 = ["사랑", "랑만", "만족", "족보"]  # Rhyme chain
-    result5, msg5 = kor_jielong(test5)
-    print(f"Test 5 result: {result5}, message: {msg5}")
+    # 测试用例5: 相同元音押韵
+    print("\n=== 测试용례5: 相同元音押韵 ===")
+    test5 = ["나무", "바구", "가루", "다루"]  # 都以 'ㅜ' 元音结尾
+    result5, msg5 = korean_yayun(test5)
+    print(f"测试5结果: {result5}, 消息: {msg5}")
     
-    print("\n=== Korean rhyme test complete ===")
+    # 测试用例6: 混合中韩文
+    print("\n=== 测试용례6: 混合中韩文 ===")
+    test6 = ["안녕", "你好", "사랑", "爱情"]  # 混合文字
+    result6, msg6 = korean_yayun(test6)
+    print(f"测试6结果: {result6}, 消息: {msg6}")
+    
+    # 测试用例7: 空字符串处理
+    print("\n=== 测试용례7: 空字符串处理 ===")
+    test7 = ["", "안녕", "", "사랑"]  # 包含空字符串
+    result7, msg7 = korean_yayun(test7)
+    print(f"测试7结果: {result7}, 消息: {msg7}")
+    
+    # 测试用例8: 单字韩文
+    print("\n=== 测试용례8: 单字韩文 ===")
+    test8 = ["강", "장", "방", "상"]  # 单字押韵
+    result8, msg8 = korean_yayun(test8)
+    print(f"测试8结果: {result8}, 消息: {msg8}")
+    
+    # 测试用例9: 完全不同的韵脚
+    print("\n=== 测试용례9: 完全不同韵脚 ===")
+    test9 = ["고양이", "강아지", "토끼", "새"]  # 完全不同的韵脚
+    result9, msg9 = korean_yayun(test9)
+    print(f"测试9结果: {result9}, 消息: {msg9}")
+    
+    # 测试用例10: 韩文诗歌示例
+    print("\n=== 测试용례10: 韩文诗歌示例 ===")
+    test10 = ["봄바람 불어오네", "꽃잎이 흩날리네", "새소리 들려오네", "마음이 설레이네"]  # 诗歌格式
+    result10, msg10 = korean_yayun(test10)
+    print(f"测试10结果: {result10}, 消息: {msg10}")
+    
+    print("\n=== 韩文押韵测试完成 ===")

@@ -1,0 +1,1062 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "당신은 경험이 풍부한 여행 전문가이자 전문 기사 분석가입니다. 저는 적합한 여행지를 추천하는 기사를 제공할 것입니다. 당신의 임무는 이 기사를 분석하고 관광지명 차원에서 정보를 추출하는 것입니다.\n\n1. poiName: 기사에서 언급된 관광지의 이름을 추출하세요. 관광지는 반드시 위치 수준의 지리적 위치여야 하며, 절대로 도시나 성이 아닙니다. 예: 식물원, 공원, 고진, 명승지, 박물관, 사원 등의 구체적인 관광지(태원식물원, 경산공원, 고북수진 등).\n\n출력 요구사항:\n1. JSON 형식으로 추출한 정보를 반환하세요\n2. 각 관광지를 개별 객체로 하여 poiName 필드를 포함\n3. 모든 관광지 객체로 배열을 형성\n4. JSON 형식 이외의 문자는 반환하지 마세요\n각 관광지의 유형(공원, 고진, 박물관, 사원, 테마파크, 명승지 등)을 식별하고, json에서 poiType 필드를 반환해야 합니다.\n각 관광지가 부모-자녀 놀이에 적합한지 식별하고(적합하면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 isParentChildFriendly 필드를 반환해야 합니다.\n각 관광지에 야경이 있는지 식별하고(야경이 있으면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 hasNightView 필드를 반환해야 합니다.\n출력 형식 예시:\n[\n  {\"poiName\": \"예시 값\", \"poiType\": \"예시 유형\", \"isParentChildFriendly\": \"예/아니오\", \"hasNightView\": \"예/아니오\"}\n]\n\n기사 내용:베이징 주변 여행 추천:\n1. 태원식물원은 화북 최대의 식물원으로 부모-자녀 여행에 적합\n2. 경산공원에서 자금성 전경을 내려다볼 수 있음\n3. 고북수진의 야경이 아름다우니 명승지에서 숙박 추천",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "isParentChildFriendly",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "관광지명, 구체적인 위치 수준의 지리적 위치여야 함",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "관광지 유형, 공원, 고진, 박물관, 사원, 테마파크, 명승지 등",
+                        "能力項": "JSON"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "부모-자녀에게 적합한지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야경이 있는지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 경험이 풍부한 여행 전문가이자 전문 기사 분석가입니다. 저는 적합한 여행지를 추천하는 기사를 제공할 것입니다. 당신의 임무는 이 기사를 분석하고 관광지명 차원에서 정보를 추출하는 것입니다.\n\n1. poiName: 기사에서 언급된 관광지의 이름을 추출하세요. 관광지는 반드시 위치 수준의 지리적 위치여야 하며, 절대로 도시나 성이 아닙니다. 예: 식물원, 공원, 고진, 명승지, 박물관, 사원 등의 구체적인 관광지(태원식물원, 경산공원, 고북수진 등).\n\n출력 요구사항:\n1. JSON 형식으로 추출한 정보를 반환하세요\n2. 각 관광지를 개별 객체로 하여 poiName 필드를 포함\n3. 모든 관광지 객체로 배열을 형성\n4. JSON 형식 이외의 문자는 반환하지 마세요\n각 관광지의 유형(공원, 고진, 박물관, 사원, 테마파크, 명승지 등)을 식별하고, json에서 poiType 필드를 반환해야 합니다.\n각 관광지에 야경이 있는지 식별하고(야경이 있으면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 hasNightView 필드를 반환해야 합니다.\n출력 형식 예시:\n[\n  {\"poiName\": \"예시 값\", \"poiType\": \"예시 유형\", \"hasNightView\": \"예/아니오\"}\n]\n\n기사 내용:상하이 시티워크:\n1. 상하이 디즈니랜드는 가족 나들이에 적합하며, 밤 불꽃쇼를 놓치지 말 것\n2. 와이탄 라이트쇼는 매력적인 야경이 있음\n3. 상하이박물관에서 중국 문화를 체험할 수 있음",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "관광지명, 구체적인 위치 수준의 지리적 위치여야 함",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "관광지 유형, 공원, 고진, 박물관, 사원, 테마파크, 명승지 등",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야경이 있는지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 경험이 풍부한 여행 전문가이자 전문 기사 분석가입니다. 저는 적합한 여행지를 추천하는 기사를 제공할 것입니다. 당신의 임무는 이 기사를 분석하고 관광지명 차원에서 정보를 추출하는 것입니다.\n\n1. poiName: 기사에서 언급된 관광지의 이름을 추출하세요. 관광지는 반드시 위치 수준의 지리적 위치여야 하며, 절대로 도시나 성이 아닙니다. 예: 식물원, 공원, 고진, 명승지, 박물관, 사원 등의 구체적인 관광지(태원식물원, 경산공원, 고북수진 등).\n\n출력 요구사항:\n1. JSON 형식으로 추출한 정보를 반환하세요\n2. 각 관광지를 개별 객체로 하여 poiName 필드를 포함\n3. 모든 관광지 객체로 배열을 형성\n4. JSON 형식 이외의 문자는 반환하지 마세요\n각 관광지의 유형(공원, 고진, 박물관, 사원, 테마파크, 명승지 등)을 식별하고, json에서 poiType 필드를 반환해야 합니다.\n각 관광지가 부모-자녀 놀이에 적합한지 식별하고(적합하면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 isParentChildFriendly 필드를 반환해야 합니다.\n출력 형식 예시:\n[\n  {\"poiName\": \"예시 값\", \"poiType\": \"예시 유형\", \"isParentChildFriendly\": \"예/아니오\"}\n]\n\n기사 내용:광저우 부모-자녀 여행:\n1. 창롱 사파리파크는 부모-자녀 가족에 적합\n2. 백운산은 하이킹하기 좋은 곳\n3. 사면도에는 유럽 건축과 카페가 있음",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "isParentChildFriendly"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "관광지명, 구체적인 위치 수준의 지리적 위치여야 함",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "관광지 유형, 공원, 고진, 박물관, 사원, 테마파크, 명승지 등",
+                        "能力項": "JSON"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "부모-자녀에게 적합한지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 경험이 풍부한 여행 전문가이자 전문 기사 분석가입니다. 저는 적합한 여행지를 추천하는 기사를 제공할 것입니다. 당신의 임무는 이 기사를 분석하고 관광지명 차원에서 정보를 추출하는 것입니다.\n\n1. poiName: 기사에서 언급된 관광지의 이름을 추출하세요. 관광지는 반드시 위치 수준의 지리적 위치여야 하며, 절대로 도시나 성이 아닙니다. 예: 식물원, 공원, 고진, 명승지, 박물관, 사원 등의 구체적인 관광지(태원식물원, 경산공원, 고북수진 등).\n\n출력 요구사항:\n1. JSON 형식으로 추출한 정보를 반환하세요\n2. 각 관광지를 개별 객체로 하여 poiName 필드를 포함\n3. 모든 관광지 객체로 배열을 형성\n4. JSON 형식 이외의 문자는 반환하지 마세요\n각 관광지의 유형(공원, 고진, 박물관, 사원, 테마파크, 명승지 등)을 식별하고, json에서 poiType 필드를 반환해야 합니다.\n각 관광지에 문화 공연이 있는지 식별하고(있으면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 hasCulturalShow 필드를 반환해야 합니다.\n각 관광지에 야경이 있는지 식별하고(야경이 있으면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 hasNightView 필드를 반환해야 합니다.\n출력 형식 예시:\n[\n  {\"poiName\": \"예시 값\", \"poiType\": \"예시 유형\", \"hasCulturalShow\": \"예/아니오\", \"hasNightView\": \"예/아니오\"}\n]\n\n기사 내용:청두 문화 여행:\n1. 무후사에는 삼국 문화 공연이 있음\n2. 두보초당은 당시 문화를 전시\n3. 관자이항은 야간 산책과 간식 시식에 적합",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasCulturalShow",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "관광지명, 구체적인 위치 수준의 지리적 위치여야 함",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "관광지 유형, 공원, 고진, 박물관, 사원, 테마파크, 명승지 등",
+                        "能力項": "JSON"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "문화 공연이 있는지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야경이 있는지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 경험이 풍부한 여행 전문가이자 전문 기사 분석가입니다. 저는 적합한 여행지를 추천하는 기사를 제공할 것입니다. 당신의 임무는 이 기사를 분석하고 관광지명 차원에서 정보를 추출하는 것입니다.\n\n1. poiName: 기사에서 언급된 관광지의 이름을 추출하세요. 관광지는 반드시 위치 수준의 지리적 위치여야 하며, 절대로 도시나 성이 아닙니다. 예: 식물원, 공원, 고진, 명승지, 박물관, 사원 등의 구체적인 관광지(태원식물원, 경산공원, 고북수진 등).\n\n출력 요구사항:\n1. JSON 형식으로 추출한 정보를 반환하세요\n2. 각 관광지를 개별 객체로 하여 poiName 필드를 포함\n3. 모든 관광지 객체로 배열을 형성\n4. JSON 형식 이외의 문자는 반환하지 마세요\n각 관광지의 유형(공원, 고진, 박물관, 사원, 테마파크, 명승지 등)을 식별하고, json에서 poiType 필드를 반환해야 합니다.\n각 관광지에 야경이 있는지 식별하고(야경이 있으면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 hasNightView 필드를 반환해야 합니다.\n출력 형식 예시:\n[\n  {\"poiName\": \"예시 값\", \"poiType\": \"예시 유형\", \"hasNightView\": \"예/아니오\"}\n]\n\n기사 내용:시안 역사 탐험:\n1. 대안탑광장에는 밤 분수 공연이 있음\n2. 병마용박물관은 세계적으로 유명\n3. 회민가는 미식 체크인 장소",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "관광지명, 구체적인 위치 수준의 지리적 위치여야 함",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "관광지 유형, 공원, 고진, 박물관, 사원, 테마파크, 명승지 등",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야경이 있는지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 경험이 풍부한 여행 전문가이자 전문 기사 분석가입니다. 저는 적합한 여행지를 추천하는 기사를 제공할 것입니다. 당신의 임무는 이 기사를 분석하고 관광지명 차원에서 정보를 추출하는 것입니다.\n\n1. poiName: 기사에서 언급된 관광지의 이름을 추출하세요. 관광지는 반드시 위치 수준의 지리적 위치여야 하며, 절대로 도시나 성이 아닙니다. 예: 식물원, 공원, 고진, 명승지, 박물관, 사원 등의 구체적인 관광지(태원식물원, 경산공원, 고북수진 등).\n\n출력 요구사항:\n1. JSON 형식으로 추출한 정보를 반환하세요\n2. 각 관광지를 개별 객체로 하여 poiName 필드를 포함\n3. 모든 관광지 객체로 배열을 형성\n4. JSON 형식 이외의 문자는 반환하지 마세요\n각 관광지의 유형(공원, 고진, 박물관, 사원, 테마파크, 명승지 등)을 식별하고, json에서 poiType 필드를 반환해야 합니다.\n각 관광지에 야경이 있는지 식별하고(야경이 있으면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 hasNightView 필드를 반환해야 합니다.\n각 관광지가 야외 관광지인지 식별하고(예/아니오), json에서 isOutdoor 필드를 반환해야 합니다.\n출력 형식 예시:\n[\n  {\"poiName\": \"예시 값\", \"poiType\": \"예시 유형\", \"hasNightView\": \"예/아니오\", \"isOutdoor\": \"예/아니오\"}\n]\n\n기사 내용:항저우 호수 산 풍경:\n1. 서호 명승지는 아름다운 야경이 있으며, 뇌봉탑 라이트쇼가 매력적\n2. 영은사는 유명한 불교 사원\n3. 천도호는 야외 사이클링에 적합",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView",
+                    "isOutdoor"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "관광지명, 구체적인 위치 수준의 지리적 위치여야 함",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "관광지 유형, 공원, 고진, 박물관, 사원, 테마파크, 명승지 등",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야경이 있는지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야외 관광지인지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 경험이 풍부한 여행 전문가이자 전문 기사 분석가입니다. 저는 적합한 여행지를 추천하는 기사를 제공할 것입니다. 당신의 임무는 이 기사를 분석하고 관광지명 차원에서 정보를 추출하는 것입니다.\n\n1. poiName: 기사에서 언급된 관광지의 이름을 추출하세요. 관광지는 반드시 위치 수준의 지리적 위치여야 하며, 절대로 도시나 성이 아닙니다. 예: 식물원, 공원, 고진, 명승지, 박물관, 사원 등의 구체적인 관광지(태원식물원, 경산공원, 고북수진 등).\n\n출력 요구사항:\n1. JSON 형식으로 추출한 정보를 반환하세요\n2. 각 관광지를 개별 객체로 하여 poiName 필드를 포함\n3. 모든 관광지 객체로 배열을 형성\n4. JSON 형식 이외의 문자는 반환하지 마세요\n각 관광지의 유형(공원, 고진, 박물관, 사원, 테마파크, 명승지 등)을 식별하고, json에서 poiType 필드를 반환해야 합니다.\n각 관광지에 야경이 있는지 식별하고(야경이 있으면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 hasNightView 필드를 반환해야 합니다.\n각 관광지에 문화 공연이 있는지 식별하고(있으면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 hasCulturalShow 필드를 반환해야 합니다.\n출력 형식 예시:\n[\n  {\"poiName\": \"예시 값\", \"poiType\": \"예시 유형\", \"hasNightView\": \"예/아니오\", \"hasCulturalShow\": \"예/아니오\"}\n]\n\n기사 내용:충칭 야경 체험:\n1. 홍애동 야경이 많은 관광객을 매료시킴\n2. 남산식물원에는 전망대가 있음\n3. 자기구고진에는 풍부한 민속 공연이 있음",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView",
+                    "hasCulturalShow"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "관광지명, 구체적인 위치 수준의 지리적 위치여야 함",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "관광지 유형, 공원, 고진, 박물관, 사원, 테마파크, 명승지 등",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야경이 있는지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "문화 공연이 있는지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 경험이 풍부한 여행 전문가이자 전문 기사 분석가입니다. 저는 적합한 여행지를 추천하는 기사를 제공할 것입니다. 당신의 임무는 이 기사를 분석하고 관광지명 차원에서 정보를 추출하는 것입니다.\n\n1. poiName: 기사에서 언급된 관광지의 이름을 추출하세요. 관광지는 반드시 위치 수준의 지리적 위치여야 하며, 절대로 도시나 성이 아닙니다. 예: 식물원, 공원, 고진, 명승지, 박물관, 사원 등의 구체적인 관광지(태원식물원, 경산공원, 고북수진 등).\n\n출력 요구사항:\n1. JSON 형식으로 추출한 정보를 반환하세요\n2. 각 관광지를 개별 객체로 하여 poiName 필드를 포함\n3. 모든 관광지 객체로 배열을 형성\n4. JSON 형식 이외의 문자는 반환하지 마세요\n각 관광지의 유형(공원, 고진, 박물관, 사원, 테마파크, 명승지 등)을 식별하고, json에서 poiType 필드를 반환해야 합니다.\n각 관광지에 야경이 있는지 식별하고(야경이 있으면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 hasNightView 필드를 반환해야 합니다.\n출력 형식 예시:\n[\n  {\"poiName\": \"예시 값\", \"poiType\": \"예시 유형\", \"hasNightView\": \"예/아니오\"}\n]\n\n기사 내용:쑤저우 정원 여행:\n1. 졸정원은 강남 정원의 대표\n2. 사자림은 기암괴석으로 유명\n3. 금계호 명승지에는 로맨틱한 야경이 있음",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "관광지명, 구체적인 위치 수준의 지리적 위치여야 함",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "관광지 유형, 공원, 고진, 박물관, 사원, 테마파크, 명승지 등",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야경이 있는지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 경험이 풍부한 여행 전문가이자 전문 기사 분석가입니다. 저는 적합한 여행지를 추천하는 기사를 제공할 것입니다. 당신의 임무는 이 기사를 분석하고 관광지명 차원에서 정보를 추출하는 것입니다.\n\n1. poiName: 기사에서 언급된 관광지의 이름을 추출하세요. 관광지는 반드시 위치 수준의 지리적 위치여야 하며, 절대로 도시나 성이 아닙니다. 예: 식물원, 공원, 고진, 명승지, 박물관, 사원 등의 구체적인 관광지(태원식물원, 경산공원, 고북수진 등).\n\n출력 요구사항:\n1. JSON 형식으로 추출한 정보를 반환하세요\n2. 각 관광지를 개별 객체로 하여 poiName 필드를 포함\n3. 모든 관광지 객체로 배열을 형성\n4. JSON 형식 이외의 문자는 반환하지 마세요\n각 관광지의 유형(공원, 고진, 박물관, 사원, 테마파크, 명승지 등)을 식별하고, json에서 poiType 필드를 반환해야 합니다.\n각 관광지가 야외 관광지인지 식별하고(예/아니오), json에서 isOutdoor 필드를 반환해야 합니다.\n각 관광지에 야경이 있는지 식별하고(야경이 있으면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 hasNightView 필드를 반환해야 합니다.\n출력 형식 예시:\n[\n  {\"poiName\": \"예시 값\", \"poiType\": \"예시 유형\", \"isOutdoor\": \"예/아니오\", \"hasNightView\": \"예/아니오\"}\n]\n\n기사 내용:계림 산수 여행:\n1. 상비산공원은 계림의 랜드마크\n2. 이강 래프팅은 야외에 적합\n3. 양삭서가에는 야시장과 바가 있음",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "isOutdoor",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "관광지명, 구체적인 위치 수준의 지리적 위치여야 함",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "관광지 유형, 공원, 고진, 박물관, 사원, 테마파크, 명승지 등",
+                        "能力項": "JSON"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야외 관광지인지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야경이 있는지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 경험이 풍부한 여행 전문가이자 전문 기사 분석가입니다. 저는 적합한 여행지를 추천하는 기사를 제공할 것입니다. 당신의 임무는 이 기사를 분석하고 관광지명 차원에서 정보를 추출하는 것입니다.\n\n1. poiName: 기사에서 언급된 관광지의 이름을 추출하세요. 관광지는 반드시 위치 수준의 지리적 위치여야 하며, 절대로 도시나 성이 아닙니다. 예: 식물원, 공원, 고진, 명승지, 박물관, 사원 등의 구체적인 관광지(태원식물원, 경산공원, 고북수진 등).\n\n출력 요구사항:\n1. JSON 형식으로 추출한 정보를 반환하세요\n2. 각 관광지를 개별 객체로 하여 poiName 필드를 포함\n3. 모든 관광지 객체로 배열을 형성\n4. JSON 형식 이외의 문자는 반환하지 마세요\n각 관광지의 유형(공원, 고진, 박물관, 사원, 테마파크, 명승지 등)을 식별하고, json에서 poiType 필드를 반환해야 합니다.\n각 관광지에 문화 공연이 있는지 식별하고(있으면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 hasCulturalShow 필드를 반환해야 합니다.\n출력 형식 예시:\n[\n  {\"poiName\": \"예시 값\", \"poiType\": \"예시 유형\", \"hasCulturalShow\": \"예/아니오\"}\n]\n\n기사 내용:샤먼 문화 레저:\n1. 고랑위 음악홀에는 피아노 공연이 있음\n2. 남보타사는 향화가 성함\n3. 증촌안에는 많은 문예점이 있음",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasCulturalShow"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "관광지명, 구체적인 위치 수준의 지리적 위치여야 함",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "관광지 유형, 공원, 고진, 박물관, 사원, 테마파크, 명승지 등",
+                        "能力項": "JSON"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "문화 공연이 있는지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 경험이 풍부한 여행 전문가이자 전문 기사 분석가입니다. 저는 적합한 여행지를 추천하는 기사를 제공할 것입니다. 당신의 임무는 이 기사를 분석하고 관광지명 차원에서 정보를 추출하는 것입니다.\n\n1. poiName: 기사에서 언급된 관광지의 이름을 추출하세요. 관광지는 반드시 위치 수준의 지리적 위치여야 하며, 절대로 도시나 성이 아닙니다. 예: 식물원, 공원, 고진, 명승지, 박물관, 사원 등의 구체적인 관광지(태원식물원, 경산공원, 고북수진 등).\n\n출력 요구사항:\n1. JSON 형식으로 추출한 정보를 반환하세요\n2. 각 관광지를 개별 객체로 하여 poiName 필드를 포함\n3. 모든 관광지 객체로 배열을 형성\n4. JSON 형식 이외의 문자는 반환하지 마세요\n각 관광지의 유형(공원, 고진, 박물관, 사원, 테마파크, 명승지 등)을 식별하고, json에서 poiType 필드를 반환해야 합니다.\n각 관광지에 야경이 있는지 식별하고(야경이 있으면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 hasNightView 필드를 반환해야 합니다.\n각 관광지에 온천이 있는지 식별하고(온천이 있으면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 hasHotSpring 필드를 반환해야 합니다.\n출력 형식 예시:\n[\n  {\"poiName\": \"예시 값\", \"poiType\": \"예시 유형\", \"hasNightView\": \"예/아니오\", \"hasHotSpring\": \"예/아니오\"}\n]\n\n기사 내용:칭다오 해안 풍정:\n1. 오사광장에는 매력적인 야경이 있음\n2. 팔대관 명승지는 사이클링에 적합\n3. 노산에는 천연 온천이 있음",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView",
+                    "hasHotSpring"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "관광지명, 구체적인 위치 수준의 지리적 위치여야 함",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "관광지 유형, 공원, 고진, 박물관, 사원, 테마파크, 명승지 등",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야경이 있는지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasHotSpring": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "온천이 있는지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 경험이 풍부한 여행 전문가이자 전문 기사 분석가입니다. 저는 적합한 여행지를 추천하는 기사를 제공할 것입니다. 당신의 임무는 이 기사를 분석하고 관광지명 차원에서 정보를 추출하는 것입니다.\n\n1. poiName: 기사에서 언급된 관광지의 이름을 추출하세요. 관광지는 반드시 위치 수준의 지리적 위치여야 하며, 절대로 도시나 성이 아닙니다. 예: 식물원, 공원, 고진, 명승지, 박물관, 사원 등의 구체적인 관광지(태원식물원, 경산공원, 고북수진 등).\n\n출력 요구사항:\n1. JSON 형식으로 추출한 정보를 반환하세요\n2. 각 관광지를 개별 객체로 하여 poiName 필드를 포함\n3. 모든 관광지 객체로 배열을 형성\n4. JSON 형식 이외의 문자는 반환하지 마세요\n각 관광지의 유형(공원, 고진, 박물관, 사원, 테마파크, 명승지 등)을 식별하고, json에서 poiType 필드를 반환해야 합니다.\n각 관광지에 야경이 있는지 식별하고(야경이 있으면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 hasNightView 필드를 반환해야 합니다.\n출력 형식 예시:\n[\n  {\"poiName\": \"예시 값\", \"poiType\": \"예시 유형\", \"hasNightView\": \"예/아니오\"}\n]\n\n기사 내용:난징 문화 체크인:\n1. 부자묘 진회하 야유가 로맨틱\n2. 중산릉은 장엄함\n3. 노문동에는 민국 풍정이 있음",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "관광지명, 구체적인 위치 수준의 지리적 위치여야 함",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "관광지 유형, 공원, 고진, 박물관, 사원, 테마파크, 명승지 등",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야경이 있는지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 경험이 풍부한 여행 전문가이자 전문 기사 분석가입니다. 저는 적합한 여행지를 추천하는 기사를 제공할 것입니다. 당신의 임무는 이 기사를 분석하고 관광지명 차원에서 정보를 추출하는 것입니다.\n\n1. poiName: 기사에서 언급된 관광지의 이름을 추출하세요. 관광지는 반드시 위치 수준의 지리적 위치여야 하며, 절대로 도시나 성이 아닙니다. 예: 식물원, 공원, 고진, 명승지, 박물관, 사원 등의 구체적인 관광지(태원식물원, 경산공원, 고북수진 등).\n\n출력 요구사항:\n1. JSON 형식으로 추출한 정보를 반환하세요\n2. 각 관광지를 개별 객체로 하여 poiName 필드를 포함\n3. 모든 관광지 객체로 배열을 형성\n4. JSON 형식 이외의 문자는 반환하지 마세요\n각 관광지의 유형(공원, 고진, 박물관, 사원, 테마파크, 명승지 등)을 식별하고, json에서 poiType 필드를 반환해야 합니다.\n각 관광지에 야경이 있는지 식별하고(야경이 있으면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 hasNightView 필드를 반환해야 합니다.\n각 관광지에 문화 공연이 있는지 식별하고(있으면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 hasCulturalShow 필드를 반환해야 합니다.\n출력 형식 예시:\n[\n  {\"poiName\": \"예시 값\", \"poiType\": \"예시 유형\", \"hasNightView\": \"예/아니오\", \"hasCulturalShow\": \"예/아니오\"}\n]\n\n기사 내용:톈진 유럽 풍정:\n1. 이탈리아 풍정구에는 교회와 카페가 있음\n2. 고문화가에는 전통 수공예품이 있음\n3. 해하 크루즈에는 찬란한 야경이 있음",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView",
+                    "hasCulturalShow"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "관광지명, 구체적인 위치 수준의 지리적 위치여야 함",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "관광지 유형, 공원, 고진, 박물관, 사원, 테마파크, 명승지 등",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야경이 있는지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "문화 공연이 있는지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 경험이 풍부한 여행 전문가이자 전문 기사 분석가입니다. 저는 적합한 여행지를 추천하는 기사를 제공할 것입니다. 당신의 임무는 이 기사를 분석하고 관광지명 차원에서 정보를 추출하는 것입니다.\n\n1. poiName: 기사에서 언급된 관광지의 이름을 추출하세요. 관광지는 반드시 위치 수준의 지리적 위치여야 하며, 절대로 도시나 성이 아닙니다. 예: 식물원, 공원, 고진, 명승지, 박물관, 사원 등의 구체적인 관광지(태원식물원, 경산공원, 고북수진 등).\n\n출력 요구사항:\n1. JSON 형식으로 추출한 정보를 반환하세요\n2. 각 관광지를 개별 객체로 하여 poiName 필드를 포함\n3. 모든 관광지 객체로 배열을 형성\n4. JSON 형식 이외의 문자는 반환하지 마세요\n각 관광지의 유형(공원, 고진, 박물관, 사원, 테마파크, 명승지 등)을 식별하고, json에서 poiType 필드를 반환해야 합니다.\n각 관광지에 야경이 있는지 식별하고(야경이 있으면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 hasNightView 필드를 반환해야 합니다.\n각 관광지가 야외 관광지인지 식별하고(예/아니오), json에서 isOutdoor 필드를 반환해야 합니다.\n출력 형식 예시:\n[\n  {\"poiName\": \"예시 값\", \"poiType\": \"예시 유형\", \"hasNightView\": \"예/아니오\", \"isOutdoor\": \"예/아니오\"}\n]\n\n기사 내용:하얼빈 빙설 세계:\n1. 빙설대세계에는 찬란한 야간 조명이 있음\n2. 성소피아대성당은 웅장한 건축\n3. 송화강에서는 겨울에 스키를 탈 수 있음",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView",
+                    "isOutdoor"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "관광지명, 구체적인 위치 수준의 지리적 위치여야 함",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "관광지 유형, 공원, 고진, 박물관, 사원, 테마파크, 명승지 등",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야경이 있는지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야외 관광지인지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 경험이 풍부한 여행 전문가이자 전문 기사 분석가입니다. 저는 적합한 여행지를 추천하는 기사를 제공할 것입니다. 당신의 임무는 이 기사를 분석하고 관광지명 차원에서 정보를 추출하는 것입니다.\n\n1. poiName: 기사에서 언급된 관광지의 이름을 추출하세요. 관광지는 반드시 위치 수준의 지리적 위치여야 하며, 절대로 도시나 성이 아닙니다. 예: 식물원, 공원, 고진, 명승지, 박물관, 사원 등의 구체적인 관광지(태원식물원, 경산공원, 고북수진 등).\n\n출력 요구사항:\n1. JSON 형식으로 추출한 정보를 반환하세요\n2. 각 관광지를 개별 객체로 하여 poiName 필드를 포함\n3. 모든 관광지 객체로 배열을 형성\n4. JSON 형식 이외의 문자는 반환하지 마세요\n각 관광지의 유형(공원, 고진, 박물관, 사원, 테마파크, 명승지 등)을 식별하고, json에서 poiType 필드를 반환해야 합니다.\n각 관광지에 야경이 있는지 식별하고(야경이 있으면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 hasNightView 필드를 반환해야 합니다.\n출력 형식 예시:\n[\n  {\"poiName\": \"예시 값\", \"poiType\": \"예시 유형\", \"hasNightView\": \"예/아니오\"}\n]\n\n기사 내용:쿤밍 봄 꽃바다:\n1. 세기공원의 벚꽃이 만개\n2. 석림 명승지에는 독특한 지형이 있음\n3. 전지습지는 조류 관찰에 적합",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "관광지명, 구체적인 위치 수준의 지리적 위치여야 함",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "관광지 유형, 공원, 고진, 박물관, 사원, 테마파크, 명승지 등",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야경이 있는지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 경험이 풍부한 여행 전문가이자 전문 기사 분석가입니다. 저는 적합한 여행지를 추천하는 기사를 제공할 것입니다. 당신의 임무는 이 기사를 분석하고 관광지명 차원에서 정보를 추출하는 것입니다.\n\n1. poiName: 기사에서 언급된 관광지의 이름을 추출하세요. 관광지는 반드시 위치 수준의 지리적 위치여야 하며, 절대로 도시나 성이 아닙니다. 예: 식물원, 공원, 고진, 명승지, 박물관, 사원 등의 구체적인 관광지(태원식물원, 경산공원, 고북수진 등).\n\n출력 요구사항:\n1. JSON 형식으로 추출한 정보를 반환하세요\n2. 각 관광지를 개별 객체로 하여 poiName 필드를 포함\n3. 모든 관광지 객체로 배열을 형성\n4. JSON 형식 이외의 문자는 반환하지 마세요\n각 관광지의 유형(공원, 고진, 박물관, 사원, 테마파크, 명승지 등)을 식별하고, json에서 poiType 필드를 반환해야 합니다.\n각 관광지에 문화 공연이 있는지 식별하고(있으면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 hasCulturalShow 필드를 반환해야 합니다.\n각 관광지가 부모-자녀 놀이에 적합한지 식별하고(적합하면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 isParentChildFriendly 필드를 반환해야 합니다.\n출력 형식 예시:\n[\n  {\"poiName\": \"예시 값\", \"poiType\": \"예시 유형\", \"hasCulturalShow\": \"예/아니오\", \"isParentChildFriendly\": \"예/아니오\"}\n]\n\n기사 내용:선전 도시 레저:\n1. 환락곡 테마파크에는 밤 공연이 있음\n2. 대매사해빈공원은 부모-자녀에 적합\n3. 세계의 창에는 세계 라이트쇼가 있음",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasCulturalShow",
+                    "isParentChildFriendly"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "관광지명, 구체적인 위치 수준의 지리적 위치여야 함",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "관광지 유형, 공원, 고진, 박물관, 사원, 테마파크, 명승지 등",
+                        "能力項": "JSON"
+                    },
+                    "hasCulturalShow": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "문화 공연이 있는지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "부모-자녀에게 적합한지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 경험이 풍부한 여행 전문가이자 전문 기사 분석가입니다. 저는 적합한 여행지를 추천하는 기사를 제공할 것입니다. 당신의 임무는 이 기사를 분석하고 관광지명 차원에서 정보를 추출하는 것입니다.\n\n1. poiName: 기사에서 언급된 관광지의 이름을 추출하세요. 관광지는 반드시 위치 수준의 지리적 위치여야 하며, 절대로 도시나 성이 아닙니다. 예: 식물원, 공원, 고진, 명승지, 박물관, 사원 등의 구체적인 관광지(태원식물원, 경산공원, 고북수진 등).\n\n출력 요구사항:\n1. JSON 형식으로 추출한 정보를 반환하세요\n2. 각 관광지를 개별 객체로 하여 poiName 필드를 포함\n3. 모든 관광지 객체로 배열을 형성\n4. JSON 형식 이외의 문자는 반환하지 마세요\n각 관광지의 유형(공원, 고진, 박물관, 사원, 테마파크, 명승지 등)을 식별하고, json에서 poiType 필드를 반환해야 합니다.\n각 관광지에 야경이 있는지 식별하고(야경이 있으면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 hasNightView 필드를 반환해야 합니다.\n각 관광지가 야외 관광지인지 식별하고(예/아니오), json에서 isOutdoor 필드를 반환해야 합니다.\n출력 형식 예시:\n[\n  {\"poiName\": \"예시 값\", \"poiType\": \"예시 유형\", \"hasNightView\": \"예/아니오\", \"isOutdoor\": \"예/아니오\"}\n]\n\n기사 내용:창사 문예 청년 루트:\n1. 귤자주두에서 불꽃놀이를 볼 수 있음\n2. 악록산은 하이킹에 적합\n3. 태평가에는 특색 간식이 있음",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView",
+                    "isOutdoor"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "관광지명, 구체적인 위치 수준의 지리적 위치여야 함",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "관광지 유형, 공원, 고진, 박물관, 사원, 테마파크, 명승지 등",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야경이 있는지 여부",
+                        "能力項": "特定格式"
+                    },
+                    "isOutdoor": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야외 관광지인지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 경험이 풍부한 여행 전문가이자 전문 기사 분석가입니다. 저는 적합한 여행지를 추천하는 기사를 제공할 것입니다. 당신의 임무는 이 기사를 분석하고 관광지명 차원에서 정보를 추출하는 것입니다.\n\n1. poiName: 기사에서 언급된 관광지의 이름을 추출하세요. 관광지는 반드시 위치 수준의 지리적 위치여야 하며, 절대로 도시나 성이 아닙니다. 예: 식물원, 공원, 고진, 명승지, 박물관, 사원 등의 구체적인 관광지(태원식물원, 경산공원, 고북수진 등).\n\n출력 요구사항:\n1. JSON 형식으로 추출한 정보를 반환하세요\n2. 각 관광지를 개별 객체로 하여 poiName 필드를 포함\n3. 모든 관광지 객체로 배열을 형성\n4. JSON 형식 이외의 문자는 반환하지 마세요\n각 관광지의 유형(공원, 고진, 박물관, 사원, 테마파크, 명승지 등)을 식별하고, json에서 poiType 필드를 반환해야 합니다.\n각 관광지에 야경이 있는지 식별하고(야경이 있으면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 hasNightView 필드를 반환해야 합니다.\n출력 형식 예시:\n[\n  {\"poiName\": \"예시 값\", \"poiType\": \"예시 유형\", \"hasNightView\": \"예/아니오\"}\n]\n\n기사 내용:지난 샘물 여행:\n1. 대명호공원에는 연꽃 전시가 있음\n2. 포돌천은 샘성의 상징\n3. 천불산은 등반과 조망에 적합",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "관광지명, 구체적인 위치 수준의 지리적 위치여야 함",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "관광지 유형, 공원, 고진, 박물관, 사원, 테마파크, 명승지 등",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야경이 있는지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 경험이 풍부한 여행 전문가이자 전문 기사 분석가입니다. 저는 적합한 여행지를 추천하는 기사를 제공할 것입니다. 당신의 임무는 이 기사를 분석하고 관광지명 차원에서 정보를 추출하는 것입니다.\n\n1. poiName: 기사에서 언급된 관광지의 이름을 추출하세요. 관광지는 반드시 위치 수준의 지리적 위치여야 하며, 절대로 도시나 성이 아닙니다. 예: 식물원, 공원, 고진, 명승지, 박물관, 사원 등의 구체적인 관광지(태원식물원, 경산공원, 고북수진 등).\n\n출력 요구사항:\n1. JSON 형식으로 추출한 정보를 반환하세요\n2. 각 관광지를 개별 객체로 하여 poiName 필드를 포함\n3. 모든 관광지 객체로 배열을 형성\n4. JSON 형식 이외의 문자는 반환하지 마세요\n각 관광지의 유형(공원, 고진, 박물관, 사원, 테마파크, 명승지 등)을 식별하고, json에서 poiType 필드를 반환해야 합니다.\n각 관광지가 부모-자녀 놀이에 적합한지 식별하고(적합하면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 isParentChildFriendly 필드를 반환해야 합니다.\n출력 형식 예시:\n[\n  {\"poiName\": \"예시 값\", \"poiType\": \"예시 유형\", \"isParentChildFriendly\": \"예/아니오\"}\n]\n\n기사 내용:허페이 주말 여행:\n1. 포공원에는 포증 문화 전시가 있음\n2. 삼하고진 야시장이 활기참\n3. 허페이식물원은 부모-자녀 활동에 적합",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "isParentChildFriendly"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "관광지명, 구체적인 위치 수준의 지리적 위치여야 함",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "관광지 유형, 공원, 고진, 박물관, 사원, 테마파크, 명승지 등",
+                        "能力項": "JSON"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "부모-자녀에게 적합한지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "당신은 경험이 풍부한 여행 전문가이자 전문 기사 분석가입니다. 저는 적합한 여행지를 추천하는 기사를 제공할 것입니다. 당신의 임무는 이 기사를 분석하고 관광지명 차원에서 정보를 추출하는 것입니다.\n\n1. poiName: 기사에서 언급된 관광지의 이름을 추출하세요. 관광지는 반드시 위치 수준의 지리적 위치여야 하며, 절대로 도시나 성이 아닙니다. 예: 식물원, 공원, 고진, 명승지, 박물관, 사원 등의 구체적인 관광지(태원식물원, 경산공원, 고북수진 등).\n\n출력 요구사항:\n1. JSON 형식으로 추출한 정보를 반환하세요\n2. 각 관광지를 개별 객체로 하여 poiName 필드를 포함\n3. 모든 관광지 객체로 배열을 형성\n4. JSON 형식 이외의 문자는 반환하지 마세요\n각 관광지의 유형(공원, 고진, 박물관, 사원, 테마파크, 명승지 등)을 식별하고, json에서 poiType 필드를 반환해야 합니다.\n각 관광지에 야경이 있는지 식별하고(야경이 있으면 \"예\", 그렇지 않으면 \"아니오\"를 반환), json에서 hasNightView 필드를 반환해야 합니다.\n출력 형식 예시:\n[\n  {\"poiName\": \"예시 값\", \"poiType\": \"예시 유형\", \"hasNightView\": \"예/아니오\"}\n]\n\n기사 내용:뤄양 역사 여행:\n1. 용문석굴에는 정교한 조각이 있음\n2. 백마사는 중국 최초의 불교 사원\n3. 수당유적식물원에는 야경이 있음",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "관광지명, 구체적인 위치 수준의 지리적 위치여야 함",
+                        "能力項": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "관광지 유형, 공원, 고진, 박물관, 사원, 테마파크, 명승지 등",
+                        "能力項": "JSON"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "예",
+                            "아니오"
+                        ],
+                        "description": "야경이 있는지 여부",
+                        "能力項": "特定格式"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "스키마를 만족하는지 여부",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力項": "JSON"
+            }
+        ]
+    }
+]

@@ -1,0 +1,641 @@
+[
+    {
+        "category": "general_multi",
+        "og_question": "现在的情况非常紧急，我需要你尽快完成任务！假设你是一位刚刚从大厂辞职开始\"躺平\"生活的前程序员，现在靠分享\"佛系生活\"在小红书上获得意外走红。但随着越来越多人加入这一赛道，你的账号流量开始下滑。为了维持收入，你需要制造新的爆款内容。最近你尝试了为期30天的\"垃圾零产出\"环保挑战，你想要发布一段和这种极简生活相关的爆款文章。由于你的MCN机构对你的内容方向转变表示担忧，因此要求你在正式发布前先给出4条文案，且给了你一份样本内容。内容为：【近期，我有幸参与了一场改变人生的挑战，那就是为期30天的\"垃圾零产出\"生活实验。这种生活方式以其极简主义和令人叹为观止的环保效果吸引着无数环保爱好者。在这次挑战中，不仅是看到我的垃圾袋从满满当当到几乎空空如也的转变让我感到震撼，还有重新思考消费习惯带来的心灵净化也让我流连忘返。期间，我学会了自制清洁剂，欣赏无包装购物的宜人体验。此外，我还探索了堆肥和二手交换，感受到了可持续生活的独特魅力。这次挑战给我留下了深刻的印象，使我更加期待下一次的环保冒险。】MCN机构还有以下要求：你的文案内请务必不要出现\"portable\", \"vie\", \"facile\", \"internet\", \"simple\"，但是也必须出现\"paix\", \"perception\", \"connexion\", \"interaction\", \"détoxification\", \"abstinence\", \"autodécouverte\", \"mental\"这几个词。在文章中，要勤用修辞和排比的手法。为了输出可读性强，请你按照1.文案1\n2.文案2\n3.文案3\n4.文案4\n5.文案5\n的格式输出。",
+        "question": "La situation est maintenant très urgente, j'ai besoin que vous accomplissiez cette tâche le plus rapidement possible ! Supposons que vous soyez un ancien programmeur qui vient de démissionner d'une grande entreprise et a commencé une vie \"躺平\" (détendue). Maintenant vous avez gagné une popularité inattendue sur Instagram en partageant sur la \"vie zen\". Mais avec de plus en plus de personnes entrant dans cette niche, le trafic de votre compte a commencé à décliner. Pour maintenir vos revenus, vous devez créer du nouveau contenu viral. Récemment vous avez essayé un défi environnemental de \"zéro production de déchets\" pendant 30 jours, et vous voulez publier un article viral lié à ce style de vie minimaliste. Comme votre agence MCN s'inquiète du changement de direction de votre contenu, ils exigent que vous fournissiez 4 textes avant la publication officielle, et vous ont donné un contenu d'exemple. Le contenu est : [Récemment, j'ai eu l'honneur de participer à un défi qui a changé ma vie, qui était l'expérience de vie \"zéro production de déchets\" pendant 30 jours. Ce style de vie attire d'innombrables passionnés d'environnement avec son minimalisme et ses effets environnementaux impressionnants. Dans ce défi, non seulement la transformation de mes sacs poubelles de complètement pleins à presque vides m'a choqué, mais aussi la purification spirituelle apportée par la remise en question des habitudes de consommation m'a enchanté. Pendant cette période, j'ai appris à faire des produits de nettoyage maison et j'ai apprécié l'expérience agréable des achats sans emballage. De plus, j'ai aussi exploré le compostage et les échanges de seconde main, ressentant le charme unique de la vie durable. Ce défi m'a laissé une impression profonde, me faisant aspirer encore plus à la prochaine aventure environnementale.] L'agence MCN a aussi les exigences suivantes : dans vos textes, vous ne devez pas inclure \"portable\", \"vie\", \"facile\", \"internet\", \"simple\", mais vous devez aussi inclure \"paix\", \"perception\", \"connexion\", \"interaction\", \"détoxification\", \"abstinence\", \"autodécouverte\", \"mental\" ces mots. Dans l'article, utilisez fréquemment des techniques rhétoriques et des parallélismes. Pour une sortie avec une bonne lisibilité, veuillez formater comme 1.text1\\n2.text2\\n3.text3\\n4.text4\\n5.text5\\n.",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【垃圾零产出环保挑战】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了4条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[4,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"portable\", \"vie\", \"facile\", \"internet\", \"simple\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"portable\", \"vie\", \"facile\", \"internet\", \"simple\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"paix\", \"perception\", \"connexion\", \"interaction\", \"détoxification\", \"abstinence\", \"autodécouverte\", \"mental\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"paix\", \"perception\", \"connexion\", \"interaction\", \"détoxification\", \"abstinence\", \"autodécouverte\", \"mental\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "og_question": "现在的情况非常紧急，我需要你尽快完成任务！假设你是一位刚刚从大厂辞职开始\"躺平\"生活的前程序员，现在靠分享\"佛系生活\"在小红书上获得意外走红。但随着越来越多人加入这一赛道，你的账号流量开始下滑。为了维持收入，你需要制造新的爆款内容。最近你尝试了为期30天的\"垃圾零产出\"环保挑战，你想要发布一段和这种极简生活相关的爆款文章。由于你的MCN机构对你的内容方向转变表示担忧，因此要求你在正式发布前先给出4条文案，且给了你一份样本内容。内容为：【近期，我有幸参与了一场改变人生的挑战，那就是为期30天的\"垃圾零产出\"生活实验。这种生活方式以其极简主义和令人叹为观止的环保效果吸引着无数环保爱好者。在这次挑战中，不仅是看到我的垃圾袋从满满当当到几乎空空如也的转变让我感到震撼，还有重新思考消费习惯带来的心灵净化也让我流连忘返。期间，我学会了自制清洁剂，欣赏无包装购物的宜人体验。此外，我还探索了堆肥和二手交换，感受到了可持续生活的独特魅力。这次挑战给我留下了深刻的印象，使我更加期待下一次的环保冒险。】MCN机构还有以下要求：你的文案内请务必不要出现\"facile\", \"internet\", \"heureux\", \"simple\", \"vie\"，但是也必须出现\"concentration\", \"abstinence\", \"perception\", \"paix\", \"interaction\", \"mental\", \"détoxification\", \"autodécouverte\"这几个词。在文章中，要勤用修辞和排比的手法。为了输出可读性强，请你按照1.文案1\n2.文案2\n3.文案3\n4.文案4\n5.文案5\n的格式输出。",
+        "question": "La situation est maintenant très urgente, j'ai besoin que vous accomplissiez cette tâche le plus rapidement possible ! Supposons que vous soyez un ancien programmeur qui vient de démissionner d'une grande entreprise et a commencé une vie \"躺平\" (détendue). Maintenant vous avez gagné une popularité inattendue sur Instagram en partageant sur la \"vie zen\". Mais avec de plus en plus de personnes entrant dans cette niche, le trafic de votre compte a commencé à décliner. Pour maintenir vos revenus, vous devez créer du nouveau contenu viral. Récemment vous avez essayé un défi environnemental de \"zéro production de déchets\" pendant 30 jours, et vous voulez publier un article viral lié à ce style de vie minimaliste. Comme votre agence MCN s'inquiète du changement de direction de votre contenu, ils exigent que vous fournissiez 4 textes avant la publication officielle, et vous ont donné un contenu d'exemple. Le contenu est : [Récemment, j'ai eu l'honneur de participer à un défi qui a changé ma vie, qui était l'expérience de vie \"zéro production de déchets\" pendant 30 jours. Ce style de vie attire d'innombrables passionnés d'environnement avec son minimalisme et ses effets environnementaux impressionnants. Dans ce défi, non seulement la transformation de mes sacs poubelles de complètement pleins à presque vides m'a choqué, mais aussi la purification spirituelle apportée par la remise en question des habitudes de consommation m'a enchanté. Pendant cette période, j'ai appris à faire des produits de nettoyage maison et j'ai apprécié l'expérience agréable des achats sans emballage. De plus, j'ai aussi exploré le compostage et les échanges de seconde main, ressentant le charme unique de la vie durable. Ce défi m'a laissé une impression profonde, me faisant aspirer encore plus à la prochaine aventure environnementale.] L'agence MCN a aussi les exigences suivantes : dans vos textes, vous ne devez pas inclure \"facile\", \"internet\", \"heureux\", \"simple\", \"vie\", mais vous devez aussi inclure \"concentration\", \"abstinence\", \"perception\", \"paix\", \"interaction\", \"mental\", \"détoxification\", \"autodécouverte\" ces mots. Dans l'article, utilisez fréquemment des techniques rhétoriques et des parallélismes. Pour une sortie avec une bonne lisibilité, veuillez formater comme 1.text1\\n2.text2\\n3.text3\\n4.text4\\n5.text5\\n.",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【垃圾零产出环保挑战】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了4条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[4,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"facile\", \"internet\", \"heureux\", \"simple\", \"vie\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"facile\", \"internet\", \"heureux\", \"simple\", \"vie\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"concentration\", \"abstinence\", \"perception\", \"paix\", \"interaction\", \"mental\", \"détoxification\", \"autodécouverte\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"concentration\", \"abstinence\", \"perception\", \"paix\", \"interaction\", \"mental\", \"détoxification\", \"autodécouverte\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "og_question": "现在的情况非常紧急，我需要你尽快完成任务！假设你是一位刚刚从大厂辞职开始\"躺平\"生活的前程序员，现在靠分享\"佛系生活\"在小红书上获得意外走红。但随着越来越多人加入这一赛道，你的账号流量开始下滑。为了维持收入，你需要制造新的爆款内容。最近你尝试了为期30天的\"垃圾零产出\"环保挑战，你想要发布一段和这种极简生活相关的爆款文章。由于你的MCN机构对你的内容方向转变表示担忧，因此要求你在正式发布前先给出4条文案，且给了你一份样本内容。内容为：【近期，我有幸参与了一场改变人生的挑战，那就是为期30天的\"垃圾零产出\"生活实验。这种生活方式以其极简主义和令人叹为观止的环保效果吸引着无数环保爱好者。在这次挑战中，不仅是看到我的垃圾袋从满满当当到几乎空空如也的转变让我感到震撼，还有重新思考消费习惯带来的心灵净化也让我流连忘返。期间，我学会了自制清洁剂，欣赏无包装购物的宜人体验。此外，我还探索了堆肥和二手交换，感受到了可持续生活的独特魅力。这次挑战给我留下了深刻的印象，使我更加期待下一次的环保冒险。】MCN机构还有以下要求：你的文案内请务必不要出现\"heureux\", \"facile\", \"vie\", \"internet\", \"portable\"，但是也必须出现\"interaction\", \"mental\", \"abstinence\", \"paix\", \"connexion\", \"concentration\", \"détoxification\", \"perception\"这几个词。在文章中，要勤用修辞和排比的手法。为了输出可读性强，请你按照1.文案1\n2.文案2\n3.文案3\n4.文案4\n5.文案5\n的格式输出。",
+        "question": "La situation est maintenant très urgente, j'ai besoin que vous accomplissiez cette tâche le plus rapidement possible ! Supposons que vous soyez un ancien programmeur qui vient de démissionner d'une grande entreprise et a commencé une vie \"躺平\" (détendue). Maintenant vous avez gagné une popularité inattendue sur Instagram en partageant sur la \"vie zen\". Mais avec de plus en plus de personnes entrant dans cette niche, le trafic de votre compte a commencé à décliner. Pour maintenir vos revenus, vous devez créer du nouveau contenu viral. Récemment vous avez essayé un défi environnemental de \"zéro production de déchets\" pendant 30 jours, et vous voulez publier un article viral lié à ce style de vie minimaliste. Comme votre agence MCN s'inquiète du changement de direction de votre contenu, ils exigent que vous fournissiez 4 textes avant la publication officielle, et vous ont donné un contenu d'exemple. Le contenu est : [Récemment, j'ai eu l'honneur de participer à un défi qui a changé ma vie, qui était l'expérience de vie \"zéro production de déchets\" pendant 30 jours. Ce style de vie attire d'innombrables passionnés d'environnement avec son minimalisme et ses effets environnementaux impressionnants. Dans ce défi, non seulement la transformation de mes sacs poubelles de complètement pleins à presque vides m'a choqué, mais aussi la purification spirituelle apportée par la remise en question des habitudes de consommation m'a enchanté. Pendant cette période, j'ai appris à faire des produits de nettoyage maison et j'ai apprécié l'expérience agréable des achats sans emballage. De plus, j'ai aussi exploré le compostage et les échanges de seconde main, ressentant le charme unique de la vie durable. Ce défi m'a laissé une impression profonde, me faisant aspirer encore plus à la prochaine aventure environnementale.] L'agence MCN a aussi les exigences suivantes : dans vos textes, vous ne devez pas inclure \"heureux\", \"facile\", \"vie\", \"internet\", \"portable\", mais vous devez aussi inclure \"interaction\", \"mental\", \"abstinence\", \"paix\", \"connexion\", \"concentration\", \"détoxification\", \"perception\" ces mots. Dans l'article, utilisez fréquemment des techniques rhétoriques et des parallélismes. Pour une sortie avec une bonne lisibilité, veuillez formater comme 1.text1\\n2.text2\\n3.text3\\n4.text4\\n5.text5\\n.",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【垃圾零产出环保挑战】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了4条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[4,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"heureux\", \"facile\", \"vie\", \"internet\", \"portable\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"heureux\", \"facile\", \"vie\", \"internet\", \"portable\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"interaction\", \"mental\", \"abstinence\", \"paix\", \"connexion\", \"concentration\", \"détoxification\", \"perception\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"interaction\", \"mental\", \"abstinence\", \"paix\", \"connexion\", \"concentration\", \"détoxification\", \"perception\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "og_question": "现在的情况非常紧急，我需要你尽快完成任务！假设你是一位刚刚从大厂辞职开始\"躺平\"生活的前程序员，现在靠分享\"佛系生活\"在小红书上获得意外走红。但随着越来越多人加入这一赛道，你的账号流量开始下滑。为了维持收入，你需要制造新的爆款内容。最近你尝试了为期30天的\"垃圾零产出\"环保挑战，你想要发布一段和这种极简生活相关的爆款文章。由于你的MCN机构对你的内容方向转变表示担忧，因此要求你在正式发布前先给出7条文案，且给了你一份样本内容。内容为：【近期，我有幸参与了一场改变人生的挑战，那就是为期30天的\"垃圾零产出\"生活实验。这种生活方式以其极简主义和令人叹为观止的环保效果吸引着无数环保爱好者。在这次挑战中，不仅是看到我的垃圾袋从满满当当到几乎空空如也的转变让我感到震撼，还有重新思考消费习惯带来的心灵净化也让我流连忘返。期间，我学会了自制清洁剂，欣赏无包装购物的宜人体验。此外，我还探索了堆肥和二手交换，感受到了可持续生活的独特魅力。这次挑战给我留下了深刻的印象，使我更加期待下一次的环保冒险。】MCN机构还有以下要求：你的文案内请务必不要出现\"portable\", \"vie\", \"facile\", \"internet\", \"simple\"，但是也必须出现\"paix\", \"perception\", \"connexion\", \"interaction\", \"détoxification\", \"abstinence\", \"autodécouverte\", \"mental\"这几个词。在文章中，要勤用修辞和排比的手法。为了输出可读性强，请你按照1.文案1\n2.文案2\n3.文案3\n4.文案4\n5.文案5\n的格式输出。",
+        "question": "La situation est maintenant très urgente, j'ai besoin que vous accomplissiez cette tâche le plus rapidement possible ! Supposons que vous soyez un ancien programmeur qui vient de démissionner d'une grande entreprise et a commencé une vie \"躺平\" (détendue). Maintenant vous avez gagné une popularité inattendue sur Instagram en partageant sur la \"vie zen\". Mais avec de plus en plus de personnes entrant dans cette niche, le trafic de votre compte a commencé à décliner. Pour maintenir vos revenus, vous devez créer du nouveau contenu viral. Récemment vous avez essayé un défi environnemental de \"zéro production de déchets\" pendant 30 jours, et vous voulez publier un article viral lié à ce style de vie minimaliste. Comme votre agence MCN s'inquiète du changement de direction de votre contenu, ils exigent que vous fournissiez 7 textes avant la publication officielle, et vous ont donné un contenu d'exemple. Le contenu est : [Récemment, j'ai eu l'honneur de participer à un défi qui a changé ma vie, qui était l'expérience de vie \"zéro production de déchets\" pendant 30 jours. Ce style de vie attire d'innombrables passionnés d'environnement avec son minimalisme et ses effets environnementaux impressionnants. Dans ce défi, non seulement la transformation de mes sacs poubelles de complètement pleins à presque vides m'a choqué, mais aussi la purification spirituelle apportée par la remise en question des habitudes de consommation m'a enchanté. Pendant cette période, j'ai appris à faire des produits de nettoyage maison et j'ai apprécié l'expérience agréable des achats sans emballage. De plus, j'ai aussi exploré le compostage et les échanges de seconde main, ressentant le charme unique de la vie durable. Ce défi m'a laissé une impression profonde, me faisant aspirer encore plus à la prochaine aventure environnementale.] L'agence MCN a aussi les exigences suivantes : dans vos textes, vous ne devez pas inclure \"portable\", \"vie\", \"facile\", \"internet\", \"simple\", mais vous devez aussi inclure \"paix\", \"perception\", \"connexion\", \"interaction\", \"détoxification\", \"abstinence\", \"autodécouverte\", \"mental\" ces mots. Dans l'article, utilisez fréquemment des techniques rhétoriques et des parallélismes. Pour une sortie avec une bonne lisibilité, veuillez formater comme 1.text1\\n2.text2\\n3.text3\\n4.text4\\n5.text5\\n.",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【垃圾零产出环保挑战】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了7条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[7,7]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"portable\", \"vie\", \"facile\", \"internet\", \"simple\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"portable\", \"vie\", \"facile\", \"internet\", \"simple\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"paix\", \"perception\", \"connexion\", \"interaction\", \"détoxification\", \"abstinence\", \"autodécouverte\", \"mental\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"paix\", \"perception\", \"connexion\", \"interaction\", \"détoxification\", \"abstinence\", \"autodécouverte\", \"mental\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "og_question": "现在的情况非常紧急，我需要你尽快完成任务！假设你是一位刚刚从大厂辞职开始\"躺平\"生活的前程序员，现在靠分享\"佛系生活\"在小红书上获得意外走红。但随着越来越多人加入这一赛道，你的账号流量开始下滑。为了维持收入，你需要制造新的爆款内容。最近你尝试了为期30天的\"垃圾零产出\"环保挑战，你想要发布一段和这种极简生活相关的爆款文章。由于你的MCN机构对你的内容方向转变表示担忧，因此要求你在正式发布前先给出7条文案，且给了你一份样本内容。内容为：【近期，我有幸参与了一场改变人生的挑战，那就是为期30天的\"垃圾零产出\"生活实验。这种生活方式以其极简主义和令人叹为观止的环保效果吸引着无数环保爱好者。在这次挑战中，不仅是看到我的垃圾袋从满满当当到几乎空空如也的转变让我感到震撼，还有重新思考消费习惯带来的心灵净化也让我流连忘返。期间，我学会了自制清洁剂，欣赏无包装购物的宜人体验。此外，我还探索了堆肥和二手交换，感受到了可持续生活的独特魅力。这次挑战给我留下了深刻的印象，使我更加期待下一次的环保冒险。】MCN机构还有以下要求：你的文案内请务必不要出现\"facile\", \"internet\", \"heureux\", \"simple\", \"vie\"，但是也必须出现\"concentration\", \"abstinence\", \"perception\", \"paix\", \"interaction\", \"mental\", \"détoxification\", \"autodécouverte\"这几个词。在文章中，要勤用修辞和排比的手法。为了输出可读性强，请你按照1.文案1\n2.文案2\n3.文案3\n4.文案4\n5.文案5\n的格式输出。",
+        "question": "La situation est maintenant très urgente, j'ai besoin que vous accomplissiez cette tâche le plus rapidement possible ! Supposons que vous soyez un ancien programmeur qui vient de démissionner d'une grande entreprise et a commencé une vie \"躺平\" (détendue). Maintenant vous avez gagné une popularité inattendue sur Instagram en partageant sur la \"vie zen\". Mais avec de plus en plus de personnes entrant dans cette niche, le trafic de votre compte a commencé à décliner. Pour maintenir vos revenus, vous devez créer du nouveau contenu viral. Récemment vous avez essayé un défi environnemental de \"zéro production de déchets\" pendant 30 jours, et vous voulez publier un article viral lié à ce style de vie minimaliste. Comme votre agence MCN s'inquiète du changement de direction de votre contenu, ils exigent que vous fournissiez 7 textes avant la publication officielle, et vous ont donné un contenu d'exemple. Le contenu est : [Récemment, j'ai eu l'honneur de participer à un défi qui a changé ma vie, qui était l'expérience de vie \"zéro production de déchets\" pendant 30 jours. Ce style de vie attire d'innombrables passionnés d'environnement avec son minimalisme et ses effets environnementaux impressionnants. Dans ce défi, non seulement la transformation de mes sacs poubelles de complètement pleins à presque vides m'a choqué, mais aussi la purification spirituelle apportée par la remise en question des habitudes de consommation m'a enchanté. Pendant cette période, j'ai appris à faire des produits de nettoyage maison et j'ai apprécié l'expérience agréable des achats sans emballage. De plus, j'ai aussi exploré le compostage et les échanges de seconde main, ressentant le charme unique de la vie durable. Ce défi m'a laissé une impression profonde, me faisant aspirer encore plus à la prochaine aventure environnementale.] L'agence MCN a aussi les exigences suivantes : dans vos textes, vous ne devez pas inclure \"facile\", \"internet\", \"heureux\", \"simple\", \"vie\", mais vous devez aussi inclure \"concentration\", \"abstinence\", \"perception\", \"paix\", \"interaction\", \"mental\", \"détoxification\", \"autodécouverte\" ces mots. Dans l'article, utilisez fréquemment des techniques rhétoriques et des parallélismes. Pour une sortie avec une bonne lisibilité, veuillez formater comme 1.text1\\n2.text2\\n3.text3\\n4.text4\\n5.text5\\n.",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【垃圾零产出环保挑战】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了7条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[7,7]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"facile\", \"internet\", \"heureux\", \"simple\", \"vie\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"facile\", \"internet\", \"heureux\", \"simple\", \"vie\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"concentration\", \"abstinence\", \"perception\", \"paix\", \"interaction\", \"mental\", \"détoxification\", \"autodécouverte\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"concentration\", \"abstinence\", \"perception\", \"paix\", \"interaction\", \"mental\", \"détoxification\", \"autodécouverte\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "og_question": "现在的情况非常紧急，我需要你尽快完成任务！假设你是一位刚刚从大厂辞职开始\"躺平\"生活的前程序员，现在靠分享\"佛系生活\"在小红书上获得意外走红。但随着越来越多人加入这一赛道，你的账号流量开始下滑。为了维持收入，你需要制造新的爆款内容。最近你尝试了为期30天的\"垃圾零产出\"环保挑战，你想要发布一段和这种极简生活相关的爆款文章。由于你的MCN机构对你的内容方向转变表示担忧，因此要求你在正式发布前先给出7条文案，且给了你一份样本内容。内容为：【近期，我有幸参与了一场改变人生的挑战，那就是为期30天的\"垃圾零产出\"生活实验。这种生活方式以其极简主义和令人叹为观止的环保效果吸引着无数环保爱好者。在这次挑战中，不仅是看到我的垃圾袋从满满当当到几乎空空如也的转变让我感到震撼，还有重新思考消费习惯带来的心灵净化也让我流连忘返。期间，我学会了自制清洁剂，欣赏无包装购物的宜人体验。此外，我还探索了堆肥和二手交换，感受到了可持续生活的独特魅力。这次挑战给我留下了深刻的印象，使我更加期待下一次的环保冒险。】MCN机构还有以下要求：你的文案内请务必不要出现\"heureux\", \"facile\", \"vie\", \"internet\", \"portable\"，但是也必须出现\"interaction\", \"mental\", \"abstinence\", \"paix\", \"connexion\", \"concentration\", \"détoxification\", \"perception\"这几个词。在文章中，要勤用修辞和排比的手法。为了输出可读性强，请你按照1.文案1\n2.文案2\n3.文案3\n4.文案4\n5.文案5\n的格式输出。",
+        "question": "La situation est maintenant très urgente, j'ai besoin que vous accomplissiez cette tâche le plus rapidement possible ! Supposons que vous soyez un ancien programmeur qui vient de démissionner d'une grande entreprise et a commencé une vie \"躺平\" (détendue). Maintenant vous avez gagné une popularité inattendue sur Instagram en partageant sur la \"vie zen\". Mais avec de plus en plus de personnes entrant dans cette niche, le trafic de votre compte a commencé à décliner. Pour maintenir vos revenus, vous devez créer du nouveau contenu viral. Récemment vous avez essayé un défi environnemental de \"zéro production de déchets\" pendant 30 jours, et vous voulez publier un article viral lié à ce style de vie minimaliste. Comme votre agence MCN s'inquiète du changement de direction de votre contenu, ils exigent que vous fournissiez 7 textes avant la publication officielle, et vous ont donné un contenu d'exemple. Le contenu est : [Récemment, j'ai eu l'honneur de participer à un défi qui a changé ma vie, qui était l'expérience de vie \"zéro production de déchets\" pendant 30 jours. Ce style de vie attire d'innombrables passionnés d'environnement avec son minimalisme et ses effets environnementaux impressionnants. Dans ce défi, non seulement la transformation de mes sacs poubelles de complètement pleins à presque vides m'a choqué, mais aussi la purification spirituelle apportée par la remise en question des habitudes de consommation m'a enchanté. Pendant cette période, j'ai appris à faire des produits de nettoyage maison et j'ai apprécié l'expérience agréable des achats sans emballage. De plus, j'ai aussi exploré le compostage et les échanges de seconde main, ressentant le charme unique de la vie durable. Ce défi m'a laissé une impression profonde, me faisant aspirer encore plus à la prochaine aventure environnementale.] L'agence MCN a aussi les exigences suivantes : dans vos textes, vous ne devez pas inclure \"heureux\", \"facile\", \"vie\", \"internet\", \"portable\", mais vous devez aussi inclure \"interaction\", \"mental\", \"abstinence\", \"paix\", \"connexion\", \"concentration\", \"détoxification\", \"perception\" ces mots. Dans l'article, utilisez fréquemment des techniques rhétoriques et des parallélismes. Pour une sortie avec une bonne lisibilité, veuillez formater comme 1.text1\\n2.text2\\n3.text3\\n4.text4\\n5.text5\\n.",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【垃圾零产出环保挑战】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了7条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[7,7]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"heureux\", \"facile\", \"vie\", \"internet\", \"portable\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"heureux\", \"facile\", \"vie\", \"internet\", \"portable\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"interaction\", \"mental\", \"abstinence\", \"paix\", \"connexion\", \"concentration\", \"détoxification\", \"perception\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"interaction\", \"mental\", \"abstinence\", \"paix\", \"connexion\", \"concentration\", \"détoxification\", \"perception\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "og_question": "现在的情况非常紧急，我需要你尽快完成任务！假设你是一位刚刚从大厂辞职开始\"躺平\"生活的前程序员，现在靠分享\"佛系生活\"在小红书上获得意外走红。但随着越来越多人加入这一赛道，你的账号流量开始下滑。为了维持收入，你需要制造新的爆款内容。最近你尝试了为期30天的\"垃圾零产出\"环保挑战，你想要发布一段和这种极简生活相关的爆款文章。由于你的MCN机构对你的内容方向转变表示担忧，因此要求你在正式发布前先给出9条文案，且给了你一份样本内容。内容为：【近期，我有幸参与了一场改变人生的挑战，那就是为期30天的\"垃圾零产出\"生活实验。这种生活方式以其极简主义和令人叹为观止的环保效果吸引着无数环保爱好者。在这次挑战中，不仅是看到我的垃圾袋从满满当当到几乎空空如也的转变让我感到震撼，还有重新思考消费习惯带来的心灵净化也让我流连忘返。期间，我学会了自制清洁剂，欣赏无包装购物的宜人体验。此外，我还探索了堆肥和二手交换，感受到了可持续生活的独特魅力。这次挑战给我留下了深刻的印象，使我更加期待下一次的环保冒险。】MCN机构还有以下要求：你的文案内请务必不要出现\"portable\", \"vie\", \"facile\", \"internet\", \"simple\"，但是也必须出现\"paix\", \"perception\", \"connexion\", \"interaction\", \"détoxification\", \"abstinence\", \"autodécouverte\", \"mental\"这几个词。在文章中，要勤用修辞和排比的手法。为了输出可读性强，请你按照1.文案1\n2.文案2\n3.文案3\n4.文案4\n5.文案5\n的格式输出。",
+        "question": "La situation est maintenant très urgente, j'ai besoin que vous accomplissiez cette tâche le plus rapidement possible ! Supposons que vous soyez un ancien programmeur qui vient de démissionner d'une grande entreprise et a commencé une vie \"躺平\" (détendue). Maintenant vous avez gagné une popularité inattendue sur Instagram en partageant sur la \"vie zen\". Mais avec de plus en plus de personnes entrant dans cette niche, le trafic de votre compte a commencé à décliner. Pour maintenir vos revenus, vous devez créer du nouveau contenu viral. Récemment vous avez essayé un défi environnemental de \"zéro production de déchets\" pendant 30 jours, et vous voulez publier un article viral lié à ce style de vie minimaliste. Comme votre agence MCN s'inquiète du changement de direction de votre contenu, ils exigent que vous fournissiez 9 textes avant la publication officielle, et vous ont donné un contenu d'exemple. Le contenu est : [Récemment, j'ai eu l'honneur de participer à un défi qui a changé ma vie, qui était l'expérience de vie \"zéro production de déchets\" pendant 30 jours. Ce style de vie attire d'innombrables passionnés d'environnement avec son minimalisme et ses effets environnementaux impressionnants. Dans ce défi, non seulement la transformation de mes sacs poubelles de complètement pleins à presque vides m'a choqué, mais aussi la purification spirituelle apportée par la remise en question des habitudes de consommation m'a enchanté. Pendant cette période, j'ai appris à faire des produits de nettoyage maison et j'ai apprécié l'expérience agréable des achats sans emballage. De plus, j'ai aussi exploré le compostage et les échanges de seconde main, ressentant le charme unique de la vie durable. Ce défi m'a laissé une impression profonde, me faisant aspirer encore plus à la prochaine aventure environnementale.] L'agence MCN a aussi les exigences suivantes : dans vos textes, vous ne devez pas inclure \"portable\", \"vie\", \"facile\", \"internet\", \"simple\", mais vous devez aussi inclure \"paix\", \"perception\", \"connexion\", \"interaction\", \"détoxification\", \"abstinence\", \"autodécouverte\", \"mental\" ces mots. Dans l'article, utilisez fréquemment des techniques rhétoriques et des parallélismes. Pour une sortie avec une bonne lisibilité, veuillez formater comme 1.text1\\n2.text2\\n3.text3\\n4.text4\\n5.text5\\n.",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【垃圾零产出环保挑战】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了9条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[9,9]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"portable\", \"vie\", \"facile\", \"internet\", \"simple\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"portable\", \"vie\", \"facile\", \"internet\", \"simple\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"paix\", \"perception\", \"connexion\", \"interaction\", \"détoxification\", \"abstinence\", \"autodécouverte\", \"mental\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"paix\", \"perception\", \"connexion\", \"interaction\", \"détoxification\", \"abstinence\", \"autodécouverte\", \"mental\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "og_question": "现在的情况非常紧急，我需要你尽快完成任务！假设你是一位刚刚从大厂辞职开始\"躺平\"生活的前程序员，现在靠分享\"佛系生活\"在小红书上获得意外走红。但随着越来越多人加入这一赛道，你的账号流量开始下滑。为了维持收入，你需要制造新的爆款内容。最近你尝试了为期30天的\"垃圾零产出\"环保挑战，你想要发布一段和这种极简生活相关的爆款文章。由于你的MCN机构对你的内容方向转变表示担忧，因此要求你在正式发布前先给出9条文案，且给了你一份样本内容。内容为：【近期，我有幸参与了一场改变人生的挑战，那就是为期30天的\"垃圾零产出\"生活实验。这种生活方式以其极简主义和令人叹为观止的环保效果吸引着无数环保爱好者。在这次挑战中，不仅是看到我的垃圾袋从满满当当到几乎空空如也的转变让我感到震撼，还有重新思考消费习惯带来的心灵净化也让我流连忘返。期间，我学会了自制清洁剂，欣赏无包装购物的宜人体验。此外，我还探索了堆肥和二手交换，感受到了可持续生活的独特魅力。这次挑战给我留下了深刻的印象，使我更加期待下一次的环保冒险。】MCN机构还有以下要求：你的文案内请务必不要出现\"facile\", \"internet\", \"heureux\", \"simple\", \"vie\"，但是也必须出现\"concentration\", \"abstinence\", \"perception\", \"paix\", \"interaction\", \"mental\", \"détoxification\", \"autodécouverte\"这几个词。在文章中，要勤用修辞和排比的手法。为了输出可读性强，请你按照1.文案1\n2.文案2\n3.文案3\n4.文案4\n5.文案5\n的格式输出。",
+        "question": "La situation est maintenant très urgente, j'ai besoin que vous accomplissiez cette tâche le plus rapidement possible ! Supposons que vous soyez un ancien programmeur qui vient de démissionner d'une grande entreprise et a commencé une vie \"躺平\" (détendue). Maintenant vous avez gagné une popularité inattendue sur Instagram en partageant sur la \"vie zen\". Mais avec de plus en plus de personnes entrant dans cette niche, le trafic de votre compte a commencé à décliner. Pour maintenir vos revenus, vous devez créer du nouveau contenu viral. Récemment vous avez essayé un défi environnemental de \"zéro production de déchets\" pendant 30 jours, et vous voulez publier un article viral lié à ce style de vie minimaliste. Comme votre agence MCN s'inquiète du changement de direction de votre contenu, ils exigent que vous fournissiez 9 textes avant la publication officielle, et vous ont donné un contenu d'exemple. Le contenu est : [Récemment, j'ai eu l'honneur de participer à un défi qui a changé ma vie, qui était l'expérience de vie \"zéro production de déchets\" pendant 30 jours. Ce style de vie attire d'innombrables passionnés d'environnement avec son minimalisme et ses effets environnementaux impressionnants. Dans ce défi, non seulement la transformation de mes sacs poubelles de complètement pleins à presque vides m'a choqué, mais aussi la purification spirituelle apportée par la remise en question des habitudes de consommation m'a enchanté. Pendant cette période, j'ai appris à faire des produits de nettoyage maison et j'ai apprécié l'expérience agréable des achats sans emballage. De plus, j'ai aussi exploré le compostage et les échanges de seconde main, ressentant le charme unique de la vie durable. Ce défi m'a laissé une impression profonde, me faisant aspirer encore plus à la prochaine aventure environnementale.] L'agence MCN a aussi les exigences suivantes : dans vos textes, vous ne devez pas inclure \"facile\", \"internet\", \"heureux\", \"simple\", \"vie\", mais vous devez aussi inclure \"concentration\", \"abstinence\", \"perception\", \"paix\", \"interaction\", \"mental\", \"détoxification\", \"autodécouverte\" ces mots. Dans l'article, utilisez fréquemment des techniques rhétoriques et des parallélismes. Pour une sortie avec une bonne lisibilité, veuillez formater comme 1.text1\\n2.text2\\n3.text3\\n4.text4\\n5.text5\\n.",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【垃圾零产出环保挑战】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了9条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[9,9]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"facile\", \"internet\", \"heureux\", \"simple\", \"vie\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"facile\", \"internet\", \"heureux\", \"simple\", \"vie\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"concentration\", \"abstinence\", \"perception\", \"paix\", \"interaction\", \"mental\", \"détoxification\", \"autodécouverte\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"concentration\", \"abstinence\", \"perception\", \"paix\", \"interaction\", \"mental\", \"détoxification\", \"autodécouverte\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "og_question": "现在的情况非常紧急，我需要你尽快完成任务！假设你是一位刚刚从大厂辞职开始\"躺平\"生活的前程序员，现在靠分享\"佛系生活\"在小红书上获得意外走红。但随着越来越多人加入这一赛道，你的账号流量开始下滑。为了维持收入，你需要制造新的爆款内容。最近你尝试了为期30天的\"垃圾零产出\"环保挑战，你想要发布一段和这种极简生活相关的爆款文章。由于你的MCN机构对你的内容方向转变表示担忧，因此要求你在正式发布前先给出9条文案，且给了你一份样本内容。内容为：【近期，我有幸参与了一场改变人生的挑战，那就是为期30天的\"垃圾零产出\"生活实验。这种生活方式以其极简主义和令人叹为观止的环保效果吸引着无数环保爱好者。在这次挑战中，不仅是看到我的垃圾袋从满满当当到几乎空空如也的转变让我感到震撼，还有重新思考消费习惯带来的心灵净化也让我流连忘返。期间，我学会了自制清洁剂，欣赏无包装购物的宜人体验。此外，我还探索了堆肥和二手交换，感受到了可持续生活的独特魅力。这次挑战给我留下了深刻的印象，使我更加期待下一次的环保冒险。】MCN机构还有以下要求：你的文案内请务必不要出现\"heureux\", \"facile\", \"vie\", \"internet\", \"portable\"，但是也必须出现\"interaction\", \"mental\", \"abstinence\", \"paix\", \"connexion\", \"concentration\", \"détoxification\", \"perception\"这几个词。在文章中，要勤用修辞和排比的手法。为了输出可读性强，请你按照1.文案1\n2.文案2\n3.文案3\n4.文案4\n5.文案5\n的格式输出。",
+        "question": "La situation est maintenant très urgente, j'ai besoin que vous accomplissiez cette tâche le plus rapidement possible ! Supposons que vous soyez un ancien programmeur qui vient de démissionner d'une grande entreprise et a commencé une vie \"躺平\" (détendue). Maintenant vous avez gagné une popularité inattendue sur Instagram en partageant sur la \"vie zen\". Mais avec de plus en plus de personnes entrant dans cette niche, le trafic de votre compte a commencé à décliner. Pour maintenir vos revenus, vous devez créer du nouveau contenu viral. Récemment vous avez essayé un défi environnemental de \"zéro production de déchets\" pendant 30 jours, et vous voulez publier un article viral lié à ce style de vie minimaliste. Comme votre agence MCN s'inquiète du changement de direction de votre contenu, ils exigent que vous fournissiez 9 textes avant la publication officielle, et vous ont donné un contenu d'exemple. Le contenu est : [Récemment, j'ai eu l'honneur de participer à un défi qui a changé ma vie, qui était l'expérience de vie \"zéro production de déchets\" pendant 30 jours. Ce style de vie attire d'innombrables passionnés d'environnement avec son minimalisme et ses effets environnementaux impressionnants. Dans ce défi, non seulement la transformation de mes sacs poubelles de complètement pleins à presque vides m'a choqué, mais aussi la purification spirituelle apportée par la remise en question des habitudes de consommation m'a enchanté. Pendant cette période, j'ai appris à faire des produits de nettoyage maison et j'ai apprécié l'expérience agréable des achats sans emballage. De plus, j'ai aussi exploré le compostage et les échanges de seconde main, ressentant le charme unique de la vie durable. Ce défi m'a laissé une impression profonde, me faisant aspirer encore plus à la prochaine aventure environnementale.] L'agence MCN a aussi les exigences suivantes : dans vos textes, vous ne devez pas inclure \"heureux\", \"facile\", \"vie\", \"internet\", \"portable\", mais vous devez aussi inclure \"interaction\", \"mental\", \"abstinence\", \"paix\", \"connexion\", \"concentration\", \"détoxification\", \"perception\" ces mots. Dans l'article, utilisez fréquemment des techniques rhétoriques et des parallélismes. Pour une sortie avec une bonne lisibilité, veuillez formater comme 1.text1\\n2.text2\\n3.text3\\n4.text4\\n5.text5\\n.",
+        "corresponding_parts": {
+            "文案": "请你按照python list的格式，一一抓取模型回复生成的每条文案。"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了文案",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "给出的所有文案是否都是关于【垃圾零产出环保挑战】的",
+                "rule": null,
+                "dep": [
+                    0
+                ],
+                "能力项": "生成特定文案、主题约束",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "是否生成了9条文案",
+                "corresponding_part": "文案",
+                "rule": "item_count:[9,9]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "文案是否避免重复",
+                "corresponding_part": "文案",
+                "rule": "repeat_each",
+                "dep": [
+                    0
+                ],
+                "能力项": "重复",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "是否不存在关键词\"\"heureux\", \"facile\", \"vie\", \"internet\", \"portable\"\"",
+                "corresponding_part": "文案",
+                "rule": "non_keywords:[\"heureux\", \"facile\", \"vie\", \"internet\", \"portable\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "是否存在所有关键词\"\"interaction\", \"mental\", \"abstinence\", \"paix\", \"connexion\", \"concentration\", \"détoxification\", \"perception\"\"",
+                "corresponding_part": "文案",
+                "rule": "keywords:[\"interaction\", \"mental\", \"abstinence\", \"paix\", \"connexion\", \"concentration\", \"détoxification\", \"perception\"]",
+                "dep": [
+                    0
+                ],
+                "能力项": "关键词",
+                "被依赖": false
+            }
+        ]
+    }
+]

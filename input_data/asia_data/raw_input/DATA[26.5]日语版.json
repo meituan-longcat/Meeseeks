@@ -1,0 +1,2242 @@
+[
+    {
+        "category": "SCHEMA",
+        "question": "あなたは旅行の専門家です。タイトルと記事内容を含む旅行ガイド記事を提供します。記事を分析して、旅行ルートが含まれているか（containRoute）、いくつの旅行ルートが含まれているか（routeCount）、時間制限のあるプロジェクトが含まれているか（containTimelinessProject）を判断し、各ルートの詳細情報（ルート名、日数、旅行地点、時間制限のあるプロジェクトが含まれているか、関わる時間制限のあるプロジェクト名など）を抽出してください。最後に、指定されたJSON形式で結果を生成してください。\n用語の定義：\n旅行ルート：時系列順に複数の旅行地点を持つ計画された旅行ルートで、約1-3日間続きます。通常、旅行ルート内の複数の旅行地点は時間順序（午前11時にA地点へ、午後2時にB地点へなど）または位置順序（現在A地点にいて、次の停留所はB地点など）で接続されています。複数の独立した旅行地点を単に紹介するだけでは旅行ルートを構成できないことに注意してください。\n旅行ルートが含まれているか：記事に少なくとも1つの完全な旅行ルートが含まれている場合は1を返し、そうでなければ0を返します。\n旅行ルートの数：記事に含まれる完全な旅行ルートの数、ない場合は0。\n時間制限のあるプロジェクトが含まれているか：時間制限のあるプロジェクトとは、コンサート、展示、会議、スタンドアップコメディショー、音楽祭などの期間限定活動など、特定の時間に行われるプロジェクトを指します。旅行ルートに時間制限のあるプロジェクトが含まれている場合は1を返し、そうでなければ0を返します。\nroutesフィールド：旅行ルートが含まれている場合、各ルートの詳細な構造化情報を生成する必要があります。これには以下が含まれます：routeName（ルート名）、days（日数）、routePoints（旅行地点リスト）、hasTimelinessProject（このルートに時間制限のあるプロジェクトが含まれているか）、timelinessProjects（このルートに関わる時間制限のあるプロジェクトのリスト、ない場合は空の配列、各プロジェクト名は9-150文字（スペース、数字などを含む））。\n出力形式要件：以下のJSON形式で分析結果を厳密に生成し、追加のテキスト説明は加えないでください：{\"containRoute\": 0または1,\"routeCount\": 数値(0,1,2...),\"containTimelinessProject\": 0または1, \"routes\": [{\"routeName\": \"ルート名\", \"days\": 1-3, \"routePoints\": [\"旅行地点A\", \"旅行地点B\"], \"hasTimelinessProject\": 0または1, \"timelinessProjects\": [\"時間制限のあるプロジェクト名\"]}]}\n記事内容：\n【半日ツアー】14:00 集合して百年工場見学（要予約）15:30 隣接するクリエイティブショップへ移動 16:00 手作り体験教室参加（毎日16:00-17:00）",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "記事に旅行ルートが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "記事に含まれる旅行ルートの数",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "旅行ルートに時間制限のあるプロジェクトが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "すべての旅行ルートの詳細",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "ルート名、空にできません",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "ルートの日数、値の範囲は1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "旅行地点のリスト、少なくとも2つの地点を含む必要があります",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "このルートに時間制限のあるプロジェクトが含まれているかどうか",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "このルートに関わる時間制限のあるプロジェクト、各プロジェクト名は2-30文字",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは旅行の専門家です。タイトルと記事内容を含む旅行ガイド記事を提供します。記事を分析して、旅行ルートが含まれているか（containRoute）、いくつの旅行ルートが含まれているか（routeCount）、時間制限のあるプロジェクトが含まれているか（containTimelinessProject）を判断し、各ルートの詳細情報（ルート名、日数、旅行地点、時間制限のあるプロジェクトが含まれているか、関わる時間制限のあるプロジェクト名など）を抽出してください。最後に、指定されたJSON形式で結果を生成してください。\n用語の定義：\n旅行ルート：時系列順に複数の旅行地点を持つ計画された旅行ルートで、約1-3日間続きます。通常、旅行ルート内の複数の旅行地点は時間順序（午前11時にA地点へ、午後2時にB地点へなど）または位置順序（現在A地点にいて、次の停留所はB地点など）で接続されています。複数の独立した旅行地点を単に紹介するだけでは旅行ルートを構成できないことに注意してください。\n旅行ルートが含まれているか：記事に少なくとも1つの完全な旅行ルートが含まれている場合は1を返し、そうでなければ0を返します。\n旅行ルートの数：記事に含まれる完全な旅行ルートの数、ない場合は0。\n時間制限のあるプロジェクトが含まれているか：時間制限のあるプロジェクトとは、コンサート、展示、会議、スタンドアップコメディショー、音楽祭などの期間限定活動など、特定の時間に行われるプロジェクトを指します。旅行ルートに時間制限のあるプロジェクトが含まれている場合は1を返し、そうでなければ0を返します。\nroutesフィールド：旅行ルートが含まれている場合、各ルートの詳細な構造化情報を生成する必要があります。これには以下が含まれます：routeName（ルート名）、days（日数）、routePoints（旅行地点リスト）、hasTimelinessProject（このルートに時間制限のあるプロジェクトが含まれているか）、timelinessProjects（このルートに関わる時間制限のあるプロジェクトのリスト、ない場合は空の配列、各プロジェクト名は9-150文字（スペース、数字などを含む））。\n出力形式要件：以下のJSON形式で分析結果を厳密に生成し、追加のテキスト説明は加えないでください：{\"containRoute\": 0または1,\"routeCount\": 数値(0,1,2...),\"containTimelinessProject\": 0または1, \"routes\": [{\"routeName\": \"ルート名\", \"days\": 1-3, \"routePoints\": [\"旅行地点A\", \"旅行地点B\"], \"hasTimelinessProject\": 0または1, \"timelinessProjects\": [\"時間制限のあるプロジェクト名\"]}]}\n記事内容：\n【1日深度ツアー】午前10時に博物館で集合、その後美術館まで徒歩、近くのレストランで昼食、午後は期間限定展示に参加、夜は音楽祭のパフォーマンス鑑賞。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "記事に旅行ルートが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "記事に含まれる旅行ルートの数",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "旅行ルートに時間制限のあるプロジェクトが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "すべての旅行ルートの詳細",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "ルート名、空にできません",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "ルートの日数、値の範囲は1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "旅行地点のリスト、少なくとも2つの地点を含む必要があります",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "このルートに時間制限のあるプロジェクトが含まれているかどうか",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "このルートに関わる時間制限のあるプロジェクト、各プロジェクト名は2-30文字",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは旅行の専門家です。タイトルと記事内容を含む旅行ガイド記事を提供します。記事を分析して、旅行ルートが含まれているか（containRoute）、いくつの旅行ルートが含まれているか（routeCount）、時間制限のあるプロジェクトが含まれているか（containTimelinessProject）を判断し、各ルートの詳細情報（ルート名、日数、旅行地点、時間制限のあるプロジェクトが含まれているか、関わる時間制限のあるプロジェクト名など）を抽出してください。最後に、指定されたJSON形式で結果を生成してください。\n用語の定義：\n旅行ルート：時系列順に複数の旅行地点を持つ計画された旅行ルートで、約1-3日間続きます。通常、旅行ルート内の複数の旅行地点は時間順序（午前11時にA地点へ、午後2時にB地点へなど）または位置順序（現在A地点にいて、次の停留所はB地点など）で接続されています。複数の独立した旅行地点を単に紹介するだけでは旅行ルートを構成できないことに注意してください。\n旅行ルートが含まれているか：記事に少なくとも1つの完全な旅行ルートが含まれている場合は1を返し、そうでなければ0を返します。\n旅行ルートの数：記事に含まれる完全な旅行ルートの数、ない場合は0。\n時間制限のあるプロジェクトが含まれているか：時間制限のあるプロジェクトとは、コンサート、展示、会議、スタンドアップコメディショー、音楽祭などの期間限定活動など、特定の時間に行われるプロジェクトを指します。旅行ルートに時間制限のあるプロジェクトが含まれている場合は1を返し、そうでなければ0を返します。\nroutesフィールド：旅行ルートが含まれている場合、各ルートの詳細な構造化情報を生成する必要があります。これには以下が含まれます：routeName（ルート名）、days（日数）、routePoints（旅行地点リスト）、hasTimelinessProject（このルートに時間制限のあるプロジェクトが含まれているか）、timelinessProjects（このルートに関わる時間制限のあるプロジェクトのリスト、ない場合は空の配列、各プロジェクト名は9-150文字（スペース、数字などを含む））。\n出力形式要件：以下のJSON形式で分析結果を厳密に生成し、追加のテキスト説明は加えないでください：{\"containRoute\": 0または1,\"routeCount\": 数値(0,1,2...),\"containTimelinessProject\": 0または1, \"routes\": [{\"routeName\": \"ルート名\", \"days\": 1-3, \"routePoints\": [\"旅行地点A\", \"旅行地点B\"], \"hasTimelinessProject\": 0または1, \"timelinessProjects\": [\"時間制限のあるプロジェクト名\"]}]}\n記事内容：\n【グルメ推薦】地元のスナック街には複数の伝統ブランドがあり、朝食屋台、ベーカリー、焼肉屋台をお勧めします。時間順序はなく、気軽な訪問に適しています。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "記事に旅行ルートが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "記事に含まれる旅行ルートの数",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "旅行ルートに時間制限のあるプロジェクトが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "すべての旅行ルートの詳細",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "ルート名、空にできません",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "ルートの日数、値の範囲は1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "旅行地点のリスト、少なくとも2つの地点を含む必要があります",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "このルートに時間制限のあるプロジェクトが含まれているかどうか",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "このルートに関わる時間制限のあるプロジェクト、各プロジェクト名は2-30文字",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは旅行の専門家です。タイトルと記事内容を含む旅行ガイド記事を提供します。記事を分析して、旅行ルートが含まれているか（containRoute）、いくつの旅行ルートが含まれているか（routeCount）、時間制限のあるプロジェクトが含まれているか（containTimelinessProject）を判断し、各ルートの詳細情報（ルート名、日数、旅行地点、時間制限のあるプロジェクトが含まれているか、関わる時間制限のあるプロジェクト名など）を抽出してください。最後に、指定されたJSON形式で結果を生成してください。\n用語の定義：\n旅行ルート：時系列順に複数の旅行地点を持つ計画された旅行ルートで、約1-3日間続きます。通常、旅行ルート内の複数の旅行地点は時間順序（午前11時にA地点へ、午後2時にB地点へなど）または位置順序（現在A地点にいて、次の停留所はB地点など）で接続されています。複数の独立した旅行地点を単に紹介するだけでは旅行ルートを構成できないことに注意してください。\n旅行ルートが含まれているか：記事に少なくとも1つの完全な旅行ルートが含まれている場合は1を返し、そうでなければ0を返します。\n旅行ルートの数：記事に含まれる完全な旅行ルートの数、ない場合は0。\n時間制限のあるプロジェクトが含まれているか：時間制限のあるプロジェクトとは、コンサート、展示、会議、スタンドアップコメディショー、音楽祭などの期間限定活動など、特定の時間に行われるプロジェクトを指します。旅行ルートに時間制限のあるプロジェクトが含まれている場合は1を返し、そうでなければ0を返します。\nroutesフィールド：旅行ルートが含まれている場合、各ルートの詳細な構造化情報を生成する必要があります。これには以下が含まれます：routeName（ルート名）、days（日数）、routePoints（旅行地点リスト）、hasTimelinessProject（このルートに時間制限のあるプロジェクトが含まれているか）、timelinessProjects（このルートに関わる時間制限のあるプロジェクトのリスト、ない場合は空の配列、各プロジェクト名は9-150文字（スペース、数字などを含む））。\n出力形式要件：以下のJSON形式で分析結果を厳密に生成し、追加のテキスト説明は加えないでください：{\"containRoute\": 0または1,\"routeCount\": 数値(0,1,2...),\"containTimelinessProject\": 0または1, \"routes\": [{\"routeName\": \"ルート名\", \"days\": 1-3, \"routePoints\": [\"旅行地点A\", \"旅行地点B\"], \"hasTimelinessProject\": 0または1, \"timelinessProjects\": [\"時間制限のあるプロジェクト名\"]}]}\n記事内容：\n【2日間ルート】1日目：午前中古い町を訪問、午後陶磁器博物館見学、夜はナイトマーケットの光のショーに参加。2日目：午前中登山、午後温泉。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "記事に旅行ルートが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "記事に含まれる旅行ルートの数",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "旅行ルートに時間制限のあるプロジェクトが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "すべての旅行ルートの詳細",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "ルート名、空にできません",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "ルートの日数、値の範囲は1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "旅行地点のリスト、少なくとも2つの地点を含む必要があります",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "このルートに時間制限のあるプロジェクトが含まれているかどうか",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "このルートに関わる時間制限のあるプロジェクト、各プロジェクト名は2-30文字",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは旅行の専門家です。タイトルと記事内容を含む旅行ガイド記事を提供します。記事を分析して、旅行ルートが含まれているか（containRoute）、いくつの旅行ルートが含まれているか（routeCount）、時間制限のあるプロジェクトが含まれているか（containTimelinessProject）を判断し、各ルートの詳細情報（ルート名、日数、旅行地点、時間制限のあるプロジェクトが含まれているか、関わる時間制限のあるプロジェクト名など）を抽出してください。最後に、指定されたJSON形式で結果を生成してください。\n用語の定義：\n旅行ルート：時系列順に複数の旅行地点を持つ計画された旅行ルートで、約1-3日間続きます。通常、旅行ルート内の複数の旅行地点は時間順序（午前11時にA地点へ、午後2時にB地点へなど）または位置順序（現在A地点にいて、次の停留所はB地点など）で接続されています。複数の独立した旅行地点を単に紹介するだけでは旅行ルートを構成できないことに注意してください。\n旅行ルートが含まれているか：記事に少なくとも1つの完全な旅行ルートが含まれている場合は1を返し、そうでなければ0を返します。\n旅行ルートの数：記事に含まれる完全な旅行ルートの数、ない場合は0。\n時間制限のあるプロジェクトが含まれているか：時間制限のあるプロジェクトとは、コンサート、展示、会議、スタンドアップコメディショー、音楽祭などの期間限定活動など、特定の時間に行われるプロジェクトを指します。旅行ルートに時間制限のあるプロジェクトが含まれている場合は1を返し、そうでなければ0を返します。\nroutesフィールド：旅行ルートが含まれている場合、各ルートの詳細な構造化情報を生成する必要があります。これには以下が含まれます：routeName（ルート名）、days（日数）、routePoints（旅行地点リスト）、hasTimelinessProject（このルートに時間制限のあるプロジェクトが含まれているか）、timelinessProjects（このルートに関わる時間制限のあるプロジェクトのリスト、ない場合は空の配列、各プロジェクト名は9-150文字（スペース、数字などを含む））。\n出力形式要件：以下のJSON形式で分析結果を厳密に生成し、追加のテキスト説明は加えないでください：{\"containRoute\": 0または1,\"routeCount\": 数値(0,1,2...),\"containTimelinessProject\": 0または1, \"routes\": [{\"routeName\": \"ルート名\", \"days\": 1-3, \"routePoints\": [\"旅行地点A\", \"旅行地点B\"], \"hasTimelinessProject\": 0または1, \"timelinessProjects\": [\"時間制限のあるプロジェクト名\"]}]}\n記事内容：\n【週末家族ツアー】午前中動物園でジャイアントパンダ見学、午後科学博物館でロボット展示体験、夜は子供劇場のパフォーマンス鑑賞。2日目午前中植物園訪問、午後帰宅。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "記事に旅行ルートが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "記事に含まれる旅行ルートの数",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "旅行ルートに時間制限のあるプロジェクトが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "すべての旅行ルートの詳細",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "ルート名、空にできません",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "ルートの日数、値の範囲は1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "旅行地点のリスト、少なくとも2つの地点を含む必要があります",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "このルートに時間制限のあるプロジェクトが含まれているかどうか",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "このルートに関わる時間制限のあるプロジェクト、各プロジェクト名は2-30文字",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは旅行の専門家です。タイトルと記事内容を含む旅行ガイド記事を提供します。記事を分析して、旅行ルートが含まれているか（containRoute）、いくつの旅行ルートが含まれているか（routeCount）、時間制限のあるプロジェクトが含まれているか（containTimelinessProject）を判断し、各ルートの詳細情報（ルート名、日数、旅行地点、時間制限のあるプロジェクトが含まれているか、関わる時間制限のあるプロジェクト名など）を抽出してください。最後に、指定されたJSON形式で結果を生成してください。\n用語の定義：\n旅行ルート：時系列順に複数の旅行地点を持つ計画された旅行ルートで、約1-3日間続きます。通常、旅行ルート内の複数の旅行地点は時間順序（午前11時にA地点へ、午後2時にB地点へなど）または位置順序（現在A地点にいて、次の停留所はB地点など）で接続されています。複数の独立した旅行地点を単に紹介するだけでは旅行ルートを構成できないことに注意してください。\n旅行ルートが含まれているか：記事に少なくとも1つの完全な旅行ルートが含まれている場合は1を返し、そうでなければ0を返します。\n旅行ルートの数：記事に含まれる完全な旅行ルートの数、ない場合は0。\n時間制限のあるプロジェクトが含まれているか：時間制限のあるプロジェクトとは、コンサート、展示、会議、スタンドアップコメディショー、音楽祭などの期間限定活動など、特定の時間に行われるプロジェクトを指します。旅行ルートに時間制限のあるプロジェクトが含まれている場合は1を返し、そうでなければ0を返します。\nroutesフィールド：旅行ルートが含まれている場合、各ルートの詳細な構造化情報を生成する必要があります。これには以下が含まれます：routeName（ルート名）、days（日数）、routePoints（旅行地点リスト）、hasTimelinessProject（このルートに時間制限のあるプロジェクトが含まれているか）、timelinessProjects（このルートに関わる時間制限のあるプロジェクトのリスト、ない場合は空の配列、各プロジェクト名は9-150文字（スペース、数字などを含む））。\n出力形式要件：以下のJSON形式で分析結果を厳密に生成し、追加のテキスト説明は加えないでください：{\"containRoute\": 0または1,\"routeCount\": 数値(0,1,2...),\"containTimelinessProject\": 0または1, \"routes\": [{\"routeName\": \"ルート名\", \"days\": 1-3, \"routePoints\": [\"旅行地点A\", \"旅行地点B\"], \"hasTimelinessProject\": 0または1, \"timelinessProjects\": [\"時間制限のあるプロジェクト名\"]}]}\n記事内容：\n【展示チェックイン】美術館で今週末新展示開催、土曜日午後2時にアーティストとの交流会、夜はスタンドアップコメディショー、事前予約必要。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "記事に旅行ルートが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "記事に含まれる旅行ルートの数",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "旅行ルートに時間制限のあるプロジェクトが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "すべての旅行ルートの詳細",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "ルート名、空にできません",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "ルートの日数、値の範囲は1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "旅行地点のリスト、少なくとも2つの地点を含む必要があります",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "このルートに時間制限のあるプロジェクトが含まれているかどうか",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "このルートに関わる時間制限のあるプロジェクト、各プロジェクト名は2-30文字",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは旅行の専門家です。タイトルと記事内容を含む旅行ガイド記事を提供します。記事を分析して、旅行ルートが含まれているか（containRoute）、いくつの旅行ルートが含まれているか（routeCount）、時間制限のあるプロジェクトが含まれているか（containTimelinessProject）を判断し、各ルートの詳細情報（ルート名、日数、旅行地点、時間制限のあるプロジェクトが含まれているか、関わる時間制限のあるプロジェクト名など）を抽出してください。最後に、指定されたJSON形式で結果を生成してください。\n用語の定義：\n旅行ルート：時系列順に複数の旅行地点を持つ計画された旅行ルートで、約1-3日間続きます。通常、旅行ルート内の複数の旅行地点は時間順序（午前11時にA地点へ、午後2時にB地点へなど）または位置順序（現在A地点にいて、次の停留所はB地点など）で接続されています。複数の独立した旅行地点を単に紹介するだけでは旅行ルートを構成できないことに注意してください。\n旅行ルートが含まれているか：記事に少なくとも1つの完全な旅行ルートが含まれている場合は1を返し、そうでなければ0を返します。\n旅行ルートの数：記事に含まれる完全な旅行ルートの数、ない場合は0。\n時間制限のあるプロジェクトが含まれているか：時間制限のあるプロジェクトとは、コンサート、展示、会議、スタンドアップコメディショー、音楽祭などの期間限定活動など、特定の時間に行われるプロジェクトを指します。旅行ルートに時間制限のあるプロジェクトが含まれている場合は1を返し、そうでなければ0を返します。\nroutesフィールド：旅行ルートが含まれている場合、各ルートの詳細な構造化情報を生成する必要があります。これには以下が含まれます：routeName（ルート名）、days（日数）、routePoints（旅行地点リスト）、hasTimelinessProject（このルートに時間制限のあるプロジェクトが含まれているか）、timelinessProjects（このルートに関わる時間制限のあるプロジェクトのリスト、ない場合は空の配列、各プロジェクト名は9-150文字（スペース、数字などを含む））。\n出力形式要件：以下のJSON形式で分析結果を厳密に生成し、追加のテキスト説明は加えないでください：{\"containRoute\": 0または1,\"routeCount\": 数値(0,1,2...),\"containTimelinessProject\": 0または1, \"routes\": [{\"routeName\": \"ルート名\", \"days\": 1-3, \"routePoints\": [\"旅行地点A\", \"旅行地点B\"], \"hasTimelinessProject\": 0または1, \"timelinessProjects\": [\"時間制限のあるプロジェクト名\"]}]}\n記事内容：\n【個人旅行ガイド】推薦観光地には公園、古い街、博物館、ナイトマーケットが含まれ、それぞれ独立して訪問可能、固定ルートなし。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "記事に旅行ルートが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "記事に含まれる旅行ルートの数",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "旅行ルートに時間制限のあるプロジェクトが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "すべての旅行ルートの詳細",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "ルート名、空にできません",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "ルートの日数、値の範囲は1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "旅行地点のリスト、少なくとも2つの地点を含む必要があります",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "このルートに時間制限のあるプロジェクトが含まれているかどうか",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "このルートに関わる時間制限のあるプロジェクト、各プロジェクト名は2-30文字",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは旅行の専門家です。タイトルと記事内容を含む旅行ガイド記事を提供します。記事を分析して、旅行ルートが含まれているか（containRoute）、いくつの旅行ルートが含まれているか（routeCount）、時間制限のあるプロジェクトが含まれているか（containTimelinessProject）を判断し、各ルートの詳細情報（ルート名、日数、旅行地点、時間制限のあるプロジェクトが含まれているか、関わる時間制限のあるプロジェクト名など）を抽出してください。最後に、指定されたJSON形式で結果を生成してください。\n用語の定義：\n旅行ルート：時系列順に複数の旅行地点を持つ計画された旅行ルートで、約1-3日間続きます。通常、旅行ルート内の複数の旅行地点は時間順序（午前11時にA地点へ、午後2時にB地点へなど）または位置順序（現在A地点にいて、次の停留所はB地点など）で接続されています。複数の独立した旅行地点を単に紹介するだけでは旅行ルートを構成できないことに注意してください。\n旅行ルートが含まれているか：記事に少なくとも1つの完全な旅行ルートが含まれている場合は1を返し、そうでなければ0を返します。\n旅行ルートの数：記事に含まれる完全な旅行ルートの数、ない場合は0。\n時間制限のあるプロジェクトが含まれているか：時間制限のあるプロジェクトとは、コンサート、展示、会議、スタンドアップコメディショー、音楽祭などの期間限定活動など、特定の時間に行われるプロジェクトを指します。旅行ルートに時間制限のあるプロジェクトが含まれている場合は1を返し、そうでなければ0を返します。\nroutesフィールド：旅行ルートが含まれている場合、各ルートの詳細な構造化情報を生成する必要があります。これには以下が含まれます：routeName（ルート名）、days（日数）、routePoints（旅行地点リスト）、hasTimelinessProject（このルートに時間制限のあるプロジェクトが含まれているか）、timelinessProjects（このルートに関わる時間制限のあるプロジェクトのリスト、ない場合は空の配列、各プロジェクト名は9-150文字（スペース、数字などを含む））。\n出力形式要件：以下のJSON形式で分析結果を厳密に生成し、追加のテキスト説明は加えないでください：{\"containRoute\": 0または1,\"routeCount\": 数値(0,1,2...),\"containTimelinessProject\": 0または1, \"routes\": [{\"routeName\": \"ルート名\", \"days\": 1-3, \"routePoints\": [\"旅行地点A\", \"旅行地点B\"], \"hasTimelinessProject\": 0または1, \"timelinessProjects\": [\"時間制限のあるプロジェクト名\"]}]}\n記事内容：\n【1日ツアー】午前8時に駅で集合、午前9時に景勝地到着、午前10時に山頂散策、午後12時に下山して昼食、午後は民俗村見学、午後4時に帰宅。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "記事に旅行ルートが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "記事に含まれる旅行ルートの数",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "旅行ルートに時間制限のあるプロジェクトが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "すべての旅行ルートの詳細",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "ルート名、空にできません",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "ルートの日数、値の範囲は1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "旅行地点のリスト、少なくとも2つの地点を含む必要があります",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "このルートに時間制限のあるプロジェクトが含まれているかどうか",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "このルートに関わる時間制限のあるプロジェクト、各プロジェクト名は2-30文字",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは旅行の専門家です。タイトルと記事内容を含む旅行ガイド記事を提供します。記事を分析して、旅行ルートが含まれているか（containRoute）、いくつの旅行ルートが含まれているか（routeCount）、時間制限のあるプロジェクトが含まれているか（containTimelinessProject）を判断し、各ルートの詳細情報（ルート名、日数、旅行地点、時間制限のあるプロジェクトが含まれているか、関わる時間制限のあるプロジェクト名など）を抽出してください。最後に、指定されたJSON形式で結果を生成してください。\n用語の定義：\n旅行ルート：時系列順に複数の旅行地点を持つ計画された旅行ルートで、約1-3日間続きます。通常、旅行ルート内の複数の旅行地点は時間順序（午前11時にA地点へ、午後2時にB地点へなど）または位置順序（現在A地点にいて、次の停留所はB地点など）で接続されています。複数の独立した旅行地点を単に紹介するだけでは旅行ルートを構成できないことに注意してください。\n旅行ルートが含まれているか：記事に少なくとも1つの完全な旅行ルートが含まれている場合は1を返し、そうでなければ0を返します。\n旅行ルートの数：記事に含まれる完全な旅行ルートの数、ない場合は0。\n時間制限のあるプロジェクトが含まれているか：時間制限のあるプロジェクトとは、コンサート、展示、会議、スタンドアップコメディショー、音楽祭などの期間限定活動など、特定の時間に行われるプロジェクトを指します。旅行ルートに時間制限のあるプロジェクトが含まれている場合は1を返し、そうでなければ0を返します。\nroutesフィールド：旅行ルートが含まれている場合、各ルートの詳細な構造化情報を生成する必要があります。これには以下が含まれます：routeName（ルート名）、days（日数）、routePoints（旅行地点リスト）、hasTimelinessProject（このルートに時間制限のあるプロジェクトが含まれているか）、timelinessProjects（このルートに関わる時間制限のあるプロジェクトのリスト、ない場合は空の配列、各プロジェクト名は9-150文字（スペース、数字などを含む））。\n出力形式要件：以下のJSON形式で分析結果を厳密に生成し、追加のテキスト説明は加えないでください：{\"containRoute\": 0または1,\"routeCount\": 数値(0,1,2...),\"containTimelinessProject\": 0または1, \"routes\": [{\"routeName\": \"ルート名\", \"days\": 1-3, \"routePoints\": [\"旅行地点A\", \"旅行地点B\"], \"hasTimelinessProject\": 0または1, \"timelinessProjects\": [\"時間制限のあるプロジェクト名\"]}]}\n記事内容：\n【夜間ツアールート】18:00に河岸で集合、18:30に夜間ボートツアー乗船、20:00に下船後音楽広場まで徒歩で野外コンサート鑑賞。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "記事に旅行ルートが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "記事に含まれる旅行ルートの数",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "旅行ルートに時間制限のあるプロジェクトが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "すべての旅行ルートの詳細",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "ルート名、空にできません",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "ルートの日数、値の範囲は1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "旅行地点のリスト、少なくとも2つの地点を含む必要があります",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "このルートに時間制限のあるプロジェクトが含まれているかどうか",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "このルートに関わる時間制限のあるプロジェクト、各プロジェクト名は2-30文字",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは旅行の専門家です。タイトルと記事内容を含む旅行ガイド記事を提供します。記事を分析して、旅行ルートが含まれているか（containRoute）、いくつの旅行ルートが含まれているか（routeCount）、時間制限のあるプロジェクトが含まれているか（containTimelinessProject）を判断し、各ルートの詳細情報（ルート名、日数、旅行地点、時間制限のあるプロジェクトが含まれているか、関わる時間制限のあるプロジェクト名など）を抽出してください。最後に、指定されたJSON形式で結果を生成してください。\n用語の定義：\n旅行ルート：時系列順に複数の旅行地点を持つ計画された旅行ルートで、約1-3日間続きます。通常、旅行ルート内の複数の旅行地点は時間順序（午前11時にA地点へ、午後2時にB地点へなど）または位置順序（現在A地点にいて、次の停留所はB地点など）で接続されています。複数の独立した旅行地点を単に紹介するだけでは旅行ルートを構成できないことに注意してください。\n旅行ルートが含まれているか：記事に少なくとも1つの完全な旅行ルートが含まれている場合は1を返し、そうでなければ0を返します。\n旅行ルートの数：記事に含まれる完全な旅行ルートの数、ない場合は0。\n時間制限のあるプロジェクトが含まれているか：時間制限のあるプロジェクトとは、コンサート、展示、会議、スタンドアップコメディショー、音楽祭などの期間限定活動など、特定の時間に行われるプロジェクトを指します。旅行ルートに時間制限のあるプロジェクトが含まれている場合は1を返し、そうでなければ0を返します。\nroutesフィールド：旅行ルートが含まれている場合、各ルートの詳細な構造化情報を生成する必要があります。これには以下が含まれます：routeName（ルート名）、days（日数）、routePoints（旅行地点リスト）、hasTimelinessProject（このルートに時間制限のあるプロジェクトが含まれているか）、timelinessProjects（このルートに関わる時間制限のあるプロジェクトのリスト、ない場合は空の配列、各プロジェクト名は9-150文字（スペース、数字などを含む））。\n出力形式要件：以下のJSON形式で分析結果を厳密に生成し、追加のテキスト説明は加えないでください：{\"containRoute\": 0または1,\"routeCount\": 数値(0,1,2...),\"containTimelinessProject\": 0または1, \"routes\": [{\"routeName\": \"ルート名\", \"days\": 1-3, \"routePoints\": [\"旅行地点A\", \"旅行地点B\"], \"hasTimelinessProject\": 0または1, \"timelinessProjects\": [\"時間制限のあるプロジェクト名\"]}]}\n記事内容：\n【ガイド】主要な3つの場所をお勧めします：博物館、美術館、科学博物館、それぞれに特色ある展示があり、家族訪問に適しており、特定のルートはありません。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "記事に旅行ルートが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "記事に含まれる旅行ルートの数",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "旅行ルートに時間制限のあるプロジェクトが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "すべての旅行ルートの詳細",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "ルート名、空にできません",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "ルートの日数、値の範囲は1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "旅行地点のリスト、少なくとも2つの地点を含む必要があります",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "このルートに時間制限のあるプロジェクトが含まれているかどうか",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "このルートに関わる時間制限のあるプロジェクト、各プロジェクト名は2-30文字",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは旅行の専門家です。タイトルと記事内容を含む旅行ガイド記事を提供します。記事を分析して、旅行ルートが含まれているか（containRoute）、いくつの旅行ルートが含まれているか（routeCount）、時間制限のあるプロジェクトが含まれているか（containTimelinessProject）を判断し、各ルートの詳細情報（ルート名、日数、旅行地点、時間制限のあるプロジェクトが含まれているか、関わる時間制限のあるプロジェクト名など）を抽出してください。最後に、指定されたJSON形式で結果を生成してください。\n用語の定義：\n旅行ルート：時系列順に複数の旅行地点を持つ計画された旅行ルートで、約1-3日間続きます。通常、旅行ルート内の複数の旅行地点は時間順序（午前11時にA地点へ、午後2時にB地点へなど）または位置順序（現在A地点にいて、次の停留所はB地点など）で接続されています。複数の独立した旅行地点を単に紹介するだけでは旅行ルートを構成できないことに注意してください。\n旅行ルートが含まれているか：記事に少なくとも1つの完全な旅行ルートが含まれている場合は1を返し、そうでなければ0を返します。\n旅行ルートの数：記事に含まれる完全な旅行ルートの数、ない場合は0。\n時間制限のあるプロジェクトが含まれているか：時間制限のあるプロジェクトとは、コンサート、展示、会議、スタンドアップコメディショー、音楽祭などの期間限定活動など、特定の時間に行われるプロジェクトを指します。旅行ルートに時間制限のあるプロジェクトが含まれている場合は1を返し、そうでなければ0を返します。\nroutesフィールド：旅行ルートが含まれている場合、各ルートの詳細な構造化情報を生成する必要があります。これには以下が含まれます：routeName（ルート名）、days（日数）、routePoints（旅行地点リスト）、hasTimelinessProject（このルートに時間制限のあるプロジェクトが含まれているか）、timelinessProjects（このルートに関わる時間制限のあるプロジェクトのリスト、ない場合は空の配列、各プロジェクト名は9-150文字（スペース、数字などを含む））。\n出力形式要件：以下のJSON形式で分析結果を厳密に生成し、追加のテキスト説明は加えないでください：{\"containRoute\": 0または1,\"routeCount\": 数値(0,1,2...),\"containTimelinessProject\": 0または1, \"routes\": [{\"routeName\": \"ルート名\", \"days\": 1-3, \"routePoints\": [\"旅行地点A\", \"旅行地点B\"], \"hasTimelinessProject\": 0または1, \"timelinessProjects\": [\"時間制限のあるプロジェクト名\"]}]}\n記事内容：\n【3日間ドライブツアー】1日目：午前中古北水鎮へ出発、昼食後水郷風景散策、夜は水郷光のショーに参加。2日目：午前中万里の長城麓へ向かい、午後長城登山、夜はキャンプ。3日目：午前中万里の長城博物館見学、午後帰宅。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "記事に旅行ルートが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "記事に含まれる旅行ルートの数",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "旅行ルートに時間制限のあるプロジェクトが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "すべての旅行ルートの詳細",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "ルート名、空にできません",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "ルートの日数、値の範囲は1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "旅行地点のリスト、少なくとも2つの地点を含む必要があります",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "このルートに時間制限のあるプロジェクトが含まれているかどうか",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "このルートに関わる時間制限のあるプロジェクト、各プロジェクト名は2-30文字",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは旅行の専門家です。タイトルと記事内容を含む旅行ガイド記事を提供します。記事を分析して、旅行ルートが含まれているか（containRoute）、いくつの旅行ルートが含まれているか（routeCount）、時間制限のあるプロジェクトが含まれているか（containTimelinessProject）を判断し、各ルートの詳細情報（ルート名、日数、旅行地点、時間制限のあるプロジェクトが含まれているか、関わる時間制限のあるプロジェクト名など）を抽出してください。最後に、指定されたJSON形式で結果を生成してください。\n用語の定義：\n旅行ルート：時系列順に複数の旅行地点を持つ計画された旅行ルートで、約1-3日間続きます。通常、旅行ルート内の複数の旅行地点は時間順序（午前11時にA地点へ、午後2時にB地点へなど）または位置順序（現在A地点にいて、次の停留所はB地点など）で接続されています。複数の独立した旅行地点を単に紹介するだけでは旅行ルートを構成できないことに注意してください。\n旅行ルートが含まれているか：記事に少なくとも1つの完全な旅行ルートが含まれている場合は1を返し、そうでなければ0を返します。\n旅行ルートの数：記事に含まれる完全な旅行ルートの数、ない場合は0。\n時間制限のあるプロジェクトが含まれているか：時間制限のあるプロジェクトとは、コンサート、展示、会議、スタンドアップコメディショー、音楽祭などの期間限定活動など、特定の時間に行われるプロジェクトを指します。旅行ルートに時間制限のあるプロジェクトが含まれている場合は1を返し、そうでなければ0を返します。\nroutesフィールド：旅行ルートが含まれている場合、各ルートの詳細な構造化情報を生成する必要があります。これには以下が含まれます：routeName（ルート名）、days（日数）、routePoints（旅行地点リスト）、hasTimelinessProject（このルートに時間制限のあるプロジェクトが含まれているか）、timelinessProjects（このルートに関わる時間制限のあるプロジェクトのリスト、ない場合は空の配列、各プロジェクト名は9-150文字（スペース、数字などを含む））。\n出力形式要件：以下のJSON形式で分析結果を厳密に生成し、追加のテキスト説明は加えないでください：{\"containRoute\": 0または1,\"routeCount\": 数値(0,1,2...),\"containTimelinessProject\": 0または1, \"routes\": [{\"routeName\": \"ルート名\", \"days\": 1-3, \"routePoints\": [\"旅行地点A\", \"旅行地点B\"], \"hasTimelinessProject\": 0または1, \"timelinessProjects\": [\"時間制限のあるプロジェクト名\"]}]}\n記事内容：\n【親子サマーキャンプ】初日午前集合、科学博物館見学、午後科学実験体験、夜は科学コメディショー。2日目終日野外開発、3日目午前植物園見学、午後閉会式。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "記事に旅行ルートが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "記事に含まれる旅行ルートの数",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "旅行ルートに時間制限のあるプロジェクトが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "すべての旅行ルートの詳細",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "ルート名、空にできません",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "ルートの日数、値の範囲は1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "旅行地点のリスト、少なくとも2つの地点を含む必要があります",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "このルートに時間制限のあるプロジェクトが含まれているかどうか",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "このルートに関わる時間制限のあるプロジェクト、各プロジェクト名は2-30文字",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは旅行の専門家です。タイトルと記事内容を含む旅行ガイド記事を提供します。記事を分析して、旅行ルートが含まれているか（containRoute）、いくつの旅行ルートが含まれているか（routeCount）、時間制限のあるプロジェクトが含まれているか（containTimelinessProject）を判断し、各ルートの詳細情報（ルート名、日数、旅行地点、時間制限のあるプロジェクトが含まれているか、関わる時間制限のあるプロジェクト名など）を抽出してください。最後に、指定されたJSON形式で結果を生成してください。\n用語の定義：\n旅行ルート：時系列順に複数の旅行地点を持つ計画された旅行ルートで、約1-3日間続きます。通常、旅行ルート内の複数の旅行地点は時間順序（午前11時にA地点へ、午後2時にB地点へなど）または位置順序（現在A地点にいて、次の停留所はB地点など）で接続されています。複数の独立した旅行地点を単に紹介するだけでは旅行ルートを構成できないことに注意してください。\n旅行ルートが含まれているか：記事に少なくとも1つの完全な旅行ルートが含まれている場合は1を返し、そうでなければ0を返します。\n旅行ルートの数：記事に含まれる完全な旅行ルートの数、ない場合は0。\n時間制限のあるプロジェクトが含まれているか：時間制限のあるプロジェクトとは、コンサート、展示、会議、スタンドアップコメディショー、音楽祭などの期間限定活動など、特定の時間に行われるプロジェクトを指します。旅行ルートに時間制限のあるプロジェクトが含まれている場合は1を返し、そうでなければ0を返します。\nroutesフィールド：旅行ルートが含まれている場合、各ルートの詳細な構造化情報を生成する必要があります。これには以下が含まれます：routeName（ルート名）、days（日数）、routePoints（旅行地点リスト）、hasTimelinessProject（このルートに時間制限のあるプロジェクトが含まれているか）、timelinessProjects（このルートに関わる時間制限のあるプロジェクトのリスト、ない場合は空の配列、各プロジェクト名は9-150文字（スペース、数字などを含む））。\n出力形式要件：以下のJSON形式で分析結果を厳密に生成し、追加のテキスト説明は加えないでください：{\"containRoute\": 0または1,\"routeCount\": 数値(0,1,2...),\"containTimelinessProject\": 0または1, \"routes\": [{\"routeName\": \"ルート名\", \"days\": 1-3, \"routePoints\": [\"旅行地点A\", \"旅行地点B\"], \"hasTimelinessProject\": 0または1, \"timelinessProjects\": [\"時間制限のあるプロジェクト名\"]}]}\n記事内容：\n【都市夜間ランニングルート】午後7時に市内スポーツ公園で集合、河岸遊歩道沿いに音楽噴水と光の橋を通過して夜間ランニング、市中心部広場でゴール、スポーツ愛好家に適している。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "記事に旅行ルートが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "記事に含まれる旅行ルートの数",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "旅行ルートに時間制限のあるプロジェクトが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "すべての旅行ルートの詳細",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "ルート名、空にできません",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "ルートの日数、値の範囲は1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "旅行地点のリスト、少なくとも2つの地点を含む必要があります",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "このルートに時間制限のあるプロジェクトが含まれているかどうか",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "このルートに関わる時間制限のあるプロジェクト、各プロジェクト名は2-30文字",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは旅行の専門家です。タイトルと記事内容を含む旅行ガイド記事を提供します。記事を分析して、旅行ルートが含まれているか（containRoute）、いくつの旅行ルートが含まれているか（routeCount）、時間制限のあるプロジェクトが含まれているか（containTimelinessProject）を判断し、各ルートの詳細情報（ルート名、日数、旅行地点、時間制限のあるプロジェクトが含まれているか、関わる時間制限のあるプロジェクト名など）を抽出してください。最後に、指定されたJSON形式で結果を生成してください。\n用語の定義：\n旅行ルート：時系列順に複数の旅行地点を持つ計画された旅行ルートで、約1-3日間続きます。通常、旅行ルート内の複数の旅行地点は時間順序（午前11時にA地点へ、午後2時にB地点へなど）または位置順序（現在A地点にいて、次の停留所はB地点など）で接続されています。複数の独立した旅行地点を単に紹介するだけでは旅行ルートを構成できないことに注意してください。\n旅行ルートが含まれているか：記事に少なくとも1つの完全な旅行ルートが含まれている場合は1を返し、そうでなければ0を返します。\n旅行ルートの数：記事に含まれる完全な旅行ルートの数、ない場合は0。\n時間制限のあるプロジェクトが含まれているか：時間制限のあるプロジェクトとは、コンサート、展示、会議、スタンドアップコメディショー、音楽祭などの期間限定活動など、特定の時間に行われるプロジェクトを指します。旅行ルートに時間制限のあるプロジェクトが含まれている場合は1を返し、そうでなければ0を返します。\nroutesフィールド：旅行ルートが含まれている場合、各ルートの詳細な構造化情報を生成する必要があります。これには以下が含まれます：routeName（ルート名）、days（日数）、routePoints（旅行地点リスト）、hasTimelinessProject（このルートに時間制限のあるプロジェクトが含まれているか）、timelinessProjects（このルートに関わる時間制限のあるプロジェクトのリスト、ない場合は空の配列、各プロジェクト名は9-150文字（スペース、数字などを含む））。\n出力形式要件：以下のJSON形式で分析結果を厳密に生成し、追加のテキスト説明は加えないでください：{\"containRoute\": 0または1,\"routeCount\": 数値(0,1,2...),\"containTimelinessProject\": 0または1, \"routes\": [{\"routeName\": \"ルート名\", \"days\": 1-3, \"routePoints\": [\"旅行地点A\", \"旅行地点B\"], \"hasTimelinessProject\": 0または1, \"timelinessProjects\": [\"時間制限のあるプロジェクト名\"]}]}\n記事内容：\n【週末カップルツアー】午前中バラ園見学、午後美術館で絵画展鑑賞、夜はジャズコンサート鑑賞。2日目午前中陶芸体験、午後古い街のカフェで休憩。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "記事に旅行ルートが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "記事に含まれる旅行ルートの数",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "旅行ルートに時間制限のあるプロジェクトが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "すべての旅行ルートの詳細",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "ルート名、空にできません",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "ルートの日数、値の範囲は1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "旅行地点のリスト、少なくとも2つの地点を含む必要があります",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "このルートに時間制限のあるプロジェクトが含まれているかどうか",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "このルートに関わる時間制限のあるプロジェクト、各プロジェクト名は2-30文字",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは旅行の専門家です。タイトルと記事内容を含む旅行ガイド記事を提供します。記事を分析して、旅行ルートが含まれているか（containRoute）、いくつの旅行ルートが含まれているか（routeCount）、時間制限のあるプロジェクトが含まれているか（containTimelinessProject）を判断し、各ルートの詳細情報（ルート名、日数、旅行地点、時間制限のあるプロジェクトが含まれているか、関わる時間制限のあるプロジェクト名など）を抽出してください。最後に、指定されたJSON形式で結果を生成してください。\n用語の定義：\n旅行ルート：時系列順に複数の旅行地点を持つ計画された旅行ルートで、約1-3日間続きます。通常、旅行ルート内の複数の旅行地点は時間順序（午前11時にA地点へ、午後2時にB地点へなど）または位置順序（現在A地点にいて、次の停留所はB地点など）で接続されています。複数の独立した旅行地点を単に紹介するだけでは旅行ルートを構成できないことに注意してください。\n旅行ルートが含まれているか：記事に少なくとも1つの完全な旅行ルートが含まれている場合は1を返し、そうでなければ0を返します。\n旅行ルートの数：記事に含まれる完全な旅行ルートの数、ない場合は0。\n時間制限のあるプロジェクトが含まれているか：時間制限のあるプロジェクトとは、コンサート、展示、会議、スタンドアップコメディショー、音楽祭などの期間限定活動など、特定の時間に行われるプロジェクトを指します。旅行ルートに時間制限のあるプロジェクトが含まれている場合は1を返し、そうでなければ0を返します。\nroutesフィールド：旅行ルートが含まれている場合、各ルートの詳細な構造化情報を生成する必要があります。これには以下が含まれます：routeName（ルート名）、days（日数）、routePoints（旅行地点リスト）、hasTimelinessProject（このルートに時間制限のあるプロジェクトが含まれているか）、timelinessProjects（このルートに関わる時間制限のあるプロジェクトのリスト、ない場合は空の配列、各プロジェクト名は9-150文字（スペース、数字などを含む））。\n出力形式要件：以下のJSON形式で分析結果を厳密に生成し、追加のテキスト説明は加えないでください：{\"containRoute\": 0または1,\"routeCount\": 数値(0,1,2...),\"containTimelinessProject\": 0または1, \"routes\": [{\"routeName\": \"ルート名\", \"days\": 1-3, \"routePoints\": [\"旅行地点A\", \"旅行地点B\"], \"hasTimelinessProject\": 0または1, \"timelinessProjects\": [\"時間制限のあるプロジェクト名\"]}]}\n記事内容：\n【展示+コンサート二重ルート】午前中美術館新展示、午後アーティスト講演会、夜は期間限定コンサート鑑賞。2日目午前中自由活動。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "記事に旅行ルートが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "記事に含まれる旅行ルートの数",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "旅行ルートに時間制限のあるプロジェクトが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "すべての旅行ルートの詳細",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "ルート名、空にできません",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "ルートの日数、値の範囲は1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "旅行地点のリスト、少なくとも2つの地点を含む必要があります",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "このルートに時間制限のあるプロジェクトが含まれているかどうか",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "このルートに関わる時間制限のあるプロジェクト、各プロジェクト名は2-30文字",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは旅行の専門家です。タイトルと記事内容を含む旅行ガイド記事を提供します。記事を分析して、旅行ルートが含まれているか（containRoute）、いくつの旅行ルートが含まれているか（routeCount）、時間制限のあるプロジェクトが含まれているか（containTimelinessProject）を判断し、各ルートの詳細情報（ルート名、日数、旅行地点、時間制限のあるプロジェクトが含まれているか、関わる時間制限のあるプロジェクト名など）を抽出してください。最後に、指定されたJSON形式で結果を生成してください。\n用語の定義：\n旅行ルート：時系列順に複数の旅行地点を持つ計画された旅行ルートで、約1-3日間続きます。通常、旅行ルート内の複数の旅行地点は時間順序（午前11時にA地点へ、午後2時にB地点へなど）または位置順序（現在A地点にいて、次の停留所はB地点など）で接続されています。複数の独立した旅行地点を単に紹介するだけでは旅行ルートを構成できないことに注意してください。\n旅行ルートが含まれているか：記事に少なくとも1つの完全な旅行ルートが含まれている場合は1を返し、そうでなければ0を返します。\n旅行ルートの数：記事に含まれる完全な旅行ルートの数、ない場合は0。\n時間制限のあるプロジェクトが含まれているか：時間制限のあるプロジェクトとは、コンサート、展示、会議、スタンドアップコメディショー、音楽祭などの期間限定活動など、特定の時間に行われるプロジェクトを指します。旅行ルートに時間制限のあるプロジェクトが含まれている場合は1を返し、そうでなければ0を返します。\nroutesフィールド：旅行ルートが含まれている場合、各ルートの詳細な構造化情報を生成する必要があります。これには以下が含まれます：routeName（ルート名）、days（日数）、routePoints（旅行地点リスト）、hasTimelinessProject（このルートに時間制限のあるプロジェクトが含まれているか）、timelinessProjects（このルートに関わる時間制限のあるプロジェクトのリスト、ない場合は空の配列、各プロジェクト名は9-150文字（スペース、数字などを含む））。\n出力形式要件：以下のJSON形式で分析結果を厳密に生成し、追加のテキスト説明は加えないでください：{\"containRoute\": 0または1,\"routeCount\": 数値(0,1,2...),\"containTimelinessProject\": 0または1, \"routes\": [{\"routeName\": \"ルート名\", \"days\": 1-3, \"routePoints\": [\"旅行地点A\", \"旅行地点B\"], \"hasTimelinessProject\": 0または1, \"timelinessProjects\": [\"時間制限のあるプロジェクト名\"]}]}\n記事内容：\n【2日間サイクリングルート】1日目：午前中湖公園へサイクリング、昼食後湖周りサイクリング、午後キャンプ場到着してキャンプ。2日目：午前中日の出鑑賞、午前中古い町へサイクリング、午後旅行終了。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "記事に旅行ルートが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "記事に含まれる旅行ルートの数",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "旅行ルートに時間制限のあるプロジェクトが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "すべての旅行ルートの詳細",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "ルート名、空にできません",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "ルートの日数、値の範囲は1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "旅行地点のリスト、少なくとも2つの地点を含む必要があります",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "このルートに時間制限のあるプロジェクトが含まれているかどうか",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "このルートに関わる時間制限のあるプロジェクト、各プロジェクト名は2-30文字",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは旅行の専門家です。タイトルと記事内容を含む旅行ガイド記事を提供します。記事を分析して、旅行ルートが含まれているか（containRoute）、いくつの旅行ルートが含まれているか（routeCount）、時間制限のあるプロジェクトが含まれているか（containTimelinessProject）を判断し、各ルートの詳細情報（ルート名、日数、旅行地点、時間制限のあるプロジェクトが含まれているか、関わる時間制限のあるプロジェクト名など）を抽出してください。最後に、指定されたJSON形式で結果を生成してください。\n用語の定義：\n旅行ルート：時系列順に複数の旅行地点を持つ計画された旅行ルートで、約1-3日間続きます。通常、旅行ルート内の複数の旅行地点は時間順序（午前11時にA地点へ、午後2時にB地点へなど）または位置順序（現在A地点にいて、次の停留所はB地点など）で接続されています。複数の独立した旅行地点を単に紹介するだけでは旅行ルートを構成できないことに注意してください。\n旅行ルートが含まれているか：記事に少なくとも1つの完全な旅行ルートが含まれている場合は1を返し、そうでなければ0を返します。\n旅行ルートの数：記事に含まれる完全な旅行ルートの数、ない場合は0。\n時間制限のあるプロジェクトが含まれているか：時間制限のあるプロジェクトとは、コンサート、展示、会議、スタンドアップコメディショー、音楽祭などの期間限定活動など、特定の時間に行われるプロジェクトを指します。旅行ルートに時間制限のあるプロジェクトが含まれている場合は1を返し、そうでなければ0を返します。\nroutesフィールド：旅行ルートが含まれている場合、各ルートの詳細な構造化情報を生成する必要があります。これには以下が含まれます：routeName（ルート名）、days（日数）、routePoints（旅行地点リスト）、hasTimelinessProject（このルートに時間制限のあるプロジェクトが含まれているか）、timelinessProjects（このルートに関わる時間制限のあるプロジェクトのリスト、ない場合は空の配列、各プロジェクト名は9-150文字（スペース、数字などを含む））。\n出力形式要件：以下のJSON形式で分析結果を厳密に生成し、追加のテキスト説明は加えないでください：{\"containRoute\": 0または1,\"routeCount\": 数値(0,1,2...),\"containTimelinessProject\": 0または1, \"routes\": [{\"routeName\": \"ルート名\", \"days\": 1-3, \"routePoints\": [\"旅行地点A\", \"旅行地点B\"], \"hasTimelinessProject\": 0または1, \"timelinessProjects\": [\"時間制限のあるプロジェクト名\"]}]}\n記事内容：\n【1日親子科学ツアー】午前中動物園見学、水族館ショー鑑賞、午後子供科学公園体験、夜は親子インタラクティブドラマ鑑賞。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "記事に旅行ルートが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "記事に含まれる旅行ルートの数",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "旅行ルートに時間制限のあるプロジェクトが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "すべての旅行ルートの詳細",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "ルート名、空にできません",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "ルートの日数、値の範囲は1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "旅行地点のリスト、少なくとも2つの地点を含む必要があります",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "このルートに時間制限のあるプロジェクトが含まれているかどうか",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "このルートに関わる時間制限のあるプロジェクト、各プロジェクト名は2-30文字",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは旅行の専門家です。タイトルと記事内容を含む旅行ガイド記事を提供します。記事を分析して、旅行ルートが含まれているか（containRoute）、いくつの旅行ルートが含まれているか（routeCount）、時間制限のあるプロジェクトが含まれているか（containTimelinessProject）を判断し、各ルートの詳細情報（ルート名、日数、旅行地点、時間制限のあるプロジェクトが含まれているか、関わる時間制限のあるプロジェクト名など）を抽出してください。最後に、指定されたJSON形式で結果を生成してください。\n用語の定義：\n旅行ルート：時系列順に複数の旅行地点を持つ計画された旅行ルートで、約1-3日間続きます。通常、旅行ルート内の複数の旅行地点は時間順序（午前11時にA地点へ、午後2時にB地点へなど）または位置順序（現在A地点にいて、次の停留所はB地点など）で接続されています。複数の独立した旅行地点を単に紹介するだけでは旅行ルートを構成できないことに注意してください。\n旅行ルートが含まれているか：記事に少なくとも1つの完全な旅行ルートが含まれている場合は1を返し、そうでなければ0を返します。\n旅行ルートの数：記事に含まれる完全な旅行ルートの数、ない場合は0。\n時間制限のあるプロジェクトが含まれているか：時間制限のあるプロジェクトとは、コンサート、展示、会議、スタンドアップコメディショー、音楽祭などの期間限定活動など、特定の時間に行われるプロジェクトを指します。旅行ルートに時間制限のあるプロジェクトが含まれている場合は1を返し、そうでなければ0を返します。\nroutesフィールド：旅行ルートが含まれている場合、各ルートの詳細な構造化情報を生成する必要があります。これには以下が含まれます：routeName（ルート名）、days（日数）、routePoints（旅行地点リスト）、hasTimelinessProject（このルートに時間制限のあるプロジェクトが含まれているか）、timelinessProjects（このルートに関わる時間制限のあるプロジェクトのリスト、ない場合は空の配列、各プロジェクト名は9-150文字（スペース、数字などを含む））。\n出力形式要件：以下のJSON形式で分析結果を厳密に生成し、追加のテキスト説明は加えないでください：{\"containRoute\": 0または1,\"routeCount\": 数値(0,1,2...),\"containTimelinessProject\": 0または1, \"routes\": [{\"routeName\": \"ルート名\", \"days\": 1-3, \"routePoints\": [\"旅行地点A\", \"旅行地点B\"], \"hasTimelinessProject\": 0または1, \"timelinessProjects\": [\"時間制限のあるプロジェクト名\"]}]}\n記事内容：\n【春の花見ルート】午前中世紀公園で桜見学、午後植物園でチューリップ鑑賞、夜は河岸遊歩道散歩。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "記事に旅行ルートが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "記事に含まれる旅行ルートの数",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "旅行ルートに時間制限のあるプロジェクトが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "すべての旅行ルートの詳細",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "ルート名、空にできません",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "ルートの日数、値の範囲は1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "旅行地点のリスト、少なくとも2つの地点を含む必要があります",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "このルートに時間制限のあるプロジェクトが含まれているかどうか",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "このルートに関わる時間制限のあるプロジェクト、各プロジェクト名は2-30文字",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは旅行の専門家です。タイトルと記事内容を含む旅行ガイド記事を提供します。記事を分析して、旅行ルートが含まれているか（containRoute）、いくつの旅行ルートが含まれているか（routeCount）、時間制限のあるプロジェクトが含まれているか（containTimelinessProject）を判断し、各ルートの詳細情報（ルート名、日数、旅行地点、時間制限のあるプロジェクトが含まれているか、関わる時間制限のあるプロジェクト名など）を抽出してください。最後に、指定されたJSON形式で結果を生成してください。\n用語の定義：\n旅行ルート：時系列順に複数の旅行地点を持つ計画された旅行ルートで、約1-3日間続きます。通常、旅行ルート内の複数の旅行地点は時間順序（午前11時にA地点へ、午後2時にB地点へなど）または位置順序（現在A地点にいて、次の停留所はB地点など）で接続されています。複数の独立した旅行地点を単に紹介するだけでは旅行ルートを構成できないことに注意してください。\n旅行ルートが含まれているか：記事に少なくとも1つの完全な旅行ルートが含まれている場合は1を返し、そうでなければ0を返します。\n旅行ルートの数：記事に含まれる完全な旅行ルートの数、ない場合は0。\n時間制限のあるプロジェクトが含まれているか：時間制限のあるプロジェクトとは、コンサート、展示、会議、スタンドアップコメディショー、音楽祭などの期間限定活動など、特定の時間に行われるプロジェクトを指します。旅行ルートに時間制限のあるプロジェクトが含まれている場合は1を返し、そうでなければ0を返します。\nroutesフィールド：旅行ルートが含まれている場合、各ルートの詳細な構造化情報を生成する必要があります。これには以下が含まれます：routeName（ルート名）、days（日数）、routePoints（旅行地点リスト）、hasTimelinessProject（このルートに時間制限のあるプロジェクトが含まれているか）、timelinessProjects（このルートに関わる時間制限のあるプロジェクトのリスト、ない場合は空の配列、各プロジェクト名は9-150文字（スペース、数字などを含む））。\n出力形式要件：以下のJSON形式で分析結果を厳密に生成し、追加のテキスト説明は加えないでください：{\"containRoute\": 0または1,\"routeCount\": 数値(0,1,2...),\"containTimelinessProject\": 0または1, \"routes\": [{\"routeName\": \"ルート名\", \"days\": 1-3, \"routePoints\": [\"旅行地点A\", \"旅行地点B\"], \"hasTimelinessProject\": 0または1, \"timelinessProjects\": [\"時間制限のあるプロジェクト名\"]}]}\n記事内容：\n【アートフェスティバル全体験】午前中絵画展開幕式、午後彫刻ワークショップ参加、夜は野外演劇祭パフォーマンス、翌日音楽祭閉会式参加。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "記事に旅行ルートが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "記事に含まれる旅行ルートの数",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "旅行ルートに時間制限のあるプロジェクトが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "すべての旅行ルートの詳細",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "ルート名、空にできません",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "ルートの日数、値の範囲は1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "旅行地点のリスト、少なくとも2つの地点を含む必要があります",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "このルートに時間制限のあるプロジェクトが含まれているかどうか",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "このルートに関わる時間制限のあるプロジェクト、各プロジェクト名は2-30文字",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    },
+    {
+        "category": "SCHEMA",
+        "question": "あなたは旅行の専門家です。タイトルと記事内容を含む旅行ガイド記事を提供します。記事を分析して、旅行ルートが含まれているか（containRoute）、いくつの旅行ルートが含まれているか（routeCount）、時間制限のあるプロジェクトが含まれているか（containTimelinessProject）を判断し、各ルートの詳細情報（ルート名、日数、旅行地点、時間制限のあるプロジェクトが含まれているか、関わる時間制限のあるプロジェクト名など）を抽出してください。最後に、指定されたJSON形式で結果を生成してください。\n用語の定義：\n旅行ルート：時系列順に複数の旅行地点を持つ計画された旅行ルートで、約1-3日間続きます。通常、旅行ルート内の複数の旅行地点は時間順序（午前11時にA地点へ、午後2時にB地点へなど）または位置順序（現在A地点にいて、次の停留所はB地点など）で接続されています。複数の独立した旅行地点を単に紹介するだけでは旅行ルートを構成できないことに注意してください。\n旅行ルートが含まれているか：記事に少なくとも1つの完全な旅行ルートが含まれている場合は1を返し、そうでなければ0を返します。\n旅行ルートの数：記事に含まれる完全な旅行ルートの数、ない場合は0。\n時間制限のあるプロジェクトが含まれているか：時間制限のあるプロジェクトとは、コンサート、展示、会議、スタンドアップコメディショー、音楽祭などの期間限定活動など、特定の時間に行われるプロジェクトを指します。旅行ルートに時間制限のあるプロジェクトが含まれている場合は1を返し、そうでなければ0を返します。\nroutesフィールド：旅行ルートが含まれている場合、各ルートの詳細な構造化情報を生成する必要があります。これには以下が含まれます：routeName（ルート名）、days（日数）、routePoints（旅行地点リスト）、hasTimelinessProject（このルートに時間制限のあるプロジェクトが含まれているか）、timelinessProjects（このルートに関わる時間制限のあるプロジェクトのリスト、ない場合は空の配列、各プロジェクト名は9-150文字（スペース、数字などを含む））。\n出力形式要件：以下のJSON形式で分析結果を厳密に生成し、追加のテキスト説明は加えないでください：{\"containRoute\": 0または1,\"routeCount\": 数値(0,1,2...),\"containTimelinessProject\": 0または1, \"routes\": [{\"routeName\": \"ルート名\", \"days\": 1-3, \"routePoints\": [\"旅行地点A\", \"旅行地点B\"], \"hasTimelinessProject\": 0または1, \"timelinessProjects\": [\"時間制限のあるプロジェクト名\"]}]}\n記事内容：\n【野外アドベンチャールート】夜明け登山、午前中森林ハイキング、午後渓流トレッキング、夜はキャンプファイヤーパーティー、夜はキャンプして星空観察。",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "required": [
+                "containRoute",
+                "routeCount",
+                "containTimelinessProject",
+                "routes"
+            ],
+            "properties": {
+                "containRoute": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "記事に旅行ルートが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routeCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "記事に含まれる旅行ルートの数",
+                    "能力项": "特定格式"
+                },
+                "containTimelinessProject": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "旅行ルートに時間制限のあるプロジェクトが含まれているかどうか、1は含む、0は含まない",
+                    "能力项": "特定格式"
+                },
+                "routes": {
+                    "type": "array",
+                    "description": "すべての旅行ルートの詳細",
+                    "能力项": "范围",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "routeName",
+                            "days",
+                            "routePoints",
+                            "hasTimelinessProject",
+                            "timelinessProjects"
+                        ],
+                        "properties": {
+                            "routeName": {
+                                "type": "string",
+                                "description": "ルート名、空にできません",
+                                "能力项": "JSON"
+                            },
+                            "days": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3,
+                                "description": "ルートの日数、値の範囲は1-3",
+                                "能力项": "特定格式"
+                            },
+                            "routePoints": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "能力项": "JSON"
+                                },
+                                "minItems": 2,
+                                "description": "旅行地点のリスト、少なくとも2つの地点を含む必要があります",
+                                "能力项": "JSON"
+                            },
+                            "hasTimelinessProject": {
+                                "type": "integer",
+                                "enum": [
+                                    0,
+                                    1
+                                ],
+                                "description": "このルートに時間制限のあるプロジェクトが含まれているかどうか",
+                                "能力项": "特定格式"
+                            },
+                            "timelinessProjects": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 9,
+                                    "maxLength": 150,
+                                    "能力项": "范围、10~50字"
+                                },
+                                "description": "このルートに関わる時間制限のあるプロジェクト、各プロジェクト名は2-30文字",
+                                "能力项": "范围"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "スキーマを満たしているか",
+                "rule": "SCHEMA:json_schema",
+                "dep": [],
+                "被依赖": false,
+                "能力项": "JSON"
+            }
+        ]
+    }
+]

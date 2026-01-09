@@ -1,0 +1,832 @@
+[
+    {
+        "category": "general_multi",
+        "question": "Trabalha em Lisboa e é responsável pela criação de anúncios de arrendamento para uma imobiliária. A empresa exige que todos os anúncios usem um formato de abreviação de endereço padrão que inclua nomes de ruas e números de casas. As listagens da empresa são distribuídas da seguinte forma: - Apartamentos de luxo no centro da cidade: 40% do total de listagens - Residências suburbanas: 60% do total de listagens. Você precisa personalizar um total de 12 anúncios para diferentes tipos de anúncios, então agora você é solicitado a criar anúncios para os três tipos de casas acima em uma proporção de 1：2, com 1 para 3 palavra em português com o símbolo acento agudo aparecendo em cada cópia do anúncio. Por favor, responda no seguinte formato: [Apartamentos de luxo no centro da cidade]1.xxx [Endereço]: xxx \n2.xxx [Endereço]: xxx \n[Residências suburbanas]1. xxx [Endereço]: xxx \n2.xxx [Endereço]:xxx ",
+        "corresponding_parts": {
+            "市中心豪华公寓": "请你按照python list的格式，一一抓取模型回复生成的[Apartamentos de luxo no centro da cidade]每个广告示例,不要提取出[Residências suburbanas]的部分，每条都包含文案和地址信息",
+            "郊区住宅": "请你按照python list的格式，一一抓取模型回复生成的[Residências suburbanas]每个广告示例,不要提取出[Apartamentos de luxo no centro da cidade]的部分，每条都包含文案和地址信息"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了广告",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "市中心豪华公寓是否给出了4.0条广告",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "item_count:[4.0,4.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "郊区住宅是否给出了8.0条广告",
+                "corresponding_part": "郊区住宅",
+                "rule": "item_count:[8.0,8.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "市中心豪华公寓的地址是否满足缩写格式",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "portuguese_address_abbreviation",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：地址缩写",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "郊区住宅的地址是否满足缩写格式",
+                "corresponding_part": "郊区住宅",
+                "rule": "portuguese_address_abbreviation",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：地址缩写",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "市中心豪华公寓的的每条广告中是否出现了1-3个尖音符词汇",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "each_has_acute_accent:[1,3]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：尖音符",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "郊区住宅的的每条广告中是否出现了1-3个尖音符词汇",
+                "corresponding_part": "郊区住宅",
+                "rule": "each_has_acute_accent:[1,3]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：尖音符",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Trabalha em Lisboa e é responsável pela criação de anúncios de arrendamento para uma imobiliária. A empresa exige que todos os anúncios usem um formato de abreviação de endereço padrão que inclua nomes de ruas e números de casas. As listagens da empresa são distribuídas da seguinte forma: - Apartamentos de luxo no centro da cidade: 40% do total de listagens - Residências suburbanas: 60% do total de listagens. Você precisa personalizar um total de 12 anúncios para diferentes tipos de anúncios, então agora você é solicitado a criar anúncios para os três tipos de casas acima em uma proporção de 1：2, com 2 para 4 palavra em português com o símbolo acento agudo aparecendo em cada cópia do anúncio. Por favor, responda no seguinte formato: [Apartamentos de luxo no centro da cidade]1.xxx [Endereço]: xxx \n2.xxx [Endereço]: xxx \n[Residências suburbanas]1. xxx [Endereço]: xxx \n2.xxx [Endereço]:xxx ",
+        "corresponding_parts": {
+            "市中心豪华公寓": "请你按照python list的格式，一一抓取模型回复生成的[Apartamentos de luxo no centro da cidade]每个广告示例,不要提取出[Residências suburbanas]的部分，每条都包含文案和地址信息",
+            "郊区住宅": "请你按照python list的格式，一一抓取模型回复生成的[Residências suburbanas]每个广告示例,不要提取出[Apartamentos de luxo no centro da cidade]的部分，每条都包含文案和地址信息"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了广告",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "市中心豪华公寓是否给出了4.0条广告",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "item_count:[4.0,4.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "郊区住宅是否给出了8.0条广告",
+                "corresponding_part": "郊区住宅",
+                "rule": "item_count:[8.0,8.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "市中心豪华公寓的地址是否满足缩写格式",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "portuguese_address_abbreviation",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：地址缩写",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "郊区住宅的地址是否满足缩写格式",
+                "corresponding_part": "郊区住宅",
+                "rule": "portuguese_address_abbreviation",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：地址缩写",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "市中心豪华公寓的的每条广告中是否出现了2-4个尖音符词汇",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "each_has_acute_accent:[2,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：尖音符",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "郊区住宅的的每条广告中是否出现了2-4个尖音符词汇",
+                "corresponding_part": "郊区住宅",
+                "rule": "each_has_acute_accent:[2,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：尖音符",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Trabalha em Lisboa e é responsável pela criação de anúncios de arrendamento para uma imobiliária. A empresa exige que todos os anúncios usem um formato de abreviação de endereço padrão que inclua nomes de ruas e números de casas. As listagens da empresa são distribuídas da seguinte forma: - Apartamentos de luxo no centro da cidade: 40% do total de listagens - Residências suburbanas: 60% do total de listagens. Você precisa personalizar um total de 10 anúncios para diferentes tipos de anúncios, então agora você é solicitado a criar anúncios para os três tipos de casas acima em uma proporção de 2：3, com 1 para 3 palavra em português com o símbolo acento agudo aparecendo em cada cópia do anúncio. Por favor, responda no seguinte formato: [Apartamentos de luxo no centro da cidade]1.xxx [Endereço]: xxx \n2.xxx [Endereço]: xxx \n[Residências suburbanas]1. xxx [Endereço]: xxx \n2.xxx [Endereço]:xxx ",
+        "corresponding_parts": {
+            "市中心豪华公寓": "请你按照python list的格式，一一抓取模型回复生成的[Apartamentos de luxo no centro da cidade]每个广告示例,不要提取出[Residências suburbanas]的部分，每条都包含文案和地址信息",
+            "郊区住宅": "请你按照python list的格式，一一抓取模型回复生成的[Residências suburbanas]每个广告示例,不要提取出[Apartamentos de luxo no centro da cidade]的部分，每条都包含文案和地址信息"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了广告",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "市中心豪华公寓是否给出了4.0条广告",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "item_count:[4.0,4.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "郊区住宅是否给出了6.0条广告",
+                "corresponding_part": "郊区住宅",
+                "rule": "item_count:[6.0,6.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "市中心豪华公寓的地址是否满足缩写格式",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "portuguese_address_abbreviation",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：地址缩写",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "郊区住宅的地址是否满足缩写格式",
+                "corresponding_part": "郊区住宅",
+                "rule": "portuguese_address_abbreviation",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：地址缩写",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "市中心豪华公寓的的每条广告中是否出现了1-3个尖音符词汇",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "each_has_acute_accent:[1,3]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：尖音符",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "郊区住宅的的每条广告中是否出现了1-3个尖音符词汇",
+                "corresponding_part": "郊区住宅",
+                "rule": "each_has_acute_accent:[1,3]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：尖音符",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Trabalha em Lisboa e é responsável pela criação de anúncios de arrendamento para uma imobiliária. A empresa exige que todos os anúncios usem um formato de abreviação de endereço padrão que inclua nomes de ruas e números de casas. As listagens da empresa são distribuídas da seguinte forma: - Apartamentos de luxo no centro da cidade: 40% do total de listagens - Residências suburbanas: 60% do total de listagens. Você precisa personalizar um total de 10 anúncios para diferentes tipos de anúncios, então agora você é solicitado a criar anúncios para os três tipos de casas acima em uma proporção de 2：3, com 2 para 4 palavra em português com o símbolo acento agudo aparecendo em cada cópia do anúncio. Por favor, responda no seguinte formato: [Apartamentos de luxo no centro da cidade]1.xxx [Endereço]: xxx \n2.xxx [Endereço]: xxx \n[Residências suburbanas]1. xxx [Endereço]: xxx \n2.xxx [Endereço]:xxx ",
+        "corresponding_parts": {
+            "市中心豪华公寓": "请你按照python list的格式，一一抓取模型回复生成的[Apartamentos de luxo no centro da cidade]每个广告示例,不要提取出[Residências suburbanas]的部分，每条都包含文案和地址信息",
+            "郊区住宅": "请你按照python list的格式，一一抓取模型回复生成的[Residências suburbanas]每个广告示例,不要提取出[Apartamentos de luxo no centro da cidade]的部分，每条都包含文案和地址信息"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了广告",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "市中心豪华公寓是否给出了4.0条广告",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "item_count:[4.0,4.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "郊区住宅是否给出了6.0条广告",
+                "corresponding_part": "郊区住宅",
+                "rule": "item_count:[6.0,6.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "市中心豪华公寓的地址是否满足缩写格式",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "portuguese_address_abbreviation",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：地址缩写",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "郊区住宅的地址是否满足缩写格式",
+                "corresponding_part": "郊区住宅",
+                "rule": "portuguese_address_abbreviation",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：地址缩写",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "市中心豪华公寓的的每条广告中是否出现了2-4个尖音符词汇",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "each_has_acute_accent:[2,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：尖音符",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "郊区住宅的的每条广告中是否出现了2-4个尖音符词汇",
+                "corresponding_part": "郊区住宅",
+                "rule": "each_has_acute_accent:[2,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：尖音符",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Trabalha em Lisboa e é responsável pela criação de anúncios de arrendamento para uma imobiliária. A empresa exige que todos os anúncios usem um formato de abreviação de endereço padrão que inclua nomes de ruas e números de casas. As listagens da empresa são distribuídas da seguinte forma: - Apartamentos de luxo no centro da cidade: 40% do total de listagens - Residências suburbanas: 60% do total de listagens. Você precisa personalizar um total de 16 anúncios para diferentes tipos de anúncios, então agora você é solicitado a criar anúncios para os três tipos de casas acima em uma proporção de 1：3, com 1 para 3 palavra em português com o símbolo acento agudo aparecendo em cada cópia do anúncio. Por favor, responda no seguinte formato: [Apartamentos de luxo no centro da cidade]1.xxx [Endereço]: xxx \n2.xxx [Endereço]: xxx \n[Residências suburbanas]1. xxx [Endereço]: xxx \n2.xxx [Endereço]:xxx ",
+        "corresponding_parts": {
+            "市中心豪华公寓": "请你按照python list的格式，一一抓取模型回复生成的[Apartamentos de luxo no centro da cidade]每个广告示例,不要提取出[Residências suburbanas]的部分，每条都包含文案和地址信息",
+            "郊区住宅": "请你按照python list的格式，一一抓取模型回复生成的[Residências suburbanas]每个广告示例,不要提取出[Apartamentos de luxo no centro da cidade]的部分，每条都包含文案和地址信息"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了广告",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "市中心豪华公寓是否给出了4.0条广告",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "item_count:[4.0,4.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "郊区住宅是否给出了12.0条广告",
+                "corresponding_part": "郊区住宅",
+                "rule": "item_count:[12.0,12.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "市中心豪华公寓的地址是否满足缩写格式",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "portuguese_address_abbreviation",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：地址缩写",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "郊区住宅的地址是否满足缩写格式",
+                "corresponding_part": "郊区住宅",
+                "rule": "portuguese_address_abbreviation",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：地址缩写",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "市中心豪华公寓的的每条广告中是否出现了1-3个尖音符词汇",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "each_has_acute_accent:[1,3]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：尖音符",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "郊区住宅的的每条广告中是否出现了1-3个尖音符词汇",
+                "corresponding_part": "郊区住宅",
+                "rule": "each_has_acute_accent:[1,3]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：尖音符",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Trabalha em Lisboa e é responsável pela criação de anúncios de arrendamento para uma imobiliária. A empresa exige que todos os anúncios usem um formato de abreviação de endereço padrão que inclua nomes de ruas e números de casas. As listagens da empresa são distribuídas da seguinte forma: - Apartamentos de luxo no centro da cidade: 40% do total de listagens - Residências suburbanas: 60% do total de listagens. Você precisa personalizar um total de 16 anúncios para diferentes tipos de anúncios, então agora você é solicitado a criar anúncios para os três tipos de casas acima em uma proporção de 1：3, com 2 para 4 palavra em português com o símbolo acento agudo aparecendo em cada cópia do anúncio. Por favor, responda no seguinte formato: [Apartamentos de luxo no centro da cidade]1.xxx [Endereço]: xxx \n2.xxx [Endereço]: xxx \n[Residências suburbanas]1. xxx [Endereço]: xxx \n2.xxx [Endereço]:xxx ",
+        "corresponding_parts": {
+            "市中心豪华公寓": "请你按照python list的格式，一一抓取模型回复生成的[Apartamentos de luxo no centro da cidade]每个广告示例,不要提取出[Residências suburbanas]的部分，每条都包含文案和地址信息",
+            "郊区住宅": "请你按照python list的格式，一一抓取模型回复生成的[Residências suburbanas]每个广告示例,不要提取出[Apartamentos de luxo no centro da cidade]的部分，每条都包含文案和地址信息"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了广告",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "市中心豪华公寓是否给出了4.0条广告",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "item_count:[4.0,4.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "郊区住宅是否给出了12.0条广告",
+                "corresponding_part": "郊区住宅",
+                "rule": "item_count:[12.0,12.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "市中心豪华公寓的地址是否满足缩写格式",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "portuguese_address_abbreviation",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：地址缩写",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "郊区住宅的地址是否满足缩写格式",
+                "corresponding_part": "郊区住宅",
+                "rule": "portuguese_address_abbreviation",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：地址缩写",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "市中心豪华公寓的的每条广告中是否出现了2-4个尖音符词汇",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "each_has_acute_accent:[2,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：尖音符",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "郊区住宅的的每条广告中是否出现了2-4个尖音符词汇",
+                "corresponding_part": "郊区住宅",
+                "rule": "each_has_acute_accent:[2,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：尖音符",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Trabalha em Lisboa e é responsável pela criação de anúncios de arrendamento para uma imobiliária. A empresa exige que todos os anúncios usem um formato de abreviação de endereço padrão que inclua nomes de ruas e números de casas. As listagens da empresa são distribuídas da seguinte forma: - Apartamentos de luxo no centro da cidade: 40% do total de listagens - Residências suburbanas: 60% do total de listagens. Você precisa personalizar um total de 9 anúncios para diferentes tipos de anúncios, então agora você é solicitado a criar anúncios para os três tipos de casas acima em uma proporção de 1：2, com 1 para 3 palavra em português com o símbolo acento agudo aparecendo em cada cópia do anúncio. Por favor, responda no seguinte formato: [Apartamentos de luxo no centro da cidade]1.xxx [Endereço]: xxx \n2.xxx [Endereço]: xxx \n[Residências suburbanas]1. xxx [Endereço]: xxx \n2.xxx [Endereço]:xxx ",
+        "corresponding_parts": {
+            "市中心豪华公寓": "请你按照python list的格式，一一抓取模型回复生成的[Apartamentos de luxo no centro da cidade]每个广告示例,不要提取出[Residências suburbanas]的部分，每条都包含文案和地址信息",
+            "郊区住宅": "请你按照python list的格式，一一抓取模型回复生成的[Residências suburbanas]每个广告示例,不要提取出[Apartamentos de luxo no centro da cidade]的部分，每条都包含文案和地址信息"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了广告",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "市中心豪华公寓是否给出了3.0条广告",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "item_count:[3.0,3.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "郊区住宅是否给出了6.0条广告",
+                "corresponding_part": "郊区住宅",
+                "rule": "item_count:[6.0,6.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "市中心豪华公寓的地址是否满足缩写格式",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "portuguese_address_abbreviation",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：地址缩写",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "郊区住宅的地址是否满足缩写格式",
+                "corresponding_part": "郊区住宅",
+                "rule": "portuguese_address_abbreviation",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：地址缩写",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "市中心豪华公寓的的每条广告中是否出现了1-3个尖音符词汇",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "each_has_acute_accent:[1,3]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：尖音符",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "郊区住宅的的每条广告中是否出现了1-3个尖音符词汇",
+                "corresponding_part": "郊区住宅",
+                "rule": "each_has_acute_accent:[1,3]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：尖音符",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Trabalha em Lisboa e é responsável pela criação de anúncios de arrendamento para uma imobiliária. A empresa exige que todos os anúncios usem um formato de abreviação de endereço padrão que inclua nomes de ruas e números de casas. As listagens da empresa são distribuídas da seguinte forma: - Apartamentos de luxo no centro da cidade: 40% do total de listagens - Residências suburbanas: 60% do total de listagens. Você precisa personalizar um total de 9 anúncios para diferentes tipos de anúncios, então agora você é solicitado a criar anúncios para os três tipos de casas acima em uma proporção de 1：2, com 2 para 4 palavra em português com o símbolo acento agudo aparecendo em cada cópia do anúncio. Por favor, responda no seguinte formato: [Apartamentos de luxo no centro da cidade]1.xxx [Endereço]: xxx \n2.xxx [Endereço]: xxx \n[Residências suburbanas]1. xxx [Endereço]: xxx \n2.xxx [Endereço]:xxx ",
+        "corresponding_parts": {
+            "市中心豪华公寓": "请你按照python list的格式，一一抓取模型回复生成的[Apartamentos de luxo no centro da cidade]每个广告示例,不要提取出[Residências suburbanas]的部分，每条都包含文案和地址信息",
+            "郊区住宅": "请你按照python list的格式，一一抓取模型回复生成的[Residências suburbanas]每个广告示例,不要提取出[Apartamentos de luxo no centro da cidade]的部分，每条都包含文案和地址信息"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了广告",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "市中心豪华公寓是否给出了3.0条广告",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "item_count:[3.0,3.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "郊区住宅是否给出了6.0条广告",
+                "corresponding_part": "郊区住宅",
+                "rule": "item_count:[6.0,6.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "市中心豪华公寓的地址是否满足缩写格式",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "portuguese_address_abbreviation",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：地址缩写",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "郊区住宅的地址是否满足缩写格式",
+                "corresponding_part": "郊区住宅",
+                "rule": "portuguese_address_abbreviation",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：地址缩写",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "市中心豪华公寓的的每条广告中是否出现了2-4个尖音符词汇",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "each_has_acute_accent:[2,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：尖音符",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "郊区住宅的的每条广告中是否出现了2-4个尖音符词汇",
+                "corresponding_part": "郊区住宅",
+                "rule": "each_has_acute_accent:[2,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：尖音符",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Trabalha em Lisboa e é responsável pela criação de anúncios de arrendamento para uma imobiliária. A empresa exige que todos os anúncios usem um formato de abreviação de endereço padrão que inclua nomes de ruas e números de casas. As listagens da empresa são distribuídas da seguinte forma: - Apartamentos de luxo no centro da cidade: 40% do total de listagens - Residências suburbanas: 60% do total de listagens. Você precisa personalizar um total de 14 anúncios para diferentes tipos de anúncios, então agora você é solicitado a criar anúncios para os três tipos de casas acima em uma proporção de 2：5, com 1 para 3 palavra em português com o símbolo acento agudo aparecendo em cada cópia do anúncio. Por favor, responda no seguinte formato: [Apartamentos de luxo no centro da cidade]1.xxx [Endereço]: xxx \n2.xxx [Endereço]: xxx \n[Residências suburbanas]1. xxx [Endereço]: xxx \n2.xxx [Endereço]:xxx ",
+        "corresponding_parts": {
+            "市中心豪华公寓": "请你按照python list的格式，一一抓取模型回复生成的[Apartamentos de luxo no centro da cidade]每个广告示例,不要提取出[Residências suburbanas]的部分，每条都包含文案和地址信息",
+            "郊区住宅": "请你按照python list的格式，一一抓取模型回复生成的[Residências suburbanas]每个广告示例,不要提取出[Apartamentos de luxo no centro da cidade]的部分，每条都包含文案和地址信息"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了广告",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "市中心豪华公寓是否给出了4.0条广告",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "item_count:[4.0,4.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "郊区住宅是否给出了10.0条广告",
+                "corresponding_part": "郊区住宅",
+                "rule": "item_count:[10.0,10.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "市中心豪华公寓的地址是否满足缩写格式",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "portuguese_address_abbreviation",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：地址缩写",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "郊区住宅的地址是否满足缩写格式",
+                "corresponding_part": "郊区住宅",
+                "rule": "portuguese_address_abbreviation",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：地址缩写",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "市中心豪华公寓的的每条广告中是否出现了1-3个尖音符词汇",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "each_has_acute_accent:[1,3]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：尖音符",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "郊区住宅的的每条广告中是否出现了1-3个尖音符词汇",
+                "corresponding_part": "郊区住宅",
+                "rule": "each_has_acute_accent:[1,3]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：尖音符",
+                "被依赖": false
+            }
+        ]
+    },
+    {
+        "category": "general_multi",
+        "question": "Trabalha em Lisboa e é responsável pela criação de anúncios de arrendamento para uma imobiliária. A empresa exige que todos os anúncios usem um formato de abreviação de endereço padrão que inclua nomes de ruas e números de casas. As listagens da empresa são distribuídas da seguinte forma: - Apartamentos de luxo no centro da cidade: 40% do total de listagens - Residências suburbanas: 60% do total de listagens. Você precisa personalizar um total de 14 anúncios para diferentes tipos de anúncios, então agora você é solicitado a criar anúncios para os três tipos de casas acima em uma proporção de 2：5, com 2 para 4 palavra em português com o símbolo acento agudo aparecendo em cada cópia do anúncio. Por favor, responda no seguinte formato: [Apartamentos de luxo no centro da cidade]1.xxx [Endereço]: xxx \n2.xxx [Endereço]: xxx \n[Residências suburbanas]1. xxx [Endereço]: xxx \n2.xxx [Endereço]:xxx ",
+        "corresponding_parts": {
+            "市中心豪华公寓": "请你按照python list的格式，一一抓取模型回复生成的[Apartamentos de luxo no centro da cidade]每个广告示例,不要提取出[Residências suburbanas]的部分，每条都包含文案和地址信息",
+            "郊区住宅": "请你按照python list的格式，一一抓取模型回复生成的[Residências suburbanas]每个广告示例,不要提取出[Apartamentos de luxo no centro da cidade]的部分，每条都包含文案和地址信息"
+        },
+        "sub_questions": [
+            {
+                "point_id": 0,
+                "question": "是否给出了广告",
+                "rule": null,
+                "dep": [],
+                "被依赖": true
+            },
+            {
+                "point_id": 1,
+                "question": "市中心豪华公寓是否给出了4.0条广告",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "item_count:[4.0,4.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 2,
+                "question": "郊区住宅是否给出了10.0条广告",
+                "corresponding_part": "郊区住宅",
+                "rule": "item_count:[10.0,10.0]",
+                "dep": [
+                    0
+                ],
+                "能力项": "单元数量合规",
+                "被依赖": false
+            },
+            {
+                "point_id": 3,
+                "question": "市中心豪华公寓的地址是否满足缩写格式",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "portuguese_address_abbreviation",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：地址缩写",
+                "被依赖": false
+            },
+            {
+                "point_id": 4,
+                "question": "郊区住宅的地址是否满足缩写格式",
+                "corresponding_part": "郊区住宅",
+                "rule": "portuguese_address_abbreviation",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：地址缩写",
+                "被依赖": false
+            },
+            {
+                "point_id": 5,
+                "question": "市中心豪华公寓的的每条广告中是否出现了2-4个尖音符词汇",
+                "corresponding_part": "市中心豪华公寓",
+                "rule": "each_has_acute_accent:[2,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：尖音符",
+                "被依赖": false
+            },
+            {
+                "point_id": 6,
+                "question": "郊区住宅的的每条广告中是否出现了2-4个尖音符词汇",
+                "corresponding_part": "郊区住宅",
+                "rule": "each_has_acute_accent:[2,4]",
+                "dep": [
+                    0
+                ],
+                "能力项": "葡语：尖音符",
+                "被依赖": false
+            }
+        ]
+    }
+]

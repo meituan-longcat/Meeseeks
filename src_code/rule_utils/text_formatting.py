@@ -1,5 +1,5 @@
 import re
-from utils import clean_up_text
+from ..utils import clean_up_text
 
 def model_no_end_with_punctuation(model_responses):
     """Check if there are sentences ending with punctuation"""

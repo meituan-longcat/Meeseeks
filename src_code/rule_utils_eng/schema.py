@@ -2,8 +2,25 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import jsonschema
-from utils_eng import str_to_lists, json_from_string
-
+from src_code.utils_eng import str_to_lists, json_from_string
+try:
+    import jsonschema
+    jsonschema_AVAILABLE = True
+except ImportError:
+    jsonschema_AVAILABLE = False
+    print("jsonschema库未安装，正在自动安装...")
+    try:
+        import subprocess
+        import sys
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "jsonschema", "-i", "https://pypi.tuna.tsinghua.edu.cn/simple"])
+        print("jsonschema库安装成功，正在导入...")
+        import jsonschema
+        jsonschema_AVAILABLE = True
+        print("✅ jsonschema库已成功导入")
+    except Exception as e:
+        print(f"❌ 自动安装失败: {e}")
+        print("请手动运行: pip install jsonschema")
+        jsonschema_AVAILABLE = False
 
 def model_schema(item, key, model_response):
     if key == "json_schema":
@@ -144,9 +161,9 @@ def json_schema(item, model_response):
                     array_data, array_exists = get_nested_value(data_item, array_path)
                     if not array_exists:
                         return {
-                            "question": f"Does {path} meet the requirements",
+                            "question": f"{path}是否符合要求",
                             "eval_result": 0,
-                            "eval_explanation": f"❌ {path} - Array path does not exist",
+                            "eval_explanation": f"❌ {path} - 数组路径不存在",
                             "能力项": ability
                         }
                 else:
@@ -155,9 +172,9 @@ def json_schema(item, model_response):
                 
                 if not isinstance(array_data, list):
                     return {
-                        "question": f"Does {path} meet the requirements",
+                        "question": f"{path}是否符合要求",
                         "eval_result": 0,
-                        "eval_explanation": f"❌ {path} - Expected array type, got {type(array_data).__name__}",
+                        "eval_explanation": f"❌ {path} - 期望数组类型，实际为{type(array_data).__name__}",
                         "能力项": ability
                     }
                 
@@ -182,7 +199,7 @@ def json_schema(item, model_response):
                                 jsonschema.validate({field_name: nested_value}, temp_schema)
                                 valid_count += 1
                             except jsonschema.exceptions.ValidationError as e:
-                                error_messages.append(f"Item {i+1} {field_path} does not meet requirements: {e.message}")
+                                error_messages.append(f"项{i+1}的{field_path}不符合规则: {e.message}")
                     else:
                         # 验证数组项本身
                         try:
@@ -191,37 +208,37 @@ def json_schema(item, model_response):
                             valid_count += 1
                         except jsonschema.exceptions.ValidationError as e:
                             found_count += 1
-                            error_messages.append(f"Item {i+1} does not meet requirements: {e.message}")
+                            error_messages.append(f"项{i+1}不符合规则: {e.message}")
                 
                 # 判断验证结果
                 if is_required and found_count == 0:
                     return {
-                        "question": f"Does {path} meet the requirements",
+                        "question": f"{path}是否符合要求",
                         "eval_result": 0,
-                        "eval_explanation": f"❌ {path} - Required field not found in array",
+                        "eval_explanation": f"❌ {path} - 必需字段在数组中未找到",
                         "能力项": ability
                     }
                 elif found_count > 0:
                     if valid_count == found_count:
                         return {
-                            "question": f"Does {path} meet the requirements",
+                            "question": f"{path}是否符合要求",
                             "eval_result": 1,
-                            "eval_explanation": f"✅ {path} - Found {found_count} valid values in {len(array_data)} array items",
+                            "eval_explanation": f"✅ {path} - 在{len(array_data)}个数组项中找到{found_count}个有效值",
                             "能力项": ability
                         }
                     else:
                         return {
-                            "question": f"Does {path} meet the requirements",
+                            "question": f"{path}是否符合要求",
                             "eval_result": 0,
-                            "eval_explanation": f"❌ {path} - {len(error_messages)} invalid values out of {found_count}: " + "; ".join(error_messages),
+                            "eval_explanation": f"❌ {path} - 在{found_count}个值中有{len(error_messages)}个无效: " + "; ".join(error_messages),
                             "能力项": ability
                         }
                 else:
                     # 非必需字段且未找到
                     return {
-                        "question": f"Does {path} meet the requirements",
+                        "question": f"{path}是否符合要求",
                         "eval_result": 1,
-                        "eval_explanation": f"✅ {path} - Optional field not used",
+                        "eval_explanation": f"✅ {path} - 可选字段未使用",
                         "能力项": ability
                     }
             else:
@@ -230,9 +247,9 @@ def json_schema(item, model_response):
                 
                 if not field_exists and is_required:
                     return {
-                        "question": f"Does {path} meet the requirements",
+                        "question": f"{path}是否符合要求",
                         "eval_result": 0,
-                        "eval_explanation": f"❌ {path} - Required field missing",
+                        "eval_explanation": f"❌ {path} - 必需字段缺失",
                         "能力项": ability
                     }
                 elif field_exists:
@@ -245,24 +262,24 @@ def json_schema(item, model_response):
                         }
                         jsonschema.validate({field_name: field_value}, temp_schema)
                         return {
-                            "question": f"Does {path} meet the requirements",
+                            "question": f"{path}是否符合要求",
                             "eval_result": 1,
-                            "eval_explanation": f"✅ {path} - Meets requirements",
+                            "eval_explanation": f"✅ {path} - 符合规则",
                             "能力项": ability
                         }
                     except jsonschema.exceptions.ValidationError as e:
                         return {
-                            "question": f"Does {path} meet the requirements",
+                            "question": f"{path}是否符合要求",
                             "eval_result": 0,
-                            "eval_explanation": f"❌ {path} - Does not meet requirements: {e.message}",
+                            "eval_explanation": f"❌ {path} - 不符合规则: {e.message}",
                             "能力项": ability
                         }
                 else:
                     # 字段不存在
                     return {
-                        "question": f"Does {path} meet the requirements",
+                        "question": f"{path}是否符合要求",
                         "eval_result": 1,
-                        "eval_explanation": f"✅ {path} - Optional field",
+                        "eval_explanation": f"✅ {path} - 可选字段",
                         "能力项": ability
                     }
 
@@ -337,10 +354,10 @@ def json_schema(item, model_response):
         for field_path, ability in all_fields:
             results.append({
                 "point_id": point_id,
-                "question": f"Does {field_path} meet the requirements",
+                "question": f"{field_path}是否符合要求",
                 "dep": [],
                 "eval_result": 0,
-                "eval_explanation": f"❌ {field_path} - JSON parsing failed: {str(e)}",
+                "eval_explanation": f"❌ {field_path} - JSON解析失败: {str(e)}",
                 "能力项": ability
             })
             point_id += 1 
@@ -354,3 +371,94 @@ def list_schema(model_response):
     except Exception as e:
         return 0, f"INVALID LIST: ERROR DETAILS: {str(e)}"
     return 1, "VALID LIST"
+
+
+
+if __name__ == '__main__':
+    item =   {
+        "category": "SCHEMA",
+        "question": "You are a senior travel expert and professional article analyst. I will provide you with an article that recommends suitable travel destinations. Your task is to analyze this article and extract information from it by attraction name dimension.\n\n1. poiName: Extract the names of attractions mentioned in the article. Attractions must be location-level geographical positions, absolutely not cities or provinces. For example: botanical gardens, parks, ancient towns, scenic areas, museums, temples and other specific attractions (such as Taiyuan Botanical Garden, Jingshan Park, Gubei Water Town).\n\nOutput requirements:\n1. Return extracted information in JSON format\n2. Each attraction as a separate object, containing poiName field\n3. All attraction objects form an array\n4. Do not return any characters other than JSON format\nYou need to identify the type of each attraction (such as park, ancient town, museum, temple, theme park, scenic area, etc.), and return the poiType field in json.\nYou need to identify whether each attraction is suitable for parent-child play (return \"Yes\" if suitable, otherwise return \"No\"), and return the isParentChildFriendly field in json.\nYou need to identify whether each attraction has night view (return \"Yes\" if it has night view, otherwise return \"No\"), and return the hasNightView field in json.\nOutput format example:\n[\n  {\"poiName\": \"example value\", \"poiType\": \"example type\", \"isParentChildFriendly\": \"Yes/No\", \"hasNightView\": \"Yes/No\"}\n]\n\nArticle content:Beijing surrounding tour recommendations:\n1. Taiyuan Botanical Garden is the largest botanical garden in North China, suitable for parent-child tours\n2. Jingshan Park overlooks the panoramic view of the Forbidden City\n3. The night view of Gubei Water Town is stunning, recommend staying in the scenic area",
+        "json_schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "poiName",
+                    "poiType",
+                    "isParentChildFriendly",
+                    "hasNightView"
+                ],
+                "properties": {
+                    "poiName": {
+                        "type": "string",
+                        "description": "Attraction name, must be a specific location-level geographical position",
+                        "能力项": "JSON"
+                    },
+                    "poiType": {
+                        "type": "string",
+                        "description": "Attraction type, such as park, ancient town, museum, temple, theme park, scenic area, etc.",
+                        "能力项": "JSON"
+                    },
+                    "isParentChildFriendly": {
+                        "type": "string",
+                        "enum": [
+                            "Yes",
+                            "No"
+                        ],
+                        "description": "Whether it is suitable for parent-child",
+                        "能力项": "特定格式"
+                    },
+                    "hasNightView": {
+                        "type": "string",
+                        "enum": [
+                            "Yes",
+                            "No"
+                        ],
+                        "description": "Whether it has night view",
+                        "能力项": "特定格式"
+                    }
+                },
+                "additionalProperties": False
+            }
+        },
+        "sub_questions": [
+            {
+                "question": "[*].poiName是否符合要求",
+                "eval_result": 1,
+                "eval_explanation": "✅ [*].poiName - 在6个数组项中找到6个有效值",
+                "能力项": "JSON",
+                "point_id": -1,
+                "dep": []
+            },
+            {
+                "question": "[*].poiType是否符合要求",
+                "eval_result": 1,
+                "eval_explanation": "✅ [*].poiType - 在6个数组项中找到6个有效值",
+                "能力项": "JSON",
+                "point_id": -2,
+                "dep": []
+            },
+            {
+                "question": "[*].isParentChildFriendly是否符合要求",
+                "eval_result": 1,
+                "eval_explanation": "✅ [*].isParentChildFriendly - 在6个数组项中找到6个有效值",
+                "能力项": "特定格式、JSON",
+                "point_id": -3,
+                "dep": []
+            },
+            {
+                "question": "[*].hasNightView是否符合要求",
+                "eval_result": 1,
+                "eval_explanation": "✅ [*].hasNightView - 在6个数组项中找到6个有效值",
+                "能力项": "特定格式、JSON",
+                "point_id": -4,
+                "dep": []
+            }
+        ],
+        "model_response": "```json\n[\n  {\"poiName\": \"Taiyuan Botanical Garden\", \"poiType\": \"botanical garden\", \"isParentChildFriendly\": \"Yes\", \"hasNightView\": \"No\"},\n  {\"poiName\": \"Jingshan Park\", \"poiType\": \"park\", \"isParentChildFriendly\": \"No\", \"hasNightView\": \"No\"},\n  {\"poiName\": \"Gubei Water Town\", \"poiType\": \"ancient town\", \"isParentChildFriendly\": \"No\", \"hasNightView\": \"Yes\"}\n]\n```"
+    }
+
+    model_response = "```json\n[\n  {\"poiName\": \"Taiyuan Botanical Garden\", \"poiType\": \"botanical garden\", \"isParentChildFriendly\": \"Yes\", \"hasNightView\": \"No\"},\n  {\"poiName\": \"Jingshan Park\", \"poiType\": \"park\", \"isParentChildFriendly\": \"No\", \"hasNightView\": \"No\"},\n  {\"poiName\": \"Gubei Water Town\", \"poiType\": \"ancient town\", \"isParentChildFriendly\": \"No\", \"hasNightView\": \"Yes\"}\n]\n```"
+
+    print(json_schema(item, model_response))
