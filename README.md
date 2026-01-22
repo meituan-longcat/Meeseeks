@@ -10,7 +10,7 @@
 
 ## 🚀 Latest News
 
-Temporarily removed for ICLR submitting
+We officially released the multilingual version of Meeseeks!
 
 ## 📋 Previous Versions
 
